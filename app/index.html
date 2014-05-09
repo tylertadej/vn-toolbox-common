@@ -8,8 +8,11 @@
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
         <!-- build:css styles/vendor.css -->
         <!-- bower:css -->
+        <link rel="stylesheet" href="bower_components/angular-carousel/dist/angular-carousel.css" />
         <!-- endbower -->
         <!-- endbuild -->
+        <link rel="stylesheet" href="styles/carousel.css" />
+        <link rel="stylesheet" href="styles/rating.css" />
         <!-- build:css({.tmp,app}) styles/main.css -->
         <link rel="stylesheet" href="styles/main.css">
         <!-- endbuild -->
@@ -43,12 +46,20 @@
         <script src="bower_components/angular-cookies/angular-cookies.js"></script>
         <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
         <script src="bower_components/angular-route/angular-route.js"></script>
+        <script src="bower_components/angular-translate/angular-translate.js"></script>
+        <script src="bower_components/angular-translate-loader-partial/angular-translate-loader-partial.js"></script>
+        <script src="bower_components/angular-touch/angular-touch.js"></script>
+        <script src="bower_components/angular-carousel/dist/angular-carousel.js"></script>
         <!-- endbower -->
         <!-- endbuild -->
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
         <script src="scripts/controllers/main.js"></script>
+        <script src="scripts/directives/vncarousel.js"></script>
+        <script src="scripts/directives/vnrating.js"></script>
+        <script src="scripts/directives/vnimage.js"></script>
+        <script src="scripts/directives/vnlink.js"></script>
         <!-- endbuild -->
     </body>
 </html>

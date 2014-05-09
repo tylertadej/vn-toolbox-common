@@ -1,0 +1,29 @@
+.vn-carousel {
+
+    .rn-carousel-container {
+        width     : 450px;
+    }
+
+    .-carousel {
+        width     : 450px;
+        height    : 300px;
+        font-size : 0;
+    }
+
+    .-thumbs {
+        .thumb {
+            cursor          : pointer;
+            display         : inline-block;
+            background-size : cover;
+            border          : 1px solid transparent;
+            margin          : 2px 4px;
+            width           : 60px;
+            height          : 40px;
+            transition      : border 0.2s ease-in;
+
+            &.is-active {
+                border : 1px solid red;
+            }
+        }
+    }
+}

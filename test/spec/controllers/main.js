@@ -6,7 +6,7 @@ describe('Controller: MainCtrl', function () {
     'use strict';
 
     // load the controller's module
-    beforeEach(module('toolboxEcomm'));
+    beforeEach(module('toolboxCommon'));
 
     var MainCtrl,
         scope;

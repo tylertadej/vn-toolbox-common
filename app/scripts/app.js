@@ -5,7 +5,7 @@ angular
         'ngCookies',
         'ngResource',
         'ngSanitize',
-        'ngRoute', ,
+        'ngRoute',
         'pascalprecht.translate',
         'angular-carousel'
     ])
@@ -16,8 +16,6 @@ angular
                 'use strict';
 
                 $locationProvider.html5Mode(true);
-
-                'use strict';
 
                 $routeProvider
                     .when('/', {
@@ -32,6 +30,6 @@ angular
                 $translateProvider.useLoader('$translatePartialLoader', {
                     urlTemplate: '/i18n/{part}/{lang}.json'
                 });
-                $translateProvider.preferredLanguage('en');
+                $translateProvider.preferredLanguage('es');
             }]
     );
