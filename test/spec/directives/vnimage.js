@@ -1,20 +1,22 @@
-'use strict';
+/*global angular, describe, module, beforeEach, inject, it, expect */
 
 describe('Directive: vnImage', function () {
 
-  // load the directive's module
-  beforeEach(module('vnToolboxCommonApp'));
+    'use strict';
 
-  var element,
-    scope;
+    // load the directive's module
+    beforeEach(module('toolboxCommon'));
 
-  beforeEach(inject(function ($rootScope) {
-    scope = $rootScope.$new();
-  }));
+    var element,
+        scope;
 
-  it('should make hidden element visible', inject(function ($compile) {
-    element = angular.element('<vn-image></vn-image>');
-    element = $compile(element)(scope);
-    expect(element.text()).toBe('this is the vnImage directive');
-  }));
+    beforeEach(inject(function ($rootScope) {
+        scope = $rootScope.$new();
+    }));
+
+    it('should make hidden element visible', inject(function ($compile) {
+        element = angular.element('<vn-image></vn-image>');
+        element = $compile(element)(scope);
+        expect(element.text()).toBe('');
+    }));
 });

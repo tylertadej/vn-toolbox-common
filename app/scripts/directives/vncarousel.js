@@ -12,7 +12,7 @@ angular.module('toolboxCommon')
                     replace    : true,
                     scope: {
                         currMode: '@currMode',
-                        imageList: '=vnCarousel'
+                        imageList: '='
                     },
         //            link    : function postLink(scope, element, attrs) {
                     link    : function postLink() {

@@ -30,6 +30,6 @@ angular
                 $translateProvider.useLoader('$translatePartialLoader', {
                     urlTemplate: '/i18n/{part}/{lang}.json'
                 });
-                $translateProvider.preferredLanguage('es');
+                $translateProvider.preferredLanguage('en');
             }]
     );

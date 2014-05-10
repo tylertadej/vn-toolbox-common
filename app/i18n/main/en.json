@@ -1,3 +1,4 @@
 {
-    "TEST_VAR" : "This is a English test text."
+    "TEST_VAR" : "This is a English test text.",
+    "CURRENT_LANG_CODE" : "en"
 }

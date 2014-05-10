@@ -1,6 +1,6 @@
 <div class="header">
     <h3 class="text-muted">Volusion's Common Widgets</h3>
-    {{ 'TEST_VAR' | translate }}
+    <button ng-click="toggleLang()">Toggle language ({{ 'CURRENT_LANG_CODE' | translate }})</button>   {{ 'TEST_VAR' | translate }}
 </div>
 
 <div class="row marketing">
@@ -14,7 +14,7 @@
 
     <h4>Look'n'feel:</h4>
 
-    <div vn-carousel="imageList"></div>
+    <div vn-carousel image-list="imageList"></div>
 </div>
 
 <hr>
@@ -34,6 +34,36 @@
 </div>
 
 <hr>
+
+<div class="row marketing">
+    <h4 class="text-muted">Image</h4>
+    <h4>Usage:</h4>
+    <code>
+        Add "vn-image" attribute to "div" element or "vn-image" element.
+    </code>
+
+    <br/>
+
+    <h4>Look'n'feel:</h4>
+
+    <div vn-image image="image"></div>
+</div>
+
+<hr>
+
+<div class="row marketing">
+    <h4 class="text-muted">Link</h4>
+    <h4>Usage:</h4>
+    <code>
+        Add "vn-link" attribute to "div" element or "vn-link" element.
+    </code>
+
+    <br/>
+
+    <h4>Look'n'feel:</h4>
+
+    <vn-link link="link"/>
+</div>
 
 <div class="footer">
     <p><span class="glyphicon glyphicon-heart"></span> from the Yeoman and Volusion teams</p>

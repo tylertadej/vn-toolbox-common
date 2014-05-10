@@ -1,12 +1,22 @@
-'use strict';
+/*global angular */
 
-angular.module('vnToolboxCommonApp')
-  .directive('vnLink', function () {
-    return {
-      template: '<div></div>',
-      restrict: 'E',
-      link: function postLink(scope, element, attrs) {
-        element.text('this is the vnLink directive');
-      }
-    };
-  });
+angular.module('toolboxCommon')
+    .directive('vnLink',
+        ['$translate', '$translatePartialLoader',
+            function ($translate, $translatePartialLoader) {
+                'use strict';
+
+                return {
+                    templateUrl: 'views/widgets/link.html',
+                    restrict   : 'EA',
+                    replace    : true,
+                    scope      : {
+                        currMode : '@currMode',
+                        link     : '='
+                    },
+                    link       : function postLink() {
+                        $translatePartialLoader.addPart('vn-image');
+                        $translate.refresh();
+                    }
+                };
+            }]);
