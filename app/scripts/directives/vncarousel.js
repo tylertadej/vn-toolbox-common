@@ -1,6 +1,6 @@
 /*global angular */
 
-angular.module('toolboxCommon')
+angular.module('Volusion.toolboxCommon')
     .directive('vnCarousel',
         ['$translate', '$translatePartialLoader',
             function ($translate, $translatePartialLoader) {
@@ -21,7 +21,6 @@ angular.module('toolboxCommon')
                 };
             }])
     .run(['$templateCache', function ($templateCache) {
-
         'use strict';
 
         $templateCache.put(

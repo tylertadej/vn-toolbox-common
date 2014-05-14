@@ -5,7 +5,7 @@ describe('Directive: vnCarousel', function () {
     'use strict';
 
     // load the directive's module
-    beforeEach(module('toolboxCommon'));
+    beforeEach(module('Volusion.toolboxCommon'));
 
     var element,
         scope;

@@ -20,6 +20,9 @@ module.exports = function (grunt) {
 
     // Define the configuration for all the tasks
     grunt.initConfig({
+
+        pkg: grunt.file.readJSON('package.json'),
+
         // Project settings
         yeoman       : {
             // configurable paths
@@ -415,10 +418,17 @@ module.exports = function (grunt) {
         // },
 
         concat: {
+            options: {
+                stripBanners: {
+                    block : true,
+                    line  : false
+                },
+                banner: '\n/*! <%= pkg.name %> - ver.<%= pkg.version %> (<%= grunt.template.today("yyyy-mm-dd") %>) */\n\n'
+            },
             dist: {
                 files: [
-                    {src: ['<%= yeoman.app %>/scripts/{,*/}*.js', '!<%= yeoman.app %>/scripts/*.js', '!<%= yeoman.app %>/scripts/{,*/}main.js'], dest: '<%= yeoman.dist %>/scripts/vn-toolbox-common.js'},
-                    {src: ['.tmp/styles/{,*/}*.css', '!.tmp/styles/{,*/}main.css'], dest: '<%= yeoman.dist %>/styles/vn-toolbox-common-styles.css'}
+                    {src: ['<%= yeoman.app %>/scripts/{,*/}*.js', '!<%= yeoman.app %>/scripts/*.js', '!<%= yeoman.app %>/scripts/{,*/}main.js'], dest: '<%= yeoman.dist %>/scripts/<%= pkg.name %>.js'},
+                    {src: ['.tmp/styles/{,*/}*.css', '!.tmp/styles/{,*/}main.css'], dest: '<%= yeoman.dist %>/styles/<%= pkg.name %>-styles.css'}
                 ]
             }
         },

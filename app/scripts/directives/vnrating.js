@@ -1,6 +1,6 @@
 /*global angular */
 
-angular.module('toolboxCommon')
+angular.module('Volusion.toolboxCommon')
     .directive('vnRating',
         ['$translate', '$translatePartialLoader',
             function ($translate, $translatePartialLoader) {
