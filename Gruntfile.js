@@ -1,4 +1,3 @@
-
 /*global module, require */
 
 // Generated on 2014-05-07 using generator-angular 0.8.0
@@ -117,7 +116,7 @@ module.exports = function (grunt) {
         },
 
         // Empties folders to start fresh
-        clean : {
+        clean        : {
             dist  : {
                 files: [
                     {
@@ -125,13 +124,23 @@ module.exports = function (grunt) {
                         src: [
                             '.tmp',
                             '<%= yeoman.dist %>/*',
-                            '!<%= yeoman.dist %>/.git*'
+                            '!<%= yeoman.dist %>/.git*',
+                            'coverage/*'
                         ]
                     }
                 ]
             },
-            server: '.tmp',
-            coverage: 'coverage/*'
+            server: {
+                files: [
+                    {
+                        dot: true,
+                        src: [
+                            '.tmp',
+                            'coverage/*'
+                        ]
+                    }
+                ]
+            }
         },
 
         // Add vendor prefixed styles
@@ -178,16 +187,17 @@ module.exports = function (grunt) {
                 httpFontsPath          : '/styles/fonts',
                 relativeAssets         : false,
                 assetCacheBuster       : false,
-                raw                    : 'Sass::Script::Number.precision = 10\n'
+                raw                    : 'Sass::Script::Number.precision = 10\n',
+                outputStyle            : 'compact'
             },
             dist   : {
                 options: {
-                    generatedImagesDir: '<%= yeoman.dist %>/images/generated'
+                    generatedImagesDir: '<%= yeoman.dist %>/images/generated',
+                    environment: 'production'
                 }
             },
             server : {
                 options: {
-                    debugInfo: true
                 }
             }
         },
@@ -216,8 +226,10 @@ module.exports = function (grunt) {
                 flow: {
                     html: {
                         steps: {
-                            js : ['concat', 'uglifyjs'],
-                            css: ['cssmin']
+                            //js : ['concat', 'uglifyjs'],
+                            //js : ['concat'],
+                            //css: ['cssmin']
+                            //css: ['concat']
                         },
                         post : {}
                     }
@@ -319,10 +331,11 @@ module.exports = function (grunt) {
                         cwd   : '<%= yeoman.app %>',
                         dest  : '<%= yeoman.dist %>',
                         src   : [
-                            '*.{ico,png,txt}',
-                            '.htaccess',
-                            '*.html',
-                            'views/{,*/}*.html',
+                            '!*.{ico,png,txt}',
+                            '!.htaccess',
+                            '!*.html',
+                            'i18n/*',
+                            'views/widgets/*.html',
                             'images/{,*/}*.{webp}',
                             'fonts/*'
                         ]
@@ -358,13 +371,13 @@ module.exports = function (grunt) {
             ]
         },
 
-        coverage : {
+        coverage: {
             options: {
                 thresholds: {
-                    'statements': 10,
-                    'branches'  : 10,
-                    'lines'     : 10,
-                    'functions' : 10
+                    'statements': 0,
+                    'branches'  : 0,
+                    'lines'     : 0,
+                    'functions' : 0
                 },
                 dir       : ''
             }
@@ -383,21 +396,35 @@ module.exports = function (grunt) {
         //     }
         //   }
         // },
-        // uglify: {
-        //   dist: {
-        //     files: {
-        //       '<%= yeoman.dist %>/scripts/scripts.js': [
-        //         '<%= yeoman.dist %>/scripts/scripts.js'
-        //       ]
-        //     }
-        //   }
-        // },
+//        uglify: {
+//            options: {
+//                mangle  : true,
+//                compress: true,
+//                wrap    : true
+//            },
+//            dist   : {
+//                files: {
+//                    '<%= yeoman.dist %>/scripts/scripts.js': [
+//                        '<%= yeoman.dist %>/scripts/scripts.js'
+//                    ]
+//                }
+//            }
+//        },
         // concat: {
         //   dist: {}
         // },
 
+        concat: {
+            dist: {
+                files: [
+                    {src: ['<%= yeoman.app %>/scripts/{,*/}*.js', '!<%= yeoman.app %>/scripts/*.js', '!<%= yeoman.app %>/scripts/{,*/}main.js'], dest: '<%= yeoman.dist %>/scripts/vn-toolbox-common.js'},
+                    {src: ['.tmp/styles/{,*/}*.css', '!.tmp/styles/{,*/}main.css'], dest: '<%= yeoman.dist %>/styles/vn-toolbox-common-styles.css'}
+                ]
+            }
+        },
+
         // Test settings
-        karma     : {
+        karma : {
             unit: {
                 configFile: 'karma.conf.js',
                 singleRun : true
@@ -414,7 +441,7 @@ module.exports = function (grunt) {
             'clean:server',
             'bowerInstall',
             'concurrent:server',
-            'autoprefixer',
+            //'autoprefixer',
             'connect:livereload',
             'watch'
         ]);
@@ -426,10 +453,9 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('test', [
-        'clean:coverage',
         'clean:server',
         'concurrent:test',
-        'autoprefixer',
+        //'autoprefixer',
         'connect:test',
         'karma',
         'coverage'
@@ -438,18 +464,18 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'clean:dist',
         'bowerInstall',
-        'useminPrepare',
+        //'useminPrepare',
         'concurrent:dist',
-        'autoprefixer',
+        //'autoprefixer',
         'concat',
-        'ngmin',
+        //'ngmin',
         'copy:dist',
-        'cdnify',
-        'cssmin',
-        'uglify',
-        'rev',
-        'usemin',
-        'htmlmin'
+        //'cdnify',
+        'cssmin'//,
+        //'uglify'//,
+        //'rev',
+        //'usemin'//,
+        //'htmlmin'
     ]);
 
     grunt.registerTask('default', [

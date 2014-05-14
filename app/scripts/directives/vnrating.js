@@ -7,7 +7,7 @@ angular.module('toolboxCommon')
                 'use strict';
 
                 return {
-                    templateUrl: 'views/widgets/rating.html',
+                    templateUrl: 'template/rating.html',
                     restrict   : 'EA',
                     replace    : true,
                     scope      : {
@@ -45,4 +45,23 @@ angular.module('toolboxCommon')
                         };
                     }
                 };
-            }]);
+            }])
+    .run(['$templateCache', function ($templateCache) {
+
+        'use strict';
+
+        $templateCache.put(
+            'template/rating.html',
+            '<div>' +
+                '<div class="vn-rating">' +
+                    '<!-- not happy with this but it seems better than angular-ui carousel' +
+                        'http://blog.revolunet.com/angular-carousel/ -->' +
+                    '<p translate>VN-RATING-TITLE</p>' +
+                    '<ul class="rating">' +
+                        '<li ng-repeat="star in stars" class="tick" ng-class="star" ng-click="toggle($index)">' +
+                        '</li>' +
+                    '</ul>' +
+                '</div>' +
+            '</div>'
+        );
+    }]);

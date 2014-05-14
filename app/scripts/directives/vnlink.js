@@ -7,7 +7,7 @@ angular.module('toolboxCommon')
                 'use strict';
 
                 return {
-                    templateUrl: 'views/widgets/link.html',
+                    templateUrl: 'template/link.html',
                     restrict   : 'EA',
                     replace    : true,
                     scope      : {
@@ -19,4 +19,17 @@ angular.module('toolboxCommon')
                         $translate.refresh();
                     }
                 };
-            }]);
+            }])
+    .run(['$templateCache', function ($templateCache) {
+
+        'use strict';
+
+        $templateCache.put(
+            'template/link.html',
+            '<div>' +
+                '<div class="vn-link">' +
+                    '<a href="{{ link.href }}" target="{{ link.target }}">{{ link.text }}</a>' +
+                '</div>' +
+            '</div>'
+        );
+    }]);

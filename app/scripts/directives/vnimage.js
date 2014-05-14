@@ -7,7 +7,7 @@ angular.module('toolboxCommon')
                 'use strict';
 
                 return {
-                    templateUrl: 'views/widgets/image.html',
+                    templateUrl: 'template/image.html',
                     restrict   : 'EA',
                     replace    : true,
                     scope      : {
@@ -19,4 +19,18 @@ angular.module('toolboxCommon')
                         $translate.refresh();
                     }
                 };
-            }]);
+            }])
+    .run(['$templateCache', function ($templateCache) {
+
+        'use strict';
+
+        $templateCache.put(
+            'template/image.html',
+            '<div>' +
+                '<div class="vn-image">' +
+                    '<p translate>VN-IMAGE-TITLE</p>' +
+                    '<img src="{{ image.src }}" alt="{{ image.alt }}" />' +
+                '</div>' +
+            '</div>'
+        );
+    }]);

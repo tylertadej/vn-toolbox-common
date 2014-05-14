@@ -1,14 +1,13 @@
 /*global angular */
 
-angular
-    .module('toolboxCommon', [
-        'ngCookies',
-        'ngResource',
-        'ngSanitize',
-        'ngRoute',
-        'pascalprecht.translate',
-        'angular-carousel'
-    ])
+angular.module('toolboxCommon', [
+//    'ngCookies',
+//    'ngResource',
+//    'ngSanitize',
+    'ngRoute',
+    'pascalprecht.translate',
+    'angular-carousel'
+])
     .config(
         ['$routeProvider', '$locationProvider', '$translateProvider', '$translatePartialLoaderProvider',
             function ($routeProvider, $locationProvider, $translateProvider, $translatePartialLoaderProvider) {

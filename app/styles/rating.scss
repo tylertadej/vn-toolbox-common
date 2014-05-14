@@ -1,19 +1,18 @@
+/* RATING */
+/****************************************************************************/
 .tick {
     &:before {
         content : '\2605'
     }
 }
-
 .rating{
     color: #a9a9a9;
     margin: 0;
     padding: 0;
 }
-
 ul.rating {
     display: inline-block;
 }
-
 .rating li {
     list-style-type: none;
     display: inline-block;
@@ -22,7 +21,7 @@ ul.rating {
     font-weight: bold;
     cursor: pointer;
 }
-
 .rating .filled {
     color: #21568b;
 }
+/****************************************************************************/
