@@ -1,7 +1,7 @@
 {
     "name"           : "vn-toolbox-common",
     "version"        : "0.0.2",
-    "main"           : ["./dist/vn-toolbox-common.js"],
+    "main"           : ["dist/scripts/vn-toolbox-common.js"],
     "description"    : "Volusion's common widgets toolbox",
     "keywords"       : [
         "Volusion",
