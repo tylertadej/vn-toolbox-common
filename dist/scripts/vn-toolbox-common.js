@@ -1,8 +1,18 @@
 
 /*! vn-toolbox-common - ver.0.0.2 (2014-05-15) */
 
+angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'angular-carousel'])
+    .config(
+        ['$translateProvider',
+            function ($translateProvider) {
 
-angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'angular-carousel']);
+                'use strict';
+
+                $translateProvider.useLoader('$translatePartialLoader', {
+                    urlTemplate: '/i18n/{part}/{lang}.json'
+                });
+            }]
+    );
 
 angular.module('Volusion.toolboxCommon')
     .directive('vnCarousel',
@@ -33,7 +43,7 @@ angular.module('Volusion.toolboxCommon')
                 '<div class="vn-carousel">' +
                     '<!-- not happy with this but it seems better than angular-ui carousel' +
                     'http://blog.revolunet.com/angular-carousel/ -->' +
-                    '<p translate>VN-CAROUSEL-TITLE</p>' +
+                    '<p translate="VN-CAROUSEL-TITLE">Images:</p>' +
 
                     '<ul rn-carousel rn-carousel-buffered rn-carousel-indicator rn-carousel-control  class="-carousel ng-cloak">' +
                         '<li ng-repeat="image in imageList" ng-style="{\'background-image\': \'url(\' + image.src + \')\'}"></li>' +

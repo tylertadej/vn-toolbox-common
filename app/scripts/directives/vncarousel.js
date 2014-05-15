@@ -29,7 +29,7 @@ angular.module('Volusion.toolboxCommon')
                 '<div class="vn-carousel">' +
                     '<!-- not happy with this but it seems better than angular-ui carousel' +
                     'http://blog.revolunet.com/angular-carousel/ -->' +
-                    '<p translate>VN-CAROUSEL-TITLE</p>' +
+                    '<p translate="VN-CAROUSEL-TITLE">Images:</p>' +
 
                     '<ul rn-carousel rn-carousel-buffered rn-carousel-indicator rn-carousel-control  class="-carousel ng-cloak">' +
                         '<li ng-repeat="image in imageList" ng-style="{\'background-image\': \'url(\' + image.src + \')\'}"></li>' +
