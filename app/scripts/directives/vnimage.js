@@ -2,24 +2,19 @@
 
 angular.module('Volusion.toolboxCommon')
     .directive('vnImage',
-        ['$translate', '$translatePartialLoader',
-            function ($translate, $translatePartialLoader) {
-                'use strict';
+        function () {
+            'use strict';
 
-                return {
-                    templateUrl: 'template/image.html',
-                    restrict   : 'EA',
-                    replace    : true,
-                    scope      : {
-                        currMode : '@currMode',
-                        image    : '='
-                    },
-                    link       : function postLink() {
-                        $translatePartialLoader.addPart('vn-image');
-                        $translate.refresh();
-                    }
-                };
-            }])
+            return {
+                templateUrl: 'template/image.html',
+                restrict   : 'EA',
+                replace    : true,
+                scope      : {
+                    currMode : '@currMode',
+                    image    : '='
+                }
+            };
+        })
     .run(['$templateCache', function ($templateCache) {
 
         'use strict';

@@ -2,24 +2,19 @@
 
 angular.module('Volusion.toolboxCommon')
     .directive('vnCarousel',
-        ['$translate', '$translatePartialLoader',
-            function ($translate, $translatePartialLoader) {
-                'use strict';
+        function () {
+            'use strict';
 
-                return {
-                    templateUrl: 'template/carousel.html',
-                    restrict   : 'EA',
-                    replace    : true,
-                    scope: {
-                        currMode: '@currMode',
-                        imageList: '='
-                    },
-                    link    : function postLink() {
-                        $translatePartialLoader.addPart('vn-carousel');
-                        $translate.refresh();
-                    }
-                };
-            }])
+            return {
+                templateUrl: 'template/carousel.html',
+                restrict   : 'EA',
+                replace    : true,
+                scope: {
+                    currMode: '@currMode',
+                    imageList: '='
+                }
+            };
+        })
     .run(['$templateCache', function ($templateCache) {
         'use strict';
 
