@@ -3,7 +3,7 @@
     "version"        : "0.0.2",
     "main"           : [
         "dist/vn-toolbox-common.js",
-        "dist/vn-toolbox-common-style.css"
+        "dist/vn-toolbox-common-styles.css"
     ],
     "description"    : "Volusion's common widgets toolbox",
     "keywords"       : [
