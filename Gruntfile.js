@@ -24,22 +24,22 @@ module.exports = function (grunt) {
     // Define the configuration for all the tasks
     grunt.initConfig({
 
-        pkg: grunt.file.readJSON('package.json'),
+        pkg   : grunt.file.readJSON('package.json'),
 
         // Project settings
-        yeoman       : {
+        yeoman: {
             // configurable paths
             app : require('./bower.json').appPath || 'app',
             dist: 'dist'
         },
 
-        ngdocs: {
+        ngdocs       : {
             options: {
-                dest: 'docs',
+                dest     : 'docs',
 //                scripts: ['../app.min.js'],
                 html5Mode: true,
                 startPage: '/api',
-                title: 'Volusion Toolbox Common Reference',
+                title    : 'Volusion Toolbox Common Reference',
 //                image: "path/to/my/image.png",
 //                imageLink: "http://my-domain.com",
                 titleLink: '/api',
@@ -58,8 +58,8 @@ module.exports = function (grunt) {
 //                src: ['content/tutorial/*.ngdoc'],
 //                title: 'Tutorial'
 //            },
-            api: {
-                src: ['app/scripts/**/*.js'],
+            api    : {
+                src  : ['app/scripts/**/*.js'],
                 title: 'Volusion Toolbox Common Reference'
             }
         },
@@ -230,7 +230,7 @@ module.exports = function (grunt) {
             dist   : {
                 options: {
                     generatedImagesDir: '<%= yeoman.dist %>/images/generated',
-                    environment: 'production'
+                    environment       : 'production'
                 }
             },
             server : {
@@ -413,9 +413,9 @@ module.exports = function (grunt) {
                     'statements': 0,
                     'branches'  : 0,
                     'lines'     : 0,
-                    'functions' : 0
+                    'functions' : 100
                 },
-                dir       : ''
+                dir       : 'coverage'
             }
         },
 
@@ -453,19 +453,19 @@ module.exports = function (grunt) {
         concat: {
             options: {
                 stripBanners: {
-                    block : true,
-                    line  : false
+                    block: true,
+                    line : false
                 },
-                banner: '\n/*! <%= pkg.name %> - ver.<%= pkg.version %> (<%= grunt.template.today("yyyy-mm-dd") %>) */\n\n'
+                banner      : '\n/*! <%= pkg.name %> - ver.<%= pkg.version %> (<%= grunt.template.today("yyyy-mm-dd") %>) */\n\n'
             },
-            dist: {
+            dist   : {
                 files: [
-                    {src: [
+                    {src   : [
                         '<%= yeoman.app %>/scripts/{,*/}*.js',
                         '!<%= yeoman.app %>/scripts/app.js',
                         '!<%= yeoman.app %>/scripts/{,*/}main.js'
                     ], dest: '<%= yeoman.dist %>/<%= pkg.name %>.js' },
-                    {src: [
+                    {src   : [
                         '.tmp/styles/{,*/}*.css',
                         '!.tmp/styles/{,*/}main.css'
                     ], dest: '<%= yeoman.dist %>/<%= pkg.name %>-styles.css' }
