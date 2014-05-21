@@ -5,11 +5,12 @@
         "dist/vn-toolbox-common.js",
         "dist/vn-toolbox-common-styles.css"
     ],
-    "description"    : "Volusion's common widgets toolbox",
+    "description"    : "Volusion's common toolbox for building themes.",
     "keywords"       : [
         "Volusion",
         "toolbox",
-        "common widgets"
+        "common widgets",
+        "Data Services"
     ],
     "ignore"         : [
         "**/.*",

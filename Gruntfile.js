@@ -18,6 +18,9 @@ module.exports = function (grunt) {
     // Time how long tasks take. Can help when optimizing build times
     require('time-grunt')(grunt);
 
+    // Build a documentation site
+//    require('grunt-ngdoc');
+
     // Define the configuration for all the tasks
     grunt.initConfig({
 
@@ -30,6 +33,37 @@ module.exports = function (grunt) {
             dist: 'dist'
         },
 
+        ngdocs: {
+            options: {
+                dest: 'docs',
+//                scripts: ['../app.min.js'],
+                html5Mode: true,
+                startPage: '/api',
+                title: 'Volusion Toolbox Common Reference',
+//                image: "path/to/my/image.png",
+//                imageLink: "http://my-domain.com",
+                titleLink: '/api',
+                bestMatch: true
+//                analytics: {
+//                    account: 'UA-08150815-0',
+//                    domainName: 'my-domain.com'
+//                },
+//                discussions: {
+//                    shortName: 'my',
+//                    url: 'http://my-domain.com',
+//                    dev: false
+//                }
+            },
+//            tutorial: {
+//                src: ['content/tutorial/*.ngdoc'],
+//                title: 'Tutorial'
+//            },
+            api: {
+                src: ['app/scripts/**/*.js'],
+                title: 'Volusion Toolbox Common Reference'
+            }
+        },
+
         // Watches files for changes and runs tasks based on the changed files
         watch        : {
             bower     : {
@@ -37,15 +71,15 @@ module.exports = function (grunt) {
                 tasks: ['bowerInstall']
             },
             js        : {
-                files  : ['<%= yeoman.app %>/scripts/{,*/}*.js'],
-                tasks  : ['newer:jshint:all'],
+                files  : ['<%= yeoman.app %>/scripts/{,*/}*.js', 'test/spec/{,*/}*.js'],
+                tasks  : ['newer:jshint:all', 'test'],
                 options: {
                     livereload: true
                 }
             },
             jsTest    : {
                 files: ['test/spec/{,*/}*.js'],
-                tasks: ['newer:jshint:test', 'karma']
+                tasks: ['newer:jshint:test']
             },
             compass   : {
                 files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
@@ -498,5 +532,9 @@ module.exports = function (grunt) {
         'newer:jshint',
         'test',
         'build'
+    ]);
+
+    grunt.registerTask('docs', [
+        'ngdocs'
     ]);
 };

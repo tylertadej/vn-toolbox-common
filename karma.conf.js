@@ -34,6 +34,8 @@ module.exports = function (config) {
             'app/bower_components/angular-touch/angular-touch.js',
             'app/bower_components/angular-carousel/dist/angular-carousel.js',
 
+
+
             'app/scripts/*.js',
             'app/scripts/**/*.js',
             //'test/mock/**/*.js',

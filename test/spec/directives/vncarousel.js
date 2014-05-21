@@ -14,9 +14,9 @@ describe('Directive: vnCarousel', function () {
         scope = $rootScope.$new();
     }));
 
-//    it('should make hidden element visible', inject(function ($compile) {
-//        element = angular.element('<vn-carousel></vn-carousel>');
-//        element = $compile(element)(scope);
-//        expect(element.text()).toBe('');
-//    }));
+    it('should make hidden element visible', inject(function ($compile) {
+        element = angular.element('<vn-carousel></vn-carousel>');
+        element = $compile(element)(scope);
+        expect(element.text()).toBe('');
+    }));
 });
