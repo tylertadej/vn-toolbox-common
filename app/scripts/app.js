@@ -2,7 +2,7 @@
 
 angular.module('Volusion.toolboxCommon', [
 //    'ngCookies',
-//    'ngResource',
+    'ngResource',
 //    'ngSanitize',
     'ngRoute',
     'pascalprecht.translate',
