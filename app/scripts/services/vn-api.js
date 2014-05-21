@@ -1,5 +1,5 @@
 /**
- * @ngdoc factory
+ * @ngdoc service
  * @name Volusion.toolboxCommon.factory:vnApi
  * @module Volusion.toolboxCommon
  * @description
