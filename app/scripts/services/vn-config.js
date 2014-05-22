@@ -11,27 +11,6 @@
  * urls and perhaps all of the app state itself should live in a currentAppState value service.
  * Hmmm. That's an interesting thought.
  *
- *
- * ### vnApi exposes the following API
- *
- * - getAccount
- * - getGlobalNavState
- * - setGlobalNavState
- * - getCurrentAction
- * - setCurrentAction
- * - getGlobalAttrBucketState
- * - setGlobalAttrBucketState
- * - getIframePathBase
- * - initConfig
- * - getFirebaseUrl
- * - getScreenMode
- * - setScreenMode
- * - getPreviewMode
- * - setPreviewMode
- * - getWorkspaceDimensions
- * - setWorkspaceDimensions
- *
- *
  */
 
 angular.module('Volusion.toolboxCommon')
@@ -80,8 +59,8 @@ angular.module('Volusion.toolboxCommon')
          * @description
          *
          * #initConfig
-         * Has been used in development as a mocking method to bootstrap with assumptions.
-         * It sets up the dynamic configuarion attributes for the app that prolly return from
+         * Used in development as a mocking method to bootstrap with assumptions.
+         * It sets up the dynamic configuration attributes for the app that prolly return from
          * and unknown api call at this point so we can use these properties: iframe url base,
          * firebase url, etc ...
          */
@@ -117,17 +96,36 @@ angular.module('Volusion.toolboxCommon')
             }
         }
 
+        /**
+         * @ngdoc method
+         * @name getAccount
+         * @methodOf Volusion.toolboxCommon.vnConfig
+         * @return {String} account is the string representing the configured account.
+         *
+         * @description
+         *
+         * # getAccount
+         * Gets the account configured. Initial use was in generating Firebase urls.
+         */
         function getAccount() {
-            /**
-             @function
-             @name getAccount
-             @description Return the account string for this account name
-             @param {}
-             @return String
-             */
+
             return account;
         }
 
+        /**
+         * @ngdoc method
+         * @name getIframePathBase
+         * @methodOf Volusion.toolboxCommon.vnConfig
+         * @return {String} the string pointing to the Volusion base Volusion API.
+         *
+         * @description
+         *
+         * # getIframePathBase
+         * Gets the account configured. Initial use was in generating the API urls.
+         *
+         * - This is a bullet
+         * - This is a bullet Too
+         */
         function getIframePathBase() {
             if ('' === iFramePathBase) {
                 initConfig();
