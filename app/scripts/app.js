@@ -2,18 +2,20 @@
 
 /**
  * @ngdoc overview
- * @name Volusion.toolboxCommon
  * @module Volusion.toolboxCommon
+ * @name Volusion.toolboxCommon
  * @description
  *
  * # Volusion.toolboxCommon
+ *
+ * ## Directives
  * The Volusion.toolboxCommon module is a set of directives to be used as
  * reusable components when building a Volusion theme. The directives are
  * designed to be used 'out-of-the-box' and coupled with the data service
  * a theme can be quickly build with real api data as well as maintain
  * compatability with Firebase.
  *
- * # It also has data services:
+ * ## Data
  * Data Servivces should be used to retrieve, create, update and delete site
  * data. The data service is also context aware of it's environment and can
  * be configured for elevated permissions with proper authentication.

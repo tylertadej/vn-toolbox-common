@@ -104,7 +104,6 @@ angular.module('Volusion.toolboxCommon')
          *
          * @description
          *
-         * # getAccount
          * Gets the account configured. Initial use was in generating Firebase urls.
          */
         function getAccount() {
@@ -123,8 +122,6 @@ angular.module('Volusion.toolboxCommon')
          * # getIframePathBase
          * Gets the account configured. Initial use was in generating the API urls.
          *
-         * - This is a bullet
-         * - This is a bullet Too
          */
         function getIframePathBase() {
             if ('' === iFramePathBase) {
@@ -133,6 +130,18 @@ angular.module('Volusion.toolboxCommon')
             return iFramePathBase;
         }
 
+        /**
+         * @ngdoc method
+         * @name getGlobalNavState
+         * @methodOf Volusion.toolboxCommon.vnConfig
+         * @return {Boolean} globalNavState = true: show the nav bar on left side of SiteBuilder
+         *
+         * @description
+         *
+         * # getGlobalNavState
+         * Return the current state of the SiteBuilder app navigation directive.
+         *
+         */
         function getGlobalNavState() {
             return globalNavState;
         }

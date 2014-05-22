@@ -59,8 +59,8 @@ Generate Docs with
 
 * $ grunt docs.
 
-See the vnConfig factory as an example. It was the first one Implemented.
-You can serve the docs locally of you so choose. I use nginx, here is my server config:
+See the vnConfig factory as an example. It was the first one implemented.
+You can serve the docs locally if you so choose. I use nginx, here is my server config:
 
     server {
         listen 2929;
