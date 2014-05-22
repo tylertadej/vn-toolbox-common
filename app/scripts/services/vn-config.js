@@ -1,10 +1,10 @@
 /**
  * @ngdoc service
- * @name vnApi
+ * @name Volusion.toolboxCommon.vnConfig
  * @requires $q, $rootScope
  * @description
  *
- * vConfig
+ * # vnConfig
  * The vnConfig factory is used to manage user, account and app configuration that is more
  * dynamic than can be easily accomplished with constnats or values. Well perhaps not values,
  * Some of this should be depricated and moved into it's own value: currentAction, the tokens
@@ -37,14 +37,6 @@
 angular.module('Volusion.toolboxCommon')
     .factory('vnConfig', ['$q', '$rootScope', function ($q, $rootScope) {
 
-        /**
-         * @function
-         * @name vnConfig
-         * @param $rootScope, $http
-         * @return an object with public api contract to get/set dynamic app configuation states.
-         */
-
-
         'use strict';
 
         var account,
@@ -64,7 +56,13 @@ angular.module('Volusion.toolboxCommon')
                 height: 0
             };
 
-        function getFirebaseUrlFn() {
+        /**
+         * @ngdoc method
+         * @name getFirebaseUrl
+         * @methodOf Volusion.toolboxCommon.vnConfig
+         * @returns {String} The string representing a Firebase resource
+         */
+        function getFirebaseUrl() {
 
             /**
              @Input: null
@@ -74,12 +72,25 @@ angular.module('Volusion.toolboxCommon')
             return firebaseUrl;
         }
 
-        function initConfigFn() {
+
+        /**
+         * @ngdoc method
+         * @name initConfig
+         * @methodOf Volusion.toolboxCommon.vnConfig
+         * @description
+         *
+         * #initConfig
+         * Has been used in development as a mocking method to bootstrap with assumptions.
+         * It sets up the dynamic configuarion attributes for the app that prolly return from
+         * and unknown api call at this point so we can use these properties: iframe url base,
+         * firebase url, etc ...
+         */
+        function initConfig() {
             /*
-             @function initConfigFn
+             @function initConfig
              @param - none
              @return - none
-             @description - sets up the dynamic configuarion attributes for the app (iframe url base, firebase url, etc)
+             @description -
              */
 
             var mockResponse = {
@@ -106,7 +117,7 @@ angular.module('Volusion.toolboxCommon')
             }
         }
 
-        function getAccountFn() {
+        function getAccount() {
             /**
              @function
              @name getAccount
@@ -117,23 +128,23 @@ angular.module('Volusion.toolboxCommon')
             return account;
         }
 
-        function getIframePathBaseFn() {
+        function getIframePathBase() {
             if ('' === iFramePathBase) {
-                initConfigFn();
+                initConfig();
             }
             return iFramePathBase;
         }
 
-        function getGlobalNavStateFn() {
+        function getGlobalNavState() {
             return globalNavState;
         }
 
-        function setGlobalNavStateFn(state) {
+        function setGlobalNavState(state) {
             globalNavState = state;
             $rootScope.$broadcast('vlnGlobalNavState.change', { state: state });
         }
 
-        function setCurrentActionFn(action) {
+        function setCurrentAction(action) {
             /*
              @Input a string
              @Output broadcast a message (nothing returned)
@@ -144,7 +155,7 @@ angular.module('Volusion.toolboxCommon')
             $rootScope.$broadcast('vlnCurrentAction.change', {action: action });
         }
 
-        function getCurrentActionFn() {
+        function getCurrentAction() {
             /*
              @Input - none
              @Output - string value of currentAction
@@ -153,36 +164,36 @@ angular.module('Volusion.toolboxCommon')
             return currentAction;
         }
 
-        function getGlobalAttrBucketStateFn() {
+        function getGlobalAttrBucketState() {
             return globalAttrBucketState;
         }
 
-        function setGlobalAttrBucketStateFn(state) {
+        function setGlobalAttrBucketState(state) {
             globalAttrBucketState = state;
             $rootScope.$broadcast('vlnGlobalAttrBucketState.change', { state: state });
         }
 
-        function getScreenModeFn() {
+        function getScreenMode() {
             return screenMode;
         }
 
-        function setScreenModeFn(mode) {
+        function setScreenMode(mode) {
             screenMode = mode;
         }
 
-        function getPreviewModeFn() {
+        function getPreviewMode() {
             return previewMode ? 'on' : 'off';
         }
 
-        function setPreviewModeFn(mode) {
+        function setPreviewMode(mode) {
             previewMode = mode;
         }
 
-        function getWorkspaceDimensionsFn() {
+        function getWorkspaceDimensions() {
             return workspaceDimensions;
         }
 
-        function setWorkspaceDimensionsFn(d) {
+        function setWorkspaceDimensions(d) {
 
             if(d && d.width && d.height) {
                 workspaceDimensions.height = d.height;
@@ -196,21 +207,21 @@ angular.module('Volusion.toolboxCommon')
 
         // Public API here
         return {
-            getAccount              : getAccountFn,
-            getGlobalNavState       : getGlobalNavStateFn,
-            setGlobalNavState       : setGlobalNavStateFn,
-            getCurrentAction        : getCurrentActionFn,
-            setCurrentAction        : setCurrentActionFn,
-            getGlobalAttrBucketState: getGlobalAttrBucketStateFn,
-            setGlobalAttrBucketState: setGlobalAttrBucketStateFn,
-            getIframePathBase       : getIframePathBaseFn,
-            initConfig              : initConfigFn,
-            getFirebaseUrl          : getFirebaseUrlFn,
-            getScreenMode           : getScreenModeFn,
-            setScreenMode           : setScreenModeFn,
-            getPreviewMode          : getPreviewModeFn,
-            setPreviewMode          : setPreviewModeFn,
-            getWorkspaceDimensions  : getWorkspaceDimensionsFn,
-            setWorkspaceDimensions  : setWorkspaceDimensionsFn
+            getAccount              : getAccount,
+            getGlobalNavState       : getGlobalNavState,
+            setGlobalNavState       : setGlobalNavState,
+            getCurrentAction        : getCurrentAction,
+            setCurrentAction        : setCurrentAction,
+            getGlobalAttrBucketState: getGlobalAttrBucketState,
+            setGlobalAttrBucketState: setGlobalAttrBucketState,
+            getIframePathBase       : getIframePathBase,
+            initConfig              : initConfig,
+            getFirebaseUrl          : getFirebaseUrl,
+            getScreenMode           : getScreenMode,
+            setScreenMode           : setScreenMode,
+            getPreviewMode          : getPreviewMode,
+            setPreviewMode          : setPreviewMode,
+            getWorkspaceDimensions  : getWorkspaceDimensions,
+            setWorkspaceDimensions  : setWorkspaceDimensions
         };
     }]);

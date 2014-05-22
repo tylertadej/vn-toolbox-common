@@ -36,7 +36,8 @@ angular.module('Volusion.toolboxCommon')
             };
 
             /**
-             * @ngdoc method
+             * @ngdoc function
+             * @kind function
              * @name vnFirebase.getFirebaseData
              * @module Volusion.toolboxCommon:vnFirebase
              * @function
