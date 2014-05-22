@@ -45,8 +45,7 @@ NG_DOCS={
       "shortName": "getFirebaseData",
       "type": "function",
       "moduleName": "Volusion.toolboxCommon",
-      "shortDescription": "The getFirebaseDataFn is exposed as a public api via getFirebaseData. Given",
-      "keywords": "account angular api appears appropriate configured correct correctly current depends endpoint exposed factory false firebase firebase- firebase-token-generator function generated getaccount getfirebasedata getfirebasedatafn note path public resource returns schema secure service string todo token token-generator toolboxcommon vnconfig volusion"
+      "keywords": "$firebase account angular api appears appropriate articles base called class configured correct correctly current currently depends description endpoint error exposed factory false fburl firebase firebase- firebase-token-generator function functionthat generated getaccount getfirebasedata getfirebasedatafn good identifies item note object path place public reference resource return returns schema secure service string throe todo token token-generator toolboxcommon url vnconfig vndataendpoint vndatasrc vnfirebase volusion volusion-toolboxcommon-factory-page volusion-toolboxcommon-factory-vnfirebase-getfirebasedata-page"
     }
   ],
   "apis": {

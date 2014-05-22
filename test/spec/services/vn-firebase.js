@@ -11,10 +11,6 @@ describe('Service: vnFirebase', function () {
         vnFirebase = _vnFirebase_;
     }));
 
-    it('should do something', function () {
-        expect(!!vnFirebase).toBe(true);
-    });
-
     it('should exist', function () {
         expect(!!vnFirebase).toBe(true);
         expect(typeof vnFirebase).toBe('object');

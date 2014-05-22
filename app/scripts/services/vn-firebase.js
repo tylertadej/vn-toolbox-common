@@ -36,7 +36,7 @@ angular.module('Volusion.toolboxCommon')
                  * @ngdoc function
                  * @name Volusion.toolboxCommon.factory:vnFirebase:getFirebaseData
                  * @module Volusion.toolboxCommon
-                 * @description
+                 * @summary
                  *
                  * # Description
                  * The getFirebaseDataFn is exposed as a public api via getFirebaseData. Given
@@ -50,8 +50,8 @@ angular.module('Volusion.toolboxCommon')
                  *
                  *
                  * @param {String} path a string that identifies the item in the Firebase schema
-                 * @property vnDataEndpoint.fbUrl is the Firebase url for the base path to the resource
-                 * @property vnConfig.getAccount is a functionthat returns the account currently configured
+                 * @property {Constant} vnDataEndpoint.fbUrl - is the Firebase url for the base path to the resource
+                 * @property {Factory} vnConfig.getAccount   - is a functionthat returns the account currently configured
                  * @returns {$firebase|Boolean} a new $firebase object for the generated Firebase reference
                  *                            Or, false but this might be a good place to throe a new Error
                  *
