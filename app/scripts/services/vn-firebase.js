@@ -38,6 +38,7 @@ angular.module('Volusion.toolboxCommon')
                  * @module Volusion.toolboxCommon
                  * @description
                  *
+                 * # Description
                  * The getFirebaseDataFn is exposed as a public api via getFirebaseData. Given
                  * a string as an endpoint it generated a path to the correct Firebase resource
                  * or it returns false. It depends on the vnConfig.getAccount() function to be
@@ -45,7 +46,16 @@ angular.module('Volusion.toolboxCommon')
                  * schema) and have an appropriate secure token generated with the
                  * firebase-token-generator service (not an angular service). NOTE: the firebase-
                  * token-generator is still TODO.
+                 * ### This service should only be called from the vnDataSrc service
                  *
+                 *
+                 * @param {String} path a string that identifies the item in the Firebase schema
+                 * @property vnDataEndpoint.fbUrl is the Firebase url for the base path to the resource
+                 * @property vnConfig.getAccount is a functionthat returns the account currently configured
+                 * @returns {$firebase|Boolean} a new $firebase object for the generated Firebase reference
+                 *                            Or, false but this might be a good place to throe a new Error
+                 *
+                 * @example = return vnFirebase.getFirebaseData('articles')
                  *
                  */
                 if (path && 'string' === typeof path) {
