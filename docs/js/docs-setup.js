@@ -10,7 +10,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "vnDataEndpoint",
       "shortDescription": "This is a constant with two base urls for generating firebase or api access.",
-      "keywords": "access api apiurl base constant fburl firebase firebaseio generating http https io samplestore service urls vndataendpoint"
+      "keywords": "access api apiurl base code constant fburl file firebase firebaseio generating http https io named note samplestore service urls vn-data-endpoints vndataendpoint"
     },
     {
       "section": "api",
@@ -28,7 +28,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "Volusion.toolboxCommon",
       "shortDescription": "vnApi (core data service module)",
-      "keywords": "$resources accessed api configured created crud data deleted determines endpoint factory handle module operations returns service specific toolboxcommon updated vnapi vndatasrc volusion"
+      "keywords": "$resources accessed api article cart category configuration configured country created crud data deleted determines endpoint exposes factory handle module nav operations product returns service specific toolboxcommon updated vnapi vndatasrc volusion"
     },
     {
       "section": "api",
@@ -37,14 +37,14 @@ NG_DOCS={
       "type": "service",
       "moduleName": "Volusion.toolboxCommon",
       "shortDescription": "vnFirebase (core data service module)",
-      "keywords": "$firebase access account api appropriate configured data determines factory firebase generated module references resources returns secure service stored token toolboxcommon vndatasrc vnfirebase volusion"
+      "keywords": "$firebase access account api appropriate configured data determines exposes factory firebase generated getfirebasedata module references resetdataforpath resetsitebuilder resources returns secure service stored token toolboxcommon vndatasrc vnfirebase volusion"
     },
     {
       "section": "api",
       "id": "Volusion.toolboxCommon.factory:vnFirebase:getFirebaseData",
       "shortName": "getFirebaseData",
-      "type": "function",
-      "moduleName": "Volusion.toolboxCommon",
+      "type": "service",
+      "moduleName": "Volusion.toolboxCommon:vnFirebase",
       "keywords": "$firebase account angular api appears appropriate articles base called class configured correct correctly current currently depends description endpoint error exposed factory false fburl firebase firebase- firebase-token-generator function functionthat generated getaccount getfirebasedata getfirebasedatafn good identifies item note object path place public reference resource return returns schema secure service string throe todo token token-generator toolboxcommon url vnconfig vndataendpoint vndatasrc vnfirebase volusion volusion-toolboxcommon-factory-page volusion-toolboxcommon-factory-vnfirebase-getfirebasedata-page"
     }
   ],

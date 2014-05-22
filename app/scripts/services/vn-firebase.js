@@ -2,7 +2,7 @@
 
 /**
  * @ngdoc service
- * @name Volusion.toolboxCommon.factory:vnFirebase
+ * @name vnFirebase
  * @module Volusion.toolboxCommon
  * @description
  *
@@ -10,6 +10,11 @@
  * The vnFirebase module is used by vnDataSrc when vnDataSrc determines that data
  * is stored in a Firebase. vnFirebase returns $firebase references for the configured
  * and uses the secure account token generated to access appropriate FIrebase resources.
+ *
+ * ### vnFirebase exposes the following API
+ * - getFirebaseData
+ * - resetSiteBuilder
+ * - resetDataForPath
  *
  *
  */
@@ -30,39 +35,42 @@ angular.module('Volusion.toolboxCommon')
                 sitebuilder: '/account_sitebuilder'
             };
 
-
+            /**
+             * @ngdoc method
+             * @name vnFirebase.getFirebaseData
+             * @module Volusion.toolboxCommon:vnFirebase
+             * @function
+             *
+             * @summary
+             *
+             * # Description
+             * The getFirebaseDataFn is exposed as a public api via getFirebaseData. Given
+             * a string as an endpoint it generated a path to the correct Firebase resource
+             * or it returns false. It depends on the vnConfig.getAccount() function to be
+             * correctly configured with the current account (as it appears in the Firebase
+             * schema) and have an appropriate secure token generated with the
+             * firebase-token-generator service (not an angular service). NOTE: the firebase-
+             * token-generator is still TODO.
+             * ### This service should only be called from the vnDataSrc service
+             *
+             *
+             * @param {String} path a string that identifies the item in the Firebase schema
+             * @property {Constant} vnDataEndpoint.fbUrl - is the Firebase url for the base path to the resource
+             * @property {Factory} vnConfig.getAccount   - is a functionthat returns the account currently configured
+             * @returns {$firebase|Boolean} a new $firebase object for the generated Firebase reference
+             *                            Or, false but this might be a good place to throe a new Error
+             *
+             * @example = return vnFirebase.getFirebaseData('articles')
+             *
+             */
             function getFirebaseDataFn(path) {
-                /**
-                 * @ngdoc function
-                 * @name Volusion.toolboxCommon.factory:vnFirebase:getFirebaseData
-                 * @module Volusion.toolboxCommon
-                 * @summary
-                 *
-                 * # Description
-                 * The getFirebaseDataFn is exposed as a public api via getFirebaseData. Given
-                 * a string as an endpoint it generated a path to the correct Firebase resource
-                 * or it returns false. It depends on the vnConfig.getAccount() function to be
-                 * correctly configured with the current account (as it appears in the Firebase
-                 * schema) and have an appropriate secure token generated with the
-                 * firebase-token-generator service (not an angular service). NOTE: the firebase-
-                 * token-generator is still TODO.
-                 * ### This service should only be called from the vnDataSrc service
-                 *
-                 *
-                 * @param {String} path a string that identifies the item in the Firebase schema
-                 * @property {Constant} vnDataEndpoint.fbUrl - is the Firebase url for the base path to the resource
-                 * @property {Factory} vnConfig.getAccount   - is a functionthat returns the account currently configured
-                 * @returns {$firebase|Boolean} a new $firebase object for the generated Firebase reference
-                 *                            Or, false but this might be a good place to throe a new Error
-                 *
-                 * @example = return vnFirebase.getFirebaseData('articles')
-                 *
-                 */
                 if (path && 'string' === typeof path) {
                     return $firebase(new Firebase(vnDataEndpoint.fbUrl + fbItems[path] + '/' + vnConfig.getAccount() + '/'));
                 }
                 return false;
             }
+
+
 
             function generatePathFn(path) {
                 /**

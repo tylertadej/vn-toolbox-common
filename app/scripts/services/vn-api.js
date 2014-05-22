@@ -10,6 +10,16 @@
  * configured to handle the crud operations specific to the endpoint being
  * accessed.
  *
+ * ### vnApi exposes the following API
+ *
+ * - Article
+ * - Category
+ * - Cart
+ * - Configuration
+ * - Country
+ * - Nav
+ * - Product
+ *
  *
  */
 
