@@ -22,8 +22,18 @@ Hmmm. That&#39;s an interesting thought.</p>
 </div><h5 id="methods_getaccount_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="getaccount-page"><p>account is the string representing the configured account.</p>
 </div></td></tr></table></div>
 </li>
+<li><h3 id="methods_getcurrentaction">getCurrentAction()</h3>
+<div class="getcurrentaction"><div class="getcurrentaction-page"><p>Returns the vnConfig property value for currentAction</p>
+</div><h5 id="methods_getcurrentaction_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="getcurrentaction-page"><p>currentAction</p>
+</div></td></tr></table></div>
+</li>
 <li><h3 id="methods_getfirebaseurl">getFirebaseUrl()</h3>
 <div class="getfirebaseurl"><h5 id="methods_getfirebaseurl_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="getfirebaseurl-page"><p>The string representing a Firebase resource</p>
+</div></td></tr></table></div>
+</li>
+<li><h3 id="methods_getglobalattrbucketstate">getGlobalAttrBucketState()</h3>
+<div class="getglobalattrbucketstate"><div class="getglobalattrbucketstate-page"><p>Returns the vnConfig property vlaue for globalAttrBucketState</p>
+</div><h5 id="methods_getglobalattrbucketstate_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td><td><div class="getglobalattrbucketstate-page"><p>globalAttrBucketState</p>
 </div></td></tr></table></div>
 </li>
 <li><h3 id="methods_getglobalnavstate">getGlobalNavState()</h3>
@@ -38,13 +48,74 @@ Hmmm. That&#39;s an interesting thought.</p>
 </div><h5 id="methods_getiframepathbase_getiframepathbase_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="getiframepathbase-page"><p>the string pointing to the Volusion base Volusion API.</p>
 </div></td></tr></table></div>
 </li>
+<li><h3 id="methods_getpreviewmode">getPreviewMode()</h3>
+<div class="getpreviewmode"><div class="getpreviewmode-page"><p>Use Boolean value of vnProperty previewMode to decide which string to return.</p>
+</div><h5 id="methods_getpreviewmode_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="getpreviewmode-page"><p>&#39;on&#39; OR &#39;off&#39; - is the output fromthe function.</p>
+</div></td></tr></table></div>
+</li>
+<li><h3 id="methods_getscreenmode">getScreenMode()</h3>
+<div class="getscreenmode"><div class="getscreenmode-page"><p>Return the vnConfig property value of screenMode.</p>
+</div><h5 id="methods_getscreenmode_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="getscreenmode-page"><p>screenMode</p>
+</div></td></tr></table></div>
+</li>
+<li><h3 id="methods_getworkspacedimensions">getWorkspaceDimensions()</h3>
+<div class="getworkspacedimensions"><div class="getworkspacedimensions-page"><p>Return the current value of the vnConfig property workspaceDimensions.</p>
+</div><h5 id="methods_getworkspacedimensions_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="getworkspacedimensions-page"><p>workspaceDimensions</p>
+</div></td></tr></table></div>
+</li>
 <li><h3 id="methods_initconfig">initConfig()</h3>
-<div class="initconfig"><div class="initconfig-page"><h4 id="methods_initconfig_initconfig">initConfig</h4>
-<p>Used in development as a mocking method to bootstrap with assumptions.
+<div class="initconfig"><div class="initconfig-page"><p>Used in development as a mocking method to bootstrap with assumptions.
 It sets up the dynamic configuration attributes for the app that prolly return from
 and unknown api call at this point so we can use these properties: iframe url base,
 firebase url, etc ...</p>
 </div></div>
+</li>
+<li><h3 id="methods_setcurrentaction">setCurrentAction(action)</h3>
+<div class="setcurrentaction"><div class="setcurrentaction-page"><p>Set the app action to the param passed in and broadcast that change to the system.</p>
+</div><h5 id="methods_setcurrentaction_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>action</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="setcurrentaction-page"><ul>
+<li>one of &#39;pageAction&#39; or &#39;designAction&#39;</li>
+</ul>
+</div></td></tr></tbody></table></div>
+</li>
+<li><h3 id="methods_setglobalattrbucketstate">setGlobalAttrBucketState(state)</h3>
+<div class="setglobalattrbucketstate"><div class="setglobalattrbucketstate-page"><p>Sets the setGlobalAttrBucketState property for the vnCOnfig object to the value
+passed in as the state param. It broadcasts the vlnGlobalAttrBucketState.change
+notification.</p>
+</div><h5 id="methods_setglobalattrbucketstate_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>state</td><td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td><td><div class="setglobalattrbucketstate-page"><ul>
+<li>true shows the AttrBucket Editor directive in SiteBuilder UI</li>
+</ul>
+</div></td></tr></tbody></table></div>
+</li>
+<li><h3 id="methods_setglobalnavstate">setGlobalNavState(state)</h3>
+<div class="setglobalnavstate"><div class="setglobalnavstate-page"><p>Sets the globalNavState to the value passed in as a param. It $broadcasts a system
+wide message: vlnGlobalNavState.change with the param.</p>
+</div><h5 id="methods_setglobalnavstate_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>state</td><td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td><td><div class="setglobalnavstate-page"><ul>
+<li>pass true to show the app navigation directive.</li>
+</ul>
+</div></td></tr></tbody></table></div>
+</li>
+<li><h3 id="methods_setpreviewmode">setPreviewMode(mode)</h3>
+<div class="setpreviewmode"><div class="setpreviewmode-page"><p>Set the preview mode for the iframe by updating the vnConfig property to the value
+passed in with mode param.</p>
+</div><h5 id="methods_setpreviewmode_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>mode</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="setpreviewmode-page"><ul>
+<li>Can be one of &#39;desktop&#39;, &#39;?tablet?&#39; or &#39;?phone?&#39;</li>
+</ul>
+</div></td></tr></tbody></table></div>
+</li>
+<li><h3 id="methods_setscreenmode">setScreenMode(mode)</h3>
+<div class="setscreenmode"><div class="setscreenmode-page"><p>Set the vnConfig property screenMode to the value of the mode param passed in.</p>
+</div><h5 id="methods_setscreenmode_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>mode</td><td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td><td><div class="setscreenmode-page"><ul>
+<li>true enables preview mode / false enabled edit mode.</li>
+</ul>
+</div></td></tr></tbody></table></div>
+</li>
+<li><h3 id="methods_setworkspacedimensions">setWorkspaceDimensions(d)</h3>
+<div class="setworkspacedimensions"><div class="setworkspacedimensions-page"><p>Takes an object with width and height properties and sets the vnConfig
+workspaceDimension values for height and width.</p>
+</div><h5 id="methods_setworkspacedimensions_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>d</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="setworkspacedimensions-page"><ul>
+<li>an object with two properties d.width &amp; d.height</li>
+</ul>
+</div></td></tr></tbody></table></div>
 </li>
 </ul>
 </div>
