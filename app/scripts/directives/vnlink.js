@@ -1,5 +1,34 @@
 /*global angular */
 
+/**
+ * @ngdoc directive
+ * @name Volusion.toolboxCommon.directive:vnLink
+ * @description
+ *
+ * Replace the element with anchor and transcluded caption
+ *
+ * **Note:** If target is not specified if will be set to "_SELF"
+ *
+ * @usage
+ <a
+    vn-link
+    href="{{ PATH_TO }}"
+    target="{{ _self || _blank || _top">
+        {{ LINK_CAPTION | translated }}
+ </a>
+
+ -OR-------------------------------------
+
+ <vn-link
+    href="{{ PATH_TO }}"
+    target="{{ _self || _blank || _top">
+        {{ LINK_CAPTION | translated }}
+ </vn-link>
+ *
+ * @example
+ *<a vn-link href="http://www.yahoo.com" target="_self">Go to Yahoo</a>
+ */
+
 angular.module('Volusion.toolboxCommon')
     .directive('vnLink',
         ['$rootScope',
@@ -14,7 +43,7 @@ angular.module('Volusion.toolboxCommon')
                     scope      : {
                         currMode : '@'
                     },
-                    link       : function postLink(scope, element) {
+                    link       : function postLink(scope, element, attr) {
                         if (scope.currMode === undefined) {
                             scope.currMode = 'on';
                         }
@@ -26,6 +55,9 @@ angular.module('Volusion.toolboxCommon')
 
                         // Component is not selected by default
                         scope.selected = false;
+
+                        // attr will be copied over so have to set it only of empty
+                        scope.target = (attr.target === undefined || attr.target === '') ? '_self' : '';
 
                         scope.$on('currentComponent.change', function (event, component) {
                             if (component && component.id && scope.currMode === 'off') {
@@ -49,6 +81,6 @@ angular.module('Volusion.toolboxCommon')
 
         $templateCache.put(
             'template/link.html',
-            '<a class="vn-link" ng-transclude></a>'
+            '<a class="vn-link" target="{{ target }}" ng-transclude></a>'
         );
     }]);

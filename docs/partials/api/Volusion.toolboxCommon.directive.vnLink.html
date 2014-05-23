@@ -1,0 +1,29 @@
+<h1><code ng:non-bindable="">vnLink</code>
+<div><span class="hint">directive in module <code ng:non-bindable="">Volusion.toolboxCommon</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="volusion-toolboxcommon-directive-page volusion-toolboxcommon-directive-vnlink-page"><p>Replace the element with anchor and transcluded caption</p>
+<p><strong>Note:</strong> If target is not specified if will be set to &quot;_SELF&quot;</p>
+</div></div>
+<h2 id="usage">Usage</h2>
+<div class="usage"><pre class="prettyprint linenums">&lt;a
+   vn-link
+   href="<span>{{</span> PATH_TO <span>}}</span>"
+   target="<span>{{</span> _self || _blank || _top"&gt;
+       <span>{{</span> LINK_CAPTION | translated <span>}}</span>
+&lt;/a&gt;
+
+-OR-------------------------------------
+
+&lt;vn-link
+   href="<span>{{</span> PATH_TO <span>}}</span>"
+   target="<span>{{</span> _self || _blank || _top"&gt;
+       <span>{{</span> LINK_CAPTION | translated <span>}}</span>
+&lt;/vn-link&gt;</pre>
+</div>
+<h2 id="example">Example</h2>
+<div class="example"><div class="volusion-toolboxcommon-directive-page volusion-toolboxcommon-directive-vnlink-page"><p><a vn-link href="http://www.yahoo.com" target="_self">Go to Yahoo</a></p>
+</div></div>
+</div>

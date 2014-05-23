@@ -14,6 +14,15 @@ NG_DOCS={
     },
     {
       "section": "api",
+      "id": "Volusion.toolboxCommon.directive:vnLink",
+      "shortName": "vnLink",
+      "type": "directive",
+      "moduleName": "Volusion.toolboxCommon",
+      "shortDescription": "Replace the element with anchor and transcluded caption",
+      "keywords": "_blank _self _top anchor api caption directive element href http link_caption path_to replace set target toolboxcommon transcluded translated vn-link volusion yahoo"
+    },
+    {
+      "section": "api",
       "id": "Volusion.toolboxCommon.vnConfig",
       "shortName": "Volusion.toolboxCommon.vnConfig",
       "type": "service",

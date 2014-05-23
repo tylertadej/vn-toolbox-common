@@ -34,11 +34,11 @@ Usage:
 
 <strong>Link</strong>
 
-    <div vn-link link="link"></div>
+    <a vn-link href="http://www.yahoo.com" target="_self">Go to Yahoo</a>
 
     -OR-
 
-    <vn-link link="link" />
+    <vn-link href="http://www.google.com" target="_self">Go to Goolge</vn-link>
 
 <strong>Rating</strong>
 
