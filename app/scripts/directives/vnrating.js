@@ -1,5 +1,26 @@
 /*global angular */
 
+/**
+ * @ngdoc directive
+ * @name Volusion.toolboxCommon.directive:vnRating
+ * @restrict EA
+ * @requires $rootScope
+ * @scope
+ * @description
+ *
+ * Replace the element with rating's html markup.Accepts ratingValue as Integer and readonly as expression
+ *
+ * **Note:** If readonly attribute is not specified "FALSE" will be assumed
+ *
+ * @usage
+ <div vn-rating rating-value="{{ VALUE }}"></div>
+
+ -OR-------------------------------------
+
+ <vn-rating rating-value="{{ VALUE }}" data-readonly="{{ BOOLEAN }}"></vn-rating>
+ *
+ */
+
 angular.module('Volusion.toolboxCommon')
     .directive('vnRating',
         ['$rootScope',
@@ -75,16 +96,14 @@ angular.module('Volusion.toolboxCommon')
 
         $templateCache.put(
             'template/rating.html',
-            '<div>' +
-                '<div class="vn-rating">' +
-                    '<!-- not happy with this but it seems better than angular-ui carousel' +
-                        'http://blog.revolunet.com/angular-carousel/ -->' +
-                    '<p translate>VN-RATING-TITLE</p>' +
-                    '<ul class="rating">' +
-                        '<li ng-repeat="star in stars" class="tick" ng-class="star" ng-click="toggle($index)">' +
-                        '</li>' +
-                    '</ul>' +
-                '</div>' +
+            '<div class="vn-rating">' +
+                '<!-- not happy with this but it seems better than angular-ui carousel' +
+                    'http://blog.revolunet.com/angular-carousel/ -->' +
+                '<p translate>VN-RATING-TITLE</p>' +
+                '<ul class="rating">' +
+                    '<li ng-repeat="star in stars" class="tick" ng-class="star" ng-click="toggle($index)">' +
+                    '</li>' +
+                '</ul>' +
             '</div>'
         );
     }]);

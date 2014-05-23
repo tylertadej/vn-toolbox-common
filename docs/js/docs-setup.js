@@ -14,12 +14,39 @@ NG_DOCS={
     },
     {
       "section": "api",
+      "id": "Volusion.toolboxCommon.directive:vnCarousel",
+      "shortName": "vnCarousel",
+      "type": "directive",
+      "moduleName": "Volusion.toolboxCommon",
+      "shortDescription": "Replace the element with carousel&#39;s html markup. Accepts image list as array of objects",
+      "keywords": "$rootscope $scope accepts alt api array carousel directive ea element html http image image-list imagelist list markup objects people random replace toolboxcommon vn-carousel volusion"
+    },
+    {
+      "section": "api",
+      "id": "Volusion.toolboxCommon.directive:vnImage",
+      "shortName": "vnImage",
+      "type": "directive",
+      "moduleName": "Volusion.toolboxCommon",
+      "shortDescription": "Replace the element with image&#39;s html markup.Accepts image as object",
+      "keywords": "$rootscope $scope accepts alt api directive ea element html http image imagelist markup object people random replace src toolboxcommon vn-image volusion"
+    },
+    {
+      "section": "api",
       "id": "Volusion.toolboxCommon.directive:vnLink",
       "shortName": "vnLink",
       "type": "directive",
       "moduleName": "Volusion.toolboxCommon",
-      "shortDescription": "Replace the element with anchor and transcluded caption",
-      "keywords": "_blank _self _top anchor api caption directive element href http link_caption path_to replace set target toolboxcommon transcluded translated vn-link volusion yahoo"
+      "shortDescription": "Replace the element with anchor and transcluded caption.",
+      "keywords": "$rootscope _blank _self _top anchor api caption directive ea element href http link_caption path_to replace set target toolboxcommon transcluded translated vn-link volusion yahoo"
+    },
+    {
+      "section": "api",
+      "id": "Volusion.toolboxCommon.directive:vnRating",
+      "shortName": "vnRating",
+      "type": "directive",
+      "moduleName": "Volusion.toolboxCommon",
+      "shortDescription": "Replace the element with rating&#39;s html markup.Accepts ratingValue as Integer and readonly as expression",
+      "keywords": "$rootscope accepts api assumed attribute boolean data-readonly directive ea element expression false html integer markup rating rating-value ratingvalue readonly replace toolboxcommon vn-rating volusion"
     },
     {
       "section": "api",

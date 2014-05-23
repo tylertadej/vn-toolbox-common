@@ -1,5 +1,33 @@
 /*global angular */
 
+/**
+ * @ngdoc directive
+ * @name Volusion.toolboxCommon.directive:vnCarousel
+ * @restrict EA
+ * @requires $rootScope
+ * @scope
+ * @description
+ *
+ * Replace the element with carousel's html markup. Accepts image list as array of objects
+ *
+ * <pre>
+ *      $scope.imageList = [
+ *          {src: 'http://lorempixel.com/450/300/people/0', alt: 'Random people image'},
+ *          {src: 'http://lorempixel.com/450/300/people/1', alt: 'Random people image'},
+ *          {src: 'http://lorempixel.com/450/300/people/2', alt: 'Random people image'},
+ *          {src: 'http://lorempixel.com/450/300/people/3', alt: 'Random people image'}
+ *      ];
+ * </pre>
+ *
+ * @usage
+    <div vn-carousel image-list="imageList"></div>
+
+    -OR-------------------------------------
+
+    <vn-carousel image-list="imageList"></vn-carousel>
+ *
+ */
+
 angular.module('Volusion.toolboxCommon')
     .directive('vnCarousel',
         ['$rootScope',
@@ -49,23 +77,20 @@ angular.module('Volusion.toolboxCommon')
 
         $templateCache.put(
             'template/carousel.html',
-            '<div>' +
-                '<div class="vn-carousel">' +
-                    '<!-- not happy with this but it seems better than angular-ui carousel' +
-                    'http://blog.revolunet.com/angular-carousel/ -->' +
-                    '<p translate="VN-CAROUSEL-TITLE">Images:</p>' +
+            '<div class="vn-carousel">' +
+                '<!-- not happy with this but it seems better than angular-ui carousel' +
+                'http://blog.revolunet.com/angular-carousel/ -->' +
+                '<p translate="VN-CAROUSEL-TITLE">Images:</p>' +
 
-                    '<ul rn-carousel rn-carousel-buffered rn-carousel-indicator rn-carousel-control  class="-carousel ng-cloak">' +
-                        '<li ng-repeat="image in imageList" ng-style="{\'background-image\': \'url(\' + image.src + \')\'}"></li>' +
-                    '</ul>' +
-                    '<div class="-thumbs ng-cloak">' +
-                        '<div class="thumb" ng-repeat="image in imageList" ' +
-                                           'ng-click="$parent.slideIndex2=$index" ' +
-                                           'ng-style="{\'background-image\': \'url(\' + image.src + \')\'}" ' +
-                                           'ng-class="{\'is-active\': ($parent.slideIndex2==$index)}">' +
-                        '</div>' +
+                '<ul rn-carousel rn-carousel-buffered rn-carousel-indicator rn-carousel-control  class="-carousel ng-cloak">' +
+                    '<li ng-repeat="image in imageList" ng-style="{\'background-image\': \'url(\' + image.src + \')\'}"></li>' +
+                '</ul>' +
+                '<div class="-thumbs ng-cloak">' +
+                    '<div class="thumb" ng-repeat="image in imageList" ' +
+                                       'ng-click="$parent.slideIndex2=$index" ' +
+                                       'ng-style="{\'background-image\': \'url(\' + image.src + \')\'}" ' +
+                                       'ng-class="{\'is-active\': ($parent.slideIndex2==$index)}">' +
                     '</div>' +
-
                 '</div>' +
             '</div>'
         );

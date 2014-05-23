@@ -3,9 +3,13 @@
 /**
  * @ngdoc directive
  * @name Volusion.toolboxCommon.directive:vnLink
+ * @restrict EA
+ * @requires $rootScope
+ * @scope
+ *
  * @description
  *
- * Replace the element with anchor and transcluded caption
+ * Replace the element with anchor and transcluded caption.
  *
  * **Note:** If target is not specified if will be set to "_SELF"
  *

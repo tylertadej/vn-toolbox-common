@@ -1,5 +1,31 @@
 /*global angular */
 
+/**
+ * @ngdoc directive
+ * @name Volusion.toolboxCommon.directive:vnImage
+ * @restrict EA
+ * @requires $rootScope
+ * @scope
+ * @description
+ *
+ * Replace the element with image's html markup.Accepts image as object
+ *
+ * <pre>
+ *      $scope.image = {
+ *          src: 'http://lorempixel.com/450/300/people/0',
+ *          alt: 'Random people image'
+ *      },
+ * </pre>
+ *
+ * @usage
+ <div vn-image image="image"></div>
+
+ -OR-------------------------------------
+
+ <vn-image image="imageList[2]"></vn-image>
+ *
+ */
+
 angular.module('Volusion.toolboxCommon')
     .directive('vnImage',
         ['$rootScope',
@@ -49,11 +75,9 @@ angular.module('Volusion.toolboxCommon')
 
         $templateCache.put(
             'template/image.html',
-            '<div>' +
-                '<div class="vn-image">' +
-                    '<p translate>VN-IMAGE-TITLE</p>' +
-                    '<img src="{{ image.src }}" alt="{{ image.alt }}" />' +
-                '</div>' +
+            '<div class="vn-image">' +
+                '<p translate>VN-IMAGE-TITLE</p>' +
+                '<img src="{{ image.src }}" alt="{{ image.alt }}" />' +
             '</div>'
         );
     }]);

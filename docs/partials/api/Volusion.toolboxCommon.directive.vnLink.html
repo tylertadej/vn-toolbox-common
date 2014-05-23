@@ -4,9 +4,13 @@
 </div>
 </h1>
 <div><h2 id="description">Description</h2>
-<div class="description"><div class="volusion-toolboxcommon-directive-page volusion-toolboxcommon-directive-vnlink-page"><p>Replace the element with anchor and transcluded caption</p>
+<div class="description"><div class="volusion-toolboxcommon-directive-page volusion-toolboxcommon-directive-vnlink-page"><p>Replace the element with anchor and transcluded caption.</p>
 <p><strong>Note:</strong> If target is not specified if will be set to &quot;_SELF&quot;</p>
 </div></div>
+<h2 id="dependencies">Dependencies</h2>
+<ul class="dependencies"><li><code ng:non-bindable=""><a href="api/ng.$rootScope">$rootScope</a></code>
+</li>
+</ul>
 <h2 id="usage">Usage</h2>
 <div class="usage"><pre class="prettyprint linenums">&lt;a
    vn-link
@@ -22,6 +26,10 @@
    target="<span>{{</span> _self || _blank || _top"&gt;
        <span>{{</span> LINK_CAPTION | translated <span>}}</span>
 &lt;/vn-link&gt;</pre>
+<h3 id="usage_directive-info">Directive info</h3>
+<div class="directive-info"><ul><li>This directive creates new scope.</li>
+</ul>
+</div>
 </div>
 <h2 id="example">Example</h2>
 <div class="example"><div class="volusion-toolboxcommon-directive-page volusion-toolboxcommon-directive-vnlink-page"><p><a vn-link href="http://www.yahoo.com" target="_self">Go to Yahoo</a></p>
