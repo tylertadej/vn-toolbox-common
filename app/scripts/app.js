@@ -52,6 +52,8 @@ angular.module('Volusion.toolboxCommon', [
                         // Main - SHOULD BE REMOVED IN 'DIST' **************
                         'TEST_VAR' : 'This is a English test text.',
                         'CURRENT_LANG_CODE' : 'en',
+                        'VN-GOOGLE-LINK' : 'Go to Google',
+                        'VN-YAHOO-LINK' : 'Go to Yahoo',
                         // *************************************************
 
                         // Carousel
@@ -67,6 +69,8 @@ angular.module('Volusion.toolboxCommon', [
                         // Main - SHOULD BE REMOVED IN 'DIST' **************
                         'TEST_VAR' : 'Este es un texto de prueba Inglés.',
                         'CURRENT_LANG_CODE' : 'es',
+                        'VN-GOOGLE-LINK' : 'Ir a Google',
+                        'VN-YAHOO-LINK' : 'Ir a Yahoo',
                         // *************************************************
 
                         // Carousel

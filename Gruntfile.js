@@ -72,7 +72,7 @@ module.exports = function (grunt) {
             },
             js        : {
                 files  : ['<%= yeoman.app %>/scripts/{,*/}*.js', 'test/spec/{,*/}*.js'],
-                tasks  : ['newer:jshint:all', 'test'],
+                tasks  : ['newer:jshint:all', 'test_no_coverage'],
                 options: {
                     livereload: true
                 }
@@ -502,12 +502,16 @@ module.exports = function (grunt) {
         grunt.task.run(['serve:' + target]);
     });
 
-    grunt.registerTask('test', [
+    grunt.registerTask('test_no_coverage', [
         'clean:server',
         'concurrent:test',
         //'autoprefixer',
         'connect:test',
-        'karma',
+        'karma'
+    ]);
+
+    grunt.registerTask('test', [
+        'test_no_coverage',
         'coverage'
     ]);
 

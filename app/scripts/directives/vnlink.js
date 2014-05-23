@@ -9,10 +9,10 @@ angular.module('Volusion.toolboxCommon')
                 return {
                     templateUrl: 'template/link.html',
                     restrict   : 'EA',
+                    transclude : true,
                     replace    : true,
                     scope      : {
-                        currMode : '@currMode',
-                        link     : '='
+                        currMode : '@'
                     },
                     link       : function postLink(scope, element) {
                         if (scope.currMode === undefined) {
@@ -49,10 +49,6 @@ angular.module('Volusion.toolboxCommon')
 
         $templateCache.put(
             'template/link.html',
-            '<div>' +
-                '<div class="vn-link">' +
-                    '<a href="{{ link.href }}" target="{{ link.target }}">{{ link.text }}</a>' +
-                '</div>' +
-            '</div>'
+            '<a class="vn-link" ng-transclude></a>'
         );
     }]);
