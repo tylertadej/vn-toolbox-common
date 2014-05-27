@@ -1,0 +1,67 @@
+<h1><code ng:non-bindable="">vnDataEndpoint</code>
+<div><span class="hint">service in module <code ng:non-bindable="">Volusion.toolboxCommon</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="volusion-toolboxcommon-vndataendpoint-page"><h3 id="description_vndataendpoint">vnDataEndpoint</h3>
+<p>Used by the vnDataSrc service to build on the firebase or apibase constant. Both
+the firebase and apibase constants point to the appropriate backend for the app.
+If you need to determine constant use vnConfig and vnSession services for that.</p>
+<h5 id="description_vndataendpoint_note">Note:</h5>
+<p>This is a self invoking constant that returns an object that can refer to more
+than one string. If you are generating a url with the apps api or firebase
+endpoint this can help you. So fbUrl and apiRul are not methods.</p>
+</div></div>
+<div class="member property"><h2 id="properties">Properties</h2>
+<ul class="properties"><li><h3 id="properties_apiurl">apiUrl</h3>
+<div class="apiurl"><h5 id="properties_apiurl_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="apiurl-page"><p>The string representing the base firebase url</p>
+</div></td></tr></table></div>
+</li>
+<li><h3 id="properties_apibase">apibase</h3>
+<div class="apibase"><div class="volusion-toolboxcommon-vndataendpoint-page"><ul>
+<li>A private property that is the url configured for
+the apibackend</li>
+</ul>
+</div></div>
+</li>
+<li><h3 id="properties_fburl">fbUrl</h3>
+<div class="fburl"><h5 id="properties_fburl_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="fburl-page"><p>The string representing the base firebase url</p>
+</div></td></tr></table></div>
+</li>
+<li><h3 id="properties_firebase">firebase</h3>
+<div class="firebase"><div class="volusion-toolboxcommon-vndataendpoint-page"><ul>
+<li>A private property that is the url configured for
+the firebase instance used by apps in WorkSpace and SiteBuilder.</li>
+</ul>
+</div></div>
+</li>
+</ul>
+</div>
+<h2 id="example">Example</h2>
+<div class="example"><div class="volusion-toolboxcommon-vndataendpoint-page"><h4 id="example_source">Source</h4>
+<div source-edit="" source-edit-deps="angular.js script.js" source-edit-html="index.html" source-edit-css="" source-edit-js="script.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
+<div class="tabbable"><div class="tab-pane" title="index.html">
+<pre class="prettyprint linenums" ng-set-text="index.html" ng-html-wrap-loaded=" angular.js script.js"></pre>
+<script type="text/ng-template" id="index.html">
+    
+    <div>
+        <p>var fBase = vnDataEndpoint.fbUrl;</p>
+        <p>var aBase = vnDataPoint.apiUrl;</p>
+    </div>
+</script>
+</div>
+<div class="tab-pane" title="script.js">
+<pre class="prettyprint linenums" ng-set-text="script.js"></pre>
+<script type="text/ng-template" id="script.js">
+        var fBase = vnDataEndpoint.fbUrl;
+         var aBase = vnDataPoint.apiUrl;
+
+         console.log(fbase); // Will print: https://brilliant-fire-5600.firebaseio.com
+         console.log(aBase); // Will print: http://www.samplestore.io/api/v1
+    </script>
+</div>
+</div><h4 id="example_demo">Demo</h4>
+<div class="well doc-example-live animate-container" ng-embed-app="" ng-set-html="index.html" ng-eval-javascript="script.js"></div>
+</div></div>
+</div>
