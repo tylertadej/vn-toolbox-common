@@ -56,6 +56,15 @@ NG_DOCS={
       "moduleName": "Volusion.toolboxCommon",
       "shortDescription": "vnConfig",
       "keywords": "$broadcasts $q $rootscope accomplished account action api app assumptions attrbucket attributes bar base boolean bootstrap broadcast broadcasts call change configuration configured constnats current currentaction currentappstate decide depricated designaction desktop development directive dynamic easily edit editor enabled enables factory false firebase fromthe function generating getaccount getcurrentaction getfirebaseurl getglobalattrbucketstate getglobalnavstate getiframepathbase getpreviewmode getscreenmode getworkspacedimensions globalattrbucketstate globalnavstate height hmmm iframe initconfig initial interesting left live manage message method mocking mode moved nav navigation notification object output pageaction param pass passed point pointing preview previewmode prolly properties property representing resource return returns screenmode service set setcurrentaction setglobalattrbucketstate setglobalnavstate setpreviewmode sets setscreenmode setworkspacedimensions side sitebuilder string system takes thought tokens toolboxcommon true ui unknown updating url urls user values vlaue vlnglobalattrbucketstate vlnglobalnavstate vnconfig vnproperty volusion wide width workspacedimension workspacedimensions"
+    },
+    {
+      "section": "api",
+      "id": "Volusion.toolboxCommon.vnDataEndpoint",
+      "shortName": "Volusion.toolboxCommon.vnDataEndpoint",
+      "type": "service",
+      "moduleName": "Volusion.toolboxCommon",
+      "shortDescription": "vnDataEndpoint",
+      "keywords": "abase api apibackend apibase apirul apiurl app appropriate apps backend base build class configured console constant constants determine endpoint fbase fburl firebase firebaseio generating help http https instance invoking io log method methods note object point print private property refer representing returns samplestore service services sitebuilder string toolboxcommon url var vnconfig vndataendpoint vndatapoint vndatasrc vnsession volusion volusion-toolboxcommon-vndataendpoint-page workspace"
     }
   ],
   "apis": {
