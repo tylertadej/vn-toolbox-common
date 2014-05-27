@@ -1,4 +1,17 @@
 /*globals Firebase*/
+/**
+ * @ngdoc service
+ * @name Volusion.toolboxCommon.vnFirebase
+ * @requires vnConfig, vnDataEndpoint, $firebase
+ * @description
+ *
+ * # vnFirebase
+ * This is a service to manage the data flow into and out of the firebase service when
+ * an app is in either the SiteBuilder or WorkSpace environment. It can generate $firebase
+ * reverence objects, sync data from the api into firebase and sync data from firebase back
+ * to the api as well as reseting the accounts firebase with data for a new session.
+ *
+ */
 
 angular.module('Volusion.toolboxCommon')
     .factory('vnFirebase', ['vnConfig', 'vnDataEndpoint', '$firebase',
@@ -16,69 +29,109 @@ angular.module('Volusion.toolboxCommon')
                 sitebuilder: '/account_sitebuilder'
             };
 
-            function getFirebaseDataFn(path) {
+            /**
+             * @ngdoc method
+             * @name getFirebaseData
+             * @methodOf Volusion.toolboxCommon.vnFirebase
+             * @param {String} path is the string path to a Firebase Item
+             * @returns {$firebase} $firebase Reference to the firebase reference for the
+             * given path.
+             *
+             * @description
+             * Takes a string path for a Firebase item and created a $firebase reference for
+             * one of the
+             */
+            function getFirebaseData(path) {
+
                 if (path && 'string' === typeof path) {
                     return $firebase(new Firebase(vnDataEndpoint.fbUrl + fbItems[path] + '/' + vnConfig.getAccount() + '/'));
+                } else {
+                    throw new Error('vnFirebase.getFirebaseData function failed.');
                 }
-                return false;
-            }
 
-
-
-            function generatePathFn(path) {
-                /**
-                 @function
-                 @name generateFBPathFn
-                 @description Given a partial path as a string use vnConfig info to construct a path to FB resources
-                 @param {String} path
-                 @return String
-                 */
-
-                if (path && 'string' === typeof path) {
-                    return vnDataEndpoint.fbUrl + fbItems[path] + '/' + vnConfig.getAccount() + '/';
-                }
-                return false;
-            }
-
-            function resetSiteBuilderFn() {
-                /**
-                 @function
-                 @name resetSiteBuilderFn
-                 @description reset the SiteBuilder App state to default settings.
-                 @param {}
-                 @return Boolean
-                 */
-
-                var sbRef = $firebase(new Firebase(vnDataEndpoint.fbUrl + '/account_sitebuilder/asdf123'));
-                var sbd = new SiteBuilderDefaults();
-                sbRef.$set(sbd);
-
-                return true;
-            }
-
-            function resetDataForPathFn(path, data) {
-                /**
-                 @function
-                 @name resetDataForPathFn
-                 @description Given a string path & datacreate a firebase reference and update the data for that path
-                 @param {String, Object || Array of Objects} path, data
-                 @return Boolean
-                 */
-
-                var fullPath;
-                if (path && data && 'string' === typeof path) {
-                    fullPath = generatePathFn(path);
-                    var pathRef = $firebase(new Firebase(fullPath));
-                    pathRef.$set(data);
-                    return true;
-                }
-                return false;
             }
 
             /**
+             * @ngdoc method
+             * @name generatePath
+             * @methodOf Volusion.toolboxCommon.vnFirebase
+             * @param {String} path A string path to the Firebase item that we want to create
+             * a Firebase resource to.
+             * @returns {String} Directly returns the string created inline.
+             */
+            function generatePath(path) {
+
+                if (path && 'string' === typeof path) {
+                    return vnDataEndpoint.fbUrl + fbItems[path] + '/' + vnConfig.getAccount() + '/';
+                } else {
+                    throw new Error('vnFirebase.generatePath function failed.');
+                }
+
+            }
+
+            /**
+             * @ngdoc method
+             * @name resetSiteBuilder
+             * @methodOf Volusion.toolboxCommon.vnFirebase
+             * @param {String} account The name of the account which needs to b e reset.
+             * @returns {Boolean} THere is no error handling yet so it returns true.
              *
-             * @returns {{component: {id: string, typeDesc: string, typeId: string}, product: string, category: string, page: string, theme: {id: string, name: string, thumbnail: string, cssRef: string}, previewMode: string, preferredLanguge: string}}
-             * @constructor SiteBuilder
+             * @description
+             * Still mocked with a fake asdf123 account path.
+             * This function does the following:
+             *
+             * 1. Creates a Firebase reference to the configured account
+             * 2. Grabs the default object for a new session
+             * 3. Sets that data for the Firebase reference.
+             *
+             */
+            function resetSiteBuilder() {
+
+                var sbRef = $firebase(new Firebase(vnDataEndpoint.fbUrl + '/account_sitebuilder/' + vnConfig.getAccount()));
+                var sbd = new SiteBuilderDefaults();
+                sbRef.$set(sbd);
+                return true;
+            }
+
+            /**
+             * @ngdoc method
+             * @name resetDataForPath
+             * @methodOf Volusion.toolboxCommon.vnFirebase
+             * @param {String} path The item or resource in Firebase
+             * @param {Object} data The data that needs to be updated for the given path.
+             * @returns {Boolean} THere is no error handling yet so it returns true.
+             * @returns {Error} err Inline generation of an error if not a string.
+             *
+             * @description
+             * Control is followed if path is a string and data exists. If not, an error
+             * is returned.
+             *
+             */
+            function resetDataForPath(path, data) {
+
+                var fullPath;
+                if (path && data && 'string' === typeof path) {
+                    fullPath = generatePath(path);
+                    var pathRef = $firebase(new Firebase(fullPath));
+                    pathRef.$set(data);
+                    return true;
+                } else {
+                    throw new Error('vnFirebase.resetDataForPath() error.');
+                }
+
+            }
+
+            /**
+             * @ngdoc method
+             * @name SiteBuilderDefaults
+             * @methodOf Volusion.toolboxCommon.vnFirebase
+             * @returns {Object} data
+             *
+             * @description
+             *
+             *  Use this to reset the SiteBuilder Session (app state, other things??)
+             *  to the pre-determined sane defaults we have chosen.
+             *
              */
             function SiteBuilderDefaults() {
                 /**
@@ -113,8 +166,8 @@ angular.module('Volusion.toolboxCommon')
 
             // public api here
             return {
-                getFirebaseData : getFirebaseDataFn,
-                resetSiteBuilder: resetSiteBuilderFn,
-                resetDataForPath: resetDataForPathFn
+                getFirebaseData : getFirebaseData,
+                resetSiteBuilder: resetSiteBuilder,
+                resetDataForPath: resetDataForPath
             };
         }]);
