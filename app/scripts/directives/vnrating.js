@@ -19,6 +19,23 @@
 
  <vn-rating rating-value="{{ VALUE }}" data-readonly="{{ BOOLEAN }}"></vn-rating>
  *
+ * @example
+     <example module="app">
+         <file name="script.js">
+             angular.module('app', [])
+                .controller('RatingCtrl',
+                    function ($scope) {
+
+                        $scope.ratingValue = 3;
+
+                    });
+         </file>
+         <file name="index.html">
+             <div ng-controller="LinkCtrl">
+                <vn-rating rating-value="ratingValue"></vn-rating>
+             </div>
+         </file>
+     </example>
  */
 
 angular.module('Volusion.toolboxCommon')

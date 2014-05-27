@@ -24,6 +24,28 @@
 
  <vn-image image="imageList[2]"></vn-image>
  *
+ * @example
+     <example module="app">
+        <file name="script.js">
+             angular.module('app', [])
+                 .controller('ImageCtrl',
+                     function ($scope) {
+
+                        $scope.imageList = [
+                            {src: 'http://lorempixel.com/450/300/people/0', alt: 'Random image'},
+                            {src: 'http://lorempixel.com/450/300/people/1', alt: 'Random image'},
+                            {src: 'http://lorempixel.com/450/300/people/2', alt: 'Random image'},
+                            {src: 'http://lorempixel.com/450/300/people/3', alt: 'Random image'}
+                        ];
+
+                    });
+         </file>
+         <file name="index.html">
+             <div ng-controller="ImageCtrl">
+                <vn-image image="imageList[2]" />
+             </div>
+         </file>
+     </example>
  */
 
 angular.module('Volusion.toolboxCommon')

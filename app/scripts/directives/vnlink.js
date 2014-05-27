@@ -29,8 +29,26 @@
         {{ LINK_CAPTION | translated }}
  </vn-link>
  *
+// * @example
+// *<a vn-link href="http://www.yahoo.com" target="_self">Go to Yahoo</a>
+ *
  * @example
- *<a vn-link href="http://www.yahoo.com" target="_self">Go to Yahoo</a>
+     <example module="app">
+         <file name="script.js">
+             angular.module('app', [])
+                 .controller('LinkCtrl',
+                    function ($scope) {
+
+                        $scope.pathTo = 'http://www.yahoo.com';
+
+                    });
+         </file>
+         <file name="index.html">
+             <div ng-controller="LinkCtrl">
+                <vn-link href="pathTo">Go to Yahoo</vn-link>
+             </div>
+         </file>
+     </example>
  */
 
 angular.module('Volusion.toolboxCommon')

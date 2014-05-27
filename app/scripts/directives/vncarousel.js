@@ -10,15 +10,6 @@
  *
  * Replace the element with carousel's html markup. Accepts image list as array of objects
  *
- * <pre>
- *      $scope.imageList = [
- *          {src: 'http://lorempixel.com/450/300/people/0', alt: 'Random people image'},
- *          {src: 'http://lorempixel.com/450/300/people/1', alt: 'Random people image'},
- *          {src: 'http://lorempixel.com/450/300/people/2', alt: 'Random people image'},
- *          {src: 'http://lorempixel.com/450/300/people/3', alt: 'Random people image'}
- *      ];
- * </pre>
- *
  * @usage
     <div vn-carousel image-list="imageList"></div>
 
@@ -26,6 +17,29 @@
 
     <vn-carousel image-list="imageList"></vn-carousel>
  *
+ *
+ * @example
+     <example module="app">
+            <file name="script.js">
+                angular.module('app', [])
+                    .controller('CarouselCtrl',
+                        function ($scope) {
+
+                            $scope.imageList = [
+                                {src: 'http://lorempixel.com/450/300/people/0', alt: 'Random image'},
+                                {src: 'http://lorempixel.com/450/300/people/1', alt: 'Random image'},
+                                {src: 'http://lorempixel.com/450/300/people/2', alt: 'Random image'},
+                                {src: 'http://lorempixel.com/450/300/people/3', alt: 'Random image'}
+                            ];
+
+                        });
+            </file>
+            <file name="index.html">
+                <div ng-controller="CarouselCtrl">
+                    <vn-carousel image-list="imageList" />
+                </div>
+            </file>
+     </example>
  */
 
 angular.module('Volusion.toolboxCommon')
