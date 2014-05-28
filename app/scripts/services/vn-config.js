@@ -1,7 +1,8 @@
 /**
  * @ngdoc service
  * @name Volusion.toolboxCommon.vnConfig
- * @requires $q, $rootScope
+ * @requires $q
+ * @requires $rootScope
  * @description
  *
  * # vnConfig

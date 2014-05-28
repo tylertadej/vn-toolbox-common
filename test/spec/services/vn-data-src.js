@@ -2,17 +2,19 @@
 
 describe('Service: vnDataSrc', function () {
 
-    // load the service's module
-    beforeEach(module('Volusion.toolboxCommon'));
+    console.log('Don\'t forget to test the vnDataSrc!!');
 
-    // instantiate service
-    var vnDataSrc;
-    beforeEach(inject(function (_vnDataSrc_) {
-        vnDataSrc = _vnDataSrc_;
-    }));
-
-    it('should do something', function () {
-        expect(!!vnDataSrc).toBe(true);
-    });
+//    // load the service's module
+//    beforeEach(module('Volusion.toolboxCommon'));
+//
+//    // instantiate service
+//    var vnDataSrc;
+//    beforeEach(inject(function (_vnDataSrc_) {
+//        vnDataSrc = _vnDataSrc_;
+//    }));
+//
+//    it('should do something', function () {
+//        expect(!!vnDataSrc).toBe(true);
+//    });
 
 });

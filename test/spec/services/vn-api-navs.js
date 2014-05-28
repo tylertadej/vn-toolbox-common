@@ -11,8 +11,11 @@ describe('Service: vnApiNavs', function () {
         vnApiNavs = _vnApiNavs_;
     }));
 
-    it('should do something', function () {
-        expect(!!vnApiNavs).toBe(true);
+    it('should default to an empty object', function () {
+        expect(vnApiNavs).toEqual({});
     });
+
+    // When mocking or ajax testing is enabled test the integrity
+    // of the responses structure.
 
 });
