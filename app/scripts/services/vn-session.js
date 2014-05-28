@@ -1,7 +1,10 @@
 /**
  * @ngdoc service
  * @name Volusion.toolboxCommon.vnSession
- * @requires $rootScope $q vnApi vnFirebase
+ * @requires $rootScope
+ * @requires $q
+ * @requires vnApi
+ * @requires vnFirebase
  * @description
  *
  * # vnSession
@@ -22,7 +25,6 @@ angular.module('Volusion.toolboxCommon')
             /**
              * @ngdoc property
              * @name accountData
-             * @eventOf Volusion.toolboxCommon.vnSession
              * @property {Object} accountData
              * @propertyOf Volusion.toolboxCommon.vnSession
              *

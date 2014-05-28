@@ -1,16 +1,148 @@
-'use strict';
+/**
+ * @ngdoc service
+ * @name Volusion.toolboxCommon.vnDataSrc
+ * @requires $q
+ * @requires vnEnvironment
+ * @requires vnApi
+ * @requires vnFirebase
+ * @requires vnApiArticleData
+ * @requires vnApiCategoryData
+ * @requires vnApiProductData
+ * @description
+ *
+ * # vnDataSrc
+ * This is a service that routes the data requests based on the vnEnvironment. It provides an
+ * api for Volusion Data in an angular app. When used in themes it can grab and return data
+ * from both the api and Firebase. If data is retrived from api it needs to be modified to
+ * look more like the $firebase object so that caller can handle both types of data retriveal
+ * objects.
+ *
+ * **If the app needs to set data is should not be done here.** This is a one way path from
+ * either the Firebase source or the api source and a service to make them both look almost
+ * the same so they can be consumed by the caller requesting the data.
+ *
+ *
+ */
 
 angular.module('Volusion.toolboxCommon')
-    .factory('vnDataSrc', function () {
-        // Service logic
-        // ...
+    .factory('vnDataSrc', ['$q', 'vnEnvironment', 'vnApi', 'vnFirebase', 'vnApiArticleData', 'vnApiCategoryData', 'vnApiProductData',
+        function ($q, vnEnvironment, vnApi, vnFirebase, vnApiArticleData, vnApiCategoryData, vnApiProductData) {
+            'use strict';
 
-        var meaningOfLife = 42;
+            /**
+             * @ngdoc property
+             * @name environmentContext
+             * @property {Object} environmentContext
+             * @propertyOf Volusion.toolboxCommon.vnDataSrc
+             *
+             * @description
+             * A Volusion.toolboxCommon value that can be set to the app/theme
+             * environment
+             */
+            var environmentContext = vnEnvironment;
 
-        // Public API here
-        return {
-            someMethod: function () {
-                return meaningOfLife;
+            /**
+             * @ngdoc function
+             * @name getContextFn
+             * @methodOf Volusion.toolboxCommon.vnDataSrc
+             * @return {Value} environmentContext The Value service for the app that sets the
+             * environment to SiteBuilder, WorkSpace or Production.
+             *
+             * @description
+             * return the environmentContext property configured for the app.
+             *
+             */
+            function getContextFn() {
+
+                return environmentContext;
+
             }
-        };
-    });
+
+            /**
+             * @ngdoc function
+             * @name getArticles
+             * @methodOf Volusion.toolboxCommon.vnDataSrc
+             * @return {Object} Either a $firebase object with article items or an api response
+             * modified to look almost like a $firebase object
+             *
+             * @description
+             * Uses the environmentContext and determines where to get data from. If data is from the api
+             * the data response gets modified to make it look more like a $firebase object.
+             *
+             */
+            function getArticles() {
+                if ('Production' !== environmentContext) {
+                    return vnFirebase.getFirebaseData('articles');  // is an object
+                } else {
+                    vnApi.Article.get()
+                        .$promise.then(function (results) {
+                            angular.forEach(results.data, function (r) {
+                                var aid = r.id;
+                                vnApiArticleData[aid] = r;
+                            });
+                        });
+                    return vnApiArticleData;
+                }
+            }
+
+            /**
+             * @ngdoc function
+             * @name getCategories
+             * @methodOf Volusion.toolboxCommon.vnDataSrc
+             * @return {Object} Either a $firebase object with article items or an api response
+             * modified to look almost like a $firebase object
+             *
+             * @description
+             * Uses the environmentContext and determines where to get data from. If data is from the api
+             * the data response gets modified to make it look more like a $firebase object.
+             *
+             */
+            function getCategories() {
+                if ('Production' !== environmentContext) {
+                    return vnFirebase.getFirebaseData('categories');
+                } else {
+                    vnApi.Category.get()
+                        .$promise.then(function (results) {
+                            angular.forEach(results.data, function (r) {
+                                var cid = r.id;
+                                vnApiCategoryData[cid] = r;
+                            });
+                        });
+                    return vnApiCategoryData;
+                }
+            }
+
+            /**
+             * @ngdoc function
+             * @name getProducts
+             * @methodOf Volusion.toolboxCommon.vnDataSrc
+             * @return {Object} Either a $firebase object with article items or an api response
+             * modified to look almost like a $firebase object
+             *
+             * @description
+             * Uses the environmentContext and determines where to get data from. If data is from the api
+             * the data response gets modified to make it look more like a $firebase object.
+             *
+             */
+            function getProducts() {
+                if ('Production' !== environmentContext) {
+                    return vnFirebase.getFirebaseData('products');
+                } else {
+                    vnApi.Product.get()
+                        .$promise.then(function (results) {
+                            angular.forEach(results.data, function (r) {
+                                var pid = r.id;
+                                vnApiProductData[pid] = r;
+                            });
+                        });
+                    return vnApiProductData;
+                }
+            }
+
+            return {
+                getArticles  : getArticles,
+                getCategories: getCategories,
+                getContext   : getContextFn,
+                getProducts  : getProducts
+            };
+        }]);

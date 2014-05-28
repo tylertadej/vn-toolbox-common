@@ -1,7 +1,8 @@
 /**
  * @ngdoc service
  * @name Volusion.toolboxCommon.vnApi
- * @requires $resource vnDataEndpoint
+ * @requires $resource
+ * @requires vnDataEndpoint
  * @description
  *
  * # vnApi
