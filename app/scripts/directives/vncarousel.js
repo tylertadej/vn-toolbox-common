@@ -19,26 +19,27 @@
  *
  *
  * @example
-     <example module="app">
-            <file name="script.js">
-                angular.module('app', [])
-                    .controller('CarouselCtrl',
-                        function ($scope) {
+     <example module="Volusion.toolboxCommon" deps="">
+        <file name="toolbox.js" src="https://raw.githubusercontent.com/volusion-angular/vn-toolbox-common/master/dist/vn-toolbox-common.js?token=2973530__eyJzY29wZSI6IlJhd0Jsb2I6dm9sdXNpb24tYW5ndWxhci92bi10b29sYm94LWNvbW1vbi9tYXN0ZXIvZGlzdC92bi10b29sYm94LWNvbW1vbi5qcyIsImV4cGlyZXMiOjE0MDE5MDIxNTN9--cab7a2826771ca99b3c8c2c8ca883038756d8ef3"></file>
+        <file name="script.js">
+            angular.module('Volusion.toolboxCommon', [])
+                .controller('CarouselCtrl',
+                    function ($scope) {
 
-                            $scope.imageList = [
-                                {src: 'http://lorempixel.com/450/300/people/0', alt: 'Random image'},
-                                {src: 'http://lorempixel.com/450/300/people/1', alt: 'Random image'},
-                                {src: 'http://lorempixel.com/450/300/people/2', alt: 'Random image'},
-                                {src: 'http://lorempixel.com/450/300/people/3', alt: 'Random image'}
-                            ];
+                        $scope.imageList = [
+                            {src: 'http://lorempixel.com/450/300/people/0', alt: 'Random image'},
+                            {src: 'http://lorempixel.com/450/300/people/1', alt: 'Random image'},
+                            {src: 'http://lorempixel.com/450/300/people/2', alt: 'Random image'},
+                            {src: 'http://lorempixel.com/450/300/people/3', alt: 'Random image'}
+                        ];
 
-                        });
-            </file>
-            <file name="index.html">
-                <div ng-controller="CarouselCtrl">
-                    <vn-carousel image-list="imageList" />
-                </div>
-            </file>
+                    });
+        </file>
+        <file name="index.html">
+            <div ng-controller="CarouselCtrl">
+                <vn-carousel image-list="imageList"></vn-carousel>
+            </div>
+        </file>
      </example>
  */
 

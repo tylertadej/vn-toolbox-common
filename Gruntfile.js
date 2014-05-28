@@ -36,7 +36,12 @@ module.exports = function (grunt) {
         ngdocs       : {
             options: {
                 dest     : 'docs',
-//                scripts: ['../app.min.js'],
+//                scripts: [
+//                    'app/bower-components/angular-translate/angular-translate.js',
+//                    'app/bower-components/angular-carousel/dist/angular-carousel.min.js',
+//                    'app/bower-components/angular-touch/angular-touch.min.js',
+//                    'dist/vn-toolbox-common.js'
+//                ],
                 html5Mode: true,
                 startPage: '/api',
                 title    : 'Volusion Toolbox Common Reference',
