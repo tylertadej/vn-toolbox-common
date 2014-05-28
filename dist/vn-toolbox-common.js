@@ -610,48 +610,213 @@ angular.module('Volusion.toolboxCommon')
         );
     }]);
 
-'use strict';
+angular.module('Volusion.toolboxCommon')
+    .value('vnApiArticles', {});
 
 angular.module('Volusion.toolboxCommon')
-    .value('vnApiArticles', 42);
-
-'use strict';
+    .value('vnApiCarts', {});
 
 angular.module('Volusion.toolboxCommon')
-    .value('vnApiCarts', 42);
-
-'use strict';
+  .value('vnApiCategories', {});
 
 angular.module('Volusion.toolboxCommon')
-  .value('vnApiCategories', 42);
-
-'use strict';
+    .value('vnApiConfigurations', {});
 
 angular.module('Volusion.toolboxCommon')
-    .value('vnApiConfigurations', 42);
-
-'use strict';
+    .value('vnApiNavs', {});
 
 angular.module('Volusion.toolboxCommon')
-    .value('vnApiNavs', 42);
-
-'use strict';
-
-angular.module('Volusion.toolboxCommon')
-    .value('vnApiProducts', 42);
+    .value('vnApiProducts', {});
 
 angular.module('Volusion.toolboxCommon')
     .factory('vnApi', ['$resource', 'vnDataEndpoint', function ($resource, vnDataEndpoint) {
         'use strict';
 
+
+        /**
+         * @ngdoc method
+         * @name Article
+         * @methodOf Volusion.toolboxCommon.vnApi
+         * @param {Object} params a key value object of the params needed to manage the request
+         * @returns {$resource} $resource A $resource promise that resolves the the results of
+         * the request.
+         *
+         * @description
+         * Given an object (or nothing for full list) the Article function returns a $resource
+         * promise that resolves to the Volusion API endpoint for the configured site.
+         */
+        function Article(params) {
+
+            if(!params) {
+                // Handle configuring the $resource appropriately for the articles endpoint.
+                // Dev IDEA is to use a private function to handle this business logic
+                console.log('vnApi - no params for Article Call. That\'s ok for dev though.');
+                return $resource(vnDataEndpoint.apiUrl + '/articles');
+            } else {
+                return $resource(vnDataEndpoint.apiUrl + '/articles');
+            }
+
+        }
+
+
+        /**
+         * @ngdoc method
+         * @name Category
+         * @methodOf Volusion.toolboxCommon.vnApi
+         * @param {Object} params a key value object of the params needed to manage the request
+         * @returns {$resource} $resource A $resource promise that resolves the the results of
+         * the request.
+         *
+         * @description
+         * Given an object (or nothing for full list) the Category function returns a $resource
+         * promise that resolves to the Volusion API endpoint for the configured site.
+         */
+        function Category(params) {
+
+            if(!params) {
+                // Handle configuring the $resource appropriately for the category endpoint.
+                // Dev IDEA is to use a private function to handle this business logic
+                console.log('vnApi - no params for Category Call. That\'s ok for dev though.');
+                return $resource(vnDataEndpoint.apiUrl + '/categories');
+            } else {
+                return $resource(vnDataEndpoint.apiUrl + '/categories');
+            }
+
+        }
+
+        /**
+         * @ngdoc method
+         * @name Cart
+         * @methodOf Volusion.toolboxCommon.vnApi
+         * @param {Object} params a key value object of the params needed to manage the request
+         * @returns {$resource} $resource A $resource promise that resolves the the results of
+         * the request.
+         *
+         * @description
+         * Given an object (or nothing for full list) the Cart function returns a $resource
+         * promise that resolves to the Volusion API endpoint for the configured site.
+         */
+        function Cart(params) {
+
+            if(!params) {
+                // Handle configuring the $resource appropriately for the cart endpoint.
+                // Dev IDEA is to use a private function to handle this business logic
+                console.log('vnApi - no params for Cart Call. That\'s ok for dev though.');
+                return $resource();
+            } else {
+                return $resource(vnDataEndpoint.apiUrl + '/carts');
+            }
+
+        }
+
+        /**
+         * @ngdoc method
+         * @name Configuration
+         * @methodOf Volusion.toolboxCommon.vnApi
+         * @param {Object} params a key value object of the params needed to manage the request
+         * @returns {$resource} $resource A $resource promise that resolves the the results of
+         * the request.
+         *
+         * @description
+         * Given an object (or nothing for full list) the Configuration function returns a
+         * $resource promise that resolves to the Volusion API endpoint for the configured site.
+         */
+        function Configuration(params) {
+
+            if(!params) {
+                // Handle configuring the $resource appropriately for the configuration endpoint.
+                // Dev IDEA is to use a private function to handle this business logic
+                console.log('vnApi - no params for Configuration Call. That\'s ok for dev though.');
+                return $resource(vnDataEndpoint.apiUrl + '/config');
+            } else {
+                return $resource(vnDataEndpoint.apiUrl + '/config');
+            }
+
+        }
+
+        /**
+         * @ngdoc method
+         * @name Country
+         * @methodOf Volusion.toolboxCommon.vnApi
+         * @param {Object} params a key value object of the params needed to manage the request
+         * @returns {$resource} $resource A $resource promise that resolves the the results of
+         * the request.
+         *
+         * @description
+         * Given an object (or nothing for full list) the Country function returns a $resource
+         * promise that resolves to the Volusion API endpoint for the configured site.
+         */
+        function Country(params) {
+
+            if(!params) {
+                return $resource(vnDataEndpoint.apiUrl + '/countries');
+            } else {
+                // Handle configuring the $resource appropriately for the country endpoint.
+                // Dev IDEA is to use a private function to handle this business logic
+                console.log('vnApi - no params for Country Call. That\'s ok for dev though.');
+                return $resource(vnDataEndpoint.apiUrl + '/countries');
+            }
+
+        }
+
+        /**
+         * @ngdoc method
+         * @name Nav
+         * @methodOf Volusion.toolboxCommon.vnApi
+         * @param {Object} params a key value object of the params needed to manage the request
+         * @returns {$resource} $resource A $resource promise that resolves the the results of
+         * the request.
+         *
+         * @description
+         * Given an object (or nothing for full list) the Nav function returns a $resource
+         * promise that resolves to the Volusion API endpoint for the configured site.
+         */
+        function Nav(params) {
+
+            if(!params) {
+                // Handle configuring the $resource appropriately for the nav endpoint.
+                // Dev IDEA is to use a private function to handle this business logic
+                console.log('vnApi - no params for Nav Call. That\'s ok for dev though.');
+                return $resource(vnDataEndpoint.apiUrl + '/navs');
+            } else {
+                return $resource(vnDataEndpoint.apiUrl + '/navs');
+            }
+
+        }
+
+        /**
+         * @ngdoc method
+         * @name Product
+         * @methodOf Volusion.toolboxCommon.vnApi
+         * @param {Object} params a key value object of the params needed to manage the request
+         * @returns {$resource} $resource A $resource promise that resolves the the results of
+         * the request.
+         *
+         * @description
+         * Given an object (or nothing for full list) the Product function returns a $resource
+         * promise that resolves to the Volusion API endpoint for the configured site.
+         */
+        function Product(params) {
+
+            if(!params) {
+                // Handle configuring the $resource appropriately for the products endpoint.
+                // Dev IDEA is to use a private function to handle this business logic
+                console.log('vnApi - no params for Product Call. That\'s ok for dev though.');
+                return $resource(vnDataEndpoint.apiUrl + '/products');
+            } else {
+                return $resource(vnDataEndpoint.apiUrl + '/products');
+            }
+
+        }
+
         return {
-            Article        : $resource(vnDataEndpoint.apiUrl + '/articles'),
-            Category       : $resource(vnDataEndpoint.apiUrl + '/categories'),
-            Cart           : $resource(vnDataEndpoint.apiUrl + '/carts'),
-            Configuration  : $resource(vnDataEndpoint.apiUrl + '/config'),
-            Country        : $resource(vnDataEndpoint.apiUrl + '/countries'),
-            Nav            : $resource(vnDataEndpoint.apiUrl + '/navs'),
-            Product        : $resource(vnDataEndpoint.apiUrl + '/products/')
+            Article        : Article,
+            Category       : Category,
+            Cart           : Cart,
+            Configuration  : Configuration,
+            Country        : Country,
+            Nav            : Nav,
+            Product        : Product
         };
     }]);
 
@@ -989,27 +1154,141 @@ angular.module('Volusion.toolboxCommon')
         };
     })()); // Dev Note: Notice the immediate invocation. This gives us a constant with two values.
 
+angular.module('Volusion.toolboxCommon')
+    .factory('vnDataSrc', ['$q', 'vnEnvironment', 'vnApi', 'vnFirebase', 'vnApiArticleData', 'vnApiCategoryData', 'vnApiProductData',
+        function ($q, vnEnvironment, vnApi, vnFirebase, vnApiArticleData, vnApiCategoryData, vnApiProductData) {
+            'use strict';
+
+            /**
+             * @ngdoc property
+             * @name environmentContext
+             * @property {Object} environmentContext
+             * @propertyOf Volusion.toolboxCommon.vnDataSrc
+             *
+             * @description
+             * A Volusion.toolboxCommon value that can be set to the app/theme
+             * environment
+             */
+            var environmentContext = vnEnvironment;
+
+            /**
+             * @ngdoc function
+             * @name getContextFn
+             * @methodOf Volusion.toolboxCommon.vnDataSrc
+             * @return {Value} environmentContext The Value service for the app that sets the
+             * environment to SiteBuilder, WorkSpace or Production.
+             *
+             * @description
+             * return the environmentContext property configured for the app.
+             *
+             */
+            function getContextFn() {
+
+                return environmentContext;
+
+            }
+
+            /**
+             * @ngdoc function
+             * @name getArticles
+             * @methodOf Volusion.toolboxCommon.vnDataSrc
+             * @return {Object} Either a $firebase object with article items or an api response
+             * modified to look almost like a $firebase object
+             *
+             * @description
+             * Uses the environmentContext and determines where to get data from. If data is from the api
+             * the data response gets modified to make it look more like a $firebase object.
+             *
+             */
+            function getArticles() {
+                if ('Production' !== environmentContext) {
+                    return vnFirebase.getFirebaseData('articles');  // is an object
+                } else {
+                    vnApi.Article.get()
+                        .$promise.then(function (results) {
+                            angular.forEach(results.data, function (r) {
+                                var aid = r.id;
+                                vnApiArticleData[aid] = r;
+                            });
+                        });
+                    return vnApiArticleData;
+                }
+            }
+
+            /**
+             * @ngdoc function
+             * @name getCategories
+             * @methodOf Volusion.toolboxCommon.vnDataSrc
+             * @return {Object} Either a $firebase object with article items or an api response
+             * modified to look almost like a $firebase object
+             *
+             * @description
+             * Uses the environmentContext and determines where to get data from. If data is from the api
+             * the data response gets modified to make it look more like a $firebase object.
+             *
+             */
+            function getCategories() {
+                if ('Production' !== environmentContext) {
+                    return vnFirebase.getFirebaseData('categories');
+                } else {
+                    vnApi.Category.get()
+                        .$promise.then(function (results) {
+                            angular.forEach(results.data, function (r) {
+                                var cid = r.id;
+                                vnApiCategoryData[cid] = r;
+                            });
+                        });
+                    return vnApiCategoryData;
+                }
+            }
+
+            /**
+             * @ngdoc function
+             * @name getProducts
+             * @methodOf Volusion.toolboxCommon.vnDataSrc
+             * @return {Object} Either a $firebase object with article items or an api response
+             * modified to look almost like a $firebase object
+             *
+             * @description
+             * Uses the environmentContext and determines where to get data from. If data is from the api
+             * the data response gets modified to make it look more like a $firebase object.
+             *
+             */
+            function getProducts() {
+                if ('Production' !== environmentContext) {
+                    return vnFirebase.getFirebaseData('products');
+                } else {
+                    vnApi.Product.get()
+                        .$promise.then(function (results) {
+                            angular.forEach(results.data, function (r) {
+                                var pid = r.id;
+                                vnApiProductData[pid] = r;
+                            });
+                        });
+                    return vnApiProductData;
+                }
+            }
+
+            return {
+                getArticles  : getArticles,
+                getCategories: getCategories,
+                getContext   : getContextFn,
+                getProducts  : getProducts
+            };
+        }]);
+
 'use strict';
 
 angular.module('Volusion.toolboxCommon')
-    .factory('vnDataSrc', function () {
-        // Service logic
-        // ...
-
-        var meaningOfLife = 42;
-
-        // Public API here
-        return {
-            someMethod: function () {
-                return meaningOfLife;
-            }
-        };
-    });
+//    .value('vnEnvironmentContext', 'SiteBuilder');  // can be overwritten later to be 'WorkSpace' or 'Production'
+    .value('vnEnvironment', 'Production');  // can be overwritten later to be 'WorkSpace' or 'Production'
 
 /**
  * @ngdoc service
  * @name Volusion.toolboxCommon.vnFirebase
- * @requires vnConfig, vnDataEndpoint, $firebase
+ * @requires vnConfig
+ * @requires vnDataEndpoint
+ * @requires $firebase
  * @description
  *
  * # vnFirebase
@@ -1179,19 +1458,176 @@ angular.module('Volusion.toolboxCommon')
             };
         }]);
 
-'use strict';
-
 angular.module('Volusion.toolboxCommon')
-    .factory('vnSession', function () {
-        // Service logic
-        // ...
+    .factory('vnSession', ['$rootScope', '$q', 'vnApi', 'vnFirebase',
+        function ($rootScope, $q, vnApi, vnFirebase) {
+            'use strict';
 
-        var meaningOfLife = 42;
+            /**
+             * @ngdoc property
+             * @name accountData
+             * @property {Object} accountData
+             * @propertyOf Volusion.toolboxCommon.vnSession
+             *
+             * @description
+             * A key/value object matching the expected response api/backend authentication
+             * service.
+             */
+            var accountData = {};
 
-        // Public API here
-        return {
-            someMethod: function () {
-                return meaningOfLife;
+            /**
+             * @ngdoc event
+             * @name vnSession.init
+             * @eventOf Volusion.toolboxCommon.vnSession
+             * @param {Object} event is the event passed when vnSession.init is broadcast
+             * @param {Object} args are the values to be passed in here
+             *
+             * @description
+             * Hears the vnSession.init event when it is broadcast and Passes the args to
+             * the private init function.
+             */
+            $rootScope.$on('vnSession.init', function (event, args) {
+                initSession(args);
+
+            });
+
+            /**
+             * @ngdoc function
+             * @name bootstrapSessionData
+             * @methodOf Volusion.toolboxCommon.vnSession
+             *
+             * @description
+             * The Dev purpose for calling this function is to define the apiEndpoints where
+             * we will be getting data from. Here is the flow:
+             *
+             * 1. It should be called after configuration is set for SiteBuilder
+             * 2. It resets the Firebase account data to a blank slate
+             * 3. It uses the date for the vnApi endpoints to get data
+             * 4. it calls setFirebaseData with each endpoint promise.
+             *
+             * <br/>
+             * It does not return anything as the promises are async and network latency plays
+             * role in how long a response will take. We just set the data xfer process in motion
+             * here and return control to the caller.
+             *
+             */
+            function bootstrapSessionData() {
+
+                // The places interesting data sets live ...
+                var apiEndpoints = {
+//                        articles  : vnApi.Article.get().$promise,
+                        articles  : vnApi.Article(),
+//                        categories: vnApi.Category.get().$promise,
+                        categories: vnApi.Category(),
+//                        carts     : vnApi.Cart.get().$promise,
+                        carts     : vnApi.Cart(),
+//                        config    : vnApi.Configuration.get().$promise,
+                        config    : vnApi.Configuration(),
+//                        countries : vnApi.Country.get().$promise,
+                        countries : vnApi.Country(),
+//                        navs      : vnApi.Nav.get().$promise,
+                        navs      : vnApi.Nav(),
+//                        products  : vnApi.Product.get().$promise
+                        products  : vnApi.Product()
+
+                    },
+                    keys = Object.keys(apiEndpoints);
+
+                // proof-of-concept.
+                vnFirebase.resetSiteBuilder(); // i.e. called with no session state persistence considered.
+
+                // Grab the keys for api endpoints so we know what goes where in firebase
+                // NOTE: The key depends on accuracy of the firebase schema as it is used as a string elsewhere
+                //       for firebase url generation.
+                angular.forEach(keys, function (k) {
+                    setFirebaseData(k, apiEndpoints[k]);
+                });
+
             }
-        };
-    });
+
+            /**
+             * @ngdoc function
+             * @name getAccountData
+             * @methodOf Volusion.toolboxCommon.vnSession
+             * @return {object} accountData is the factory property that holds the accountData
+             * given to us from the api/backend auth services.
+             *
+             * @description
+             * Getter for the factory property accountData.
+             */
+            function getAccountData() {
+                return accountData;
+            }
+
+            /**
+             * @ngdoc function
+             * @name init
+             * @methodOf Volusion.toolboxCommon.vnSession
+             * @return {Boolean} true or throw a new Error if there are issues.
+             *
+             * @description
+             * Use this to call basic initialization. set up the vnConfig object with its environment
+             * and any other stuff that site-dna needs to use when GETting data from the Volusion API.
+             */
+            function init() {
+                // Pre authentication set up stuff goes here.
+                return true;
+            }
+
+            /**
+             * @ngdoc function
+             * @name initSession
+             * @methodOf Volusion.toolboxCommon.vnSession
+             * @param {Object} response The login response from the api/backend authentication
+             * services used for eleveated data access perminssions. (SiteBuilder & WorkSpace)
+             * @return {Boolean} true or throw a new Error if there are issues.
+             *
+             * @description
+             * Use this to call basic initialization. set up the vnConfig object with its environment
+             * and any other stuff that site-dna needs to use when GETting data from the Volusion API.
+             */
+            function initSession(response) {
+
+//                we only init once per session but have not set this yet? 5-28.2014 -matth
+                accountData = response;
+                bootstrapSessionData();
+
+            }
+
+            /**
+             * @ngdoc function
+             * @name setFirebaseData
+             * @param {String} path Is the <ITEM> path for the resource in our Firebase schema.
+             * @param {$resource} resource Is a $resource for the vnApi Item Model
+             * @methodOf Volusion.toolboxCommon.vnSession
+             *
+             * @description
+             * Given the results of a $resource.get().$promise reset the data for the
+             * Firebase path associated with its corresponding api items.
+             *
+             * 1. Execute the given promise
+             * 2. Then, pass the path and promise params to the vnFirebase.resetDataForPath
+             *
+             * <br/>
+             * It does not return anything as the promises are async and network latency plays
+             * role in how long a response will take. We just set the data xfer process in motion
+             * here and return control to the caller. THIS HAD ISSUES IN PORTING REMOVE THIS WHEN
+             * THEN PART OF PROMISE WORKS AGAIN!!!
+             *
+             */
+            function setFirebaseData(path, resource) {
+
+                console.log(resource);
+                console.log('Porting issue with the prromise and data ... to fix with ng-stub');
+//                resource.get().$promise.then(function (result) {
+//                    vnFirebase.resetDataForPath(path, result.data);
+//                });
+
+            }
+
+            return {
+                init          : init,
+                initSession   : initSession,
+                getAccountData: getAccountData
+            };
+        }]);
