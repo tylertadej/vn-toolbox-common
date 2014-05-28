@@ -11,8 +11,11 @@ describe('Service: vnApiConfigurations', function () {
         vnApiConfigurations = _vnApiConfigurations_;
     }));
 
-    it('should do something', function () {
-        expect(!!vnApiConfigurations).toBe(true);
+    it('should default to an empty object', function () {
+        expect(vnApiConfigurations).toEqual({});
     });
+
+    // When mocking or ajax testing is enabled test the integrity
+    // of the responses structure.
 
 });

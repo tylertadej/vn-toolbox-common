@@ -11,9 +11,8 @@ describe('Service: vnApiArticles', function () {
         vnApiArticles = _vnApiArticles_;
     }));
 
-    it('should do something', function () {
-        expect(!!vnApiArticles).toBe(true);
-        expect(!!vnApiArticles).toBe(true);
+    it('should default to an empty object', function () {
+        expect(vnApiArticles).toEqual({});
     });
 
 });

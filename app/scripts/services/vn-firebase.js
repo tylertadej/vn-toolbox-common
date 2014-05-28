@@ -2,7 +2,9 @@
 /**
  * @ngdoc service
  * @name Volusion.toolboxCommon.vnFirebase
- * @requires vnConfig, vnDataEndpoint, $firebase
+ * @requires vnConfig
+ * @requires vnDataEndpoint
+ * @requires $firebase
  * @description
  *
  * # vnFirebase
