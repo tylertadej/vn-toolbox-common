@@ -188,9 +188,9 @@ angular.module('Volusion.toolboxCommon')
                 // Handle configuring the $resource appropriately for the products endpoint.
                 // Dev IDEA is to use a private function to handle this business logic
                 console.log('vnApi - no params for Product Call. That\'s ok for dev though.');
-                return $resource(vnDataEndpoint.apiUrl + '/products/');
+                return $resource(vnDataEndpoint.apiUrl + '/products');
             } else {
-                return $resource(vnDataEndpoint.apiUrl + '/products/');
+                return $resource(vnDataEndpoint.apiUrl + '/products');
             }
 
         }
