@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.2 (2014-05-27) */
+/*! vn-toolbox-common - ver.0.0.2 (2014-05-28) */
 
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'angular-carousel'])
     .config(
@@ -55,26 +55,27 @@ angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'angular-car
  *
  *
  * @example
-     <example module="app">
-            <file name="script.js">
-                angular.module('app', [])
-                    .controller('CarouselCtrl',
-                        function ($scope) {
+     <example module="Volusion.toolboxCommon" deps="">
+        <file name="toolbox.js" src="https://raw.githubusercontent.com/volusion-angular/vn-toolbox-common/master/dist/vn-toolbox-common.js?token=2973530__eyJzY29wZSI6IlJhd0Jsb2I6dm9sdXNpb24tYW5ndWxhci92bi10b29sYm94LWNvbW1vbi9tYXN0ZXIvZGlzdC92bi10b29sYm94LWNvbW1vbi5qcyIsImV4cGlyZXMiOjE0MDE5MDIxNTN9--cab7a2826771ca99b3c8c2c8ca883038756d8ef3"></file>
+        <file name="script.js">
+            angular.module('Volusion.toolboxCommon', [])
+                .controller('CarouselCtrl',
+                    function ($scope) {
 
-                            $scope.imageList = [
-                                {src: 'http://lorempixel.com/450/300/people/0', alt: 'Random image'},
-                                {src: 'http://lorempixel.com/450/300/people/1', alt: 'Random image'},
-                                {src: 'http://lorempixel.com/450/300/people/2', alt: 'Random image'},
-                                {src: 'http://lorempixel.com/450/300/people/3', alt: 'Random image'}
-                            ];
+                        $scope.imageList = [
+                            {src: 'http://lorempixel.com/450/300/people/0', alt: 'Random image'},
+                            {src: 'http://lorempixel.com/450/300/people/1', alt: 'Random image'},
+                            {src: 'http://lorempixel.com/450/300/people/2', alt: 'Random image'},
+                            {src: 'http://lorempixel.com/450/300/people/3', alt: 'Random image'}
+                        ];
 
-                        });
-            </file>
-            <file name="index.html">
-                <div ng-controller="CarouselCtrl">
-                    <vn-carousel image-list="imageList" />
-                </div>
-            </file>
+                    });
+        </file>
+        <file name="index.html">
+            <div ng-controller="CarouselCtrl">
+                <vn-carousel image-list="imageList"></vn-carousel>
+            </div>
+        </file>
      </example>
  */
 
@@ -354,6 +355,133 @@ angular.module('Volusion.toolboxCommon')
         $templateCache.put(
             'template/link.html',
             '<a class="vn-link" target="{{ target }}" ng-transclude></a>'
+        );
+    }]);
+
+/**
+ * @ngdoc directive
+ * @name Volusion.toolboxCommon.directive:vnNav
+ * @restrict EA
+ * @requires $rootScope
+ * @scope
+ * @description
+ *
+ * Replace the element with navbar's html markup. Accepts categoryList as array of objects
+ *
+ * @usage
+ <div vn-nav category-list="categoryList" callback="alert('Item selected')"></div>
+
+ -OR-------------------------------------
+
+ <vn-nav category-list="categoryList"></vn-nav>
+ *
+ *
+ * @example
+     <example module="Volusion.toolboxCommon" deps="">
+         <file name="script.js">
+             angular.module('Volusion.toolboxCommon', [])
+                .controller('NavCtrl',
+                    function ($scope) {
+
+                        $scope.categoryList = [
+                            {name : 'Apparel',
+                                subCategories: [
+                                    {id: 123, name : 'Women'},
+                                    {id: 234, name : 'Men'}
+                                ]},
+                            {name : 'Home decor',
+                                subCategories: [
+                                    {id: 123, name : 'Furniture'},
+                                    {id: 234, name : 'Home Accessories'}
+                                ]},
+                            {name : 'Beauty',
+                                subCategories: [
+                                    {id: 123, name : 'Bath and Body'},
+                                    {id: 234, name : 'Hair Care'}
+                                ]},
+                            {name : 'Gourmet food',
+                                subCategories: [
+                                    {id: 123, name : 'Speciality Items'},
+                                    {id: 234, name : 'Sweets'}
+                                ]}
+                        ];
+
+                    });
+         </file>
+         <file name="index.html">
+             <div ng-controller="NavCtrl">
+                <vn-nav category-list="categoryList"></vn-nav>
+             </div>
+         </file>
+     </example>
+ */
+
+angular.module('Volusion.toolboxCommon')
+    .directive('vnNav',
+        ['$rootScope',
+            function ($rootScope) {
+
+                'use strict';
+
+                return {
+                    templateUrl: 'template/navbar.html',
+                    restrict   : 'EA',
+                    replace    : true,
+                    scope      : {
+                        currMode     : '@currMode',
+                        categoryList : '=',
+                        callback     : '@'
+                    },
+                    link       : function postLink(scope, element) {
+                        if (scope.currMode === undefined) {
+                            scope.currMode = 'on';
+                        }
+
+                        if (scope.callback === undefined) {
+                            scope.callback = function () {
+                                alert('Item selected');
+                            };
+                        }
+
+                        // Component constants *****************
+                        scope.componentId = '100005';
+                        scope.componentName = 'navbar';
+                        // *************************************
+
+                        // Component is not selected by default
+                        scope.selected = false;
+
+                        scope.$on('currentComponent.change', function (event, component) {
+                            if (component && component.id && scope.currMode === 'off') {
+                                scope.selected = (component.id === scope.componentId);
+                            }
+                        });
+
+                        element.on('click', function (event) {
+                            // if in EDIT mode
+                            if (scope.currMode === 'off') {
+                                event.preventDefault();
+                                $rootScope.$broadcast('currentComponent.change', {'id': scope.componentId, 'name': scope.componentName, 'action': 'set'});
+                            }
+                        });
+                    }
+                };
+            }])
+    .run(['$templateCache', function ($templateCache) {
+        'use strict';
+
+        $templateCache.put(
+            'template/navbar.html',
+            '<ul class="nav navbar-nav">' +
+                '<li class="dropdown" data-ng-repeat="category in categoryList">' +
+                    '<a href class="dropdown-toggle th-dropdown-toggle" data-toggle="dropdown">{{category.name}}</a>' +
+                    '<ul class="dropdown-menu" data-ng-if="category.subCategories.length">' +
+                        '<li data-ng-repeat="subCategory in category.subCategories">' +
+                            '<a href="callback">{{subCategory.name}}</a>' +
+                        '</li>' +
+                    '</ul>' +
+                '</li>' +
+            '</ul>'
         );
     }]);
 
@@ -878,6 +1006,20 @@ angular.module('Volusion.toolboxCommon')
         };
     });
 
+/**
+ * @ngdoc service
+ * @name Volusion.toolboxCommon.vnFirebase
+ * @requires vnConfig, vnDataEndpoint, $firebase
+ * @description
+ *
+ * # vnFirebase
+ * This is a service to manage the data flow into and out of the firebase service when
+ * an app is in either the SiteBuilder or WorkSpace environment. It can generate $firebase
+ * reverence objects, sync data from the api into firebase and sync data from firebase back
+ * to the api as well as reseting the accounts firebase with data for a new session.
+ *
+ */
+
 angular.module('Volusion.toolboxCommon')
     .factory('vnFirebase', ['vnConfig', 'vnDataEndpoint', '$firebase',
         function (vnConfig, vnDataEndpoint, $firebase) {
@@ -894,69 +1036,109 @@ angular.module('Volusion.toolboxCommon')
                 sitebuilder: '/account_sitebuilder'
             };
 
-            function getFirebaseDataFn(path) {
+            /**
+             * @ngdoc method
+             * @name getFirebaseData
+             * @methodOf Volusion.toolboxCommon.vnFirebase
+             * @param {String} path is the string path to a Firebase Item
+             * @returns {$firebase} $firebase Reference to the firebase reference for the
+             * given path.
+             *
+             * @description
+             * Takes a string path for a Firebase item and created a $firebase reference for
+             * one of the
+             */
+            function getFirebaseData(path) {
+
                 if (path && 'string' === typeof path) {
                     return $firebase(new Firebase(vnDataEndpoint.fbUrl + fbItems[path] + '/' + vnConfig.getAccount() + '/'));
+                } else {
+                    throw new Error('vnFirebase.getFirebaseData function failed.');
                 }
-                return false;
-            }
 
-
-
-            function generatePathFn(path) {
-                /**
-                 @function
-                 @name generateFBPathFn
-                 @description Given a partial path as a string use vnConfig info to construct a path to FB resources
-                 @param {String} path
-                 @return String
-                 */
-
-                if (path && 'string' === typeof path) {
-                    return vnDataEndpoint.fbUrl + fbItems[path] + '/' + vnConfig.getAccount() + '/';
-                }
-                return false;
-            }
-
-            function resetSiteBuilderFn() {
-                /**
-                 @function
-                 @name resetSiteBuilderFn
-                 @description reset the SiteBuilder App state to default settings.
-                 @param {}
-                 @return Boolean
-                 */
-
-                var sbRef = $firebase(new Firebase(vnDataEndpoint.fbUrl + '/account_sitebuilder/asdf123'));
-                var sbd = new SiteBuilderDefaults();
-                sbRef.$set(sbd);
-
-                return true;
-            }
-
-            function resetDataForPathFn(path, data) {
-                /**
-                 @function
-                 @name resetDataForPathFn
-                 @description Given a string path & datacreate a firebase reference and update the data for that path
-                 @param {String, Object || Array of Objects} path, data
-                 @return Boolean
-                 */
-
-                var fullPath;
-                if (path && data && 'string' === typeof path) {
-                    fullPath = generatePathFn(path);
-                    var pathRef = $firebase(new Firebase(fullPath));
-                    pathRef.$set(data);
-                    return true;
-                }
-                return false;
             }
 
             /**
+             * @ngdoc method
+             * @name generatePath
+             * @methodOf Volusion.toolboxCommon.vnFirebase
+             * @param {String} path A string path to the Firebase item that we want to create
+             * a Firebase resource to.
+             * @returns {String} Directly returns the string created inline.
+             */
+            function generatePath(path) {
+
+                if (path && 'string' === typeof path) {
+                    return vnDataEndpoint.fbUrl + fbItems[path] + '/' + vnConfig.getAccount() + '/';
+                } else {
+                    throw new Error('vnFirebase.generatePath function failed.');
+                }
+
+            }
+
+            /**
+             * @ngdoc method
+             * @name resetSiteBuilder
+             * @methodOf Volusion.toolboxCommon.vnFirebase
+             * @param {String} account The name of the account which needs to b e reset.
+             * @returns {Boolean} THere is no error handling yet so it returns true.
              *
-             * @returns {{component: {id: string, typeDesc: string, typeId: string}, product: string, category: string, page: string, theme: {id: string, name: string, thumbnail: string, cssRef: string}, previewMode: string, preferredLanguge: string}}
-             * @constructor SiteBuilder
+             * @description
+             * Still mocked with a fake asdf123 account path.
+             * This function does the following:
+             *
+             * 1. Creates a Firebase reference to the configured account
+             * 2. Grabs the default object for a new session
+             * 3. Sets that data for the Firebase reference.
+             *
+             */
+            function resetSiteBuilder() {
+
+                var sbRef = $firebase(new Firebase(vnDataEndpoint.fbUrl + '/account_sitebuilder/' + vnConfig.getAccount()));
+                var sbd = new SiteBuilderDefaults();
+                sbRef.$set(sbd);
+                return true;
+            }
+
+            /**
+             * @ngdoc method
+             * @name resetDataForPath
+             * @methodOf Volusion.toolboxCommon.vnFirebase
+             * @param {String} path The item or resource in Firebase
+             * @param {Object} data The data that needs to be updated for the given path.
+             * @returns {Boolean} THere is no error handling yet so it returns true.
+             * @returns {Error} err Inline generation of an error if not a string.
+             *
+             * @description
+             * Control is followed if path is a string and data exists. If not, an error
+             * is returned.
+             *
+             */
+            function resetDataForPath(path, data) {
+
+                var fullPath;
+                if (path && data && 'string' === typeof path) {
+                    fullPath = generatePath(path);
+                    var pathRef = $firebase(new Firebase(fullPath));
+                    pathRef.$set(data);
+                    return true;
+                } else {
+                    throw new Error('vnFirebase.resetDataForPath() error.');
+                }
+
+            }
+
+            /**
+             * @ngdoc method
+             * @name SiteBuilderDefaults
+             * @methodOf Volusion.toolboxCommon.vnFirebase
+             * @returns {Object} data
+             *
+             * @description
+             *
+             *  Use this to reset the SiteBuilder Session (app state, other things??)
+             *  to the pre-determined sane defaults we have chosen.
+             *
              */
             function SiteBuilderDefaults() {
                 /**
@@ -991,9 +1173,9 @@ angular.module('Volusion.toolboxCommon')
 
             // public api here
             return {
-                getFirebaseData : getFirebaseDataFn,
-                resetSiteBuilder: resetSiteBuilderFn,
-                resetDataForPath: resetDataForPathFn
+                getFirebaseData : getFirebaseData,
+                resetSiteBuilder: resetSiteBuilder,
+                resetDataForPath: resetDataForPath
             };
         }]);
 
