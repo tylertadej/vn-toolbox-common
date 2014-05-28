@@ -114,15 +114,17 @@ angular.module('Volusion.toolboxCommon')
 
         $templateCache.put(
             'template/navbar.html',
-            '<ul class="nav navbar-nav">' +
-                '<li class="dropdown" data-ng-repeat="category in categoryList">' +
-                    '<a href class="dropdown-toggle th-dropdown-toggle" data-toggle="dropdown">{{category.name}}</a>' +
-                    '<ul class="dropdown-menu" data-ng-if="category.subCategories.length">' +
-                        '<li data-ng-repeat="subCategory in category.subCategories">' +
-                            '<a href="callback">{{subCategory.name}}</a>' +
-                        '</li>' +
-                    '</ul>' +
-                '</li>' +
-            '</ul>'
+            '<div class="collapse navbar-collapse " id="th-main-menu" data-ng-class="!navCollapsed && \'in\'" data-ng-click="navCollapsed=true">' +
+                '<ul class="nav navbar-nav">' +
+                    '<li class="dropdown" data-ng-repeat="category in categoryList">' +
+                        '<a href class="dropdown-toggle th-dropdown-toggle" data-toggle="dropdown">{{category.name}}</a>' +
+                        '<ul class="dropdown-menu" data-ng-if="category.subCategories.length">' +
+                            '<li data-ng-repeat="subCategory in category.subCategories">' +
+                                '<a href ng-click="{{ callback }}">{{subCategory.name}}</a>' +
+                            '</li>' +
+                        '</ul>' +
+                    '</li>' +
+                '</ul>' +
+            '</div>'
         );
     }]);
