@@ -11,8 +11,10 @@ describe('Service: vnApiCarts', function () {
         vnApiCarts = _vnApiCarts_;
     }));
 
-    it('should do something', function () {
-        expect(!!vnApiCarts).toBe(true);
+    it('should default to an empty object', function () {
+        expect(vnApiCarts).toEqual({});
     });
 
+    // When mocking or ajax testing is enabled test the integrity
+    // of the Cart structure.
 });

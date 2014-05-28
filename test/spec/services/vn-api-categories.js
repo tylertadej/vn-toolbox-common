@@ -11,8 +11,11 @@ describe('Service: vnApiCategories', function () {
         vnApiCategories = _vnApiCategories_;
     }));
 
-    it('should do something', function () {
-        expect(!!vnApiCategories).toBe(true);
+    it('should default to an empty object', function () {
+        expect(vnApiCategories).toEqual({});
     });
+
+    // When mocking or ajax testing is enabled test the integrity
+    // of the responses structure.
 
 });
