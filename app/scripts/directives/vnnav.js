@@ -1,4 +1,4 @@
-/*global angular, alert */
+/*global angular */
 
 /**
  * @ngdoc directive
@@ -11,7 +11,7 @@
  * Replace the element with navbar's html markup. Accepts categoryList as array of objects
  *
  * @usage
- <div vn-nav category-list="categoryList" callback="alert('Item selected')"></div>
+ <div vn-nav category-list="categoryList" callback-fn="alert('Item selected')"></div>
 
  -OR-------------------------------------
 
@@ -71,18 +71,11 @@ angular.module('Volusion.toolboxCommon')
                     replace    : true,
                     scope      : {
                         currMode     : '@currMode',
-                        categoryList : '=',
-                        callback     : '@'
+                        categoryList : '='
                     },
                     link       : function postLink(scope, element) {
                         if (scope.currMode === undefined) {
                             scope.currMode = 'on';
-                        }
-
-                        if (scope.callback === undefined) {
-                            scope.callback = function () {
-                                alert('Item selected');
-                            };
                         }
 
                         // Component constants *****************
@@ -120,7 +113,7 @@ angular.module('Volusion.toolboxCommon')
                         '<a href class="dropdown-toggle th-dropdown-toggle" data-toggle="dropdown">{{category.name}}</a>' +
                         '<ul class="dropdown-menu" data-ng-if="category.subCategories.length">' +
                             '<li data-ng-repeat="subCategory in category.subCategories">' +
-                                '<a href ng-click="{{ callback }}">{{subCategory.name}}</a>' +
+                                '<a ng-href="#/category/{{ subCategory.id }}">{{subCategory.name}}</a>' +
                             '</li>' +
                         '</ul>' +
                     '</li>' +
