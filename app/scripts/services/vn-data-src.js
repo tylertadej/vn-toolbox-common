@@ -25,8 +25,8 @@
  */
 
 angular.module('Volusion.toolboxCommon')
-    .factory('vnDataSrc', ['$q', 'vnEnvironment', 'vnApi', 'vnFirebase', 'vnApiArticle', 'vnApiCategory', 'vnApiProduct',
-        function ($q, vnEnvironment, vnApi, vnFirebase, vnApiArticle, vnApiCategory, vnApiProduct) {
+    .factory('vnDataSrc', ['$q', 'vnEnvironment', 'vnApi', 'vnFirebase', 'vnApiArticles', 'vnApiCategories', 'vnApiProducts',
+        function ($q, vnEnvironment, vnApi, vnFirebase, vnApiArticles, vnApiCategories, vnApiProducts) {
             'use strict';
 
             /**
@@ -78,10 +78,10 @@ angular.module('Volusion.toolboxCommon')
                         .$promise.then(function (results) {
                             angular.forEach(results.data, function (r) {
                                 var aid = r.id;
-                                vnApiArticle[aid] = r;
+                                vnApiArticles[aid] = r;
                             });
                         });
-                    return vnApiArticle;
+                    return vnApiArticles;
                 }
             }
 
@@ -105,10 +105,10 @@ angular.module('Volusion.toolboxCommon')
                         .$promise.then(function (results) {
                             angular.forEach(results.data, function (r) {
                                 var cid = r.id;
-                                vnApiCategory[cid] = r;
+                                vnApiCategories[cid] = r;
                             });
                         });
-                    return vnApiCategory;
+                    return vnApiCategories;
                 }
             }
 
@@ -132,10 +132,10 @@ angular.module('Volusion.toolboxCommon')
                         .$promise.then(function (results) {
                             angular.forEach(results.data, function (r) {
                                 var pid = r.id;
-                                vnApiProduct[pid] = r;
+                                vnApiProducts[pid] = r;
                             });
                         });
-                    return vnApiProduct;
+                    return vnApiProducts;
                 }
             }
 
