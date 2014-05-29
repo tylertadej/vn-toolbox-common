@@ -1155,8 +1155,8 @@ angular.module('Volusion.toolboxCommon')
     })()); // Dev Note: Notice the immediate invocation. This gives us a constant with two values.
 
 angular.module('Volusion.toolboxCommon')
-    .factory('vnDataSrc', ['$q', 'vnEnvironment', 'vnApi', 'vnFirebase', 'vnApiArticleData', 'vnApiCategoryData', 'vnApiProductData',
-        function ($q, vnEnvironment, vnApi, vnFirebase, vnApiArticleData, vnApiCategoryData, vnApiProductData) {
+    .factory('vnDataSrc', ['$q', 'vnEnvironment', 'vnApi', 'vnFirebase', 'vnApiArticle', 'vnApiCategory', 'vnApiProduct',
+        function ($q, vnEnvironment, vnApi, vnFirebase, vnApiArticle, vnApiCategory, vnApiProduct) {
             'use strict';
 
             /**
@@ -1208,10 +1208,10 @@ angular.module('Volusion.toolboxCommon')
                         .$promise.then(function (results) {
                             angular.forEach(results.data, function (r) {
                                 var aid = r.id;
-                                vnApiArticleData[aid] = r;
+                                vnApiArticle[aid] = r;
                             });
                         });
-                    return vnApiArticleData;
+                    return vnApiArticle;
                 }
             }
 
@@ -1235,10 +1235,10 @@ angular.module('Volusion.toolboxCommon')
                         .$promise.then(function (results) {
                             angular.forEach(results.data, function (r) {
                                 var cid = r.id;
-                                vnApiCategoryData[cid] = r;
+                                vnApiCategory[cid] = r;
                             });
                         });
-                    return vnApiCategoryData;
+                    return vnApiCategory;
                 }
             }
 
@@ -1262,10 +1262,10 @@ angular.module('Volusion.toolboxCommon')
                         .$promise.then(function (results) {
                             angular.forEach(results.data, function (r) {
                                 var pid = r.id;
-                                vnApiProductData[pid] = r;
+                                vnApiProduct[pid] = r;
                             });
                         });
-                    return vnApiProductData;
+                    return vnApiProduct;
                 }
             }
 
