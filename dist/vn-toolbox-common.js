@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.2 (2014-05-28) */
+/*! vn-toolbox-common - ver.0.0.2 (2014-05-29) */
 
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'angular-carousel'])
     .config(
@@ -803,7 +803,7 @@ angular.module('Volusion.toolboxCommon')
             if(!params) {
                 // Handle configuring the $resource appropriately for the products endpoint.
                 // Dev IDEA is to use a private function to handle this business logic
-                console.log('vnApi - no params for Product Call. That\'s ok for dev though.');
+                // so its only called here, not implemented.
                 return $resource(vnDataEndpoint.apiUrl + '/products');
             } else {
                 return $resource(vnDataEndpoint.apiUrl + '/products');
@@ -1206,12 +1206,13 @@ angular.module('Volusion.toolboxCommon')
                 if ('Production' !== environmentContext) {
                     return vnFirebase.getFirebaseData('articles');  // is an object
                 } else {
-                    vnApi.Article.get()
+                    vnApi.Article().get()
                         .$promise.then(function (results) {
                             angular.forEach(results.data, function (r) {
                                 var aid = r.id;
                                 vnApiArticles[aid] = r;
                             });
+                            console.log('vds apiprods: ', vnApiArticles);
                         });
                     return vnApiArticles;
                 }
@@ -1233,7 +1234,7 @@ angular.module('Volusion.toolboxCommon')
                 if ('Production' !== environmentContext) {
                     return vnFirebase.getFirebaseData('categories');
                 } else {
-                    vnApi.Category.get()
+                    vnApi.Category().get()
                         .$promise.then(function (results) {
                             angular.forEach(results.data, function (r) {
                                 var cid = r.id;
@@ -1260,7 +1261,7 @@ angular.module('Volusion.toolboxCommon')
                 if ('Production' !== environmentContext) {
                     return vnFirebase.getFirebaseData('products');
                 } else {
-                    vnApi.Product.get()
+                    vnApi.Product().get()
                         .$promise.then(function (results) {
                             angular.forEach(results.data, function (r) {
                                 var pid = r.id;

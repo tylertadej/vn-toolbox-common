@@ -74,12 +74,13 @@ angular.module('Volusion.toolboxCommon')
                 if ('Production' !== environmentContext) {
                     return vnFirebase.getFirebaseData('articles');  // is an object
                 } else {
-                    vnApi.Article.get()
+                    vnApi.Article().get()
                         .$promise.then(function (results) {
                             angular.forEach(results.data, function (r) {
                                 var aid = r.id;
                                 vnApiArticles[aid] = r;
                             });
+                            console.log('vds apiprods: ', vnApiArticles);
                         });
                     return vnApiArticles;
                 }
@@ -101,7 +102,7 @@ angular.module('Volusion.toolboxCommon')
                 if ('Production' !== environmentContext) {
                     return vnFirebase.getFirebaseData('categories');
                 } else {
-                    vnApi.Category.get()
+                    vnApi.Category().get()
                         .$promise.then(function (results) {
                             angular.forEach(results.data, function (r) {
                                 var cid = r.id;
@@ -128,7 +129,7 @@ angular.module('Volusion.toolboxCommon')
                 if ('Production' !== environmentContext) {
                     return vnFirebase.getFirebaseData('products');
                 } else {
-                    vnApi.Product.get()
+                    vnApi.Product().get()
                         .$promise.then(function (results) {
                             angular.forEach(results.data, function (r) {
                                 var pid = r.id;
