@@ -9,15 +9,16 @@ angular.module('Volusion.toolboxCommon')
 
             'use strict';
 
-            var params = {
-                categoryId: 10,
-                filter    : 'featured',
-                facets    : '1822,1818,1829',
-                pageNumber: 1,
-                pageSize  : 10
-            };
-
-            var test = vnDataSrc.getProducts(params);
+//            var params = {
+//                categoryId: null,
+//                filter    : 'featured',
+//                facets    : null,
+//                pageNumber: 1,
+//                pageSize  : 5
+//            };
+//
+//            var test = vnDataSrc.getProducts(params);
+            var test = vnDataSrc.getProducts();
             console.log('test products query', test);
 
             $scope.toggleLang = function () {
@@ -26,7 +27,6 @@ angular.module('Volusion.toolboxCommon')
                 } else {
                     $translate.use($translate.preferredLanguage());
                 }
-
 
             };
 

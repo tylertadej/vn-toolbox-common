@@ -32,10 +32,19 @@ angular.module('Volusion.toolboxCommon', [
     'firebase'
 ])
     .config(
+//        ['$routeProvider', '$locationProvider', '$translateProvider', '$translatePartialLoaderProvider', '$sceDelegateProvider',
         ['$routeProvider', '$locationProvider', '$translateProvider', '$translatePartialLoaderProvider',
             function ($routeProvider, $locationProvider, $translateProvider) {
+//            function ($routeProvider, $locationProvider, $translateProvider, $sceDelegateProvider) {
 
                 'use strict';
+
+//                $sceDelegateProvider.resourceUrlWhitelist([
+//                    // Allow same origin resource loads.
+//                    // Allow loading from our assets domain.  Notice the difference between * and **.
+//                    'self',
+//                    'http://www.samplestore.io/api/v1/**'
+//                ]);
 
                 $locationProvider.html5Mode(true);
 

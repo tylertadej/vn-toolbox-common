@@ -133,13 +133,15 @@ angular.module('Volusion.toolboxCommon')
 
                     return vnFirebase.getFirebaseData('products');
                 } else {
-                    vnApi.Product(queryParams).get()
+                    vnApi.Product(queryParams).get(queryParams)
                         .$promise.then(function (results) {
                             angular.forEach(results.data, function (r) {
                                 var pid = r.id;
                                 vnApiProducts[pid] = r;
+//                                console.log('result data is', r);
                             });
                         });
+                    console.log('returning vnApiProducts: ', vnApiProducts);
                     return vnApiProducts;
                 }
             }

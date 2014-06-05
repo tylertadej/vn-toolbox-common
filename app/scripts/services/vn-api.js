@@ -183,24 +183,20 @@ angular.module('Volusion.toolboxCommon')
          * Given an object (or nothing for full list) the Product function returns a $resource
          * promise that resolves to the Volusion API endpoint for the configured site.
          */
-        function Product(params) {
 
-            if (!params) {
-                // Handle configuring the $resource appropriately for the products endpoint.
-                return $resource(vnDataEndpoint.apiUrl + '/products');
-            } else {
-
-                var queryParams = {
-                    categoryId: params.categoryId || '',
-                    filter: params.filter || '',
-                    facets: params.facet || '',
-                    pageNumber: params.pageNumber || '',
-                    pageSize: params.pageSize || ''
-                };
-
-                return $resource(vnDataEndpoint.apiUrl + '/products/?categoryId=' + queryParams.categoryId + '&filter=' + queryParams.filter + '&facets=' + queryParams.facets + '&pageNumber=' + queryParams.pageNumber + '&pageSize=' + queryParams.pageSize);
-            }
-
+        function Product(params) { // jshint ignore:line
+            /**
+             * Since the params is referenced in a string later, we tell jshint to ignore the fact that it's not 'used'
+             * in the code.
+             */
+            return $resource(vnDataEndpoint.apiUrl + '/products',
+                {
+                    categoryId: '@params.categoryId',
+                    filter    : '@params.filter',
+                    facets    : '@params.facets',
+                    pageNumber: '@params.pageNumber',
+                    pageSize  : '@params.pageSize'
+                });
         }
 
         return {
