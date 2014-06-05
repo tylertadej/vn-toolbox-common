@@ -125,11 +125,15 @@ angular.module('Volusion.toolboxCommon')
              * the data response gets modified to make it look more like a $firebase object.
              *
              */
-            function getProducts() {
+
+            // http://volusion.apiary-mock.com/api/v1/products/?categoryId=10&filter=featured&facets=1822,1818,1829&pageNumber=1&pageSize=10
+            function getProducts(queryParams) {
+
                 if ('Production' !== environmentContext) {
+
                     return vnFirebase.getFirebaseData('products');
                 } else {
-                    vnApi.Product().get()
+                    vnApi.Product(queryParams).get()
                         .$promise.then(function (results) {
                             angular.forEach(results.data, function (r) {
                                 var pid = r.id;

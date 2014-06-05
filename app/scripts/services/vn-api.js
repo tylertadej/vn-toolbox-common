@@ -34,7 +34,7 @@ angular.module('Volusion.toolboxCommon')
          */
         function Article(params) {
 
-            if(!params) {
+            if (!params) {
                 // Handle configuring the $resource appropriately for the articles endpoint.
                 // Dev IDEA is to use a private function to handle this business logic
                 console.log('vnApi - no params for Article Call. That\'s ok for dev though.');
@@ -60,7 +60,7 @@ angular.module('Volusion.toolboxCommon')
          */
         function Category(params) {
 
-            if(!params) {
+            if (!params) {
                 // Handle configuring the $resource appropriately for the category endpoint.
                 // Dev IDEA is to use a private function to handle this business logic
                 console.log('vnApi - no params for Category Call. That\'s ok for dev though.');
@@ -85,7 +85,7 @@ angular.module('Volusion.toolboxCommon')
          */
         function Cart(params) {
 
-            if(!params) {
+            if (!params) {
                 // Handle configuring the $resource appropriately for the cart endpoint.
                 // Dev IDEA is to use a private function to handle this business logic
                 console.log('vnApi - no params for Cart Call. That\'s ok for dev though.');
@@ -110,7 +110,7 @@ angular.module('Volusion.toolboxCommon')
          */
         function Configuration(params) {
 
-            if(!params) {
+            if (!params) {
                 // Handle configuring the $resource appropriately for the configuration endpoint.
                 // Dev IDEA is to use a private function to handle this business logic
                 console.log('vnApi - no params for Configuration Call. That\'s ok for dev though.');
@@ -135,7 +135,7 @@ angular.module('Volusion.toolboxCommon')
          */
         function Country(params) {
 
-            if(!params) {
+            if (!params) {
                 return $resource(vnDataEndpoint.apiUrl + '/countries');
             } else {
                 // Handle configuring the $resource appropriately for the country endpoint.
@@ -160,7 +160,7 @@ angular.module('Volusion.toolboxCommon')
          */
         function Nav(params) {
 
-            if(!params) {
+            if (!params) {
                 // Handle configuring the $resource appropriately for the nav endpoint.
                 // Dev IDEA is to use a private function to handle this business logic
                 console.log('vnApi - no params for Nav Call. That\'s ok for dev though.');
@@ -185,24 +185,31 @@ angular.module('Volusion.toolboxCommon')
          */
         function Product(params) {
 
-            if(!params) {
+            if (!params) {
                 // Handle configuring the $resource appropriately for the products endpoint.
-                // Dev IDEA is to use a private function to handle this business logic
-                // so its only called here, not implemented.
                 return $resource(vnDataEndpoint.apiUrl + '/products');
             } else {
-                return $resource(vnDataEndpoint.apiUrl + '/products');
+
+                var queryParams = {
+                    categoryId: params.categoryId || '',
+                    filter: params.filter || '',
+                    facets: params.facet || '',
+                    pageNumber: params.pageNumber || '',
+                    pageSize: params.pageSize || ''
+                };
+
+                return $resource(vnDataEndpoint.apiUrl + '/products/?categoryId=' + queryParams.categoryId + '&filter=' + queryParams.filter + '&facets=' + queryParams.facets + '&pageNumber=' + queryParams.pageNumber + '&pageSize=' + queryParams.pageSize);
             }
 
         }
 
         return {
-            Article        : Article,
-            Category       : Category,
-            Cart           : Cart,
-            Configuration  : Configuration,
-            Country        : Country,
-            Nav            : Nav,
-            Product        : Product
+            Article      : Article,
+            Category     : Category,
+            Cart         : Cart,
+            Configuration: Configuration,
+            Country      : Country,
+            Nav          : Nav,
+            Product      : Product
         };
     }]);

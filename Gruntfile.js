@@ -43,11 +43,11 @@ module.exports = function (grunt) {
 //                    'dist/vn-toolbox-common.js'
 //                ],
                 html5Mode: true,
-                startPage: '/api',
+                startPage: '/api/Volusion.toolboxCommon',
                 title    : 'Volusion Toolbox Common Reference',
 //                image: "path/to/my/image.png",
 //                imageLink: "http://my-domain.com",
-                titleLink: '/api',
+                titleLink: '/api/Volusion.toolboxCommon',
                 bestMatch: true
 //                analytics: {
 //                    account: 'UA-08150815-0',

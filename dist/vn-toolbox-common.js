@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.2 (2014-05-29) */
+/*! vn-toolbox-common - ver.0.0.2 (2014-06-04) */
 
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'angular-carousel'])
     .config(
@@ -642,7 +642,7 @@ angular.module('Volusion.toolboxCommon')
          */
         function Article(params) {
 
-            if(!params) {
+            if (!params) {
                 // Handle configuring the $resource appropriately for the articles endpoint.
                 // Dev IDEA is to use a private function to handle this business logic
                 console.log('vnApi - no params for Article Call. That\'s ok for dev though.');
@@ -668,7 +668,7 @@ angular.module('Volusion.toolboxCommon')
          */
         function Category(params) {
 
-            if(!params) {
+            if (!params) {
                 // Handle configuring the $resource appropriately for the category endpoint.
                 // Dev IDEA is to use a private function to handle this business logic
                 console.log('vnApi - no params for Category Call. That\'s ok for dev though.');
@@ -693,7 +693,7 @@ angular.module('Volusion.toolboxCommon')
          */
         function Cart(params) {
 
-            if(!params) {
+            if (!params) {
                 // Handle configuring the $resource appropriately for the cart endpoint.
                 // Dev IDEA is to use a private function to handle this business logic
                 console.log('vnApi - no params for Cart Call. That\'s ok for dev though.');
@@ -718,7 +718,7 @@ angular.module('Volusion.toolboxCommon')
          */
         function Configuration(params) {
 
-            if(!params) {
+            if (!params) {
                 // Handle configuring the $resource appropriately for the configuration endpoint.
                 // Dev IDEA is to use a private function to handle this business logic
                 console.log('vnApi - no params for Configuration Call. That\'s ok for dev though.');
@@ -743,7 +743,7 @@ angular.module('Volusion.toolboxCommon')
          */
         function Country(params) {
 
-            if(!params) {
+            if (!params) {
                 return $resource(vnDataEndpoint.apiUrl + '/countries');
             } else {
                 // Handle configuring the $resource appropriately for the country endpoint.
@@ -768,7 +768,7 @@ angular.module('Volusion.toolboxCommon')
          */
         function Nav(params) {
 
-            if(!params) {
+            if (!params) {
                 // Handle configuring the $resource appropriately for the nav endpoint.
                 // Dev IDEA is to use a private function to handle this business logic
                 console.log('vnApi - no params for Nav Call. That\'s ok for dev though.');
@@ -793,25 +793,34 @@ angular.module('Volusion.toolboxCommon')
          */
         function Product(params) {
 
-            if(!params) {
+            if (!params) {
                 // Handle configuring the $resource appropriately for the products endpoint.
                 // Dev IDEA is to use a private function to handle this business logic
                 // so its only called here, not implemented.
                 return $resource(vnDataEndpoint.apiUrl + '/products');
             } else {
-                return $resource(vnDataEndpoint.apiUrl + '/products');
+
+                var queryParams = {
+                    categoryId: params.categoryId || '',
+                    filter: params.filter || '',
+                    facets: params.facet || '',
+                    pageNumber: params.pageNumber || '',
+                    pageSize: params.pageSize || ''
+                };
+
+                return $resource(vnDataEndpoint.apiUrl + '/products/?categoryId=' + queryParams.categoryId + '&filter=' + queryParams.filter + '&facets=' + queryParams.facets + '&pageNumber=' + queryParams.pageNumber + '&pageSize=' + queryParams.pageSize);
             }
 
         }
 
         return {
-            Article        : Article,
-            Category       : Category,
-            Cart           : Cart,
-            Configuration  : Configuration,
-            Country        : Country,
-            Nav            : Nav,
-            Product        : Product
+            Article      : Article,
+            Category     : Category,
+            Cart         : Cart,
+            Configuration: Configuration,
+            Country      : Country,
+            Nav          : Nav,
+            Product      : Product
         };
     }]);
 
@@ -1250,11 +1259,15 @@ angular.module('Volusion.toolboxCommon')
              * the data response gets modified to make it look more like a $firebase object.
              *
              */
-            function getProducts() {
+
+            // http://volusion.apiary-mock.com/api/v1/products/?categoryId=10&filter=featured&facets=1822,1818,1829&pageNumber=1&pageSize=10
+            function getProducts(queryParams) {
+
                 if ('Production' !== environmentContext) {
+
                     return vnFirebase.getFirebaseData('products');
                 } else {
-                    vnApi.Product().get()
+                    vnApi.Product(queryParams).get()
                         .$promise.then(function (results) {
                             angular.forEach(results.data, function (r) {
                                 var pid = r.id;
