@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.2 (2014-06-04) */
+/*! vn-toolbox-common - ver.0.0.2 (2014-06-05) */
 
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'angular-carousel'])
     .config(
@@ -791,26 +791,20 @@ angular.module('Volusion.toolboxCommon')
          * Given an object (or nothing for full list) the Product function returns a $resource
          * promise that resolves to the Volusion API endpoint for the configured site.
          */
-        function Product(params) {
 
-            if (!params) {
-                // Handle configuring the $resource appropriately for the products endpoint.
-                // Dev IDEA is to use a private function to handle this business logic
-                // so its only called here, not implemented.
-                return $resource(vnDataEndpoint.apiUrl + '/products');
-            } else {
-
-                var queryParams = {
-                    categoryId: params.categoryId || '',
-                    filter: params.filter || '',
-                    facets: params.facet || '',
-                    pageNumber: params.pageNumber || '',
-                    pageSize: params.pageSize || ''
-                };
-
-                return $resource(vnDataEndpoint.apiUrl + '/products/?categoryId=' + queryParams.categoryId + '&filter=' + queryParams.filter + '&facets=' + queryParams.facets + '&pageNumber=' + queryParams.pageNumber + '&pageSize=' + queryParams.pageSize);
-            }
-
+        function Product(params) { // jshint ignore:line
+            /**
+             * Since the params is referenced in a string later, we tell jshint to ignore the fact that it's not 'used'
+             * in the code.
+             */
+            return $resource(vnDataEndpoint.apiUrl + '/products',
+                {
+                    categoryId: '@params.categoryId',
+                    filter    : '@params.filter',
+                    facets    : '@params.facets',
+                    pageNumber: '@params.pageNumber',
+                    pageSize  : '@params.pageSize'
+                });
         }
 
         return {
@@ -1267,13 +1261,15 @@ angular.module('Volusion.toolboxCommon')
 
                     return vnFirebase.getFirebaseData('products');
                 } else {
-                    vnApi.Product(queryParams).get()
+                    vnApi.Product(queryParams).get(queryParams)
                         .$promise.then(function (results) {
                             angular.forEach(results.data, function (r) {
                                 var pid = r.id;
                                 vnApiProducts[pid] = r;
+//                                console.log('result data is', r);
                             });
                         });
+                    console.log('returning vnApiProducts: ', vnApiProducts);
                     return vnApiProducts;
                 }
             }
