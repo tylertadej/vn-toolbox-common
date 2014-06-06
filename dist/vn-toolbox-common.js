@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.2 (2014-06-05) */
+/*! vn-toolbox-common - ver.0.0.2 (2014-06-06) */
 
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'angular-carousel'])
     .config(
