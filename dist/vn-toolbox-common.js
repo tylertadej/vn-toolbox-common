@@ -1244,6 +1244,8 @@ angular.module('Volusion.toolboxCommon')
             /**
              * @ngdoc function
              * @name getProducts
+             * @param {String} dataKey is the name of the key to access the results in the vnApiProducts value service
+             * @param {Object} queryParams is the object og key/value query params passed to the vnApi service $resource generator.
              * @methodOf Volusion.toolboxCommon.vnDataSrc
              * @return {Object} Either a $firebase object with article items or an api response
              * modified to look almost like a $firebase object
@@ -1260,7 +1262,7 @@ angular.module('Volusion.toolboxCommon')
                 if ('Production' !== environmentContext) {
                     return vnFirebase.getFirebaseData('products');
                 } else {
-                    console.log('setting product for dataKey', dataKey);
+//                    console.log('setting product for dataKey', dataKey);
                     vnApiProducts[dataKey] = {};
                     vnApi.Product(queryParams).get(queryParams)
                         .$promise.then(function (results) {
@@ -1269,7 +1271,7 @@ angular.module('Volusion.toolboxCommon')
                                 vnApiProducts[dataKey][pid] = r;
                             });
                         });
-                    console.log('vnDataSrc vnApiProducts: ', vnApiProducts);
+//                    console.log('vnDataSrc vnApiProducts: ', vnApiProducts);
                     return vnApiProducts;
                 }
             }
