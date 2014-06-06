@@ -19,7 +19,7 @@ angular.module('Volusion.toolboxCommon')
 //
 //            var test = vnDataSrc.getProducts(params);
             var test = vnDataSrc.getProducts();
-            console.log('test products query', test);
+            console.log('MainCtrl test products query: ', test);
 
             $scope.toggleLang = function () {
                 if ('en' === $translate.use()) {

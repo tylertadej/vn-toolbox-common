@@ -1255,21 +1255,21 @@ angular.module('Volusion.toolboxCommon')
              */
 
             // http://volusion.apiary-mock.com/api/v1/products/?categoryId=10&filter=featured&facets=1822,1818,1829&pageNumber=1&pageSize=10
-            function getProducts(queryParams) {
+            function getProducts(dataKey, queryParams) {
 
                 if ('Production' !== environmentContext) {
-
                     return vnFirebase.getFirebaseData('products');
                 } else {
+                    console.log('setting product for dataKey', dataKey);
+                    vnApiProducts[dataKey] = {};
                     vnApi.Product(queryParams).get(queryParams)
                         .$promise.then(function (results) {
                             angular.forEach(results.data, function (r) {
                                 var pid = r.id;
-                                vnApiProducts[pid] = r;
-//                                console.log('result data is', r);
+                                vnApiProducts[dataKey][pid] = r;
                             });
                         });
-                    console.log('returning vnApiProducts: ', vnApiProducts);
+                    console.log('vnDataSrc vnApiProducts: ', vnApiProducts);
                     return vnApiProducts;
                 }
             }
