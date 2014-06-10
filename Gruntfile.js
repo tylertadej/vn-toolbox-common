@@ -69,6 +69,22 @@ module.exports = function (grunt) {
             }
         },
 
+        protractor: {
+            options: {
+                keepAlive: false,
+                configFile: './protractor.conf.js'
+            },
+            singlerun: {},
+            auto: {
+                keepAlive: true,
+                options: {
+                    args: {
+                        seleniumPort: 4444
+                    }
+                }
+            }
+        },
+
         // Watches files for changes and runs tasks based on the changed files
         watch        : {
             bower     : {
@@ -518,6 +534,10 @@ module.exports = function (grunt) {
     grunt.registerTask('test', [
         'test_no_coverage',
         'coverage'
+    ]);
+
+    grunt.registerTask('test:e2e', [
+        'protractor:singlerun'
     ]);
 
     grunt.registerTask('build', [
