@@ -10,13 +10,32 @@ describe('Directive: vnLink', function () {
     var element,
         scope;
 
-    beforeEach(inject(function ($rootScope) {
+    beforeEach(inject(function ($rootScope, $compile) {
+        element = angular.element('<vn-link href="/go-to-link">Some text</vn-link>');
+
         scope = $rootScope.$new();
+
+        element = $compile(element)(scope);
+        scope.$digest();
     }));
 
-    it('should make hidden element visible', inject(function ($compile) {
-        element = angular.element('<vn-link></vn-link>');
-        element = $compile(element)(scope);
-        expect(element.text()).toBe('');
+    it('should have class', function () {
+        expect(element.attr('class')).toContain('vn-link');
+    });
+
+    it('should have target if defined', inject(function ($compile) {
+
+        var template = $compile('<vn-link target="_blank"></vn-link>')(scope);
+        scope.$digest();
+
+        expect(template.attr('target')).toBe('_blank');
     }));
+
+    it('should have href', function () {
+        expect(element.attr('href')).toBe('/go-to-link');
+    });
+
+    it('should transclude content', function () {
+        expect(element.text()).toBe('Some text');
+    });
 });

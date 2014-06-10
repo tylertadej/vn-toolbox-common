@@ -17,7 +17,8 @@ module.exports = function (config) {
         plugins: [
             'karma-jasmine',
             'karma-phantomjs-launcher',
-            'karma-coverage'
+            'karma-coverage',
+            'karma-ng-html2js-preprocessor'
         ],
 
         // list of files / patterns to load in the browser
@@ -38,14 +39,34 @@ module.exports = function (config) {
             'app/scripts/*.js',
             'app/scripts/**/*.js',
             //'test/mock/**/*.js',
-            'test/spec/**/*.js'
+            'test/spec/**/*.js',
+
+            // templates
+            'app/views/*.html'
         ],
 
         // list of files / patterns to exclude
         exclude: [],
 
+        ngHtml2JsPreprocessor: {
+            // strip this from the file path
+            stripPrefix: 'app',
+            // prepend this to the
+            prependPrefix: '',
+
+            // or define a custom transform function
+//            cacheIdFromPath: function(filepath) {
+//                return cacheId;
+//            },
+
+            // setting this option will create only a single module that contains templates
+            // from all the files, so you can load them all with module('foo')
+            moduleName: 'templates'
+        },
+
         preprocessors   : {
-            'app/scripts/**/*.js': ['coverage']
+            'app/scripts/**/*.js': ['coverage'],
+            'app/views/*.html': ['ng-html2js']
         },
 
         // test results reporter to use

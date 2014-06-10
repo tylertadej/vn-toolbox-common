@@ -59,6 +59,10 @@ angular.module('Volusion.toolboxCommon')
                             scope.currMode = 'on';
                         }
 
+                        if (scope.ratingValue === undefined || scope.ratingValue === '') {
+                            scope.ratingValue = 0;
+                        }
+
                         // Component constants *****************
                         scope.componentId = '100004';
                         scope.componentName = 'rating';
@@ -84,6 +88,8 @@ angular.module('Volusion.toolboxCommon')
                         var idx,
                             max = 5;
 
+                        scope.stars = [];
+
                         function updateStars() {
                             scope.stars = [];
                             for (idx = 0; idx < max; idx++) {
@@ -92,7 +98,7 @@ angular.module('Volusion.toolboxCommon')
                         }
 
                         scope.$watch('ratingValue', function (oldVal, newVal) {
-                            if (newVal) {
+                            if (newVal === 0 || newVal) {
                                 updateStars();
                             }
                         });

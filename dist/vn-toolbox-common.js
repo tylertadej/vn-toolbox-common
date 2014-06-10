@@ -1,5 +1,4 @@
-
-/*! vn-toolbox-common - ver.0.0.2 (2014-06-06) */
+/*! vn-toolbox-common - ver.0.0.2 (2014-06-10) */
 
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'angular-carousel'])
     .config(
@@ -316,7 +315,7 @@ angular.module('Volusion.toolboxCommon')
                     scope      : {
                         currMode : '@'
                     },
-                    link       : function postLink(scope, element, attr) {
+                    link       : function postLink(scope, element) {
                         if (scope.currMode === undefined) {
                             scope.currMode = 'on';
                         }
@@ -328,9 +327,6 @@ angular.module('Volusion.toolboxCommon')
 
                         // Component is not selected by default
                         scope.selected = false;
-
-                        // attr will be copied over so have to set it only of empty
-                        scope.target = (attr.target === undefined || attr.target === '') ? '_self' : '';
 
                         scope.$on('currentComponent.change', function (event, component) {
                             if (component && component.id && scope.currMode === 'off') {
@@ -354,7 +350,7 @@ angular.module('Volusion.toolboxCommon')
 
         $templateCache.put(
             'template/link.html',
-            '<a class="vn-link" target="{{ target }}" ng-transclude></a>'
+            '<a class="vn-link" ng-transclude></a>'
         );
     }]);
 
@@ -539,6 +535,10 @@ angular.module('Volusion.toolboxCommon')
                             scope.currMode = 'on';
                         }
 
+                        if (scope.ratingValue === undefined || scope.ratingValue === '') {
+                            scope.ratingValue = 0;
+                        }
+
                         // Component constants *****************
                         scope.componentId = '100004';
                         scope.componentName = 'rating';
@@ -564,6 +564,8 @@ angular.module('Volusion.toolboxCommon')
                         var idx,
                             max = 5;
 
+                        scope.stars = [];
+
                         function updateStars() {
                             scope.stars = [];
                             for (idx = 0; idx < max; idx++) {
@@ -572,7 +574,7 @@ angular.module('Volusion.toolboxCommon')
                         }
 
                         scope.$watch('ratingValue', function (oldVal, newVal) {
-                            if (newVal) {
+                            if (newVal === 0 || newVal) {
                                 updateStars();
                             }
                         });
