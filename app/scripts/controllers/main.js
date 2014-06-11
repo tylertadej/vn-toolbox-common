@@ -51,6 +51,6 @@ angular.module('Volusion.toolboxCommon')
                 ];
 
                 // Mock rating
-                $scope.rating = '';
+                $scope.rating = '3';
 
             }]);

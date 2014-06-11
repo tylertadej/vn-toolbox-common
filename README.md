@@ -5,6 +5,9 @@ To install toolbox-common run:
 
 <strong>bower install git@github.com:volusion-angular/vn-toolbox-common.git  --save</strong>
 
+Setup Protractor debugging:
+
+https://www.youtube.com/watch?v=VLMyI7QKcwg
 
 Common widgets:
 
