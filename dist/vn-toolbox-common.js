@@ -1,4 +1,5 @@
-/*! vn-toolbox-common - ver.0.0.2 (2014-06-10) */
+
+/*! vn-toolbox-common - ver.0.0.2 (2014-06-11) */
 
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'angular-carousel'])
     .config(
@@ -91,7 +92,7 @@ angular.module('Volusion.toolboxCommon')
                     replace    : true,
                     scope: {
                         currMode: '@currMode',
-                        imageList: '='
+                        carouselObjects: '='
                     },
                     link       : function postLink(scope, element) {
                         if (scope.currMode === undefined) {
@@ -119,6 +120,28 @@ angular.module('Volusion.toolboxCommon')
                                 $rootScope.$broadcast('currentComponent.change', {'id': scope.componentId, 'name': scope.componentName, 'action': 'set'});
                             }
                         });
+
+//                        Initialize the slider
+//                        element.carousel({
+//                            interval: 5000,
+//                            pause: 'hover',
+//                            wrap: true
+//                        });
+                    $('.carousel').carousel({
+                        interval: 5000,
+                        pause: 'hover',
+                        wrap: true
+                    });
+
+                        scope.prev = function() {
+                    $('.carousel').carousel('prev');
+//                            element.carousel('prev');
+                        };
+
+                        scope.next = function() {
+//                            element.carousel('next');
+                    $('.carousel').carousel('next');
+                        };
                     }
                 };
             }])
@@ -127,22 +150,31 @@ angular.module('Volusion.toolboxCommon')
 
         $templateCache.put(
             'template/carousel.html',
-            '<div class="vn-carousel">' +
-                '<!-- not happy with this but it seems better than angular-ui carousel' +
-                'http://blog.revolunet.com/angular-carousel/ -->' +
-                '<p translate="VN-CAROUSEL-TITLE">Images:</p>' +
-
-                '<ul rn-carousel rn-carousel-buffered rn-carousel-indicator rn-carousel-control  class="-carousel ng-cloak">' +
-                    '<li ng-repeat="image in imageList" ng-style="{\'background-image\': \'url(\' + image.src + \')\'}"></li>' +
-                '</ul>' +
-                '<div class="-thumbs ng-cloak">' +
-                    '<div class="thumb" ng-repeat="image in imageList" ' +
-                                       'ng-click="$parent.slideIndex2=$index" ' +
-                                       'ng-style="{\'background-image\': \'url(\' + image.src + \')\'}" ' +
-                                       'ng-class="{\'is-active\': ($parent.slideIndex2==$index)}">' +
+                '<div id="mainCarousel" class="carousel slide" data-ride="carousel">' +
+                    '<!-- Indicators -->' +
+                    '<ol class="carousel-indicators">' +
+                    '   <li ng-repeat="slide in carouselObjects" data-target="#mainCarousel" data-slide-to="{{ $index }}"></li>' +
+                    '</ol>' +
+                    '<div class="carousel-inner">' +
+                        '<div ng-repeat="slide in carouselObjects" class="item" ng-class="{active: $first}">' +
+                            '<img data-src="{{ slide.src }}" alt="The slide" src="{{ slide.src }}">' +
+                            '<div class="container">' +
+                            '<!--Put custom messages here-->' +
+                            '<!--<div class="carousel-caption">-->' +
+                            '<!--<h1>Example headline.</h1>-->' +
+                            '<!--<p>Note: If you\'re viewing this page via a <code>file://</code> URL, the "next" and "previous" Glyphicon buttons on the left and right might not load/display properly due to web browser security rules.</p>-->' +
+                            '<!--<p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>-->' +
+                            '<!--</div>-->' +
+                            '</div>' +
+                        '</div>' +
                     '</div>' +
-                '</div>' +
-            '</div>'
+                    '<span ng-click="prev()" class="left carousel-control" data-slide="prev">' +
+                        '<span class="glyphicon glyphicon-chevron-left"></span>' +
+                    '</span>' +
+                    '<span ng-click="next()" class="right carousel-control" data-slide="next">' +
+                        '<span class="glyphicon glyphicon-chevron-right"></span>' +
+                    '</span>' +
+                '</div>'
         );
     }]);
 

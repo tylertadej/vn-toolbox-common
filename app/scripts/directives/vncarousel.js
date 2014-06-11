@@ -63,8 +63,6 @@ angular.module('Volusion.toolboxCommon')
                             scope.currMode = 'on';
                         }
 
-                        console.log('imageList: ', scope.carouselObjects);
-
                         // Component constants *****************
                         scope.componentId = '100001';
                         scope.componentName = 'carousel';

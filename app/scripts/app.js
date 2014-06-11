@@ -28,7 +28,6 @@ angular.module('Volusion.toolboxCommon', [
 //    'ngSanitize',
     'ngRoute',
     'pascalprecht.translate',
-    'angular-carousel',
     'firebase'
 ])
     .config(
