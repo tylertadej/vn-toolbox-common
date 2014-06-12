@@ -3,23 +3,11 @@
 angular.module('Volusion.toolboxCommon')
     .controller('MainCtrl',
 //        ['$scope', '$translate', '$translatePartialLoader',
-        ['$scope', '$translate', 'vnDataSrc',
-            function ($scope, $translate, vnDataSrc) {
+        ['$scope', '$translate',
+            function ($scope, $translate) {
                 //            function ($scope, $translate, $translatePartialLoader) {
 
                 'use strict';
-
-    //            var params = {
-    //                categoryId: null,
-    //                filter    : 'featured',
-    //                facets    : null,
-    //                pageNumber: 1,
-    //                pageSize  : 5
-    //            };
-    //
-    //            var test = vnDataSrc.getProducts(params);
-                var test = vnDataSrc.getProducts();
-                console.log('MainCtrl test products query: ', test);
 
                 $scope.toggleLang = function () {
                     if ('en' === $translate.use()) {
