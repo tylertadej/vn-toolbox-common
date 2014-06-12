@@ -1,7 +1,7 @@
 
 /*! vn-toolbox-common - ver.0.0.2 (2014-06-11) */
 
-angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'angular-carousel'])
+angular.module('Volusion.toolboxCommon', ['pascalprecht.translate'])
     .config(
         ['$translateProvider',
             function ($translateProvider) {

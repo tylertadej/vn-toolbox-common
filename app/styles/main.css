@@ -8,9 +8,9 @@ Syntax error: File to import not found or unreadable: bootstrap-sass-official/ve
 3: @import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
 4: 
 5: // bower:scss
-6: // endbower
-7: 
-8: .browsehappy {
+6: @import "../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap.scss";
+7: // endbower
+8: 
 
 Backtrace:
 main.scss:3
@@ -57,4 +57,4 @@ main.scss:3
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Syntax error: File to import not found or unreadable: bootstrap-sass-official/vendor/assets/stylesheets/bootstrap.\A               Load path: /Users/matt_hippely/git/vn-toolbox-common/app/styles (DEPRECATED)\A         on line 3 of main.scss\A \A 1: $icon-font-path: \"/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/\";\A 2: \A 3: @import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';\A 4: \A 5: // bower:scss\A 6: // endbower\A 7: \A 8: .browsehappy {"; }
+  content: "Syntax error: File to import not found or unreadable: bootstrap-sass-official/vendor/assets/stylesheets/bootstrap.\A               Load path: /Users/matt_hippely/git/vn-toolbox-common/app/styles (DEPRECATED)\A         on line 3 of main.scss\A \A 1: $icon-font-path: \"/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/\";\A 2: \A 3: @import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';\A 4: \A 5: // bower:scss\A 6: @import \"../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap.scss\";\A 7: // endbower\A 8: "; }
