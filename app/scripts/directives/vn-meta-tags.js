@@ -87,5 +87,4 @@ angular.module('Volusion.toolboxCommon')
                 });
             }
         };
-        ;
     });
