@@ -100,25 +100,14 @@ angular.module('Volusion.toolboxCommon')
          * @ngdoc method
          * @name Configuration
          * @methodOf Volusion.toolboxCommon.vnApi
-         * @param {Object} params a key value object of the params needed to manage the request
-         * @returns {$resource} $resource A $resource promise that resolves the the results of
+         * @returns {$resource} $resource A $resource promise that resolves the results of
          * the request.
          *
          * @description
-         * Given an object (or nothing for full list) the Configuration function returns a
-         * $resource promise that resolves to the Volusion API endpoint for the configured site.
+         * Returns a $resource promise that resolves to the Volusion API endpoint for the configured site.
          */
-        function Configuration(params) {
-
-            if (!params) {
-                // Handle configuring the $resource appropriately for the configuration endpoint.
-                // Dev IDEA is to use a private function to handle this business logic
-                console.log('vnApi - no params for Configuration Call. That\'s ok for dev though.');
-                return $resource(vnDataEndpoint.apiUrl + '/config');
-            } else {
-                return $resource(vnDataEndpoint.apiUrl + '/config');
-            }
-
+        function Configuration() {
+            return $resource(vnDataEndpoint.apiUrl + '/config');
         }
 
         /**
@@ -168,7 +157,6 @@ angular.module('Volusion.toolboxCommon')
             } else {
                 return $resource(vnDataEndpoint.apiUrl + '/navs');
             }
-
         }
 
         /**
