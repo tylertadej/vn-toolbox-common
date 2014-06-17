@@ -83,17 +83,11 @@ angular.module('Volusion.toolboxCommon')
          * Given an object (or nothing for full list) the Cart function returns a $resource
          * promise that resolves to the Volusion API endpoint for the configured site.
          */
-        function Cart(params) {
+        function getCart(params) { // jshint ignore:line
 
-            if (!params) {
-                // Handle configuring the $resource appropriately for the cart endpoint.
-                // Dev IDEA is to use a private function to handle this business logic
-                console.log('vnApi - no params for Cart Call. That\'s ok for dev though.');
-                return $resource();
-            } else {
-                return $resource(vnDataEndpoint.apiUrl + '/carts');
-            }
-
+            return $resource(vnDataEndpoint.apiUrl + '/carts', {
+                cartId: '@params.cartId'
+            }).get().$promise;
         }
 
         /**
@@ -106,8 +100,8 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * Returns a $resource promise that resolves to the Volusion API endpoint for the configured site.
          */
-        function Configuration() {
-            return $resource(vnDataEndpoint.apiUrl + '/config');
+        function getConfiguration() {
+            return $resource(vnDataEndpoint.apiUrl + '/config').get().$promise;
         }
 
         /**
@@ -147,16 +141,12 @@ angular.module('Volusion.toolboxCommon')
          * Given an object (or nothing for full list) the Nav function returns a $resource
          * promise that resolves to the Volusion API endpoint for the configured site.
          */
-        function Nav(params) {
+        function getNav(params) { // jshint ignore:line
 
-            if (!params) {
-                // Handle configuring the $resource appropriately for the nav endpoint.
-                // Dev IDEA is to use a private function to handle this business logic
-                console.log('vnApi - no params for Nav Call. That\'s ok for dev though.');
-                return $resource(vnDataEndpoint.apiUrl + '/navs');
-            } else {
-                return $resource(vnDataEndpoint.apiUrl + '/navs');
-            }
+            return $resource(vnDataEndpoint.apiUrl + '/navs',
+                {
+                    navId: '@params.navId'
+                }).get().$promise;
         }
 
         /**
@@ -188,12 +178,12 @@ angular.module('Volusion.toolboxCommon')
         }
 
         return {
-            Article      : Article,
-            Category     : Category,
-            Cart         : Cart,
-            Configuration: Configuration,
-            Country      : Country,
-            Nav          : Nav,
-            Product      : Product
+            Article         : Article,
+            Category        : Category,
+            getCart         : getCart,
+            getConfiguration: getConfiguration,
+            Country         : Country,
+            getNav          : getNav,
+            Product         : Product
         };
     }]);

@@ -27,13 +27,13 @@ describe('Service: vnApi', function () {
         });
 
         it('Carts', function() {
-            expect(typeof vnApi.Cart()).toBe('function');
-            expect(vnApi.Cart.name).toBe('Cart');
+            expect(typeof vnApi.getCart()).toBe('object');
+            expect(vnApi.getCart.name).toBe('getCart');
         });
 
         it('Config', function() {
-            expect(typeof vnApi.Configuration()).toBe('function');
-            expect(vnApi.Configuration.name).toBe('Configuration');
+            expect(typeof vnApi.getConfiguration()).toBe('object'); // The promise object returned.
+            expect(vnApi.getConfiguration.name).toBe('getConfiguration');
         });
 
         it('Countries', function() {
@@ -42,8 +42,8 @@ describe('Service: vnApi', function () {
         });
 
         it('Navs', function() {
-            expect(typeof vnApi.Nav()).toBe('function');
-            expect(vnApi.Nav.name).toBe('Nav');
+            expect(typeof vnApi.getNav()).toBe('object');
+            expect(vnApi.getNav.name).toBe('getNav');
         });
 
         it('Products', function() {
