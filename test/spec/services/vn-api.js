@@ -41,9 +41,11 @@ describe('Service: vnApi', function () {
             expect(vnApi.Country.name).toBe('Country');
         });
 
-        it('Navs', function() {
-            expect(typeof vnApi.getNav()).toBe('object');
-            expect(vnApi.getNav.name).toBe('getNav');
+        it('Nav', function() {
+            expect(typeof vnApi.Nav({navId: 1})).toBe('object');
+            expect(vnApi.Nav.name).toBe('Nav');
+            expect( function(){ vnApi.Nav(); } ).toThrow(new Error('The Nav $resource needs a navId'));
+
         });
 
         it('Products', function() {

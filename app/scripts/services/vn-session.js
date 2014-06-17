@@ -79,7 +79,7 @@ angular.module('Volusion.toolboxCommon')
                         carts     : vnApi.getCart(),
                         config    : vnApi.getConfiguration(),
                         countries : vnApi.Country(),
-                        navs      : vnApi.getNav(),
+                        navs      : vnApi.Nav({navId: 1}),
                         products  : vnApi.Product()
                     },
                     keys = Object.keys(apiEndpoints);
@@ -93,7 +93,6 @@ angular.module('Volusion.toolboxCommon')
                 angular.forEach(keys, function (k) {
                     setFirebaseData(k, apiEndpoints[k]);
                 });
-
             }
 
             /**

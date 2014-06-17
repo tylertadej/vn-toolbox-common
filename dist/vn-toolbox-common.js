@@ -869,15 +869,16 @@ angular.module('Volusion.toolboxCommon')
          * the request.
          *
          * @description
-         * Given an object (or nothing for full list) the Nav function returns a $resource
-         * promise that resolves to the Volusion API endpoint for the configured site.
+         * Given an object (or nothing for full list) the Nav function returns a promise
+         * that resolves to the Volusion API nav items
          */
-        function getNav(params) { // jshint ignore:line
+        function Nav(params) {
 
-            return $resource(vnDataEndpoint.apiUrl + '/navs',
-                {
-                    navId: '@params.navId'
-                }).get().$promise;
+            if (!params) {
+                throw new Error('The Nav $resource needs a navId');
+            }
+            return $resource(vnDataEndpoint.apiUrl + '/navs/:navId')
+                .get({navId: params.navId}).$promise;
         }
 
         /**
@@ -893,7 +894,7 @@ angular.module('Volusion.toolboxCommon')
          * promise that resolves to the Volusion API endpoint for the configured site.
          */
 
-        function Product(params) { // jshint ignore:line
+            function Product(params) { // jshint ignore:line
             /**
              * Since the params is referenced in a string later, we tell jshint to ignore the fact that it's not 'used'
              * in the code.
@@ -908,16 +909,17 @@ angular.module('Volusion.toolboxCommon')
                 });
         }
 
-        return {
-            Article         : Article,
-            Category        : Category,
-            getCart         : getCart,
-            getConfiguration: getConfiguration,
-            Country         : Country,
-            getNav          : getNav,
-            Product         : Product
-        };
-    }]);
+return {
+    Article         : Article,
+    Category        : Category,
+    getCart         : getCart,
+    getConfiguration: getConfiguration,
+    Country         : Country,
+    Nav             : Nav,
+    Product         : Product
+};
+}])
+;
 
 angular.module('Volusion.toolboxCommon')
     .factory('vnConfig', ['$q', '$rootScope', function ($q, $rootScope) {
@@ -1628,7 +1630,7 @@ angular.module('Volusion.toolboxCommon')
                         carts     : vnApi.getCart(),
                         config    : vnApi.getConfiguration(),
                         countries : vnApi.Country(),
-                        navs      : vnApi.getNav(),
+                        navs      : vnApi.Nav({navId: 1}),
                         products  : vnApi.Product()
                     },
                     keys = Object.keys(apiEndpoints);
@@ -1642,7 +1644,6 @@ angular.module('Volusion.toolboxCommon')
                 angular.forEach(keys, function (k) {
                     setFirebaseData(k, apiEndpoints[k]);
                 });
-
             }
 
             /**
