@@ -797,8 +797,8 @@ angular.module('Volusion.toolboxCommon')
             if (!params) {
                 throw new Error('The Category $resource needs an id.');
             }
-            return $resource(vnDataEndpoint.apiUrl + '/categories/:id')
-                .get({id: params.id}).$promise;
+            return $resource(vnDataEndpoint.apiUrl + '/categories/?slug=:slug')
+                .get({slug: params.slug}).$promise;
         }
 
         /**
