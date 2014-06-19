@@ -160,6 +160,7 @@ angular.module('Volusion.toolboxCommon')
                 return $resource(vnDataEndpoint.apiUrl + '/navs/:navId');
             }
 
+
             /**
              * @ngdoc method
              * @name Product
@@ -214,5 +215,4 @@ angular.module('Volusion.toolboxCommon')
                 Nav          : Nav,
                 Product      : Product
             };
-        }])
-;
+        }]);

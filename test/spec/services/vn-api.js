@@ -1,6 +1,8 @@
-'use strict';
+/*global describe, module, beforeEach, inject, it, expect */
 
 describe('Service: vnApi', function () {
+
+    'use strict';
 
     // load the service's module
     beforeEach(module('Volusion.toolboxCommon'));
@@ -15,8 +17,8 @@ describe('Service: vnApi', function () {
         expect(!!vnApi).toBe(true);
     });
 
-    describe('should have a resource for', function() {
-        it('Articles', function() {
+    describe('should have a resource for', function () {
+        it('Articles', function () {
             expect(typeof vnApi.Article()).toBe('function');
             expect(vnApi.Article.name).toBe('Article');
         });
@@ -24,7 +26,6 @@ describe('Service: vnApi', function () {
         it('Categories', function() {
             expect(typeof vnApi.Category()).toBe('function');
             expect(vnApi.Category.name).toBe('Category');
-//            expect( function(){ vnApi.getCategory(); } ).toThrow(new Error('The Category $resource needs an id.'));
         });
 
         it('Carts', function() {
@@ -37,7 +38,7 @@ describe('Service: vnApi', function () {
             expect(vnApi.Configuration.name).toBe('Configuration');
         });
 
-        it('Countries', function() {
+        it('Countries', function () {
             expect(typeof vnApi.Country()).toBe('function');
             expect(vnApi.Country.name).toBe('Country');
         });
@@ -45,11 +46,9 @@ describe('Service: vnApi', function () {
         it('Nav', function() {
             expect(typeof vnApi.Nav()).toBe('function');
             expect(vnApi.Nav.name).toBe('Nav');
-//            expect( function(){ vnApi.Nav(); } ).toThrow(new Error('The Nav $resource needs a navId'));
-
         });
 
-        it('Products', function() {
+        it('Products', function () {
             expect(typeof vnApi.Product()).toBe('function');
             expect(vnApi.Product.name).toBe('Product');
         });
