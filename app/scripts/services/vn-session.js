@@ -75,7 +75,7 @@ angular.module('Volusion.toolboxCommon')
                 // The places interesting data sets live ...
                 var apiEndpoints = {
                         articles  : vnApi.Article(),
-                        categories: vnApi.Category(),
+                        categories: vnApi.getCategory( {id: 1814} ),
                         carts     : vnApi.getCart(),
                         config    : vnApi.getConfiguration(),
                         countries : vnApi.Country(),

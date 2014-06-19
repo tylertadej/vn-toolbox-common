@@ -22,17 +22,18 @@ describe('Service: vnApi', function () {
         });
 
         it('Categories', function() {
-            expect(typeof vnApi.Category()).toBe('function');
-            expect(vnApi.Category.name).toBe('Category');
+            expect(typeof vnApi.getCategory({id: 1})).toBe('object');
+            expect(vnApi.getCategory.name).toBe('getCategory');
+            expect( function(){ vnApi.getCategory(); } ).toThrow(new Error('The Category $resource needs an id.'));
         });
 
         it('Carts', function() {
-            expect(typeof vnApi.getCart()).toBe('object');
+            expect( typeof vnApi.getCart() ).toBe('object');
             expect(vnApi.getCart.name).toBe('getCart');
         });
 
         it('Config', function() {
-            expect(typeof vnApi.getConfiguration()).toBe('object'); // The promise object returned.
+            expect( typeof vnApi.getConfiguration() ).toBe('object'); // The promise object returned.
             expect(vnApi.getConfiguration.name).toBe('getConfiguration');
         });
 

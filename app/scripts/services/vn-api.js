@@ -50,25 +50,24 @@ angular.module('Volusion.toolboxCommon')
          * @ngdoc method
          * @name Category
          * @methodOf Volusion.toolboxCommon.vnApi
-         * @param {Object} params a key value object of the params needed to manage the request
-         * @returns {$resource} $resource A $resource promise that resolves the the results of
-         * the request.
+         * @returns {$resource} $resource an angular $resource
          *
          * @description
-         * Given an object (or nothing for full list) the Category function returns a $resource
-         * promise that resolves to the Volusion API endpoint for the configured site.
+         * Consume the category endpoint in the API. Returns a promise for the Get function that can be invoked with typical
+         * promise code.
+         *
+         * - returnedPromise.then(function(response) {
+         * -     $scope.category = response.data;
+         * - });
+         *
          */
-        function Category(params) {
+        function getCategory(params) {
 
             if (!params) {
-                // Handle configuring the $resource appropriately for the category endpoint.
-                // Dev IDEA is to use a private function to handle this business logic
-                console.log('vnApi - no params for Category Call. That\'s ok for dev though.');
-                return $resource(vnDataEndpoint.apiUrl + '/categories');
-            } else {
-                return $resource(vnDataEndpoint.apiUrl + '/categories');
+                throw new Error('The Category $resource needs an id.');
             }
-
+            return $resource(vnDataEndpoint.apiUrl + '/categories/:id')
+                .get({id: params.id}).$promise;
         }
 
         /**
@@ -83,11 +82,8 @@ angular.module('Volusion.toolboxCommon')
          * Given an object (or nothing for full list) the Cart function returns a $resource
          * promise that resolves to the Volusion API endpoint for the configured site.
          */
-        function getCart(params) { // jshint ignore:line
-
-            return $resource(vnDataEndpoint.apiUrl + '/carts', {
-                cartId: '@params.cartId'
-            }).get().$promise;
+        function getCart() { // jshint ignore:line
+            return $resource(vnDataEndpoint.apiUrl + '/carts').get().$promise;
         }
 
         /**
@@ -163,7 +159,7 @@ angular.module('Volusion.toolboxCommon')
          * promise that resolves to the Volusion API endpoint for the configured site.
          */
 
-            function Product(params) { // jshint ignore:line
+        function Product(params) { // jshint ignore:line
             /**
              * Since the params is referenced in a string later, we tell jshint to ignore the fact that it's not 'used'
              * in the code.
@@ -178,14 +174,14 @@ angular.module('Volusion.toolboxCommon')
                 });
         }
 
-return {
-    Article         : Article,
-    Category        : Category,
-    getCart         : getCart,
-    getConfiguration: getConfiguration,
-    Country         : Country,
-    Nav             : Nav,
-    Product         : Product
-};
-}])
+        return {
+            Article         : Article,
+            getCategory     : getCategory,
+            getCart         : getCart,
+            getConfiguration: getConfiguration,
+            Country         : Country,
+            Nav             : Nav,
+            Product         : Product
+        };
+    }])
 ;
