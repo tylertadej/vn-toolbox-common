@@ -9,27 +9,29 @@ angular.module('Volusion.toolboxCommon')
 //            console.log(vnApi.Category().get( {slug: 'men'} ));
 //            console.log(vnApi.Category().query());
 
-            console.log(vnApi.Product().query());
-            var prodParams = {
-                categoryIds  : 1477,
-                search       : '',
-                facets       : '',
-                minPrice     : '',
-                maxPrice     : '',
-                accessoriesOf: '',
-                sort         : '',
-                pageNumber   : '',
-                pageSize     : ''
-            };
-            console.log(vnApi.Product().get(prodParams));
+//            console.log(vnApi.Product().query());
+//            var prodParams = {
+//                categoryIds  : 1477,
+//                search       : '',
+//                facets       : '',
+//                minPrice     : '',
+//                maxPrice     : '',
+//                accessoriesOf: '',
+//                sort         : '',
+//                pageNumber   : '',
+//                pageSize     : ''
+//            };
+//            console.log(vnApi.Product().get(prodParams));
 
+//            console.log('navs', vnApi.Nav().get({navId: 1}));
+
+            console.log(vnApi.Configuration().get());
             $scope.toggleLang = function () {
                 if ('en' === $translate.use()) {
                     $translate.use('es');
                 } else {
                     $translate.use($translate.preferredLanguage());
                 }
-
             };
 
             // Mock category list
