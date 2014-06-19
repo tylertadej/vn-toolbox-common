@@ -23,18 +23,14 @@
  */
 
 angular.module('Volusion.toolboxCommon', [
-//    'ngCookies',
     'ngResource',
-//    'ngSanitize',
     'ngRoute',
     'pascalprecht.translate',
     'firebase'
 ])
     .config(
-//        ['$routeProvider', '$locationProvider', '$translateProvider', '$translatePartialLoaderProvider', '$sceDelegateProvider',
         ['$routeProvider', '$locationProvider', '$translateProvider', '$translatePartialLoaderProvider',
             function ($routeProvider, $locationProvider, $translateProvider) {
-//            function ($routeProvider, $locationProvider, $translateProvider, $sceDelegateProvider) {
 
                 'use strict';
 

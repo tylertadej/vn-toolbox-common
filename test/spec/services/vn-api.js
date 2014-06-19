@@ -22,19 +22,19 @@ describe('Service: vnApi', function () {
         });
 
         it('Categories', function() {
-            expect(typeof vnApi.getCategory({id: 1})).toBe('object');
-            expect(vnApi.getCategory.name).toBe('getCategory');
-            expect( function(){ vnApi.getCategory(); } ).toThrow(new Error('The Category $resource needs an id.'));
+            expect(typeof vnApi.Category()).toBe('function');
+            expect(vnApi.Category.name).toBe('Category');
+//            expect( function(){ vnApi.getCategory(); } ).toThrow(new Error('The Category $resource needs an id.'));
         });
 
         it('Carts', function() {
-            expect( typeof vnApi.getCart() ).toBe('object');
-            expect(vnApi.getCart.name).toBe('getCart');
+            expect( typeof vnApi.Cart() ).toBe('function');
+            expect(vnApi.Cart.name).toBe('Cart');
         });
 
         it('Config', function() {
-            expect( typeof vnApi.getConfiguration() ).toBe('object'); // The promise object returned.
-            expect(vnApi.getConfiguration.name).toBe('getConfiguration');
+            expect( typeof vnApi.Configuration() ).toBe('function');
+            expect(vnApi.Configuration.name).toBe('Configuration');
         });
 
         it('Countries', function() {
@@ -43,9 +43,9 @@ describe('Service: vnApi', function () {
         });
 
         it('Nav', function() {
-            expect(typeof vnApi.Nav({navId: 1})).toBe('object');
+            expect(typeof vnApi.Nav()).toBe('function');
             expect(vnApi.Nav.name).toBe('Nav');
-            expect( function(){ vnApi.Nav(); } ).toThrow(new Error('The Nav $resource needs a navId'));
+//            expect( function(){ vnApi.Nav(); } ).toThrow(new Error('The Nav $resource needs a navId'));
 
         });
 
