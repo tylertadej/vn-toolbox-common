@@ -39,10 +39,9 @@ angular.module('Volusion.toolboxCommon')
                 // Dev IDEA is to use a private function to handle this business logic
                 console.log('vnApi - no params for Article Call. That\'s ok for dev though.');
                 return $resource(vnDataEndpoint.apiUrl + '/articles');
-            } else {
-                return $resource(vnDataEndpoint.apiUrl + '/articles');
             }
 
+            return $resource(vnDataEndpoint.apiUrl + '/articles');
         }
 
 
@@ -66,6 +65,7 @@ angular.module('Volusion.toolboxCommon')
             if (!params) {
                 throw new Error('The Category $resource needs an id.');
             }
+
             return $resource(vnDataEndpoint.apiUrl + '/categories/?slug=:slug')
                 .get({slug: params.slug}).$promise;
         }
@@ -116,13 +116,12 @@ angular.module('Volusion.toolboxCommon')
 
             if (!params) {
                 return $resource(vnDataEndpoint.apiUrl + '/countries');
-            } else {
-                // Handle configuring the $resource appropriately for the country endpoint.
-                // Dev IDEA is to use a private function to handle this business logic
-                console.log('vnApi - no params for Country Call. That\'s ok for dev though.');
-                return $resource(vnDataEndpoint.apiUrl + '/countries');
             }
 
+            // Handle configuring the $resource appropriately for the country endpoint.
+            // Dev IDEA is to use a private function to handle this business logic
+            console.log('vnApi - no params for Country Call. That\'s ok for dev though.');
+            return $resource(vnDataEndpoint.apiUrl + '/countries');
         }
 
         /**
@@ -142,6 +141,7 @@ angular.module('Volusion.toolboxCommon')
             if (!params) {
                 throw new Error('The Nav $resource needs a navId');
             }
+
             return $resource(vnDataEndpoint.apiUrl + '/navs/:navId')
                 .get({navId: params.navId}).$promise;
         }
@@ -159,19 +159,26 @@ angular.module('Volusion.toolboxCommon')
          * promise that resolves to the Volusion API endpoint for the configured site.
          */
 
-        function Product(params) { // jshint ignore:line
+        function getProduct(params) { // jshint ignore:line
             /**
              * Since the params is referenced in a string later, we tell jshint to ignore the fact that it's not 'used'
              * in the code.
              */
-            return $resource(vnDataEndpoint.apiUrl + '/products',
-                {
-                    categoryId: '@params.categoryId',
-                    filter    : '@params.filter',
-                    facets    : '@params.facets',
-                    pageNumber: '@params.pageNumber',
-                    pageSize  : '@params.pageSize'
-                });
+//            return $resource(vnDataEndpoint.apiUrl + '/products',
+//                {
+//                    categoryId: '@params.categoryId',
+//                    filter    : '@params.filter',
+//                    facets    : '@params.facets',
+//                    pageNumber: '@params.pageNumber',
+//                    pageSize  : '@params.pageSize'
+//                });
+
+            if (!params) {
+                throw new Error('The Product $resource needs a code.');
+            }
+
+            return $resource(vnDataEndpoint.apiUrl + '/products/:code')
+                .get({code: params.code}).$promise;
         }
 
         return {
@@ -181,7 +188,7 @@ angular.module('Volusion.toolboxCommon')
             getConfiguration: getConfiguration,
             Country         : Country,
             Nav             : Nav,
-            Product         : Product
+            getProduct      : getProduct
         };
     }])
 ;

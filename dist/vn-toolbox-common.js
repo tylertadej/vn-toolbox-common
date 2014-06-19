@@ -770,10 +770,9 @@ angular.module('Volusion.toolboxCommon')
                 // Dev IDEA is to use a private function to handle this business logic
                 console.log('vnApi - no params for Article Call. That\'s ok for dev though.');
                 return $resource(vnDataEndpoint.apiUrl + '/articles');
-            } else {
-                return $resource(vnDataEndpoint.apiUrl + '/articles');
             }
 
+            return $resource(vnDataEndpoint.apiUrl + '/articles');
         }
 
 
@@ -797,6 +796,7 @@ angular.module('Volusion.toolboxCommon')
             if (!params) {
                 throw new Error('The Category $resource needs an id.');
             }
+
             return $resource(vnDataEndpoint.apiUrl + '/categories/?slug=:slug')
                 .get({slug: params.slug}).$promise;
         }
@@ -847,13 +847,12 @@ angular.module('Volusion.toolboxCommon')
 
             if (!params) {
                 return $resource(vnDataEndpoint.apiUrl + '/countries');
-            } else {
-                // Handle configuring the $resource appropriately for the country endpoint.
-                // Dev IDEA is to use a private function to handle this business logic
-                console.log('vnApi - no params for Country Call. That\'s ok for dev though.');
-                return $resource(vnDataEndpoint.apiUrl + '/countries');
             }
 
+            // Handle configuring the $resource appropriately for the country endpoint.
+            // Dev IDEA is to use a private function to handle this business logic
+            console.log('vnApi - no params for Country Call. That\'s ok for dev though.');
+            return $resource(vnDataEndpoint.apiUrl + '/countries');
         }
 
         /**
@@ -873,6 +872,7 @@ angular.module('Volusion.toolboxCommon')
             if (!params) {
                 throw new Error('The Nav $resource needs a navId');
             }
+
             return $resource(vnDataEndpoint.apiUrl + '/navs/:navId')
                 .get({navId: params.navId}).$promise;
         }
@@ -890,19 +890,26 @@ angular.module('Volusion.toolboxCommon')
          * promise that resolves to the Volusion API endpoint for the configured site.
          */
 
-        function Product(params) { // jshint ignore:line
+        function getProduct(params) { // jshint ignore:line
             /**
              * Since the params is referenced in a string later, we tell jshint to ignore the fact that it's not 'used'
              * in the code.
              */
-            return $resource(vnDataEndpoint.apiUrl + '/products',
-                {
-                    categoryId: '@params.categoryId',
-                    filter    : '@params.filter',
-                    facets    : '@params.facets',
-                    pageNumber: '@params.pageNumber',
-                    pageSize  : '@params.pageSize'
-                });
+//            return $resource(vnDataEndpoint.apiUrl + '/products',
+//                {
+//                    categoryId: '@params.categoryId',
+//                    filter    : '@params.filter',
+//                    facets    : '@params.facets',
+//                    pageNumber: '@params.pageNumber',
+//                    pageSize  : '@params.pageSize'
+//                });
+
+            if (!params) {
+                throw new Error('The Product $resource needs a code.');
+            }
+
+            return $resource(vnDataEndpoint.apiUrl + '/products/:code')
+                .get({code: params.code}).$promise;
         }
 
         return {
@@ -912,7 +919,7 @@ angular.module('Volusion.toolboxCommon')
             getConfiguration: getConfiguration,
             Country         : Country,
             Nav             : Nav,
-            Product         : Product
+            getProduct      : getProduct
         };
     }])
 ;
@@ -1565,8 +1572,8 @@ angular.module('Volusion.toolboxCommon')
         }]);
 
 angular.module('Volusion.toolboxCommon')
-    .factory('vnSession', ['$rootScope', '$q', 'vnApi', 'vnFirebase',
-        function ($rootScope, $q, vnApi, vnFirebase) {
+    .factory('vnSession', ['$rootScope', 'vnApi', 'vnFirebase',
+        function ($rootScope, vnApi, vnFirebase) {
             'use strict';
 
             /**
@@ -1582,20 +1589,35 @@ angular.module('Volusion.toolboxCommon')
             var accountData = {};
 
             /**
-             * @ngdoc event
-             * @name vnSession.init
-             * @eventOf Volusion.toolboxCommon.vnSession
-             * @param {Object} event is the event passed when vnSession.init is broadcast
-             * @param {Object} args are the values to be passed in here
+             * @ngdoc function
+             * @name setFirebaseData
+             * @param {String} path Is the <ITEM> path for the resource in our Firebase schema.
+             * @param {$resource} resource Is a $resource for the vnApi Item Model
+             * @methodOf Volusion.toolboxCommon.vnSession
              *
              * @description
-             * Hears the vnSession.init event when it is broadcast and Passes the args to
-             * the private init function.
+             * Given the results of a $resource.get().$promise reset the data for the
+             * Firebase path associated with its corresponding api items.
+             *
+             * 1. Execute the given promise
+             * 2. Then, pass the path and promise params to the vnFirebase.resetDataForPath
+             *
+             * <br/>
+             * It does not return anything as the promises are async and network latency plays
+             * role in how long a response will take. We just set the data xfer process in motion
+             * here and return control to the caller. THIS HAD ISSUES IN PORTING REMOVE THIS WHEN
+             * THEN PART OF PROMISE WORKS AGAIN!!!
+             *
              */
-            $rootScope.$on('vnSession.init', function (event, args) {
-                initSession(args);
+            function setFirebaseData(path, resource) {
 
-            });
+                console.log(path + ' / ' + resource);
+                console.log('Porting issue with the prromise and data ... to fix with ng-stub');
+//                resource.get().$promise.then(function (result) {
+//                    vnFirebase.resetDataForPath(path, result.data);
+//                });
+
+            }
 
             /**
              * @ngdoc function
@@ -1627,7 +1649,7 @@ angular.module('Volusion.toolboxCommon')
                         config    : vnApi.getConfiguration(),
                         countries : vnApi.Country(),
                         navs      : vnApi.Nav({navId: 1}),
-                        products  : vnApi.Product()
+                        products  : vnApi.getProduct({code: 'GF-honey'})
                     },
                     keys = Object.keys(apiEndpoints);
 
@@ -1692,35 +1714,20 @@ angular.module('Volusion.toolboxCommon')
             }
 
             /**
-             * @ngdoc function
-             * @name setFirebaseData
-             * @param {String} path Is the <ITEM> path for the resource in our Firebase schema.
-             * @param {$resource} resource Is a $resource for the vnApi Item Model
-             * @methodOf Volusion.toolboxCommon.vnSession
+             * @ngdoc event
+             * @name vnSession.init
+             * @eventOf Volusion.toolboxCommon.vnSession
+             * @param {Object} event is the event passed when vnSession.init is broadcast
+             * @param {Object} args are the values to be passed in here
              *
              * @description
-             * Given the results of a $resource.get().$promise reset the data for the
-             * Firebase path associated with its corresponding api items.
-             *
-             * 1. Execute the given promise
-             * 2. Then, pass the path and promise params to the vnFirebase.resetDataForPath
-             *
-             * <br/>
-             * It does not return anything as the promises are async and network latency plays
-             * role in how long a response will take. We just set the data xfer process in motion
-             * here and return control to the caller. THIS HAD ISSUES IN PORTING REMOVE THIS WHEN
-             * THEN PART OF PROMISE WORKS AGAIN!!!
-             *
+             * Hears the vnSession.init event when it is broadcast and Passes the args to
+             * the private init function.
              */
-            function setFirebaseData(path, resource) {
+            $rootScope.$on('vnSession.init', function (event, args) {
+                initSession(args);
 
-                console.log(resource);
-                console.log('Porting issue with the prromise and data ... to fix with ng-stub');
-//                resource.get().$promise.then(function (result) {
-//                    vnFirebase.resetDataForPath(path, result.data);
-//                });
-
-            }
+            });
 
             return {
                 init          : init,
