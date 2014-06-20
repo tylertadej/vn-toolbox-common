@@ -201,8 +201,10 @@ angular.module('Volusion.toolboxCommon')
 
 //                http://www.samplestore.io/api/v1/products/?categoryIds=&search=&facets=&minPrice=&maxPrice=&accessoriesOf=&sort=&pageNumber=&pageSize=
 
-                return $resource(vnDataEndpoint.apiUrl + '/products',
-                    {},
+                return $resource(vnDataEndpoint.apiUrl + '/products/:code',
+                    {
+                        code: '@code'
+                    },
                     {
                         'get'   : { method: 'GET'},
                         'save'  : { method: 'POST' },
