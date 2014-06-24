@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.2 (2014-06-20) */
+/*! vn-toolbox-common - ver.0.0.2 (2014-06-23) */
 
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate'])
     .config(
@@ -743,8 +743,38 @@ angular.module('Volusion.toolboxCommon')
 angular.module('Volusion.toolboxCommon')
     .value('vnApiNavs', {});
 
+// TODO: Determine if this is still necessary and prune if no.
+/**
+ * @ngdoc service
+ * @name Volusion.toolboxCommon.vnApiProducts
+ * @description
+ *
+ * # vnApiProducts
+ * The vnApiProducts value is used to hold and resolve the data returned from
+ * the api. This is a value service that can be passed around and injected
+ * where its needed.
+ *
+ */
+
 angular.module('Volusion.toolboxCommon')
     .value('vnApiProducts', {});
+
+/**
+ * @ngdoc service
+ * @name Volusion.toolboxCommon.vnApi
+ * @requires $resource
+ * @requires vnDataEndpoint
+ * @description
+ *
+ * # vnApi
+ * This is a service that facilitates connection to the Volusion API. It handles both
+ * non-authenticated and authenticated requests through the API RESTful interface.
+ * It offers a model like interface that utilized the Angular $resource service and
+ * accepts arguments specific to the request parameter requirements for each endpoint.
+ * handling the full response, parsing the actual data and managing the request metadata
+ * (cursor, facets, data) is the responsibility of the caller.
+ *
+ */
 
 // Todo: figure out which $resources need all the access types. Remove the unused queries: put, remove delete etc ...
 angular.module('Volusion.toolboxCommon')
@@ -779,7 +809,6 @@ angular.module('Volusion.toolboxCommon')
 //                });
 
             }
-
 
             /**
              * @ngdoc method
@@ -901,7 +930,6 @@ angular.module('Volusion.toolboxCommon')
                     });
             }
 
-
             /**
              * @ngdoc method
              * @name Product
@@ -917,7 +945,7 @@ angular.module('Volusion.toolboxCommon')
 
             function Product() {
                 //Todo: put the possilbe query params into the description for documentation
-                  // These are the api possible query params.
+                // These are the api possible query params.
 //                var params = {
 //                    categoryIds  : [],
 //                    search       : '',
@@ -945,6 +973,49 @@ angular.module('Volusion.toolboxCommon')
                     });
             }
 
+            /**
+             * @ngdoc method
+             * @name Product
+             * @methodOf Volusion.toolboxCommon.vnApi
+             * @returns {$resource} $resource A $resource that resolves the the results of the request.
+             *
+             * @description
+             * Returns a $resource that resolves to the Volusion API endpoint for the configured site.
+             * ## Usage
+             * - vnApi.Product().query() -> returns a list of all products
+             * - vnApi.Product().get( {slug: prod-slug} ); -> Returns the product for prod-slug
+             */
+
+            function Review() {
+                return $resource(vnDataEndpoint.apiUrl + '/products/:code/reviews',
+                    {
+                        code: '@code'
+                    },
+                    {
+                        'get'   : { method: 'GET'},
+                        'save'  : { method: 'POST' },
+                        'query' : { method: 'GET', isArray: false },
+                        'remove': { method: 'DELETE' },
+                        'delete': { method: 'DELETE' }
+                    });
+            }
+
+            /**
+             * @ngdoc method
+             * @name ThemeSettings
+             * @methodOf Volusion.toolboxCommon.vnApi
+             * @returns {$resource} $resource A $resource that resolves the the results of the request.
+             *
+             * @description
+             * Returns a $resource that resolves to the Volusion API endpoint for the configured site.
+             * ## Usage
+             * - vnApi.ThemeSettings() -> returns a JSON with theme settings
+             */
+
+            function ThemeSettings() {
+                return $resource('/settings/themeSettings.json');
+            }
+
             return {
                 Article      : Article,
                 Category     : Category,
@@ -952,7 +1023,9 @@ angular.module('Volusion.toolboxCommon')
                 Configuration: Configuration,
                 Country      : Country,
                 Nav          : Nav,
-                Product      : Product
+                Product      : Product,
+                Review       : Review,
+                ThemeSettings: ThemeSettings
             };
         }]);
 

@@ -1,3 +1,4 @@
+// TODO: Determine if this is still necessary and prune if no.
 /**
  * @ngdoc service
  * @name Volusion.toolboxCommon.vnApiProducts

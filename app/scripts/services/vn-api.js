@@ -1,3 +1,5 @@
+/*global angular */
+
 /**
  * @ngdoc service
  * @name Volusion.toolboxCommon.vnApi
@@ -48,7 +50,6 @@ angular.module('Volusion.toolboxCommon')
 //                });
 
             }
-
 
             /**
              * @ngdoc method
@@ -170,7 +171,6 @@ angular.module('Volusion.toolboxCommon')
                     });
             }
 
-
             /**
              * @ngdoc method
              * @name Product
@@ -186,7 +186,7 @@ angular.module('Volusion.toolboxCommon')
 
             function Product() {
                 //Todo: put the possilbe query params into the description for documentation
-                  // These are the api possible query params.
+                // These are the api possible query params.
 //                var params = {
 //                    categoryIds  : [],
 //                    search       : '',
@@ -214,6 +214,49 @@ angular.module('Volusion.toolboxCommon')
                     });
             }
 
+            /**
+             * @ngdoc method
+             * @name Product
+             * @methodOf Volusion.toolboxCommon.vnApi
+             * @returns {$resource} $resource A $resource that resolves the the results of the request.
+             *
+             * @description
+             * Returns a $resource that resolves to the Volusion API endpoint for the configured site.
+             * ## Usage
+             * - vnApi.Product().query() -> returns a list of all products
+             * - vnApi.Product().get( {slug: prod-slug} ); -> Returns the product for prod-slug
+             */
+
+            function Review() {
+                return $resource(vnDataEndpoint.apiUrl + '/products/:code/reviews',
+                    {
+                        code: '@code'
+                    },
+                    {
+                        'get'   : { method: 'GET'},
+                        'save'  : { method: 'POST' },
+                        'query' : { method: 'GET', isArray: false },
+                        'remove': { method: 'DELETE' },
+                        'delete': { method: 'DELETE' }
+                    });
+            }
+
+            /**
+             * @ngdoc method
+             * @name ThemeSettings
+             * @methodOf Volusion.toolboxCommon.vnApi
+             * @returns {$resource} $resource A $resource that resolves the the results of the request.
+             *
+             * @description
+             * Returns a $resource that resolves to the Volusion API endpoint for the configured site.
+             * ## Usage
+             * - vnApi.ThemeSettings() -> returns a JSON with theme settings
+             */
+
+            function ThemeSettings() {
+                return $resource('/settings/themeSettings.json');
+            }
+
             return {
                 Article      : Article,
                 Category     : Category,
@@ -221,6 +264,8 @@ angular.module('Volusion.toolboxCommon')
                 Configuration: Configuration,
                 Country      : Country,
                 Nav          : Nav,
-                Product      : Product
+                Product      : Product,
+                Review       : Review,
+                ThemeSettings: ThemeSettings
             };
         }]);
