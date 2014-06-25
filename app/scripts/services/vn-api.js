@@ -39,15 +39,15 @@ angular.module('Volusion.toolboxCommon')
              */
             function Article() {
 
-                return $resource(vnDataEndpoint.apiUrl + '/articles');
-//                {},
-//                {
-//                    'get'   : { method: 'GET'},
-//                    'save'  : { method: 'POST' },
-//                    'query' : { method: 'GET', isArray: false },
-//                    'remove': { method: 'DELETE' },
-//                    'delete': { method: 'DELETE' }
-//                });
+                return $resource(vnDataEndpoint.apiUrl + '/articles/:id',
+                    { id : '@id' },
+                    {
+                        'get'   : { method: 'GET'},
+                        'save'  : { method: 'POST' },
+                        'query' : { method: 'GET', isArray: false },
+                        'remove': { method: 'DELETE' },
+                        'delete': { method: 'DELETE' }
+                    });
 
             }
 

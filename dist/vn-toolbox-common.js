@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.2 (2014-06-23) */
+/*! vn-toolbox-common - ver.0.0.2 (2014-06-25) */
 
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate'])
     .config(
@@ -798,15 +798,15 @@ angular.module('Volusion.toolboxCommon')
              */
             function Article() {
 
-                return $resource(vnDataEndpoint.apiUrl + '/articles');
-//                {},
-//                {
-//                    'get'   : { method: 'GET'},
-//                    'save'  : { method: 'POST' },
-//                    'query' : { method: 'GET', isArray: false },
-//                    'remove': { method: 'DELETE' },
-//                    'delete': { method: 'DELETE' }
-//                });
+                return $resource(vnDataEndpoint.apiUrl + '/articles/:id',
+                    { id : '@id' },
+                    {
+                        'get'   : { method: 'GET'},
+                        'save'  : { method: 'POST' },
+                        'query' : { method: 'GET', isArray: false },
+                        'remove': { method: 'DELETE' },
+                        'delete': { method: 'DELETE' }
+                    });
 
             }
 
