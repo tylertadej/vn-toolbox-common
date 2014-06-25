@@ -150,33 +150,28 @@ angular.module('Volusion.toolboxCommon')
 
         $templateCache.put(
             'template/carousel.html',
-                '<div id="mainCarousel" class="carousel slide" data-ride="carousel">' +
-                    '<!-- Indicators -->' +
-                    '<ol class="carousel-indicators">' +
-                    '   <li ng-repeat="slide in carouselObjects" data-target="#mainCarousel" data-slide-to="{{ $index }}"></li>' +
-                    '</ol>' +
-                    '<div class="carousel-inner">' +
-                        '<div ng-repeat="slide in carouselObjects" class="item" ng-class="{active: $first}">' +
-                            '<img data-src="{{ slide.src }}" alt="The slide" src="{{ slide.src }}">' +
-                            '<div class="container">' +
-                            '<!--Put custom messages here-->' +
-                            '<!--<div class="carousel-caption">-->' +
-                            '<!--<h1>Example headline.</h1>-->' +
-                            '<!--<p>Note: If you\'re viewing this page via a <code>file://</code> URL, the "next" and "previous" Glyphicon buttons on the left and right might not load/display properly due to web browser security rules.</p>-->' +
-                            '<!--<p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>-->' +
-                            '<!--</div>-->' +
-                            '</div>' +
+            '<div id="vnCarousel" class="carousel slide" data-ride="carousel">' +
+                '<!-- Indicators -->' +
+                '<ol class="carousel-indicators">' +
+                    '<li ng-repeat="image in imageList" data-target="#vnCarousel" data-slide-to="{{ $index }}"></li>' +
+                '</ol>' +
+                '<div ng-repeat="image in imageList" class="carousel-inner">' +
+                    '<div class="item active">' +
+                        '<img data-src="" alt="First slide" src="{{ image.src }}">' +
+                        '<div class="container">' +
+                            '<h1>Example headline.</h1>' +
+                            '<p>Note: If you\'re viewing this page via a <code>file://</code> URL, the "next" and "previous"  might not load/display properly.</p>' +
+                            '<p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>' +
                         '</div>' +
                     '</div>' +
-                    '<span ng-click="prev()" class="left carousel-control" data-slide="prev">' +
-                        '<span class="glyphicon glyphicon-chevron-left"></span>' +
-                    '</span>' +
-                    '<span ng-click="next()" class="right carousel-control" data-slide="next">' +
-                        '<span class="glyphicon glyphicon-chevron-right"></span>' +
-                    '</span>' +
-                '</div>'
+                    '<a class="left carousel-control" href="#myCarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>' +
+                    '<a class="right carousel-control" href="#myCarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>' +
+                '</div>'+
+            '</div>'
         );
     }]);
+
+
 
 /**
  * @ngdoc directive
