@@ -911,8 +911,8 @@ angular.module('Volusion.toolboxCommon')
              */
             function Article() {
 
-                return $resource(vnDataEndpoint.apiUrl + '/articles/:id',
-                    { id : '@id' },
+                return $resource(vnDataEndpoint.apiUrl + '/articles/:slug',
+                    { slug : '@slug' },
                     {
                         'get'   : { method: 'GET'},
                         'save'  : { method: 'POST' },
@@ -933,7 +933,7 @@ angular.module('Volusion.toolboxCommon')
              * Returns a $resource that resolves to the Volusion API endpoint for the configured site.
              * ## Usage
              * - vnApi.Category().query() -> returns a list of all articles
-             * - vnApi.Category().get( {slug: samp-slug} ); -> Returns the category for samp-slug
+             * - vnApi.Category().get( {slug: slug} ); -> Returns the category for slug
              *
              */
             function Category() {
@@ -942,8 +942,8 @@ angular.module('Volusion.toolboxCommon')
 //                var test = vnDataEndpoint.apiUrl + '/categories/';
 //                catSlug = catSlug || '';
 
-                return $resource(vnDataEndpoint.apiUrl + '/categories/',
-                    {},
+                return $resource(vnDataEndpoint.apiUrl + '/categories/:slug',
+                    { slug: '@slug' },
                     {
                         'get'   : { method: 'GET'},
                         'save'  : { method: 'POST' },
@@ -1053,7 +1053,8 @@ angular.module('Volusion.toolboxCommon')
              * Returns a $resource that resolves to the Volusion API endpoint for the configured site.
              * ## Usage
              * - vnApi.Product().query() -> returns a list of all products
-             * - vnApi.Product().get( {slug: prod-slug} ); -> Returns the product for prod-slug
+             * - vnApi.Product().get( {slug: slug} ); -> Returns the product for slug, /api/v1/products/:slug
+             * - vnApi.Product().get( {any possible query params} ); -> Returns a collection of products, /api/v1/products?{any valid params}
              */
 
             function Product() {
@@ -1061,6 +1062,7 @@ angular.module('Volusion.toolboxCommon')
                 // These are the api possible query params.
 //                var params = {
 //                    categoryIds  : [],
+//                    productCodes  : [],
 //                    search       : '',
 //                    facets       : '',
 //                    minPrice     : '',
@@ -1073,9 +1075,9 @@ angular.module('Volusion.toolboxCommon')
 
 //                http://www.samplestore.io/api/v1/products/?categoryIds=&search=&facets=&minPrice=&maxPrice=&accessoriesOf=&sort=&pageNumber=&pageSize=
 
-                return $resource(vnDataEndpoint.apiUrl + '/products/:code',
+                return $resource(vnDataEndpoint.apiUrl + '/products/:slug',
                     {
-                        code: '@code'
+                        slug: '@slug'
                     },
                     {
                         'get'   : { method: 'GET'},
@@ -1096,13 +1098,13 @@ angular.module('Volusion.toolboxCommon')
              * Returns a $resource that resolves to the Volusion API endpoint for the configured site.
              * ## Usage
              * - vnApi.Product().query() -> returns a list of all products
-             * - vnApi.Product().get( {slug: prod-slug} ); -> Returns the product for prod-slug
+             * - vnApi.Product().get( {slug: slug} ); -> Returns the product for slug
              */
 
             function Review() {
-                return $resource(vnDataEndpoint.apiUrl + '/products/:code/reviews',
+                return $resource(vnDataEndpoint.apiUrl + '/products/:slug/reviews',
                     {
-                        code: '@code'
+                        slug: '@slug'
                     },
                     {
                         'get'   : { method: 'GET'},
@@ -1189,7 +1191,8 @@ angular.module('Volusion.toolboxCommon')
         function initConfig() {
 
             var mockResponse = {
-                api     : 'http://www.samplestore.io/api/v1',
+                api     : 'http://txlpt374-vm.corp.volusion.com/api/v1',
+                //api     : 'http://www.samplestore.io/api/v1',
                 account : 'asdf123',
                 context : 'SiteBuilder',
                 firebase: 'https://brilliant-fire-5600.firebaseio.com',
@@ -1456,7 +1459,8 @@ angular.module('Volusion.toolboxCommon')
     .constant('vnDataEndpoint', (function () {
         'use strict';
         var firebase = 'https://brilliant-fire-5600.firebaseio.com',
-            apibase = 'http://www.samplestore.io/api/v1';
+            //apibase = 'http://www.samplestore.io/api/v1';
+            apibase = 'http://txlpt374-vm.corp.volusion.com/api/v1';
 
         return {
             /**

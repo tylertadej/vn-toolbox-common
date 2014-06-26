@@ -61,7 +61,8 @@ angular.module('Volusion.toolboxCommon')
         function initConfig() {
 
             var mockResponse = {
-                api     : 'http://www.samplestore.io/api/v1',
+                api     : 'http://txlpt374-vm.corp.volusion.com/api/v1',
+                //api     : 'http://www.samplestore.io/api/v1',
                 account : 'asdf123',
                 context : 'SiteBuilder',
                 firebase: 'https://brilliant-fire-5600.firebaseio.com',
