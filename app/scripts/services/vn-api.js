@@ -39,8 +39,8 @@ angular.module('Volusion.toolboxCommon')
              */
             function Article() {
 
-                return $resource(vnDataEndpoint.apiUrl + '/articles/:slug',
-                    { slug : '@slug' },
+                return $resource(vnDataEndpoint.apiUrl + '/articles/:id',
+                    { id : '@id' },
                     {
                         'get'   : { method: 'GET'},
                         'save'  : { method: 'POST' },
@@ -61,6 +61,7 @@ angular.module('Volusion.toolboxCommon')
              * Returns a $resource that resolves to the Volusion API endpoint for the configured site.
              * ## Usage
              * - vnApi.Category().query() -> returns a list of all articles
+             * - vnApi.Category().get( {id: id} ); -> Returns the category for id
              * - vnApi.Category().get( {slug: slug} ); -> Returns the category for slug
              *
              */
@@ -70,8 +71,8 @@ angular.module('Volusion.toolboxCommon')
 //                var test = vnDataEndpoint.apiUrl + '/categories/';
 //                catSlug = catSlug || '';
 
-                return $resource(vnDataEndpoint.apiUrl + '/categories/:slug',
-                    { slug: '@slug' },
+                return $resource(vnDataEndpoint.apiUrl + '/categories/:id',
+                    { id: '@id' },
                     {
                         'get'   : { method: 'GET'},
                         'save'  : { method: 'POST' },
@@ -203,9 +204,9 @@ angular.module('Volusion.toolboxCommon')
 
 //                http://www.samplestore.io/api/v1/products/?categoryIds=&search=&facets=&minPrice=&maxPrice=&accessoriesOf=&sort=&pageNumber=&pageSize=
 
-                return $resource(vnDataEndpoint.apiUrl + '/products/:slug',
+                return $resource(vnDataEndpoint.apiUrl + '/products/:code',
                     {
-                        slug: '@slug'
+                        code: '@code'
                     },
                     {
                         'get'   : { method: 'GET'},
@@ -225,14 +226,14 @@ angular.module('Volusion.toolboxCommon')
              * @description
              * Returns a $resource that resolves to the Volusion API endpoint for the configured site.
              * ## Usage
-             * - vnApi.Product().query() -> returns a list of all products
-             * - vnApi.Product().get( {slug: slug} ); -> Returns the product for slug
+             * - vnApi.Review().query() -> returns a list of all products
+             * - vnApi.Review().get( {productCode: productCode} ); -> Returns the reviews for a product
              */
 
             function Review() {
-                return $resource(vnDataEndpoint.apiUrl + '/products/:slug/reviews',
+                return $resource(vnDataEndpoint.apiUrl + '/products/:productCode/reviews',
                     {
-                        slug: '@slug'
+                        productCode: '@productCode'
                     },
                     {
                         'get'   : { method: 'GET'},
