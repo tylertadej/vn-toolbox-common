@@ -434,7 +434,7 @@ module.exports = function (grunt) {
                     'statements': 0,
                     'branches'  : 0,
                     'lines'     : 0,
-                    'functions' : 50
+                    'functions' : 40
                 },
                 dir       : 'coverage'
             }
