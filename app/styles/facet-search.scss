@@ -1,5 +1,4 @@
 .facet-item {
-    border: 1px solid dodgerblue;
     .ng-enter,
     .ng-leave {
         -webkit-transition: 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
@@ -17,14 +16,14 @@
     .ng-leave.ng-leave-active,
     .ng-enter {
         opacity: 0;
-        width: 0px;
+//        width: 0px;
         height: 0px;
     }
 
     .ng-enter.ng-enter-active,
     .ng-leave {
         opacity: 1;
-        width: 150px;
+//        width: 150px;
         height: 30px;
     }
 }
@@ -47,14 +46,14 @@
     .ng-leave.ng-leave-active,
     .ng-enter {
         opacity: 0;
-        width: 0px;
+//        width: 0px;
         height: 0px;
     }
 
     .ng-enter.ng-enter-active,
     .ng-leave {
         opacity: 1;
-        width: 150px;
+//        width: 150px;
         height: 30px;
     }
 }
