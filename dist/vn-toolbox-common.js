@@ -912,8 +912,8 @@ angular.module('Volusion.toolboxCommon')
              */
             function Article() {
 
-                return $resource(vnDataEndpoint.apiUrl + '/articles/',
-                    { },
+                return $resource(vnDataEndpoint.apiUrl + '/articles/:id',
+                    { id : '@id' },
                     {
                         'get'   : { method: 'GET'},
                         'save'  : { method: 'POST' },
@@ -934,13 +934,14 @@ angular.module('Volusion.toolboxCommon')
              * Returns a $resource that resolves to the Volusion API endpoint for the configured site.
              * ## Usage
              * - vnApi.Category().query() -> returns a list of all articles
+             * - vnApi.Category().get( {id: id} ); -> Returns the category for id
              * - vnApi.Category().get( {slug: slug} ); -> Returns the category for slug
              *
              */
             function Category() {
 
-                return $resource(vnDataEndpoint.apiUrl + '/categories',
-                    {},
+                return $resource(vnDataEndpoint.apiUrl + '/categories/:id',
+                    { id: '@id' },
                     {
                         'get'   : { method: 'GET'},
                         'save'  : { method: 'POST' },
@@ -965,7 +966,15 @@ angular.module('Volusion.toolboxCommon')
              * - vnApi.Cart().post(???? FIX THIS ?????); -> Returns ???
              */
             function Cart() {
-                return $resource(vnDataEndpoint.apiUrl + '/carts');
+                return $resource(vnDataEndpoint.apiUrl + '/carts',
+                    {},
+                    {
+                        'get'   : { method: 'GET'},
+                        'save'  : { method: 'POST' },
+                        'query' : { method: 'GET', isArray: false },
+                        'remove': { method: 'DELETE' },
+                        'delete': { method: 'DELETE' }
+                    });
             }
 
             /**
@@ -1053,8 +1062,10 @@ angular.module('Volusion.toolboxCommon')
              */
             function Product() {
                 //Todo: put the possilbe query params into the description for documentation
-                return $resource(vnDataEndpoint.apiUrl + '/products',
-                    { },
+                return $resource(vnDataEndpoint.apiUrl + '/products/:code',
+                    {
+                        code: '@code'
+                    },
                     {
                         'get'   : { method: 'GET'},
                         'save'  : { method: 'POST' },
@@ -1073,8 +1084,8 @@ angular.module('Volusion.toolboxCommon')
              * @description
              * Returns a $resource that resolves to the Volusion API endpoint for the configured site.
              * ## Usage
-             * - vnApi.Product().query() -> returns a list of all products
-             * - vnApi.Product().get( {slug: slug} ); -> Returns the product for slug
+             * - vnApi.Review().query() -> returns a list of all products
+             * - vnApi.Review().get( {productCode: productCode} ); -> Returns the reviews for a product
              */
 
             function Review() {
@@ -1435,7 +1446,7 @@ angular.module('Volusion.toolboxCommon')
         'use strict';
         var firebase = 'https://brilliant-fire-5600.firebaseio.com',
             apibase = 'http://www.samplestore.io/api/v1';
-//            apibase = 'http://txlpt374-vm.corp.volusion.com/api/v1';
+            //apibase = 'http://txlpt374-vm.corp.volusion.com/api/v1';
 
         return {
             /**

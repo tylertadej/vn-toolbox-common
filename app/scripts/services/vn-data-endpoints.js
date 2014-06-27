@@ -42,7 +42,7 @@ angular.module('Volusion.toolboxCommon')
         'use strict';
         var firebase = 'https://brilliant-fire-5600.firebaseio.com',
             apibase = 'http://www.samplestore.io/api/v1';
-//            apibase = 'http://txlpt374-vm.corp.volusion.com/api/v1';
+            //apibase = 'http://txlpt374-vm.corp.volusion.com/api/v1';
 
         return {
             /**
