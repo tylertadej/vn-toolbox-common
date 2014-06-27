@@ -67,7 +67,7 @@ angular.module('Volusion.toolboxCommon')
                                         'ng-checked="selectProperty(property)"' +
                                         'ng-click="refineFacetSearch(property)"/>' +
                                     '</label>' +
-                                '</div>'
+                                '</div>' +
                             '</div>' +
                         '<hr>' +
                         '</div>' +
