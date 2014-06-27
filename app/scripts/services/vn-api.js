@@ -66,10 +66,6 @@ angular.module('Volusion.toolboxCommon')
              *
              */
             function Category() {
-//                http://www.samplestore.io/api/v1/categories?slug=men
-//                console.log('api category slug: ', slug);
-//                var test = vnDataEndpoint.apiUrl + '/categories/';
-//                catSlug = catSlug || '';
 
                 return $resource(vnDataEndpoint.apiUrl + '/categories/:id',
                     { id: '@id' },
@@ -94,25 +90,25 @@ angular.module('Volusion.toolboxCommon')
              * Returns a $resource that resolves to the Volusion API endpoint for the configured site.
              * ## Usage
              * - vnApi.Cart().query() -> returns the Cart data
-             * - vnApi.Cart().post(???? fix this ?????); -> Returns ???
+             * - vnApi.Cart().post(???? FIX THIS ?????); -> Returns ???
              */
             function Cart() {
-                return $resource(vnDataEndpoint.apiUrl + '/carts');
-//                {},
-//                {
-//                    'get'   : { method: 'GET'},
-//                    'save'  : { method: 'POST' },
-//                    'query' : { method: 'GET', isArray: false },
-//                    'remove': { method: 'DELETE' },
-//                    'delete': { method: 'DELETE' }
-//                });
+                return $resource(vnDataEndpoint.apiUrl + '/carts',
+                    {},
+                    {
+                        'get'   : { method: 'GET'},
+                        'save'  : { method: 'POST' },
+                        'query' : { method: 'GET', isArray: false },
+                        'remove': { method: 'DELETE' },
+                        'delete': { method: 'DELETE' }
+                    });
             }
 
             /**
              * @ngdoc method
              * @name Configuration
              * @methodOf Volusion.toolboxCommon.vnApi
-             * @returns {$resource} $resource A $resource promise that resolves the results of
+             * @returns {$resource} $resource A $resource has a promise that resolves the results of
              * the request.
              *
              * @description
@@ -136,16 +132,7 @@ angular.module('Volusion.toolboxCommon')
              * - vnApi.Country().query() -> returns a list of all countries
              */
             function Country() {
-
                 return $resource(vnDataEndpoint.apiUrl + '/countries');
-//                {},
-//                {
-//                    'get'   : { method: 'GET'},
-//                    'save'  : { method: 'POST' },
-//                    'query' : { method: 'GET', isArray: false },
-//                    'remove': { method: 'DELETE' },
-//                    'delete': { method: 'DELETE' }
-//                });
             }
 
             /**
@@ -176,34 +163,32 @@ angular.module('Volusion.toolboxCommon')
              * @ngdoc method
              * @name Product
              * @methodOf Volusion.toolboxCommon.vnApi
+             * @params {Object} object should be any valid objectified key value pairs
              * @returns {$resource} $resource A $resource that resolves the the results of the request.
              *
              * @description
              * Returns a $resource that resolves to the Volusion API endpoint for the configured site.
              * ## Usage
              * - vnApi.Product().query() -> returns a list of all products
-             * - vnApi.Product().get( {slug: slug} ); -> Returns the product for slug, /api/v1/products/:slug
+             * - vnApi.Product().get( {slug: theSlug} ); -> Returns the product for slug, /api/v1/products?slug=theSlug
              * - vnApi.Product().get( {any possible query params} ); -> Returns a collection of products, /api/v1/products?{any valid params}
+             *
+             * ## Valid key value pairs for the endpoint
+             * - key: value description follows here
+             * - categoryIds: Numeric categoryIds of products to be retrieved. Example: 10
+             * - slug: String slug of the product, which is the search engine optimized url keywords. Example: nike-air-jordan-2015-shoe
+             * - search: Search string. Only the first 4 words seperated by spaces will be used in the search. Example: nike air jordan
+             * - facets: String 1822,1818,1829 to filter products that are for example (Orange[1822] OR Red[1818]) AND Wood[1829]. Example: 1822,1818,1829
+             * - minPrice: Numeric minPrice of products to be retrieved. Example: 25
+             * - maxPrice: Numeric maxPrice of products to be retrieved. Example: 100
+             * - accessoriesOf: Used to retrieve accessory products of specified product code(s). Example: ah-lchair
+             * - sort: Sort order keyword of either relevance, lowest price, highest price, newest, oldest, or popularity. Example: relevance
+             * - pageNumber: Numeric pageNumber of products to be retrieved. Example: 1
+             * - pageSize: Numeric pageSize of products to be retrieved. Example: 10
+             *
              */
-
             function Product() {
                 //Todo: put the possilbe query params into the description for documentation
-                // These are the api possible query params.
-//                var params = {
-//                    categoryIds  : [],
-//                    productCodes  : [],
-//                    search       : '',
-//                    facets       : '',
-//                    minPrice     : '',
-//                    maxPrice     : '',
-//                    accessoriesOf: '',
-//                    sort         : '',
-//                    pageNumber   : '',
-//                    pageSize     : ''
-//                };
-
-//                http://www.samplestore.io/api/v1/products/?categoryIds=&search=&facets=&minPrice=&maxPrice=&accessoriesOf=&sort=&pageNumber=&pageSize=
-
                 return $resource(vnDataEndpoint.apiUrl + '/products/:code',
                     {
                         code: '@code'
@@ -231,9 +216,9 @@ angular.module('Volusion.toolboxCommon')
              */
 
             function Review() {
-                return $resource(vnDataEndpoint.apiUrl + '/products/:productCode/reviews',
+                return $resource(vnDataEndpoint.apiUrl + '/products/:code/reviews',
                     {
-                        productCode: '@productCode'
+                        code: '@code'
                     },
                     {
                         'get'   : { method: 'GET'},

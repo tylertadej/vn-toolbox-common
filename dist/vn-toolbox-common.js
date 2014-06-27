@@ -968,15 +968,15 @@ angular.module('Volusion.toolboxCommon')
              * - vnApi.Cart().post(???? fix this ?????); -> Returns ???
              */
             function Cart() {
-                return $resource(vnDataEndpoint.apiUrl + '/carts');
-//                {},
-//                {
-//                    'get'   : { method: 'GET'},
-//                    'save'  : { method: 'POST' },
-//                    'query' : { method: 'GET', isArray: false },
-//                    'remove': { method: 'DELETE' },
-//                    'delete': { method: 'DELETE' }
-//                });
+                return $resource(vnDataEndpoint.apiUrl + '/carts',
+                    {},
+                    {
+                        'get'   : { method: 'GET'},
+                        'save'  : { method: 'POST' },
+                        'query' : { method: 'GET', isArray: false },
+                        'remove': { method: 'DELETE' },
+                        'delete': { method: 'DELETE' }
+                    });
             }
 
             /**
@@ -1459,8 +1459,8 @@ angular.module('Volusion.toolboxCommon')
     .constant('vnDataEndpoint', (function () {
         'use strict';
         var firebase = 'https://brilliant-fire-5600.firebaseio.com',
-            //apibase = 'http://www.samplestore.io/api/v1';
-            apibase = 'http://txlpt374-vm.corp.volusion.com/api/v1';
+            apibase = 'http://www.samplestore.io/api/v1';
+//            apibase = 'http://txlpt374-vm.corp.volusion.com/api/v1';
 
         return {
             /**
