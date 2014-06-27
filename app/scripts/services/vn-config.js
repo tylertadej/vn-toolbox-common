@@ -8,9 +8,14 @@
  * # vnConfig
  * The vnConfig factory is used to manage user, account and app configuration that is more
  * dynamic than can be easily accomplished with constnats or values. Well perhaps not values,
+ *
  * Some of this should be depricated and moved into it's own value: currentAction, the tokens
  * urls and perhaps all of the app state itself should live in a currentAppState value service.
  * Hmmm. That's an interesting thought.
+ *
+ * The original use case for this was to manage authentication and set up for the transfer of data
+ * from the api into firebase. Some of it was directly ported from SiteBuilder and hasn't been touched since.
+ *
  *
  */
 
@@ -61,17 +66,16 @@ angular.module('Volusion.toolboxCommon')
         function initConfig() {
 
             var mockResponse = {
-                api     : 'http://txlpt374-vm.corp.volusion.com/api/v1',
-                //api     : 'http://www.samplestore.io/api/v1',
+                //api     : 'http://www.samplestore.io/api/v1', // This has moved into vnDataEndpoint value.
                 account : 'asdf123',
                 context : 'SiteBuilder',
                 firebase: 'https://brilliant-fire-5600.firebaseio.com',
-                fbToken : ']idk - this comes from node server[',
+                fbToken : ']idk - this comes from ??? server[',
                 apiToken: ']idk - how do I know if I am logging into edit[',
                 sandbox : 'http://localhost:8080'
             };
 
-            //Simulate a admin login response
+            //Simulate an admin login response
             account = mockResponse.account;
             apiToken = mockResponse.apiToken;
             apiUrl = mockResponse.api;
