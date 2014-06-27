@@ -286,7 +286,6 @@ angular.module('Volusion.toolboxCommon')
                             '</div>' +
                         '<hr>' +
                         '</div>' +
-                        '</div>' +
                     '</div>' +
                 '</div>'
         );
