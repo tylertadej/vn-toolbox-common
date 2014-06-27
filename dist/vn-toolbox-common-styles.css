@@ -2,13 +2,9 @@
 /*! vn-toolbox-common - ver.0.0.2 (2014-06-27) */
 
 
-.facet-item .ng-enter, .facet-item .ng-leave { -webkit-transition: 500ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all; -moz-transition: 500ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all; -ms-transition: 500ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all; -o-transition: 500ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all; transition: 500ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all; position: relative; display: block; overflow: hidden; text-overflow: clip; white-space: nowrap; }
-.facet-item .ng-leave.ng-leave-active, .facet-item .ng-enter { opacity: 0; height: 0px; }
-.facet-item .ng-enter.ng-enter-active, .facet-item .ng-leave { opacity: 1; height: 30px; }
-
-.-facet-property .ng-enter, .-facet-property .ng-leave { -webkit-transition: 500ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all; -moz-transition: 500ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all; -ms-transition: 500ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all; -o-transition: 500ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all; transition: 500ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all; position: relative; display: block; overflow: hidden; text-overflow: clip; white-space: nowrap; }
-.-facet-property .ng-leave.ng-leave-active, .-facet-property .ng-enter { opacity: 0; height: 0px; }
-.-facet-property .ng-enter.ng-enter-active, .-facet-property .ng-leave { opacity: 1; height: 30px; }
+.facet-item .ng-enter, .facet-item .ng-leave { -webkit-transition: 0.5s ease-out all, visibility 0.1s linear; -moz-transition: 0.5 ease-out all, visibility 0.1s linear; -ms-transition: 0.5 ease-out all, visibility 0.1s linear; -o-transition: 0.5 ease-out all, visibility 0.1s linear; transition: 0.5 ease-out all, visibility 0.1s linear; width: 100%; overflow: hidden; }
+.facet-item .ng-leave.ng-leave-active, .facet-item .ng-enter { width: 0%; height: 0px; }
+.facet-item .ng-enter.ng-enter-active, .facet-item .ng-leave { width: 100%; height: 30px; }
 
 /*! IMAGE */
 /*!***************************************************************************/

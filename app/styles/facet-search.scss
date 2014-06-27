@@ -1,59 +1,24 @@
 .facet-item {
     .ng-enter,
     .ng-leave {
-        -webkit-transition: 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-        -moz-transition: 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-        -ms-transition: 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-        -o-transition: 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-        transition: 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-        position: relative;
-        display: block;
+        -webkit-transition: 0.5s ease-out all, visibility 0.1s linear;
+        -moz-transition: 0.5 ease-out all, visibility 0.1s linear;
+        -ms-transition: 0.5 ease-out all, visibility 0.1s linear;
+        -o-transition: 0.5 ease-out all, visibility 0.1s linear;
+        transition: 0.5 ease-out all, visibility 0.1s linear;
+        width: 100%;
         overflow: hidden;
-        text-overflow: clip;
-        white-space:nowrap;
     }
 
     .ng-leave.ng-leave-active,
     .ng-enter {
-        opacity: 0;
-//        width: 0px;
+        width: 0%;
         height: 0px;
     }
 
     .ng-enter.ng-enter-active,
     .ng-leave {
-        opacity: 1;
-//        width: 150px;
-        height: 30px;
-    }
-}
-
-.-facet-property {
-    .ng-enter,
-    .ng-leave {
-        -webkit-transition: 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-        -moz-transition: 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-        -ms-transition: 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-        -o-transition: 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-        transition: 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-        position: relative;
-        display: block;
-        overflow: hidden;
-        text-overflow: clip;
-        white-space:nowrap;
-    }
-
-    .ng-leave.ng-leave-active,
-    .ng-enter {
-        opacity: 0;
-//        width: 0px;
-        height: 0px;
-    }
-
-    .ng-enter.ng-enter-active,
-    .ng-leave {
-        opacity: 1;
-//        width: 150px;
+        width: 100%;
         height: 30px;
     }
 }
