@@ -17,7 +17,7 @@ angular.module('Volusion.toolboxCommon')
             'use strict';
 
             return {
-                templateUrl: '/views/partials/vn-facet-search.html',
+                templateUrl: 'template/vn-facet-search.html',
                 restrict   : 'AE',
                 scope      : {
                     facets: '='
@@ -57,9 +57,9 @@ angular.module('Volusion.toolboxCommon')
                 '<div class="-faceted-search">' +
                     '<header>Refine by</header>' +
                     '<div class="facets">' +
-                        '<div ng-repeat="facet in facets">' +
+                        '<div class="facet-item" ng-repeat="facet in facets track by $index">' +
                             '<header>{{ facet.title }}</header>' +
-                            '<div ng-repeat="property in facet.properties">' +
+                            '<div class="-facet-property" ng-repeat="property in facet.properties track by $index">' +
                                 '<div class="row">' +
                                     '<label>{{ property.name }}' +
                                         '<input type="checkbox"' +
@@ -69,9 +69,10 @@ angular.module('Volusion.toolboxCommon')
                                     '</label>' +
                                 '</div>' +
                             '</div>' +
-                            '<hr>' +
-                            '</div>' +
+                        '<hr>' +
                         '</div>' +
-                    '</div>'
+                        '</div>' +
+                    '</div>' +
+                '</div>'
         );
     }]);

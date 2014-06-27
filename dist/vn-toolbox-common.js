@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.2 (2014-06-26) */
+/*! vn-toolbox-common - ver.0.0.2 (2014-06-27) */
 
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate'])
     .config(
@@ -232,7 +232,7 @@ angular.module('Volusion.toolboxCommon')
             'use strict';
 
             return {
-                templateUrl: '/views/partials/vn-facet-search.html',
+                templateUrl: 'template/vn-facet-search.html',
                 restrict   : 'AE',
                 scope      : {
                     facets: '='
@@ -272,9 +272,9 @@ angular.module('Volusion.toolboxCommon')
                 '<div class="-faceted-search">' +
                     '<header>Refine by</header>' +
                     '<div class="facets">' +
-                        '<div ng-repeat="facet in facets">' +
+                        '<div class="facet-item" ng-repeat="facet in facets track by $index">' +
                             '<header>{{ facet.title }}</header>' +
-                            '<div ng-repeat="property in facet.properties">' +
+                            '<div class="-facet-property" ng-repeat="property in facet.properties track by $index">' +
                                 '<div class="row">' +
                                     '<label>{{ property.name }}' +
                                         '<input type="checkbox"' +
@@ -284,10 +284,11 @@ angular.module('Volusion.toolboxCommon')
                                     '</label>' +
                                 '</div>' +
                             '</div>' +
-                            '<hr>' +
-                            '</div>' +
+                        '<hr>' +
                         '</div>' +
-                    '</div>'
+                        '</div>' +
+                    '</div>' +
+                '</div>'
         );
     }]);
 
@@ -937,10 +938,6 @@ angular.module('Volusion.toolboxCommon')
              *
              */
             function Category() {
-//                http://www.samplestore.io/api/v1/categories?slug=men
-//                console.log('api category slug: ', slug);
-//                var test = vnDataEndpoint.apiUrl + '/categories/';
-//                catSlug = catSlug || '';
 
                 return $resource(vnDataEndpoint.apiUrl + '/categories',
                     {},
@@ -965,7 +962,7 @@ angular.module('Volusion.toolboxCommon')
              * Returns a $resource that resolves to the Volusion API endpoint for the configured site.
              * ## Usage
              * - vnApi.Cart().query() -> returns the Cart data
-             * - vnApi.Cart().post(???? fix this ?????); -> Returns ???
+             * - vnApi.Cart().post(???? FIX THIS ?????); -> Returns ???
              */
             function Cart() {
                 return $resource(vnDataEndpoint.apiUrl + '/carts');
@@ -975,7 +972,7 @@ angular.module('Volusion.toolboxCommon')
              * @ngdoc method
              * @name Configuration
              * @methodOf Volusion.toolboxCommon.vnApi
-             * @returns {$resource} $resource A $resource promise that resolves the results of
+             * @returns {$resource} $resource A $resource has a promise that resolves the results of
              * the request.
              *
              * @description
@@ -999,7 +996,6 @@ angular.module('Volusion.toolboxCommon')
              * - vnApi.Country().query() -> returns a list of all countries
              */
             function Country() {
-
                 return $resource(vnDataEndpoint.apiUrl + '/countries');
             }
 
@@ -1031,16 +1027,30 @@ angular.module('Volusion.toolboxCommon')
              * @ngdoc method
              * @name Product
              * @methodOf Volusion.toolboxCommon.vnApi
+             * @params {Object} object should be any valid objectified key value pairs
              * @returns {$resource} $resource A $resource that resolves the the results of the request.
              *
              * @description
              * Returns a $resource that resolves to the Volusion API endpoint for the configured site.
              * ## Usage
              * - vnApi.Product().query() -> returns a list of all products
-             * - vnApi.Product().get( {slug: slug} ); -> Returns the product for slug, /api/v1/products/:slug
+             * - vnApi.Product().get( {slug: theSlug} ); -> Returns the product for slug, /api/v1/products?slug=theSlug
              * - vnApi.Product().get( {any possible query params} ); -> Returns a collection of products, /api/v1/products?{any valid params}
+             *
+             * ## Valid key value pairs for the endpoint
+             * - key: value description follows here
+             * - categoryIds: Numeric categoryIds of products to be retrieved. Example: 10
+             * - slug: String slug of the product, which is the search engine optimized url keywords. Example: nike-air-jordan-2015-shoe
+             * - search: Search string. Only the first 4 words seperated by spaces will be used in the search. Example: nike air jordan
+             * - facets: String 1822,1818,1829 to filter products that are for example (Orange[1822] OR Red[1818]) AND Wood[1829]. Example: 1822,1818,1829
+             * - minPrice: Numeric minPrice of products to be retrieved. Example: 25
+             * - maxPrice: Numeric maxPrice of products to be retrieved. Example: 100
+             * - accessoriesOf: Used to retrieve accessory products of specified product code(s). Example: ah-lchair
+             * - sort: Sort order keyword of either relevance, lowest price, highest price, newest, oldest, or popularity. Example: relevance
+             * - pageNumber: Numeric pageNumber of products to be retrieved. Example: 1
+             * - pageSize: Numeric pageSize of products to be retrieved. Example: 10
+             *
              */
-
             function Product() {
                 //Todo: put the possilbe query params into the description for documentation
                 return $resource(vnDataEndpoint.apiUrl + '/products',
@@ -1157,17 +1167,16 @@ angular.module('Volusion.toolboxCommon')
         function initConfig() {
 
             var mockResponse = {
-                api     : 'http://txlpt374-vm.corp.volusion.com/api/v1',
-                //api     : 'http://www.samplestore.io/api/v1',
+                //api     : 'http://www.samplestore.io/api/v1', // This has moved into vnDataEndpoint value.
                 account : 'asdf123',
                 context : 'SiteBuilder',
                 firebase: 'https://brilliant-fire-5600.firebaseio.com',
-                fbToken : ']idk - this comes from node server[',
+                fbToken : ']idk - this comes from ??? server[',
                 apiToken: ']idk - how do I know if I am logging into edit[',
                 sandbox : 'http://localhost:8080'
             };
 
-            //Simulate a admin login response
+            //Simulate an admin login response
             account = mockResponse.account;
             apiToken = mockResponse.apiToken;
             apiUrl = mockResponse.api;
