@@ -71,7 +71,7 @@ angular.module('Volusion.toolboxCommon')
 //                catSlug = catSlug || '';
 
                 return $resource(vnDataEndpoint.apiUrl + '/categories',
-                    { },
+                    {},
                     {
                         'get'   : { method: 'GET'},
                         'save'  : { method: 'POST' },
