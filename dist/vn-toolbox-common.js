@@ -911,8 +911,8 @@ angular.module('Volusion.toolboxCommon')
              */
             function Article() {
 
-                return $resource(vnDataEndpoint.apiUrl + '/articles/',
-                    { },
+                return $resource(vnDataEndpoint.apiUrl + '/articles/:slug',
+                    { slug : '@slug' },
                     {
                         'get'   : { method: 'GET'},
                         'save'  : { method: 'POST' },
@@ -942,8 +942,8 @@ angular.module('Volusion.toolboxCommon')
 //                var test = vnDataEndpoint.apiUrl + '/categories/';
 //                catSlug = catSlug || '';
 
-                return $resource(vnDataEndpoint.apiUrl + '/categories',
-                    {},
+                return $resource(vnDataEndpoint.apiUrl + '/categories/:slug',
+                    { slug: '@slug' },
                     {
                         'get'   : { method: 'GET'},
                         'save'  : { method: 'POST' },
@@ -968,7 +968,15 @@ angular.module('Volusion.toolboxCommon')
              * - vnApi.Cart().post(???? fix this ?????); -> Returns ???
              */
             function Cart() {
-                return $resource(vnDataEndpoint.apiUrl + '/carts');
+                return $resource(vnDataEndpoint.apiUrl + '/carts',
+                    {},
+                    {
+                        'get'   : { method: 'GET'},
+                        'save'  : { method: 'POST' },
+                        'query' : { method: 'GET', isArray: false },
+                        'remove': { method: 'DELETE' },
+                        'delete': { method: 'DELETE' }
+                    });
             }
 
             /**
@@ -1001,6 +1009,14 @@ angular.module('Volusion.toolboxCommon')
             function Country() {
 
                 return $resource(vnDataEndpoint.apiUrl + '/countries');
+//                {},
+//                {
+//                    'get'   : { method: 'GET'},
+//                    'save'  : { method: 'POST' },
+//                    'query' : { method: 'GET', isArray: false },
+//                    'remove': { method: 'DELETE' },
+//                    'delete': { method: 'DELETE' }
+//                });
             }
 
             /**
@@ -1043,8 +1059,26 @@ angular.module('Volusion.toolboxCommon')
 
             function Product() {
                 //Todo: put the possilbe query params into the description for documentation
-                return $resource(vnDataEndpoint.apiUrl + '/products',
-                    { },
+                // These are the api possible query params.
+//                var params = {
+//                    categoryIds  : [],
+//                    productCodes  : [],
+//                    search       : '',
+//                    facets       : '',
+//                    minPrice     : '',
+//                    maxPrice     : '',
+//                    accessoriesOf: '',
+//                    sort         : '',
+//                    pageNumber   : '',
+//                    pageSize     : ''
+//                };
+
+//                http://www.samplestore.io/api/v1/products/?categoryIds=&search=&facets=&minPrice=&maxPrice=&accessoriesOf=&sort=&pageNumber=&pageSize=
+
+                return $resource(vnDataEndpoint.apiUrl + '/products/:slug',
+                    {
+                        slug: '@slug'
+                    },
                     {
                         'get'   : { method: 'GET'},
                         'save'  : { method: 'POST' },
@@ -1068,9 +1102,9 @@ angular.module('Volusion.toolboxCommon')
              */
 
             function Review() {
-                return $resource(vnDataEndpoint.apiUrl + '/products/:code/reviews',
+                return $resource(vnDataEndpoint.apiUrl + '/products/:slug/reviews',
                     {
-                        code: '@code'
+                        slug: '@slug'
                     },
                     {
                         'get'   : { method: 'GET'},

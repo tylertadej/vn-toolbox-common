@@ -96,7 +96,15 @@ angular.module('Volusion.toolboxCommon')
              * - vnApi.Cart().post(???? fix this ?????); -> Returns ???
              */
             function Cart() {
-                return $resource(vnDataEndpoint.apiUrl + '/carts');
+                return $resource(vnDataEndpoint.apiUrl + '/carts',
+                    {},
+                    {
+                        'get'   : { method: 'GET'},
+                        'save'  : { method: 'POST' },
+                        'query' : { method: 'GET', isArray: false },
+                        'remove': { method: 'DELETE' },
+                        'delete': { method: 'DELETE' }
+                    });
             }
 
             /**
