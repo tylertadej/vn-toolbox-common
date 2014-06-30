@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.2 (2014-06-27) */
+/*! vn-toolbox-common - ver.0.0.2 (2014-06-30) */
 
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate'])
     .config(
@@ -968,8 +968,9 @@ angular.module('Volusion.toolboxCommon')
                 return $resource(vnDataEndpoint.apiUrl + '/carts',
                     {},
                     {
-                        'get'   : { method: 'GET'},
-                        'save'  : { method: 'POST' },
+                        'get'   : { method: 'GET', withCredentials: true },
+                        'save'  : { method: 'POST', headers: { 'vMethod': 'POST'}, withCredentials: true },
+                        'update': { method: 'POST', headers: { 'vMethod': 'PUT'}, withCredentials: true },
                         'query' : { method: 'GET', isArray: false },
                         'remove': { method: 'DELETE' },
                         'delete': { method: 'DELETE' }
