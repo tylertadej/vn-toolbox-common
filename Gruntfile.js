@@ -390,21 +390,6 @@ module.exports = function(grunt) {
 			}
 		},
 
-		// Run some tasks in parallel to speed up the build process
-		concurrent: {
-			server: [
-				'compass:server'
-			],
-			test: [
-				'compass'
-			],
-			dist: [
-				'compass:dist',
-				'imagemin',
-				'svgmin'
-			]
-		},
-
 		coverage: {
 			options: {
 				thresholds: {
@@ -463,8 +448,7 @@ module.exports = function(grunt) {
 		grunt.task.run([
 			'clean:server',
 			'bowerInstall',
-			'concurrent:server',
-			//'autoprefixer',
+			'compass:server',
 			'connect:livereload',
 			'watch'
 		]);
@@ -477,8 +461,7 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('test_no_coverage', [
 		'clean:server',
-		'concurrent:test',
-		//'autoprefixer',
+		'compass',
 		'connect:test',
 		'karma'
 	]);
@@ -496,8 +479,9 @@ module.exports = function(grunt) {
 		'clean:dist',
 		'bowerInstall',
 		//'useminPrepare',
-		'concurrent:dist',
-		//'autoprefixer',
+		'compass:dist',
+		'imagemin',
+		'svgmin',
 		'concat',
 		//'ngmin',
 		'copy:dist',
