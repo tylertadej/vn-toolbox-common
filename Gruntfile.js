@@ -62,7 +62,7 @@ module.exports = function(grunt) {
 		watch: {
 			bower: {
 				files: ['bower.json'],
-				tasks: ['bowerInstall']
+				tasks: ['wiredep']
 			},
 			js: {
 				files: ['<%= yeoman.app %>/scripts/{,*/}*.js', 'test/spec/{,*/}*.js'],
@@ -175,7 +175,7 @@ module.exports = function(grunt) {
 		},
 
 		// Automatically inject Bower components into the app
-		bowerInstall: {
+		wiredep: {
 			app: {
 				src: ['<%= yeoman.app %>/index.html'],
 				ignorePath: '<%= yeoman.app %>/'
@@ -212,7 +212,7 @@ module.exports = function(grunt) {
 			},
 			server: {
 				options: {
-
+					debugInfo: true
 				}
 			}
 		},
@@ -391,7 +391,7 @@ module.exports = function(grunt) {
 
 		grunt.task.run([
 			'clean:server',
-			'bowerInstall',
+			'wiredep',
 			'compass:server',
 			'connect:livereload',
 			'watch'
@@ -405,6 +405,7 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('test_no_coverage', [
 		'clean:server',
+		'wiredep',
 		'compass:server',
 		'connect:test',
 		'karma'
@@ -421,7 +422,7 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('build', [
 		'clean:dist',
-		'bowerInstall',
+		'wiredep',
 		'compass:dist',
 		'imagemin',
 		'svgmin',
