@@ -18,9 +18,6 @@ module.exports = function (grunt) {
     // Time how long tasks take. Can help when optimizing build times
     require('time-grunt')(grunt);
 
-    // Build a documentation site
-//    require('grunt-ngdoc');
-
     // Define the configuration for all the tasks
     grunt.initConfig({
 
@@ -36,33 +33,12 @@ module.exports = function (grunt) {
         ngdocs       : {
             options: {
                 dest     : 'docs',
-//                scripts: [
-//                    'app/bower-components/angular-translate/angular-translate.js',
-//                    'app/bower-components/angular-carousel/dist/angular-carousel.min.js',
-//                    'app/bower-components/angular-touch/angular-touch.min.js',
-//                    'dist/vn-toolbox-common.js'
-//                ],
                 html5Mode: true,
                 startPage: '/api/Volusion.toolboxCommon',
                 title    : 'Volusion Toolbox Common Reference',
-//                image: "path/to/my/image.png",
-//                imageLink: "http://my-domain.com",
                 titleLink: '/api/Volusion.toolboxCommon',
                 bestMatch: true
-//                analytics: {
-//                    account: 'UA-08150815-0',
-//                    domainName: 'my-domain.com'
-//                },
-//                discussions: {
-//                    shortName: 'my',
-//                    url: 'http://my-domain.com',
-//                    dev: false
-//                }
             },
-//            tutorial: {
-//                src: ['content/tutorial/*.ngdoc'],
-//                title: 'Tutorial'
-//            },
             api    : {
                 src  : ['app/scripts/**/*.js'],
                 title: 'Volusion Toolbox Common Reference'
@@ -439,37 +415,6 @@ module.exports = function (grunt) {
                 dir       : 'coverage'
             }
         },
-
-        // By default, your `index.html`'s <!-- Usemin block --> will take care of
-        // minification. These next options are pre-configured if you do not wish
-        // to use the Usemin blocks.
-        // cssmin: {
-        //   dist: {
-        //     files: {
-        //       '<%= yeoman.dist %>/styles/main.css': [
-        //         '.tmp/styles/{,*/}*.css',
-        //         '<%= yeoman.app %>/styles/{,*/}*.css'
-        //       ]
-        //     }
-        //   }
-        // },
-//        uglify: {
-//            options: {
-//                mangle  : true,
-//                compress: true,
-//                wrap    : true
-//            },
-//            dist   : {
-//                files: {
-//                    '<%= yeoman.dist %>/scripts/scripts.js': [
-//                        '<%= yeoman.dist %>/scripts/scripts.js'
-//                    ]
-//                }
-//            }
-//        },
-        // concat: {
-        //   dist: {}
-        // },
 
         concat: {
             options: {
