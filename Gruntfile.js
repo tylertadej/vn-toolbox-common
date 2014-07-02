@@ -77,7 +77,7 @@ module.exports = function(grunt) {
 			},
 			compass: {
 				files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
-				tasks: ['compass:server', 'autoprefixer']
+				tasks: ['compass:server']
 			},
 			gruntfile: {
 				files: ['Gruntfile.js']
@@ -174,23 +174,6 @@ module.exports = function(grunt) {
 			}
 		},
 
-		// Add vendor prefixed styles
-		autoprefixer: {
-			options: {
-				browsers: ['last 1 version']
-			},
-			dist: {
-				files: [
-					{
-						expand: true,
-						cwd: '.tmp/styles/',
-						src: '{,*/}*.css',
-						dest: '.tmp/styles/'
-					}
-				]
-			}
-		},
-
 		// Automatically inject Bower components into the app
 		bowerInstall: {
 			app: {
@@ -231,51 +214,6 @@ module.exports = function(grunt) {
 				options: {
 
 				}
-			}
-		},
-
-		// Renames files for browser caching purposes
-		rev: {
-			dist: {
-				files: {
-					src: [
-						'<%= yeoman.dist %>/scripts/{,*/}*.js',
-						'<%= yeoman.dist %>/styles/{,*/}*.css',
-						'<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
-						'<%= yeoman.dist %>/styles/fonts/*'
-					]
-				}
-			}
-		},
-
-		// Reads HTML for usemin blocks to enable smart builds that automatically
-		// concat, minify and revision files. Creates configurations in memory so
-		// additional tasks can operate on them
-		useminPrepare: {
-			html: '<%= yeoman.app %>/index.html',
-			options: {
-				dest: '<%= yeoman.dist %>',
-				flow: {
-					html: {
-						steps: {
-							//js : ['concat', 'uglifyjs'],
-							//js : ['concat'],
-							//css: ['cssmin']
-							//css: ['concat']
-
-						},
-						post: {}
-					}
-				}
-			}
-		},
-
-		// Performs rewrites based on rev and the useminPrepare configuration
-		usemin: {
-			html: ['<%= yeoman.dist %>/{,*/}*.html'],
-			css: ['<%= yeoman.dist %>/styles/{,*/}*.css'],
-			options: {
-				assetsDirs: ['<%= yeoman.dist %>']
 			}
 		},
 
@@ -343,13 +281,6 @@ module.exports = function(grunt) {
 			scripts: {
 				src: ['.tmp/concat/scripts.js'],
 				dest: '<%= yeoman.dist %>/<%= pkg.name %>.js'
-			}
-		},
-
-		// Replace Google CDN references
-		cdnify: {
-			dist: {
-				html: ['<%= yeoman.dist %>/*.html']
 			}
 		},
 
