@@ -405,7 +405,7 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('test_no_coverage', [
 		'clean:server',
-		'compass',
+		'compass:server',
 		'connect:test',
 		'karma'
 	]);
