@@ -1,4 +1,4 @@
-/*global module, require */
+'use strict';
 
 // Generated on 2014-05-07 using generator-angular 0.8.0
 
@@ -9,8 +9,6 @@
 // 'test/spec/**/*.js'
 
 module.exports = function(grunt) {
-
-	'use strict';
 
 	// Load grunt tasks automatically
 	require('load-grunt-tasks')(grunt);
@@ -314,22 +312,27 @@ module.exports = function(grunt) {
 			}
 		},
 
-		htmlmin: {
-			dist: {
-				options: {
-					collapseWhitespace: true,
-					collapseBooleanAttributes: true,
-					removeCommentsFromCDATA: true,
-					removeOptionalTags: true
+		html2js: {
+			options: {
+				singleModule: true,
+				module: 'Volusion.toolboxCommon',
+				rename: function(moduleName) {
+					return moduleName.replace('../app/views/partials/', '');
 				},
-				files: [
-					{
-						expand: true,
-						cwd: '<%= yeoman.dist %>',
-						src: ['*.html', 'views/{,*/}*.html'],
-						dest: '<%= yeoman.dist %>'
-					}
-				]
+				htmlmin: {
+					collapseBooleanAttributes: true,
+					collapseWhitespace: true,
+					removeAttributeQuotes: true,
+					removeComments: true,
+					removeEmptyAttributes: true,
+					removeRedundantAttributes: true,
+					removeScriptTypeAttributes: true,
+					removeStyleLinkTypeAttributes: true
+				}
+			},
+			partials: {
+				src: ['<%= yeoman.app %>/views/partials/{,*/}*.html'],
+				dest: '.tmp/partial-views.js'
 			}
 		},
 
@@ -337,15 +340,9 @@ module.exports = function(grunt) {
 		// using the Angular long form for dependency injection. It doesn't work on
 		// things like resolve or inject so those have to be done manually.
 		ngmin: {
-			dist: {
-				files: [
-					{
-						expand: true,
-						cwd: '.tmp/concat/scripts',
-						src: '*.js',
-						dest: '.tmp/concat/scripts'
-					}
-				]
+			scripts: {
+				src: ['.tmp/concat/scripts.js'],
+				dest: '<%= yeoman.dist %>/<%= pkg.name %>.js'
 			}
 		},
 
@@ -410,15 +407,16 @@ module.exports = function(grunt) {
 				},
 				banner: '\n/*! <%= pkg.name %> - ver.<%= pkg.version %> (<%= grunt.template.today("yyyy-mm-dd") %>) */\n\n'
 			},
-			dist: {
+			main: {
 				files: [
 					{
 						src: [
 							'<%= yeoman.app %>/scripts/{,*/}*.js',
 							'!<%= yeoman.app %>/scripts/app.js',
-							'!<%= yeoman.app %>/scripts/{,*/}main.js'
+							'!<%= yeoman.app %>/scripts/{,*/}main.js',
+							'.tmp/partial-views.js'
 						],
-						dest: '<%= yeoman.dist %>/<%= pkg.name %>.js'
+						dest: '.tmp/concat/scripts.js'
 					},
 					{
 						src: [
@@ -428,6 +426,21 @@ module.exports = function(grunt) {
 						dest: '<%= yeoman.dist %>/<%= pkg.name %>-styles.css'
 					}
 				]
+			}
+		},
+
+		uglify: {
+			options: {
+				mangle: true,
+				compress: true,
+				wrap: true
+			},
+			scripts: {
+				files: {
+					'<%= yeoman.dist %>/<%= pkg.name %>.min.js': [
+						'<%= yeoman.dist %>/<%= pkg.name %>.js'
+					]
+				}
 			}
 		},
 
@@ -478,19 +491,15 @@ module.exports = function(grunt) {
 	grunt.registerTask('build', [
 		'clean:dist',
 		'bowerInstall',
-		//'useminPrepare',
 		'compass:dist',
 		'imagemin',
 		'svgmin',
+		'html2js',
 		'concat',
-		//'ngmin',
+		'ngmin',
 		'copy:dist',
-		//'cdnify',
-		'cssmin' //,
-		//'uglify'//,
-		//'rev',
-		//'usemin'//,
-		//'htmlmin'
+		'cssmin',
+		'uglify'
 	]);
 
 	grunt.registerTask('default', [
