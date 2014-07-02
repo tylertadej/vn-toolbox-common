@@ -22,7 +22,7 @@ describe('Directive: vn-element', function () {
 	beforeEach(module('Volusion.toolboxCommon'));
 
 	var $rootScope,
-		$compile
+		$compile;
 
 	// ReSharper disable InconsistentNaming
 	beforeEach(inject(function (_$rootScope_, _$compile_) {
