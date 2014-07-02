@@ -2,6 +2,7 @@ node_modules
 .idea
 .tmp
 .sass-cache
+*.suo
 app/bower_components
 coverage
 docs
