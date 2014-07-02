@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.2 (2014-06-30) */
+/*! vn-toolbox-common - ver.0.0.2 (2014-07-01) */
 
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate'])
     .config(
@@ -36,90 +36,93 @@ angular.module('Volusion.toolboxCommon', ['pascalprecht.translate'])
             }]
     );
 
+'use strict';
+
 /**
  * @ngdoc directive
- * @name Volusion.toolboxCommon.directive:vnCarousel
- * @restrict EA
- * @requires $rootScope
+ * @name Volusion.toolboxCommon.directive:vnBlock
+ * @restrict A
+ * @requires bem
  * @scope
+ *
  * @description
  *
- * Replace the element with carousel's html markup. Accepts image list as array of objects
  *
  * @usage
-    <div vn-carousel image-list="imageList"></div>
-
-    -OR-------------------------------------
-
-    <vn-carousel image-list="imageList"></vn-carousel>
- *
- *
  * @example
-     <example module="Volusion.toolboxCommon" deps="">
-        <file name="toolbox.js" src="https://raw.githubusercontent.com/volusion-angular/vn-toolbox-common/master/dist/vn-toolbox-common.js?token=2973530__eyJzY29wZSI6IlJhd0Jsb2I6dm9sdXNpb24tYW5ndWxhci92bi10b29sYm94LWNvbW1vbi9tYXN0ZXIvZGlzdC92bi10b29sYm94LWNvbW1vbi5qcyIsImV4cGlyZXMiOjE0MDE5MDIxNTN9--cab7a2826771ca99b3c8c2c8ca883038756d8ef3"></file>
-        <file name="script.js">
-            angular.module('Volusion.toolboxCommon', [])
-                .controller('CarouselCtrl',
-                    function ($scope) {
-
-                        $scope.imageList = [
-                            {src: 'http://lorempixel.com/450/300/people/0', alt: 'Random image'},
-                            {src: 'http://lorempixel.com/450/300/people/1', alt: 'Random image'},
-                            {src: 'http://lorempixel.com/450/300/people/2', alt: 'Random image'},
-                            {src: 'http://lorempixel.com/450/300/people/3', alt: 'Random image'}
-                        ];
-
-                    });
-        </file>
-        <file name="index.html">
-            <div ng-controller="CarouselCtrl">
-                <vn-carousel image-list="imageList"></vn-carousel>
-            </div>
-        </file>
-     </example>
  */
 
 angular.module('Volusion.toolboxCommon')
-    .directive('vnCarousel',
-        ['$rootScope',
-            function ($rootScope) {
+	.directive('vnBlock', ['bem', function (bem) {
+		return {
+			restrict: 'A',
+			controller: function() {
+				this.getBlock = function() {
+					return this.block;
+				};
 
-                'use strict';
+				this.getModifiers = function() {
+					return this.modifiers;
+				};
+			},
+			compile: function() {
+				return {
+					pre: function(scope, iElement, iAttrs, controller) {
+						var block = iAttrs.vnBlock;
+						var modifiers = iAttrs.vnModifiers;
+						bem.addClasses(iElement, {
+							block: block,
+							blockModifiers: modifiers
+						});
+						controller.block = block;
+						controller.modifiers = modifiers;
+					}
+				};
+			}
+		};
+	}]);
 
-                return {
-                    templateUrl: 'template/carousel.html',
-                    restrict   : 'EA',
-                    replace    : true,
-                    scope: {
-                        currMode: '@currMode',
-                        carouselObjects: '='
-                    },
-                    link       : function postLink(scope, element) {
-                        if (scope.currMode === undefined) {
-                            scope.currMode = 'on';
-                        }
+angular.module('Volusion.toolboxCommon')
+	.directive('vnCarousel',
+	['$rootScope',
+		function ($rootScope) {
 
-                        // Component constants *****************
-                        scope.componentId = '100001';
-                        scope.componentName = 'carousel';
-                        // *************************************
+			'use strict';
 
-                        // Component is not selected by default
-                        scope.selected = false;
+			return {
+				templateUrl: 'template/carousel.html',
+				restrict   : 'EA',
+				replace    : true,
+				scope      : {
+					currMode       : '@currMode',
+					carouselObjects: '='
+				},
+				link       : function postLink(scope, element) {
+					if (scope.currMode === undefined) {
+						scope.currMode = 'on';
+					}
 
-                        scope.$on('currentComponent.change', function (event, component) {
-                            if (component && component.id && scope.currMode === 'off') {
-                                scope.selected = (component.id === scope.componentId);
-                            }
-                        });
+					// Component constants *****************
+					scope.componentId = '100001';
+					scope.componentName = 'carousel';
+					// *************************************
 
-                        element.on('click', function (event) {
-                            // if in EDIT mode
-                            if (scope.currMode === 'off') {
-                                event.preventDefault();
-                                $rootScope.$broadcast('currentComponent.change', {'id': scope.componentId, 'name': scope.componentName, 'action': 'set'});
-                            }
-                        });
+					// Component is not selected by default
+					scope.selected = false;
+
+					scope.$on('currentComponent.change', function (event, component) {
+						if (component && component.id && scope.currMode === 'off') {
+							scope.selected = (component.id === scope.componentId);
+						}
+					});
+
+					element.on('click', function (event) {
+						// if in EDIT mode
+						if (scope.currMode === 'off') {
+							event.preventDefault();
+							$rootScope.$broadcast('currentComponent.change', {'id': scope.componentId, 'name': scope.componentName, 'action': 'set'});
+						}
+					});
 
 //                        Initialize the slider
 //                        element.carousel({
@@ -127,49 +130,49 @@ angular.module('Volusion.toolboxCommon')
 //                            pause: 'hover',
 //                            wrap: true
 //                        });
-                    $('.carousel').carousel({
-                        interval: 5000,
-                        pause: 'hover',
-                        wrap: true
-                    });
+					$('.carousel').carousel({
+						interval: 5000,
+						pause   : 'hover',
+						wrap    : true
+					});
 
-                        scope.prev = function() {
-                    $('.carousel').carousel('prev');
+					scope.prev = function () {
+						$('.carousel').carousel('prev');
 //                            element.carousel('prev');
-                        };
+					};
 
-                        scope.next = function() {
+					scope.next = function () {
 //                            element.carousel('next');
-                    $('.carousel').carousel('next');
-                        };
-                    }
-                };
-            }])
-    .run(['$templateCache', function ($templateCache) {
-        'use strict';
+						$('.carousel').carousel('next');
+					};
+				}
+			};
+		}])
+	.run(['$templateCache', function ($templateCache) {
+		'use strict';
 
-        $templateCache.put(
-            'template/carousel.html',
-            '<div id="vnCarousel" class="carousel slide" data-ride="carousel">' +
-                '<!-- Indicators -->' +
-                '<ol class="carousel-indicators">' +
-                    '<li ng-repeat="image in imageList" data-target="#vnCarousel" data-slide-to="{{ $index }}"></li>' +
-                '</ol>' +
-                '<div ng-repeat="image in imageList" class="carousel-inner">' +
-                    '<div class="item active">' +
-                        '<img data-src="" alt="First slide" src="{{ image.src }}">' +
-                        '<div class="container">' +
-                            '<h1>Example headline.</h1>' +
-                            '<p>Note: If you\'re viewing this page via a <code>file://</code> URL, the "next" and "previous"  might not load/display properly.</p>' +
-                            '<p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>' +
-                        '</div>' +
-                    '</div>' +
-                    '<a class="left carousel-control" href="#myCarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>' +
-                    '<a class="right carousel-control" href="#myCarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>' +
-                '</div>'+
-            '</div>'
-        );
-    }]);
+		$templateCache.put(
+			'template/carousel.html',
+				'<div id="vnCarousel" class="carousel slide" data-ride="carousel">' +
+				'<!-- Indicators -->' +
+				'<ol class="carousel-indicators">' +
+				'<li ng-repeat="image in imageList" data-target="#vnCarousel" data-slide-to="{{ $index }}"></li>' +
+				'</ol>' +
+				'<div ng-repeat="image in imageList" class="carousel-inner">' +
+				'<div class="item active">' +
+				'<img data-src="" alt="First slide" src="{{ image.src }}">' +
+				'<div class="container">' +
+				'<h1>Example headline.</h1>' +
+				'<p>Note: If you\'re viewing this page via a <code>file://</code> URL, the "next" and "previous"  might not load/display properly.</p>' +
+				'<p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>' +
+				'</div>' +
+				'</div>' +
+				'<a class="left carousel-control" href="#myCarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>' +
+				'<a class="right carousel-control" href="#myCarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>' +
+				'</div>' +
+				'</div>'
+		);
+	}]);
 
 
 
@@ -225,6 +228,40 @@ angular.module('Volusion.toolboxCommon')
                 '</div>'
         );
     }]);
+
+'use strict';
+
+/**
+ * @ngdoc directive
+ * @name Volusion.toolboxCommon.directive:vnElement
+ * @restrict A
+ * @requires bem, vnBlock
+ * @scope
+ *
+ * @description
+ *
+ *
+ * @usage
+ * @example
+ */
+
+angular.module('Volusion.toolboxCommon')
+	.directive('vnElement', ['bem', function (bem) {
+		return {
+			require: '^vnBlock',
+			restrict: 'A',
+			compile: function() {
+				return function(scope, iElement, iAttrs, blockCtrl) {
+					bem.addClasses(iElement, {
+						block: blockCtrl.getBlock(),
+						blockModifiers: blockCtrl.getModifiers(),
+						element: iAttrs.vnElement,
+						elementModifiers: iAttrs.vnModifiers
+					});
+				};
+			}
+		};
+	}]);
 
 angular.module('Volusion.toolboxCommon')
     .directive('vnFacetSearch', ['$rootScope', 'vnProductParams',
@@ -291,54 +328,6 @@ angular.module('Volusion.toolboxCommon')
         );
     }]);
 
-/**
- * @ngdoc directive
- * @name Volusion.toolboxCommon.directive:vnImage
- * @restrict EA
- * @requires $rootScope
- * @scope
- * @description
- *
- * Replace the element with image's html markup.Accepts image as object
- *
- * <pre>
- *      $scope.image = {
- *          src: 'http://lorempixel.com/450/300/people/0',
- *          alt: 'Random people image'
- *      },
- * </pre>
- *
- * @usage
- <div vn-image image="image"></div>
-
- -OR-------------------------------------
-
- <vn-image image="imageList[2]"></vn-image>
- *
- * @example
-     <example module="app">
-        <file name="script.js">
-             angular.module('app', [])
-                 .controller('ImageCtrl',
-                     function ($scope) {
-
-                        $scope.imageList = [
-                            {src: 'http://lorempixel.com/450/300/people/0', alt: 'Random image'},
-                            {src: 'http://lorempixel.com/450/300/people/1', alt: 'Random image'},
-                            {src: 'http://lorempixel.com/450/300/people/2', alt: 'Random image'},
-                            {src: 'http://lorempixel.com/450/300/people/3', alt: 'Random image'}
-                        ];
-
-                    });
-         </file>
-         <file name="index.html">
-             <div ng-controller="ImageCtrl">
-                <vn-image image="imageList[2]" />
-             </div>
-         </file>
-     </example>
- */
-
 angular.module('Volusion.toolboxCommon')
     .directive('vnImage',
         ['$rootScope',
@@ -395,57 +384,6 @@ angular.module('Volusion.toolboxCommon')
         );
     }]);
 
-/**
- * @ngdoc directive
- * @name Volusion.toolboxCommon.directive:vnLink
- * @restrict EA
- * @requires $rootScope
- * @scope
- *
- * @description
- *
- * Replace the element with anchor and transcluded caption.
- *
- * **Note:** If target is not specified if will be set to "_SELF"
- *
- * @usage
- <a
-    vn-link
-    href="{{ PATH_TO }}"
-    target="{{ _self || _blank || _top">
-        {{ LINK_CAPTION | translated }}
- </a>
-
- -OR-------------------------------------
-
- <vn-link
-    href="{{ PATH_TO }}"
-    target="{{ _self || _blank || _top">
-        {{ LINK_CAPTION | translated }}
- </vn-link>
- *
-// * @example
-// *<a vn-link href="http://www.yahoo.com" target="_self">Go to Yahoo</a>
- *
- * @example
-     <example module="app">
-         <file name="script.js">
-             angular.module('app', [])
-                 .controller('LinkCtrl',
-                    function ($scope) {
-
-                        $scope.pathTo = 'http://www.yahoo.com';
-
-                    });
-         </file>
-         <file name="index.html">
-             <div ng-controller="LinkCtrl">
-                <vn-link href="pathTo">Go to Yahoo</vn-link>
-             </div>
-         </file>
-     </example>
- */
-
 angular.module('Volusion.toolboxCommon')
     .directive('vnLink',
         ['$rootScope',
@@ -499,29 +437,6 @@ angular.module('Volusion.toolboxCommon')
         );
     }]);
 
-/**
- * @ngdoc directive
- * @name Volusion.toolboxCommon.directive:vnMetaTags
- * @restrict EA
- * @requires NotApplicableYet ported from Method Theme
- * @description
- *
- * #vnMetaTags Directive
- * Given the seo data from a product or category (Need-to-confirm), update these meta tags:
- * - title
- * - description
- * - keywords
- * - toAppend ?? Not sure what this is
- * - robots
- *
- * Dev Note, these were pulled directly from the elements method theme was watching.
- *
- * @usage
- <head data-vn-meta-tags data-title="seo.metaTagTitle"
- data-description="seo.metaTagDescription" data-keywords="seo.metaTagKeywords"
- data-robots="seo.enableRobotsMetatags" data-to-append="seo.globallyAppendedMetatags">
-
- */
 angular.module('Volusion.toolboxCommon')
     .directive('vnMetaTags', function () {
         'use strict';
@@ -588,64 +503,6 @@ angular.module('Volusion.toolboxCommon')
         };
     });
 
-/**
- * @ngdoc directive
- * @name Volusion.toolboxCommon.directive:vnNav
- * @restrict EA
- * @requires $rootScope
- * @scope
- * @description
- *
- * Replace the element with navbar's html markup. Accepts categoryList as array of objects
- *
- * @usage
- <div vn-nav category-list="categoryList" callback-fn="alert('Item selected')"></div>
-
- -OR-------------------------------------
-
- <vn-nav category-list="categoryList"></vn-nav>
- *
- *
- * @example
-     <example module="Volusion.toolboxCommon" deps="">
-         <file name="script.js">
-             angular.module('Volusion.toolboxCommon', [])
-                .controller('NavCtrl',
-                    function ($scope) {
-
-                        $scope.categoryList = [
-                            {name : 'Apparel',
-                                subCategories: [
-                                    {id: 123, name : 'Women'},
-                                    {id: 234, name : 'Men'}
-                                ]},
-                            {name : 'Home decor',
-                                subCategories: [
-                                    {id: 123, name : 'Furniture'},
-                                    {id: 234, name : 'Home Accessories'}
-                                ]},
-                            {name : 'Beauty',
-                                subCategories: [
-                                    {id: 123, name : 'Bath and Body'},
-                                    {id: 234, name : 'Hair Care'}
-                                ]},
-                            {name : 'Gourmet food',
-                                subCategories: [
-                                    {id: 123, name : 'Speciality Items'},
-                                    {id: 234, name : 'Sweets'}
-                                ]}
-                        ];
-
-                    });
-         </file>
-         <file name="index.html">
-             <div ng-controller="NavCtrl">
-                <vn-nav category-list="categoryList"></vn-nav>
-             </div>
-         </file>
-     </example>
- */
-
 angular.module('Volusion.toolboxCommon')
     .directive('vnNav',
         ['$rootScope',
@@ -709,44 +566,6 @@ angular.module('Volusion.toolboxCommon')
             '</div>'
         );
     }]);
-
-/**
- * @ngdoc directive
- * @name Volusion.toolboxCommon.directive:vnRating
- * @restrict EA
- * @requires $rootScope
- * @scope
- * @description
- *
- * Replace the element with rating's html markup.Accepts ratingValue as Integer and readonly as expression
- *
- * **Note:** If readonly attribute is not specified "FALSE" will be assumed
- *
- * @usage
- <div vn-rating rating-value="{{ VALUE }}"></div>
-
- -OR-------------------------------------
-
- <vn-rating rating-value="{{ VALUE }}" data-readonly="{{ BOOLEAN }}"></vn-rating>
- *
- * @example
-     <example module="app">
-         <file name="script.js">
-             angular.module('app', [])
-                .controller('RatingCtrl',
-                    function ($scope) {
-
-                        $scope.ratingValue = 3;
-
-                    });
-         </file>
-         <file name="index.html">
-             <div ng-controller="LinkCtrl">
-                <vn-rating rating-value="ratingValue"></vn-rating>
-             </div>
-         </file>
-     </example>
- */
 
 angular.module('Volusion.toolboxCommon')
     .directive('vnRating',
@@ -841,6 +660,72 @@ angular.module('Volusion.toolboxCommon')
         );
     }]);
 
+'use strict';
+
+/**
+ * @ngdoc service
+ * @name Volusion.toolboxCommon.service:bem
+ *
+ * @requires
+ * @scope
+ *
+ * @description
+ *
+ *
+ * @usage
+ * @example
+ */
+
+angular.module('Volusion.toolboxCommon')
+	.factory('bem', function () {
+
+		function generateClasses(base, modifiers) {
+			var result = [base];
+			angular.forEach(splitModifiers(modifiers), function (modifier) {
+				result.push(base + '--' + modifier);
+			});
+			return result;
+		}
+
+		function splitModifiers(modifiers) {
+			modifiers = modifiers && modifiers.replace(/^\s+|\s+$/g, '');
+			if (!modifiers) {
+				return [];
+			}
+			return modifiers.split(/\s+/);
+		}
+
+		return {
+			addClasses: function ($elem, options) {
+
+				options = options || {};
+
+				var block = options.block;
+				if (!block) {
+					return;
+				}
+
+				var blockClasses = generateClasses(block, options.blockModifiers);
+
+				var element = options.element;
+
+				if (!element) {
+					angular.forEach(blockClasses, function (blockClass) {
+						$elem.addClass(blockClass);
+					});
+					return;
+				}
+
+				var elementClasses = generateClasses('__' + element, options.elementModifiers);
+				angular.forEach(blockClasses, function (blockClass) {
+					angular.forEach(elementClasses, function (elementClass) {
+						$elem.addClass(blockClass + elementClass);
+					});
+				});
+			}
+		};
+	});
+
 angular.module('Volusion.toolboxCommon')
     .value('vnApiArticles', {});
 
@@ -871,23 +756,6 @@ angular.module('Volusion.toolboxCommon')
 
 angular.module('Volusion.toolboxCommon')
     .value('vnApiProducts', {});
-
-/**
- * @ngdoc service
- * @name Volusion.toolboxCommon.vnApi
- * @requires $resource
- * @requires vnDataEndpoint
- * @description
- *
- * # vnApi
- * This is a service that facilitates connection to the Volusion API. It handles both
- * non-authenticated and authenticated requests through the API RESTful interface.
- * It offers a model like interface that utilized the Angular $resource service and
- * accepts arguments specific to the request parameter requirements for each endpoint.
- * handling the full response, parsing the actual data and managing the request metadata
- * (cursor, facets, data) is the responsibility of the caller.
- *
- */
 
 // Todo: figure out which $resources need all the access types. Remove the unused queries: put, remove delete etc ...
 angular.module('Volusion.toolboxCommon')
@@ -1778,22 +1646,6 @@ angular.module('Volusion.toolboxCommon')
                 resetDataForPath: resetDataForPath
             };
         }]);
-
-/**
- * @ngdoc service
- * @name Volusion.toolboxCommon.vnProductParams
-
- * @description
- *
- * # vnProductParams
- * This is service that manages product requests to the back end. Depeneding on directives values or actions the state
- * of the paramsObject can be stored used for a new request. This was implemented to get the facetd serch working with
- * the vnCategorySearch & vnFacetSearch Directives. Future reqirements will make use of the service for
- *  - managing paging of products on the category pages
- *  - parsing the url for bookmarked links to load a pre-set query to that has been shared
- *  - modifying the url to update it based on paramsObject contents.
- *
- */
 
 angular.module('Volusion.toolboxCommon')
     .factory('vnProductParams', function () {

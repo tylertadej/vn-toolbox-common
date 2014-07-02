@@ -1,5 +1,3 @@
-/*global angular */
-
 /**
  * @ngdoc directive
  * @name Volusion.toolboxCommon.directive:vnMetaTags

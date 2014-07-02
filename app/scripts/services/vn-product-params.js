@@ -1,5 +1,3 @@
-/*global angular */
-
 /**
  * @ngdoc service
  * @name Volusion.toolboxCommon.vnProductParams

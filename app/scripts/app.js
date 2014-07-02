@@ -1,5 +1,3 @@
-/*global angular */
-
 /**
  * @ngdoc overview
  * @module Volusion.toolboxCommon
