@@ -1,14 +1,14 @@
 'use strict';
 
-describe('Service: bem', function () {
+describe('Service: vnBem', function () {
 
 	// load the service's module
 	beforeEach(module('Volusion.toolboxCommon'));
 
 	// instantiate service
 	var bem;
-	beforeEach(inject(function (_bem_) {
-		bem = _bem_;
+	beforeEach(inject(function (_vnBem_) {
+		bem = _vnBem_;
 	}));
 
 	it('should do something', function () {

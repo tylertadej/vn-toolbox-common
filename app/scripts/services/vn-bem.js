@@ -2,7 +2,7 @@
 
 /**
  * @ngdoc service
- * @name Volusion.toolboxCommon.service:bem
+ * @name Volusion.toolboxCommon.service:vnBem
  *
  * @requires
  * @scope
@@ -15,7 +15,7 @@
  */
 
 angular.module('Volusion.toolboxCommon')
-	.factory('bem', function () {
+	.factory('vnBem', function () {
 
 		function generateClasses(base, modifiers) {
 			var result = [base];

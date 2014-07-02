@@ -34,7 +34,7 @@
 		"spyOn"     : false,
 		"module"    : true,
 
-		"bem"		: false
+		"vnBem"		: false
 	}
 }
 

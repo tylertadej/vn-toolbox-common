@@ -15,13 +15,13 @@
  */
 
 angular.module('Volusion.toolboxCommon')
-	.directive('vnElement', ['bem', function (bem) {
+	.directive('vnElement', ['vnBem', function (vnBem) {
 		return {
 			require: '^vnBlock',
 			restrict: 'A',
 			compile: function() {
 				return function(scope, iElement, iAttrs, blockCtrl) {
-					bem.addClasses(iElement, {
+					vnBem.addClasses(iElement, {
 						block: blockCtrl.getBlock(),
 						blockModifiers: blockCtrl.getModifiers(),
 						element: iAttrs.vnElement,

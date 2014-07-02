@@ -7,15 +7,13 @@ describe('Directive: vn-block', function() {
 	beforeEach(module('Volusion.toolboxCommon'));
 
 	var $rootScope,
-		$compile,
-		bem;
+		$compile;
 
 	// ReSharper disable InconsistentNaming
-	beforeEach(inject(function(_$rootScope_, _$compile_, _bem_) {
+	beforeEach(inject(function(_$rootScope_, _$compile_) {
 		// ReSharper restore InconsistentNaming
 		$rootScope = _$rootScope_;
 		$compile = _$compile_;
-		bem = _bem_;
 	}));
 
 	xit('adds a .block class when vn-block attribute is provided', function() {

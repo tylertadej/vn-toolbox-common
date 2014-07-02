@@ -15,7 +15,7 @@
  */
 
 angular.module('Volusion.toolboxCommon')
-	.directive('vnBlock', ['bem', function (bem) {
+	.directive('vnBlock', ['vnBem', function (vnBem) {
 		return {
 			restrict: 'A',
 			controller: function() {
@@ -32,7 +32,7 @@ angular.module('Volusion.toolboxCommon')
 					pre: function(scope, iElement, iAttrs, controller) {
 						var block = iAttrs.vnBlock;
 						var modifiers = iAttrs.vnModifiers;
-						bem.addClasses(iElement, {
+						vnBem.addClasses(iElement, {
 							block: block,
 							blockModifiers: modifiers
 						});
