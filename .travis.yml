@@ -1,7 +1,20 @@
+rvm:
+  - 2.1.1
+
+bundler_args: --without development
+
 language: node_js
+
 node_js:
-  - '0.8'
-  - '0.10'
-before_script:
-  - 'npm install -g bower grunt-cli'
-  - 'bower install'
+  - 0.10
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always
+
+before_install:
+  - npm install -g grunt-cli bower
+
+after_success:
+  - grunt build

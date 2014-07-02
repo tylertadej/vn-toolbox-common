@@ -1,43 +1,121 @@
-
-/*! vn-toolbox-common - ver.0.0.2 (2014-07-01) */
-
-angular.module('Volusion.toolboxCommon', ['pascalprecht.translate'])
-    .config(
-        ['$translateProvider',
-            function ($translateProvider) {
-
-                'use strict';
-
-                var translationsEn = {
-                        // Carousel
-                        'VN-CAROUSEL-TITLE' : 'Inline Images:',
-
-                        // Image
-                        'VN-IMAGE-TITLE' : 'Image:',
-
-                        // Rating
-                        'VN-RATING-TITLE' : 'Rating:'
-                    },
-                    translationsEs = {
-                        // Carousel
-                        'VN-CAROUSEL-TITLE' : 'Imágenes',
-
-                        // Image
-                        'VN-IMAGE-TITLE' : 'Imáge:',
-
-                        // Rating
-                        'VN-RATING-TITLE' : 'Clasificación'
-                    };
-
-                $translateProvider
-                    .translations('en', translationsEn)
-                    .translations('es', translationsEs)
-                    .preferredLanguage('en');
-            }]
-    );
-
+/*! vn-toolbox-common - ver.0.0.2 (2014-07-02) */
+angular.module('Volusion.toolboxCommon', ['pascalprecht.translate']).config([
+  '$translateProvider',
+  function ($translateProvider) {
+    'use strict';
+    var translationsEn = {
+        'VN-CAROUSEL-TITLE': 'Inline Images:',
+        'VN-IMAGE-TITLE': 'Image:',
+        'VN-RATING-TITLE': 'Rating:'
+      }, translationsEs = {
+        'VN-CAROUSEL-TITLE': 'Im\xe1genes',
+        'VN-IMAGE-TITLE': 'Im\xe1ge:',
+        'VN-RATING-TITLE': 'Clasificaci\xf3n'
+      };
+    $translateProvider.translations('en', translationsEn).translations('es', translationsEs).preferredLanguage('en');
+  }
+]);
 'use strict';
-
+/**
+ * @ngdoc function
+ * @name Volusion.toolboxCommon.controller:VnProductOptionCtrl
+ * @description
+ * # VnProductOptionCtrl
+ * Controller of the Volusion.toolboxCommon
+ */
+angular.module('Volusion.toolboxCommon').controller('VnProductOptionCtrl', [
+  '$rootScope',
+  '$scope',
+  function ($rootScope, $scope) {
+    $scope.onOptionChanged = function (option, item) {
+      $scope.saveTo[option.id] = item.id;
+      preserveSubOptions();
+      $rootScope.$emit('VN_PRODUCT_SELECTED', angular.extend({}, {
+        product: $scope.product,
+        option: option,
+        item: item,
+        isValid: verifyRequiredOptionsAreSelected($scope.product.options)
+      }, buildSelection()));
+    };
+    function preserveSubOptions() {
+      traverseSelectedOptions($scope.product.options, null, function (option, item) {
+        option.selected = item.id;
+      });
+    }
+    function traverseSelectedOptions(options, filter, callback) {
+      if (!options) {
+        return;
+      }
+      filter = filter || function () {
+        return true;
+      };
+      var product = $scope.product;
+      var saveTo = $scope.saveTo;
+      angular.forEach(options, function (option) {
+        var itemKeys = option.items;
+        if (!itemKeys) {
+          return;
+        }
+        for (var i = 0, len = itemKeys.length; i < len; i++) {
+          var itemKey = itemKeys[i];
+          var item = product.optionItems[itemKey];
+          if (saveTo.hasOwnProperty(option.id) && saveTo[option.id] === item.id) {
+            if (filter(option)) {
+              callback(option, item);
+            }
+            if (option.options) {
+              traverseSelectedOptions(option.options, filter, callback);
+            }
+            break;
+          }
+        }
+      });
+    }
+    function buildSelection() {
+      var selections = [];
+      var filter = function (option) {
+        return option.isComputedInSelection;
+      };
+      traverseSelectedOptions($scope.product.options, filter, function (option, item) {
+        selections.push([
+          option.id,
+          item.id
+        ].join(':'));
+      });
+      var optionSelections = $scope.product.optionSelections;
+      return angular.extend({}, optionSelections.template, optionSelections[selections.join('|')]);
+    }
+    function verifyRequiredOptionsAreSelected(options) {
+      if (!options) {
+        return true;
+      }
+      for (var i = 0, len = options.length; i < len; i++) {
+        var option = options[i];
+        if (option.isRequired && !option.hasOwnProperty('selected')) {
+          return false;
+        }
+        if (verifyRequiredOptionsAreSelected(option.options) === false) {
+          return false;
+        }
+      }
+      return true;
+    }
+    $scope.onCheckboxClicked = function (option, itemKey) {
+      var saveTo = $scope.saveTo;
+      var items = saveTo[option.id] = saveTo[option.id] || [];
+      var idx = items.indexOf(itemKey);
+      if (idx > -1) {
+        items.splice(idx, 1);
+      } else {
+        items.push(itemKey);
+      }
+      if (!items.length) {
+        delete saveTo[option.id];
+      }
+    };
+  }
+]);
+'use strict';
 /**
  * @ngdoc directive
  * @name Volusion.toolboxCommon.directive:vnBlock
@@ -51,186 +129,141 @@ angular.module('Volusion.toolboxCommon', ['pascalprecht.translate'])
  * @usage
  * @example
  */
-
-angular.module('Volusion.toolboxCommon')
-	.directive('vnBlock', ['bem', function (bem) {
-		return {
-			restrict: 'A',
-			controller: function() {
-				this.getBlock = function() {
-					return this.block;
-				};
-
-				this.getModifiers = function() {
-					return this.modifiers;
-				};
-			},
-			compile: function() {
-				return {
-					pre: function(scope, iElement, iAttrs, controller) {
-						var block = iAttrs.vnBlock;
-						var modifiers = iAttrs.vnModifiers;
-						bem.addClasses(iElement, {
-							block: block,
-							blockModifiers: modifiers
-						});
-						controller.block = block;
-						controller.modifiers = modifiers;
-					}
-				};
-			}
-		};
-	}]);
-
-angular.module('Volusion.toolboxCommon')
-	.directive('vnCarousel',
-	['$rootScope',
-		function ($rootScope) {
-
-			'use strict';
-
-			return {
-				templateUrl: 'template/carousel.html',
-				restrict   : 'EA',
-				replace    : true,
-				scope      : {
-					currMode       : '@currMode',
-					carouselObjects: '='
-				},
-				link       : function postLink(scope, element) {
-					if (scope.currMode === undefined) {
-						scope.currMode = 'on';
-					}
-
-					// Component constants *****************
-					scope.componentId = '100001';
-					scope.componentName = 'carousel';
-					// *************************************
-
-					// Component is not selected by default
-					scope.selected = false;
-
-					scope.$on('currentComponent.change', function (event, component) {
-						if (component && component.id && scope.currMode === 'off') {
-							scope.selected = (component.id === scope.componentId);
-						}
-					});
-
-					element.on('click', function (event) {
-						// if in EDIT mode
-						if (scope.currMode === 'off') {
-							event.preventDefault();
-							$rootScope.$broadcast('currentComponent.change', {'id': scope.componentId, 'name': scope.componentName, 'action': 'set'});
-						}
-					});
-
-//                        Initialize the slider
-//                        element.carousel({
-//                            interval: 5000,
-//                            pause: 'hover',
-//                            wrap: true
-//                        });
-					$('.carousel').carousel({
-						interval: 5000,
-						pause   : 'hover',
-						wrap    : true
-					});
-
-					scope.prev = function () {
-						$('.carousel').carousel('prev');
-//                            element.carousel('prev');
-					};
-
-					scope.next = function () {
-//                            element.carousel('next');
-						$('.carousel').carousel('next');
-					};
-				}
-			};
-		}])
-	.run(['$templateCache', function ($templateCache) {
-		'use strict';
-
-		$templateCache.put(
-			'template/carousel.html',
-				'<div id="vnCarousel" class="carousel slide" data-ride="carousel">' +
-				'<!-- Indicators -->' +
-				'<ol class="carousel-indicators">' +
-				'<li ng-repeat="image in imageList" data-target="#vnCarousel" data-slide-to="{{ $index }}"></li>' +
-				'</ol>' +
-				'<div ng-repeat="image in imageList" class="carousel-inner">' +
-				'<div class="item active">' +
-				'<img data-src="" alt="First slide" src="{{ image.src }}">' +
-				'<div class="container">' +
-				'<h1>Example headline.</h1>' +
-				'<p>Note: If you\'re viewing this page via a <code>file://</code> URL, the "next" and "previous"  might not load/display properly.</p>' +
-				'<p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>' +
-				'</div>' +
-				'</div>' +
-				'<a class="left carousel-control" href="#myCarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>' +
-				'<a class="right carousel-control" href="#myCarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>' +
-				'</div>' +
-				'</div>'
-		);
-	}]);
-
-
-
-angular.module('Volusion.toolboxCommon')
-    .directive('vnCategorySearch', ['$rootScope', 'vnProductParams', function ($rootScope, vnProductParams) {
-        'use strict';
-        return {
-            templateUrl: 'template/vn-category-search.html',
-            restrict   : 'AE',
-            scope      : {
-                categories: '='
-            },
-            link       : function postLink(scope) {
-                // Categories use this to update the search params.
-                scope.updateCategory = function (category) {
-                    vnProductParams.addCategory(category.id);
-                    $rootScope.$broadcast('ProductSearch.categoriesUpdated', { category: category });
-                };
-
-                // Have to do this to listen for the data returned async
-                scope.$watch('categories', function (categories) {
-
-                    // Gaurd against the error message for while categories is not defined.
-                    if (!categories || !categories[0]) {
-                        return;
-                    } else {
-                        // Navigating / parsing the api response to get the data
-                        // Optimization opportunity: handle this in the api service so directive doesn't have to parse
-                        // and just return an object or even better create a category model object.
-                        scope.categories = categories[0];
-                        scope.subCategories = categories[0].subCategories;
-                    }
-                });
-            }
+angular.module('Volusion.toolboxCommon').directive('vnBlock', [
+  'bem',
+  function (bem) {
+    return {
+      restrict: 'A',
+      controller: function () {
+        this.getBlock = function () {
+          return this.block;
         };
-    }])
-    .run(['$templateCache', function ($templateCache) {
-
-        'use strict';
-
-        $templateCache.put(
-            'template/vn-category-search.html',
-                '<div class="-category-search">' +
-                    '<header>Show results for</header>' +
-                    '<div ng-repeat="category in categories">' +
-                        '<a href="{{ category.url  }}">{{ category.name }}</a>' +
-                    '</div>' +
-
-                    '<div ng-repeat="subCat in subCategories">' +
-                        '<!--<a href="{{ subCat.url  }}">{{ subCat.name }}</a>-->' +
-                        '<a href="" ng-click="updateCategory(subCat)">{{ subCat.name }}</a>' +
-                    '</div>' +
-                '</div>'
-        );
-    }]);
-
+        this.getModifiers = function () {
+          return this.modifiers;
+        };
+      },
+      compile: function () {
+        return {
+          pre: function (scope, iElement, iAttrs, controller) {
+            var block = iAttrs.vnBlock;
+            var modifiers = iAttrs.vnModifiers;
+            bem.addClasses(iElement, {
+              block: block,
+              blockModifiers: modifiers
+            });
+            controller.block = block;
+            controller.modifiers = modifiers;
+          }
+        };
+      }
+    };
+  }
+]);
+angular.module('Volusion.toolboxCommon').directive('vnCarousel', [
+  '$rootScope',
+  function ($rootScope) {
+    'use strict';
+    return {
+      templateUrl: 'template/carousel.html',
+      restrict: 'EA',
+      replace: true,
+      scope: {
+        currMode: '@currMode',
+        carouselObjects: '='
+      },
+      link: function postLink(scope, element) {
+        if (scope.currMode === undefined) {
+          scope.currMode = 'on';
+        }
+        // Component constants *****************
+        scope.componentId = '100001';
+        scope.componentName = 'carousel';
+        // *************************************
+        // Component is not selected by default
+        scope.selected = false;
+        scope.$on('currentComponent.change', function (event, component) {
+          if (component && component.id && scope.currMode === 'off') {
+            scope.selected = component.id === scope.componentId;
+          }
+        });
+        element.on('click', function (event) {
+          // if in EDIT mode
+          if (scope.currMode === 'off') {
+            event.preventDefault();
+            $rootScope.$broadcast('currentComponent.change', {
+              'id': scope.componentId,
+              'name': scope.componentName,
+              'action': 'set'
+            });
+          }
+        });
+        //                        Initialize the slider
+        //                        element.carousel({
+        //                            interval: 5000,
+        //                            pause: 'hover',
+        //                            wrap: true
+        //                        });
+        $('.carousel').carousel({
+          interval: 5000,
+          pause: 'hover',
+          wrap: true
+        });
+        scope.prev = function () {
+          $('.carousel').carousel('prev');  //                            element.carousel('prev');
+        };
+        scope.next = function () {
+          //                            element.carousel('next');
+          $('.carousel').carousel('next');
+        };
+      }
+    };
+  }
+]).run([
+  '$templateCache',
+  function ($templateCache) {
+    'use strict';
+    $templateCache.put('template/carousel.html', '<div id="vnCarousel" class="carousel slide" data-ride="carousel">' + '<!-- Indicators -->' + '<ol class="carousel-indicators">' + '<li ng-repeat="image in imageList" data-target="#vnCarousel" data-slide-to="{{ $index }}"></li>' + '</ol>' + '<div ng-repeat="image in imageList" class="carousel-inner">' + '<div class="item active">' + '<img data-src="" alt="First slide" src="{{ image.src }}">' + '<div class="container">' + '<h1>Example headline.</h1>' + '<p>Note: If you\'re viewing this page via a <code>file://</code> URL, the "next" and "previous"  might not load/display properly.</p>' + '<p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>' + '</div>' + '</div>' + '<a class="left carousel-control" href="#myCarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>' + '<a class="right carousel-control" href="#myCarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>' + '</div>' + '</div>');
+  }
+]);
+angular.module('Volusion.toolboxCommon').directive('vnCategorySearch', [
+  '$rootScope',
+  'vnProductParams',
+  function ($rootScope, vnProductParams) {
+    'use strict';
+    return {
+      templateUrl: 'template/vn-category-search.html',
+      restrict: 'AE',
+      scope: { categories: '=' },
+      link: function postLink(scope) {
+        // Categories use this to update the search params.
+        scope.updateCategory = function (category) {
+          vnProductParams.addCategory(category.id);
+          $rootScope.$broadcast('ProductSearch.categoriesUpdated', { category: category });
+        };
+        // Have to do this to listen for the data returned async
+        scope.$watch('categories', function (categories) {
+          // Gaurd against the error message for while categories is not defined.
+          if (!categories || !categories[0]) {
+            return;
+          } else {
+            // Navigating / parsing the api response to get the data
+            // Optimization opportunity: handle this in the api service so directive doesn't have to parse
+            // and just return an object or even better create a category model object.
+            scope.categories = categories[0];
+            scope.subCategories = categories[0].subCategories;
+          }
+        });
+      }
+    };
+  }
+]).run([
+  '$templateCache',
+  function ($templateCache) {
+    'use strict';
+    $templateCache.put('template/vn-category-search.html', '<div class="-category-search">' + '<header>Show results for</header>' + '<div ng-repeat="category in categories">' + '<a href="{{ category.url  }}">{{ category.name }}</a>' + '</div>' + '<div ng-repeat="subCat in subCategories">' + '<!--<a href="{{ subCat.url  }}">{{ subCat.name }}</a>-->' + '<a href="" ng-click="updateCategory(subCat)">{{ subCat.name }}</a>' + '</div>' + '</div>');
+  }
+]);
 'use strict';
-
 /**
  * @ngdoc directive
  * @name Volusion.toolboxCommon.directive:vnElement
@@ -244,424 +277,349 @@ angular.module('Volusion.toolboxCommon')
  * @usage
  * @example
  */
-
-angular.module('Volusion.toolboxCommon')
-	.directive('vnElement', ['bem', function (bem) {
-		return {
-			require: '^vnBlock',
-			restrict: 'A',
-			compile: function() {
-				return function(scope, iElement, iAttrs, blockCtrl) {
-					bem.addClasses(iElement, {
-						block: blockCtrl.getBlock(),
-						blockModifiers: blockCtrl.getModifiers(),
-						element: iAttrs.vnElement,
-						elementModifiers: iAttrs.vnModifiers
-					});
-				};
-			}
-		};
-	}]);
-
-angular.module('Volusion.toolboxCommon')
-    .directive('vnFacetSearch', ['$rootScope', 'vnProductParams',
-        function ($rootScope, vnProductParams) {
-            'use strict';
-
-            return {
-                templateUrl: 'template/vn-facet-search.html',
-                restrict   : 'AE',
-                scope      : {
-                    facets: '='
-                },
-                link       : function postLink(scope) {
-
-                    scope.$watch('facets', function (facets) {
-                        scope.facets = facets;
-                    });
-
-                    scope.selectProperty = function (facet) {
-                        return vnProductParams.isFacetSelected(facet.id);
-                    };
-
-                    scope.refineFacetSearch = function (facet) {
-
-                        // Adding / Removeing facet to selectedFacets
-                        if (!vnProductParams.isFacetSelected(facet.id)) {
-                            vnProductParams.addFacet(facet.id);
-//                            console.log('adding facet: ', vnProductParams.getParamsObject());
-                        } else {
-                            vnProductParams.removeFacet(facet.id);
-//                            console.log('removing facet: ', vnProductParams.getParamsObject());
-                        }
-
-                        // Broadcast an update to whomever is subscribed.
-                        $rootScope.$broadcast('ProductSearch.facetsUpdated');
-                    };
-                }
-            };
-        }])    .run(['$templateCache', function ($templateCache) {
-
-        'use strict';
-
-        $templateCache.put(
-            'template/vn-facet-search.html',
-                '<div class="-faceted-search">' +
-                    '<header>Refine by</header>' +
-                    '<div class="facets">' +
-                        '<div class="facet-item" ng-repeat="facet in facets track by $index">' +
-                            '<header>{{ facet.title }}</header>' +
-                            '<div class="-facet-property" ng-repeat="property in facet.properties track by $index">' +
-                                '<div class="row">' +
-                                    '<label>{{ property.name }}' +
-                                        '<input type="checkbox"' +
-                                        'name="property.name"' +
-                                        'ng-checked="selectProperty(property)"' +
-                                        'ng-click="refineFacetSearch(property)"/>' +
-                                    '</label>' +
-                                '</div>' +
-                            '</div>' +
-                        '<hr>' +
-                        '</div>' +
-                    '</div>' +
-                '</div>'
-        );
-    }]);
-
-angular.module('Volusion.toolboxCommon')
-    .directive('vnImage',
-        ['$rootScope',
-            function ($rootScope) {
-                'use strict';
-
-                return {
-                    templateUrl: 'template/image.html',
-                    restrict   : 'EA',
-                    replace    : true,
-                    scope      : {
-                        currMode : '@currMode',
-                        image    : '='
-                    },
-                    link       : function postLink(scope, element) {
-                        if (scope.currMode === undefined) {
-                            scope.currMode = 'on';
-                        }
-
-                        // Component constants *****************
-                        scope.componentId = '100002';
-                        scope.componentName = 'image';
-                        // *************************************
-
-                        // Component is not selected by default
-                        scope.selected = false;
-
-                        scope.$on('currentComponent.change', function (event, component) {
-                            if (component && component.id && scope.currMode === 'off') {
-                                scope.selected = (component.id === scope.componentId);
-                            }
-                        });
-
-                        element.on('click', function (event) {
-                            // if in EDIT mode
-                            if (scope.currMode === 'off') {
-                                event.preventDefault();
-                                $rootScope.$broadcast('currentComponent.change', {'id': scope.componentId, 'name': scope.componentName, 'action': 'set'});
-                            }
-                        });
-                    }
-                };
-            }])
-    .run(['$templateCache', function ($templateCache) {
-
-        'use strict';
-
-        $templateCache.put(
-            'template/image.html',
-            '<div class="vn-image">' +
-                '<p translate>VN-IMAGE-TITLE</p>' +
-                '<img src="{{ image.src }}" alt="{{ image.alt }}" />' +
-            '</div>'
-        );
-    }]);
-
-angular.module('Volusion.toolboxCommon')
-    .directive('vnLink',
-        ['$rootScope',
-            function ($rootScope) {
-                'use strict';
-
-                return {
-                    templateUrl: 'template/link.html',
-                    restrict   : 'EA',
-                    transclude : true,
-                    replace    : true,
-                    scope      : {
-                        currMode : '@'
-                    },
-                    link       : function postLink(scope, element) {
-                        if (scope.currMode === undefined) {
-                            scope.currMode = 'on';
-                        }
-
-                        // Component constants *****************
-                        scope.componentId = '100003';
-                        scope.componentName = 'link';
-                        // *************************************
-
-                        // Component is not selected by default
-                        scope.selected = false;
-
-                        scope.$on('currentComponent.change', function (event, component) {
-                            if (component && component.id && scope.currMode === 'off') {
-                                scope.selected = (component.id === scope.componentId);
-                            }
-                        });
-
-                        element.on('click', function (event) {
-                            // if in EDIT mode
-                            if (scope.currMode === 'off') {
-                                event.preventDefault();
-                                $rootScope.$broadcast('currentComponent.change', {'id': scope.componentId, 'name': scope.componentName, 'action': 'set'});
-                            }
-                        });
-                    }
-                };
-            }])
-    .run(['$templateCache', function ($templateCache) {
-
-        'use strict';
-
-        $templateCache.put(
-            'template/link.html',
-            '<a class="vn-link" ng-transclude></a>'
-        );
-    }]);
-
-angular.module('Volusion.toolboxCommon')
-    .directive('vnMetaTags', function () {
-        'use strict';
-
-        return {
-            restrict: 'EA',
-            scope   : {
-                title      : '=',
-                description: '=',
-                keywords   : '=',
-                toAppend   : '=',
-                robots     : '='
-            },
-            link    : function (scope, elem) {
-
-                var appendElement = function (elementToAppend) {
-                    if (typeof elementToAppend !== 'undefined') {
-                        elem.append(elementToAppend);
-                    }
-                };
-
-                var setTitleTag = function (titleText) {
-                    var titleTag = elem.find('title');
-                    if (titleTag.length > 0) {
-                        titleTag.remove();
-                    }
-                    if (titleText) {
-                        elem.append(angular.element('<title/>').text(titleText));
-                    }
-                };
-
-                var setMetaTag = function (metaTagName, metaTagContent) {
-                    var metaTag = elem.find('meta[name=' + metaTagName + ']');
-
-                    if (metaTag.length > 0) {
-                        metaTag.remove();
-                    }
-                    if (metaTagContent) {
-                        elem.append(angular.element('<meta/>').attr('name', metaTagName).
-                            attr('content', metaTagContent));
-                    }
-                };
-
-                var setDescription = function (description) {
-                    setMetaTag('description', description);
-                };
-
-                var setKeywords = function (keywords) {
-                    setMetaTag('keywords', keywords);
-                };
-
-                scope.$watch('title', setTitleTag);
-                scope.$watch('description', setDescription);
-                scope.$watch('keywords', setKeywords);
-                scope.$watch('toAppend', appendElement);
-                scope.$watch('robots', function (newValue) {
-                    if (typeof newValue !== 'undefined' &&
-                        JSON.parse(newValue) === true) {
-                        setMetaTag('robots', 'index,follow');
-                        setMetaTag('GOOGLEBOT', 'INDEX,FOLLOW');
-                    }
-                });
-            }
+angular.module('Volusion.toolboxCommon').directive('vnElement', [
+  'bem',
+  function (bem) {
+    return {
+      require: '^vnBlock',
+      restrict: 'A',
+      compile: function () {
+        return function (scope, iElement, iAttrs, blockCtrl) {
+          bem.addClasses(iElement, {
+            block: blockCtrl.getBlock(),
+            blockModifiers: blockCtrl.getModifiers(),
+            element: iAttrs.vnElement,
+            elementModifiers: iAttrs.vnModifiers
+          });
         };
-    });
-
-angular.module('Volusion.toolboxCommon')
-    .directive('vnNav',
-        ['$rootScope',
-            function ($rootScope) {
-
-                'use strict';
-
-                return {
-                    templateUrl: 'template/navbar.html',
-                    restrict   : 'EA',
-                    replace    : true,
-                    scope      : {
-                        currMode     : '@currMode',
-                        categoryList : '='
-                    },
-                    link       : function postLink(scope, element) {
-                        if (scope.currMode === undefined) {
-                            scope.currMode = 'on';
-                        }
-
-                        // Component constants *****************
-                        scope.componentId = '100005';
-                        scope.componentName = 'navbar';
-                        // *************************************
-
-                        // Component is not selected by default
-                        scope.selected = false;
-
-                        scope.$on('currentComponent.change', function (event, component) {
-                            if (component && component.id && scope.currMode === 'off') {
-                                scope.selected = (component.id === scope.componentId);
-                            }
-                        });
-
-                        element.on('click', function (event) {
-                            // if in EDIT mode
-                            if (scope.currMode === 'off') {
-                                event.preventDefault();
-                                $rootScope.$broadcast('currentComponent.change', {'id': scope.componentId, 'name': scope.componentName, 'action': 'set'});
-                            }
-                        });
-                    }
-                };
-            }])
-    .run(['$templateCache', function ($templateCache) {
-        'use strict';
-
-        $templateCache.put(
-            'template/navbar.html',
-            '<div class="collapse navbar-collapse " id="th-main-menu" data-ng-class="!navCollapsed && \'in\'" data-ng-click="navCollapsed=true">' +
-                '<ul class="nav navbar-nav">' +
-                    '<li class="dropdown" data-ng-repeat="category in categoryList">' +
-                        '<a href class="dropdown-toggle th-dropdown-toggle" data-toggle="dropdown">{{category.name}}</a>' +
-                        '<ul class="dropdown-menu" data-ng-if="category.subCategories.length">' +
-                            '<li data-ng-repeat="subCategory in category.subCategories">' +
-                                '<a ng-href="#/category/{{ subCategory.id }}">{{subCategory.name}}</a>' +
-                            '</li>' +
-                        '</ul>' +
-                    '</li>' +
-                '</ul>' +
-            '</div>'
-        );
-    }]);
-
-angular.module('Volusion.toolboxCommon')
-    .directive('vnRating',
-        ['$rootScope',
-            function ($rootScope) {
-                'use strict';
-
-                return {
-                    templateUrl: 'template/rating.html',
-                    restrict   : 'EA',
-                    replace    : true,
-                    scope      : {
-                        currMode   : '@currMode',
-                        ratingValue: '=',
-                        readonly   : '@'
-                    },
-                    link       : function postLink(scope, element) {
-
-                        if (scope.currMode === undefined) {
-                            scope.currMode = 'on';
-                        }
-
-                        if (scope.ratingValue === undefined || scope.ratingValue === '') {
-                            scope.ratingValue = 0;
-                        }
-
-                        // Component constants *****************
-                        scope.componentId = '100004';
-                        scope.componentName = 'rating';
-                        // *************************************
-
-                        // Component is not selected by default
-                        scope.selected = false;
-
-                        scope.$on('currentComponent.change', function (event, component) {
-                            if (component && component.id && scope.currMode === 'off') {
-                                scope.selected = (component.id === scope.componentId);
-                            }
-                        });
-
-                        element.on('click', function (event) {
-                            // if in EDIT mode
-                            if (scope.currMode === 'off') {
-                                event.preventDefault();
-                                $rootScope.$broadcast('currentComponent.change', {'id': scope.componentId, 'name': scope.componentName, 'action': 'set'});
-                            }
-                        });
-
-                        var idx,
-                            max = 5;
-
-                        scope.stars = [];
-
-                        function updateStars() {
-                            scope.stars = [];
-                            for (idx = 0; idx < max; idx++) {
-                                scope.stars.push({filled: idx < scope.ratingValue});
-                            }
-                        }
-
-                        scope.$watch('ratingValue', function (oldVal, newVal) {
-                            if (newVal === 0 || newVal) {
-                                updateStars();
-                            }
-                        });
-
-                        scope.toggle = function (index) {
-                            if (scope.readonly && scope.readonly === 'true') {
-                                return;
-                            }
-
-                            scope.ratingValue = index + 1;
-                        };
-                    }
-                };
-            }])
-    .run(['$templateCache', function ($templateCache) {
-
-        'use strict';
-
-        $templateCache.put(
-            'template/rating.html',
-            '<div class="vn-rating">' +
-                '<!-- not happy with this but it seems better than angular-ui carousel' +
-                    'http://blog.revolunet.com/angular-carousel/ -->' +
-                '<p translate>VN-RATING-TITLE</p>' +
-                '<ul class="rating">' +
-                    '<li ng-repeat="star in stars" class="tick" ng-class="star" ng-click="toggle($index)">' +
-                    '</li>' +
-                '</ul>' +
-            '</div>'
-        );
-    }]);
-
+      }
+    };
+  }
+]);
+angular.module('Volusion.toolboxCommon').directive('vnFacetSearch', [
+  '$rootScope',
+  'vnProductParams',
+  function ($rootScope, vnProductParams) {
+    'use strict';
+    return {
+      templateUrl: 'template/vn-facet-search.html',
+      restrict: 'AE',
+      scope: { facets: '=' },
+      link: function postLink(scope) {
+        scope.$watch('facets', function (facets) {
+          scope.facets = facets;
+        });
+        scope.selectProperty = function (facet) {
+          return vnProductParams.isFacetSelected(facet.id);
+        };
+        scope.refineFacetSearch = function (facet) {
+          // Adding / Removeing facet to selectedFacets
+          if (!vnProductParams.isFacetSelected(facet.id)) {
+            vnProductParams.addFacet(facet.id);  //                            console.log('adding facet: ', vnProductParams.getParamsObject());
+          } else {
+            vnProductParams.removeFacet(facet.id);  //                            console.log('removing facet: ', vnProductParams.getParamsObject());
+          }
+          // Broadcast an update to whomever is subscribed.
+          $rootScope.$broadcast('ProductSearch.facetsUpdated');
+        };
+      }
+    };
+  }
+]).run([
+  '$templateCache',
+  function ($templateCache) {
+    'use strict';
+    $templateCache.put('template/vn-facet-search.html', '<div class="-faceted-search">' + '<header>Refine by</header>' + '<div class="facets">' + '<div class="facet-item" ng-repeat="facet in facets track by $index">' + '<header>{{ facet.title }}</header>' + '<div class="-facet-property" ng-repeat="property in facet.properties track by $index">' + '<div class="row">' + '<label>{{ property.name }}' + '<input type="checkbox"' + 'name="property.name"' + 'ng-checked="selectProperty(property)"' + 'ng-click="refineFacetSearch(property)"/>' + '</label>' + '</div>' + '</div>' + '<hr>' + '</div>' + '</div>' + '</div>');
+  }
+]);
+angular.module('Volusion.toolboxCommon').directive('vnImage', [
+  '$rootScope',
+  function ($rootScope) {
+    'use strict';
+    return {
+      templateUrl: 'template/image.html',
+      restrict: 'EA',
+      replace: true,
+      scope: {
+        currMode: '@currMode',
+        image: '='
+      },
+      link: function postLink(scope, element) {
+        if (scope.currMode === undefined) {
+          scope.currMode = 'on';
+        }
+        // Component constants *****************
+        scope.componentId = '100002';
+        scope.componentName = 'image';
+        // *************************************
+        // Component is not selected by default
+        scope.selected = false;
+        scope.$on('currentComponent.change', function (event, component) {
+          if (component && component.id && scope.currMode === 'off') {
+            scope.selected = component.id === scope.componentId;
+          }
+        });
+        element.on('click', function (event) {
+          // if in EDIT mode
+          if (scope.currMode === 'off') {
+            event.preventDefault();
+            $rootScope.$broadcast('currentComponent.change', {
+              'id': scope.componentId,
+              'name': scope.componentName,
+              'action': 'set'
+            });
+          }
+        });
+      }
+    };
+  }
+]).run([
+  '$templateCache',
+  function ($templateCache) {
+    'use strict';
+    $templateCache.put('template/image.html', '<div class="vn-image">' + '<p translate>VN-IMAGE-TITLE</p>' + '<img src="{{ image.src }}" alt="{{ image.alt }}" />' + '</div>');
+  }
+]);
+angular.module('Volusion.toolboxCommon').directive('vnLink', [
+  '$rootScope',
+  function ($rootScope) {
+    'use strict';
+    return {
+      templateUrl: 'template/link.html',
+      restrict: 'EA',
+      transclude: true,
+      replace: true,
+      scope: { currMode: '@' },
+      link: function postLink(scope, element) {
+        if (scope.currMode === undefined) {
+          scope.currMode = 'on';
+        }
+        // Component constants *****************
+        scope.componentId = '100003';
+        scope.componentName = 'link';
+        // *************************************
+        // Component is not selected by default
+        scope.selected = false;
+        scope.$on('currentComponent.change', function (event, component) {
+          if (component && component.id && scope.currMode === 'off') {
+            scope.selected = component.id === scope.componentId;
+          }
+        });
+        element.on('click', function (event) {
+          // if in EDIT mode
+          if (scope.currMode === 'off') {
+            event.preventDefault();
+            $rootScope.$broadcast('currentComponent.change', {
+              'id': scope.componentId,
+              'name': scope.componentName,
+              'action': 'set'
+            });
+          }
+        });
+      }
+    };
+  }
+]).run([
+  '$templateCache',
+  function ($templateCache) {
+    'use strict';
+    $templateCache.put('template/link.html', '<a class="vn-link" ng-transclude></a>');
+  }
+]);
+angular.module('Volusion.toolboxCommon').directive('vnMetaTags', function () {
+  'use strict';
+  return {
+    restrict: 'EA',
+    scope: {
+      title: '=',
+      description: '=',
+      keywords: '=',
+      toAppend: '=',
+      robots: '='
+    },
+    link: function (scope, elem) {
+      var appendElement = function (elementToAppend) {
+        if (typeof elementToAppend !== 'undefined') {
+          elem.append(elementToAppend);
+        }
+      };
+      var setTitleTag = function (titleText) {
+        var titleTag = elem.find('title');
+        if (titleTag.length > 0) {
+          titleTag.remove();
+        }
+        if (titleText) {
+          elem.append(angular.element('<title/>').text(titleText));
+        }
+      };
+      var setMetaTag = function (metaTagName, metaTagContent) {
+        var metaTag = elem.find('meta[name=' + metaTagName + ']');
+        if (metaTag.length > 0) {
+          metaTag.remove();
+        }
+        if (metaTagContent) {
+          elem.append(angular.element('<meta/>').attr('name', metaTagName).attr('content', metaTagContent));
+        }
+      };
+      var setDescription = function (description) {
+        setMetaTag('description', description);
+      };
+      var setKeywords = function (keywords) {
+        setMetaTag('keywords', keywords);
+      };
+      scope.$watch('title', setTitleTag);
+      scope.$watch('description', setDescription);
+      scope.$watch('keywords', setKeywords);
+      scope.$watch('toAppend', appendElement);
+      scope.$watch('robots', function (newValue) {
+        if (typeof newValue !== 'undefined' && JSON.parse(newValue) === true) {
+          setMetaTag('robots', 'index,follow');
+          setMetaTag('GOOGLEBOT', 'INDEX,FOLLOW');
+        }
+      });
+    }
+  };
+});
+angular.module('Volusion.toolboxCommon').directive('vnNav', [
+  '$rootScope',
+  function ($rootScope) {
+    'use strict';
+    return {
+      templateUrl: 'template/navbar.html',
+      restrict: 'EA',
+      replace: true,
+      scope: {
+        currMode: '@currMode',
+        categoryList: '='
+      },
+      link: function postLink(scope, element) {
+        if (scope.currMode === undefined) {
+          scope.currMode = 'on';
+        }
+        // Component constants *****************
+        scope.componentId = '100005';
+        scope.componentName = 'navbar';
+        // *************************************
+        // Component is not selected by default
+        scope.selected = false;
+        scope.$on('currentComponent.change', function (event, component) {
+          if (component && component.id && scope.currMode === 'off') {
+            scope.selected = component.id === scope.componentId;
+          }
+        });
+        element.on('click', function (event) {
+          // if in EDIT mode
+          if (scope.currMode === 'off') {
+            event.preventDefault();
+            $rootScope.$broadcast('currentComponent.change', {
+              'id': scope.componentId,
+              'name': scope.componentName,
+              'action': 'set'
+            });
+          }
+        });
+      }
+    };
+  }
+]).run([
+  '$templateCache',
+  function ($templateCache) {
+    'use strict';
+    $templateCache.put('template/navbar.html', '<div class="collapse navbar-collapse " id="th-main-menu" data-ng-class="!navCollapsed && \'in\'" data-ng-click="navCollapsed=true">' + '<ul class="nav navbar-nav">' + '<li class="dropdown" data-ng-repeat="category in categoryList">' + '<a href class="dropdown-toggle th-dropdown-toggle" data-toggle="dropdown">{{category.name}}</a>' + '<ul class="dropdown-menu" data-ng-if="category.subCategories.length">' + '<li data-ng-repeat="subCategory in category.subCategories">' + '<a ng-href="#/category/{{ subCategory.id }}">{{subCategory.name}}</a>' + '</li>' + '</ul>' + '</li>' + '</ul>' + '</div>');
+  }
+]);
 'use strict';
-
+/**
+ * @ngdoc directive
+ * @name Volusion.toolboxCommon.directive:vnProductOption
+ * @description
+ * # vnProductOption
+ */
+angular.module('Volusion.toolboxCommon').directive('vnProductOption', function () {
+  return {
+    restrict: 'A',
+    replace: true,
+    controller: 'VnProductOptionCtrl',
+    templateUrl: 'vn-product-option/index.html',
+    scope: {
+      option: '=',
+      product: '=',
+      saveTo: '='
+    }
+  };
+});
+angular.module('Volusion.toolboxCommon').directive('vnRating', [
+  '$rootScope',
+  function ($rootScope) {
+    'use strict';
+    return {
+      templateUrl: 'template/rating.html',
+      restrict: 'EA',
+      replace: true,
+      scope: {
+        currMode: '@currMode',
+        ratingValue: '=',
+        readonly: '@'
+      },
+      link: function postLink(scope, element) {
+        if (scope.currMode === undefined) {
+          scope.currMode = 'on';
+        }
+        if (scope.ratingValue === undefined || scope.ratingValue === '') {
+          scope.ratingValue = 0;
+        }
+        // Component constants *****************
+        scope.componentId = '100004';
+        scope.componentName = 'rating';
+        // *************************************
+        // Component is not selected by default
+        scope.selected = false;
+        scope.$on('currentComponent.change', function (event, component) {
+          if (component && component.id && scope.currMode === 'off') {
+            scope.selected = component.id === scope.componentId;
+          }
+        });
+        element.on('click', function (event) {
+          // if in EDIT mode
+          if (scope.currMode === 'off') {
+            event.preventDefault();
+            $rootScope.$broadcast('currentComponent.change', {
+              'id': scope.componentId,
+              'name': scope.componentName,
+              'action': 'set'
+            });
+          }
+        });
+        var idx, max = 5;
+        scope.stars = [];
+        function updateStars() {
+          scope.stars = [];
+          for (idx = 0; idx < max; idx++) {
+            scope.stars.push({ filled: idx < scope.ratingValue });
+          }
+        }
+        scope.$watch('ratingValue', function (oldVal, newVal) {
+          if (newVal === 0 || newVal) {
+            updateStars();
+          }
+        });
+        scope.toggle = function (index) {
+          if (scope.readonly && scope.readonly === 'true') {
+            return;
+          }
+          scope.ratingValue = index + 1;
+        };
+      }
+    };
+  }
+]).run([
+  '$templateCache',
+  function ($templateCache) {
+    'use strict';
+    $templateCache.put('template/rating.html', '<div class="vn-rating">' + '<!-- not happy with this but it seems better than angular-ui carousel' + 'http://blog.revolunet.com/angular-carousel/ -->' + '<p translate>VN-RATING-TITLE</p>' + '<ul class="rating">' + '<li ng-repeat="star in stars" class="tick" ng-class="star" ng-click="toggle($index)">' + '</li>' + '</ul>' + '</div>');
+  }
+]);
+'use strict';
 /**
  * @ngdoc service
  * @name Volusion.toolboxCommon.service:bem
@@ -675,72 +633,50 @@ angular.module('Volusion.toolboxCommon')
  * @usage
  * @example
  */
-
-angular.module('Volusion.toolboxCommon')
-	.factory('bem', function () {
-
-		function generateClasses(base, modifiers) {
-			var result = [base];
-			angular.forEach(splitModifiers(modifiers), function (modifier) {
-				result.push(base + '--' + modifier);
-			});
-			return result;
-		}
-
-		function splitModifiers(modifiers) {
-			modifiers = modifiers && modifiers.replace(/^\s+|\s+$/g, '');
-			if (!modifiers) {
-				return [];
-			}
-			return modifiers.split(/\s+/);
-		}
-
-		return {
-			addClasses: function ($elem, options) {
-
-				options = options || {};
-
-				var block = options.block;
-				if (!block) {
-					return;
-				}
-
-				var blockClasses = generateClasses(block, options.blockModifiers);
-
-				var element = options.element;
-
-				if (!element) {
-					angular.forEach(blockClasses, function (blockClass) {
-						$elem.addClass(blockClass);
-					});
-					return;
-				}
-
-				var elementClasses = generateClasses('__' + element, options.elementModifiers);
-				angular.forEach(blockClasses, function (blockClass) {
-					angular.forEach(elementClasses, function (elementClass) {
-						$elem.addClass(blockClass + elementClass);
-					});
-				});
-			}
-		};
-	});
-
-angular.module('Volusion.toolboxCommon')
-    .value('vnApiArticles', {});
-
-angular.module('Volusion.toolboxCommon')
-    .value('vnApiCarts', {});
-
-angular.module('Volusion.toolboxCommon')
-  .value('vnApiCategories', {});
-
-angular.module('Volusion.toolboxCommon')
-    .value('vnApiConfigurations', {});
-
-angular.module('Volusion.toolboxCommon')
-    .value('vnApiNavs', {});
-
+angular.module('Volusion.toolboxCommon').factory('bem', function () {
+  function generateClasses(base, modifiers) {
+    var result = [base];
+    angular.forEach(splitModifiers(modifiers), function (modifier) {
+      result.push(base + '--' + modifier);
+    });
+    return result;
+  }
+  function splitModifiers(modifiers) {
+    modifiers = modifiers && modifiers.replace(/^\s+|\s+$/g, '');
+    if (!modifiers) {
+      return [];
+    }
+    return modifiers.split(/\s+/);
+  }
+  return {
+    addClasses: function ($elem, options) {
+      options = options || {};
+      var block = options.block;
+      if (!block) {
+        return;
+      }
+      var blockClasses = generateClasses(block, options.blockModifiers);
+      var element = options.element;
+      if (!element) {
+        angular.forEach(blockClasses, function (blockClass) {
+          $elem.addClass(blockClass);
+        });
+        return;
+      }
+      var elementClasses = generateClasses('__' + element, options.elementModifiers);
+      angular.forEach(blockClasses, function (blockClass) {
+        angular.forEach(elementClasses, function (elementClass) {
+          $elem.addClass(blockClass + elementClass);
+        });
+      });
+    }
+  };
+});
+angular.module('Volusion.toolboxCommon').value('vnApiArticles', {});
+angular.module('Volusion.toolboxCommon').value('vnApiCarts', {});
+angular.module('Volusion.toolboxCommon').value('vnApiCategories', {});
+angular.module('Volusion.toolboxCommon').value('vnApiConfigurations', {});
+angular.module('Volusion.toolboxCommon').value('vnApiNavs', {});
 // TODO: Determine if this is still necessary and prune if no.
 /**
  * @ngdoc service
@@ -753,17 +689,14 @@ angular.module('Volusion.toolboxCommon')
  * where its needed.
  *
  */
-
-angular.module('Volusion.toolboxCommon')
-    .value('vnApiProducts', {});
-
+angular.module('Volusion.toolboxCommon').value('vnApiProducts', {});
 // Todo: figure out which $resources need all the access types. Remove the unused queries: put, remove delete etc ...
-angular.module('Volusion.toolboxCommon')
-    .factory('vnApi', ['$resource', 'vnDataEndpoint',
-        function ($resource, vnDataEndpoint) {
-            'use strict';
-
-            /**
+angular.module('Volusion.toolboxCommon').factory('vnApi', [
+  '$resource',
+  'vnDataEndpoint',
+  function ($resource, vnDataEndpoint) {
+    'use strict';
+    /**
              * @ngdoc method
              * @name Article
              * @methodOf Volusion.toolboxCommon.vnApi
@@ -777,21 +710,19 @@ angular.module('Volusion.toolboxCommon')
              * - vnApi.Article().query() -> returns a list of all articles
              * - vnApi.Artiucl().get( {slug: about-us} ); -> Returns the article for About Us
              */
-            function Article() {
-
-                return $resource(vnDataEndpoint.apiUrl + '/articles/:id',
-                    { id : '@id' },
-                    {
-                        'get'   : { method: 'GET'},
-                        'save'  : { method: 'POST' },
-                        'query' : { method: 'GET', isArray: false },
-                        'remove': { method: 'DELETE' },
-                        'delete': { method: 'DELETE' }
-                    });
-
-            }
-
-            /**
+    function Article() {
+      return $resource(vnDataEndpoint.apiUrl + '/articles/:id', { id: '@id' }, {
+        'get': { method: 'GET' },
+        'save': { method: 'POST' },
+        'query': {
+          method: 'GET',
+          isArray: false
+        },
+        'remove': { method: 'DELETE' },
+        'delete': { method: 'DELETE' }
+      });
+    }
+    /**
              * @ngdoc method
              * @name Category
              * @methodOf Volusion.toolboxCommon.vnApi
@@ -805,21 +736,19 @@ angular.module('Volusion.toolboxCommon')
              * - vnApi.Category().get( {slug: slug} ); -> Returns the category for slug
              *
              */
-            function Category() {
-
-                return $resource(vnDataEndpoint.apiUrl + '/categories/:id',
-                    { id: '@id' },
-                    {
-                        'get'   : { method: 'GET'},
-                        'save'  : { method: 'POST' },
-                        'query' : { method: 'GET', isArray: false },
-                        'remove': { method: 'DELETE' },
-                        'delete': { method: 'DELETE' }
-                    });
-
-            }
-
-            /**
+    function Category() {
+      return $resource(vnDataEndpoint.apiUrl + '/categories/:id', { id: '@id' }, {
+        'get': { method: 'GET' },
+        'save': { method: 'POST' },
+        'query': {
+          method: 'GET',
+          isArray: false
+        },
+        'remove': { method: 'DELETE' },
+        'delete': { method: 'DELETE' }
+      });
+    }
+    /**
              * @ngdoc method
              * @name Cart
              * @methodOf Volusion.toolboxCommon.vnApi
@@ -832,20 +761,31 @@ angular.module('Volusion.toolboxCommon')
              * - vnApi.Cart().query() -> returns the Cart data
              * - vnApi.Cart().post(???? FIX THIS ?????); -> Returns ???
              */
-            function Cart() {
-                return $resource(vnDataEndpoint.apiUrl + '/carts',
-                    {},
-                    {
-                        'get'   : { method: 'GET', withCredentials: true },
-                        'save'  : { method: 'POST', headers: { 'vMethod': 'POST'}, withCredentials: true },
-                        'update': { method: 'POST', headers: { 'vMethod': 'PUT'}, withCredentials: true },
-                        'query' : { method: 'GET', isArray: false },
-                        'remove': { method: 'DELETE' },
-                        'delete': { method: 'DELETE' }
-                    });
-            }
-
-            /**
+    function Cart() {
+      return $resource(vnDataEndpoint.apiUrl + '/carts', {}, {
+        'get': {
+          method: 'GET',
+          withCredentials: true
+        },
+        'save': {
+          method: 'POST',
+          headers: { 'vMethod': 'POST' },
+          withCredentials: true
+        },
+        'update': {
+          method: 'POST',
+          headers: { 'vMethod': 'PUT' },
+          withCredentials: true
+        },
+        'query': {
+          method: 'GET',
+          isArray: false
+        },
+        'remove': { method: 'DELETE' },
+        'delete': { method: 'DELETE' }
+      });
+    }
+    /**
              * @ngdoc method
              * @name Configuration
              * @methodOf Volusion.toolboxCommon.vnApi
@@ -857,11 +797,10 @@ angular.module('Volusion.toolboxCommon')
              * ## Usage
              * - vnApi.Configuration().query() -> returns a the site configuration data.
              */
-            function Configuration() {
-                return $resource(vnDataEndpoint.apiUrl + '/config');
-            }
-
-            /**
+    function Configuration() {
+      return $resource(vnDataEndpoint.apiUrl + '/config');
+    }
+    /**
              * @ngdoc method
              * @name Country
              * @methodOf Volusion.toolboxCommon.vnApi
@@ -872,11 +811,10 @@ angular.module('Volusion.toolboxCommon')
              * ## Usage
              * - vnApi.Country().query() -> returns a list of all countries
              */
-            function Country() {
-                return $resource(vnDataEndpoint.apiUrl + '/countries');
-            }
-
-            /**
+    function Country() {
+      return $resource(vnDataEndpoint.apiUrl + '/countries');
+    }
+    /**
              * @ngdoc method
              * @name Nav
              * @methodOf Volusion.toolboxCommon.vnApi
@@ -888,19 +826,19 @@ angular.module('Volusion.toolboxCommon')
              * - vnApi.Nav().query() -> returns all the navigations
              * - vnApi.Nav().get( {navId: 1} ); -> Returns the navigation for id = 1
              */
-            function Nav() {
-                return $resource(vnDataEndpoint.apiUrl + '/navs/:navId',
-                    {navId: '@navId'},
-                    {
-                        'get'   : { method: 'GET'},
-                        'save'  : { method: 'POST' },
-                        'query' : { method: 'GET', isArray: false },
-                        'remove': { method: 'DELETE' },
-                        'delete': { method: 'DELETE' }
-                    });
-            }
-
-            /**
+    function Nav() {
+      return $resource(vnDataEndpoint.apiUrl + '/navs/:navId', { navId: '@navId' }, {
+        'get': { method: 'GET' },
+        'save': { method: 'POST' },
+        'query': {
+          method: 'GET',
+          isArray: false
+        },
+        'remove': { method: 'DELETE' },
+        'delete': { method: 'DELETE' }
+      });
+    }
+    /**
              * @ngdoc method
              * @name Product
              * @methodOf Volusion.toolboxCommon.vnApi
@@ -928,22 +866,20 @@ angular.module('Volusion.toolboxCommon')
              * - pageSize: Numeric pageSize of products to be retrieved. Example: 10
              *
              */
-            function Product() {
-                //Todo: put the possilbe query params into the description for documentation
-                return $resource(vnDataEndpoint.apiUrl + '/products/:code',
-                    {
-                        code: '@code'
-                    },
-                    {
-                        'get'   : { method: 'GET'},
-                        'save'  : { method: 'POST' },
-                        'query' : { method: 'GET', isArray: false },
-                        'remove': { method: 'DELETE' },
-                        'delete': { method: 'DELETE' }
-                    });
-            }
-
-            /**
+    function Product() {
+      //Todo: put the possilbe query params into the description for documentation
+      return $resource(vnDataEndpoint.apiUrl + '/products/:code', { code: '@code' }, {
+        'get': { method: 'GET' },
+        'save': { method: 'POST' },
+        'query': {
+          method: 'GET',
+          isArray: false
+        },
+        'remove': { method: 'DELETE' },
+        'delete': { method: 'DELETE' }
+      });
+    }
+    /**
              * @ngdoc method
              * @name Product
              * @methodOf Volusion.toolboxCommon.vnApi
@@ -955,22 +891,19 @@ angular.module('Volusion.toolboxCommon')
              * - vnApi.Review().query() -> returns a list of all products
              * - vnApi.Review().get( {productCode: productCode} ); -> Returns the reviews for a product
              */
-
-            function Review() {
-                return $resource(vnDataEndpoint.apiUrl + '/products/:code/reviews',
-                    {
-                        code: '@code'
-                    },
-                    {
-                        'get'   : { method: 'GET'},
-                        'save'  : { method: 'POST' },
-                        'query' : { method: 'GET', isArray: false },
-                        'remove': { method: 'DELETE' },
-                        'delete': { method: 'DELETE' }
-                    });
-            }
-
-            /**
+    function Review() {
+      return $resource(vnDataEndpoint.apiUrl + '/products/:code/reviews', { code: '@code' }, {
+        'get': { method: 'GET' },
+        'save': { method: 'POST' },
+        'query': {
+          method: 'GET',
+          isArray: false
+        },
+        'remove': { method: 'DELETE' },
+        'delete': { method: 'DELETE' }
+      });
+    }
+    /**
              * @ngdoc method
              * @name ThemeSettings
              * @methodOf Volusion.toolboxCommon.vnApi
@@ -981,58 +914,51 @@ angular.module('Volusion.toolboxCommon')
              * ## Usage
              * - vnApi.ThemeSettings() -> returns a JSON with theme settings
              */
-
-            function ThemeSettings() {
-                return $resource('/settings/themeSettings.json');
-            }
-
-            return {
-                Article      : Article,
-                Category     : Category,
-                Cart         : Cart,
-                Configuration: Configuration,
-                Country      : Country,
-                Nav          : Nav,
-                Product      : Product,
-                Review       : Review,
-                ThemeSettings: ThemeSettings
-            };
-        }]);
-
-angular.module('Volusion.toolboxCommon')
-    .factory('vnConfig', ['$q', '$rootScope', function ($q, $rootScope) {
-
-        'use strict';
-
-        var account,
-            apiToken,
-            apiUrl,
-            context,
-            currentAction = 'designAction',  // Start them here but if conf is persisted turn this into a function.
-            firebaseToken,
-            firebaseUrl,
-            globalAttrBucketState = true,    // Show the app attributes by default.
-            globalNavState = true,           // Show the app navigation by default.
-            iFramePathBase,
-            previewMode = false,             // Initial edit/preview mode
-            screenMode = 'desktop',          // Initial screen mode.
-            workspaceDimensions = {          // Initial height (use in Action section ... etc.)
-                width : 0,
-                height: 0
-            };
-
-        /**
+    function ThemeSettings() {
+      return $resource('/settings/themeSettings.json');
+    }
+    return {
+      Article: Article,
+      Category: Category,
+      Cart: Cart,
+      Configuration: Configuration,
+      Country: Country,
+      Nav: Nav,
+      Product: Product,
+      Review: Review,
+      ThemeSettings: ThemeSettings
+    };
+  }
+]);
+angular.module('Volusion.toolboxCommon').factory('vnConfig', [
+  '$q',
+  '$rootScope',
+  function ($q, $rootScope) {
+    'use strict';
+    var account, apiToken, apiUrl, context, currentAction = 'designAction',
+      // Start them here but if conf is persisted turn this into a function.
+      firebaseToken, firebaseUrl, globalAttrBucketState = true,
+      // Show the app attributes by default.
+      globalNavState = true,
+      // Show the app navigation by default.
+      iFramePathBase, previewMode = false,
+      // Initial edit/preview mode
+      screenMode = 'desktop',
+      // Initial screen mode.
+      workspaceDimensions = {
+        width: 0,
+        height: 0
+      };
+    /**
          * @ngdoc method
          * @name getFirebaseUrl
          * @methodOf Volusion.toolboxCommon.vnConfig
          * @returns {String} The string representing a Firebase resource
          */
-        function getFirebaseUrl() {
-            return firebaseUrl;
-        }
-
-
-        /**
+    function getFirebaseUrl() {
+      return firebaseUrl;
+    }
+    /**
          * @ngdoc method
          * @name initConfig
          * @methodOf Volusion.toolboxCommon.vnConfig
@@ -1043,33 +969,28 @@ angular.module('Volusion.toolboxCommon')
          * and unknown api call at this point so we can use these properties: iframe url base,
          * firebase url, etc ...
          */
-        function initConfig() {
-
-            var mockResponse = {
-                //api     : 'http://www.samplestore.io/api/v1', // This has moved into vnDataEndpoint value.
-                account : 'asdf123',
-                context : 'SiteBuilder',
-                firebase: 'https://brilliant-fire-5600.firebaseio.com',
-                fbToken : ']idk - this comes from ??? server[',
-                apiToken: ']idk - how do I know if I am logging into edit[',
-                sandbox : 'http://localhost:8080'
-            };
-
-            //Simulate an admin login response
-            account = mockResponse.account;
-            apiToken = mockResponse.apiToken;
-            apiUrl = mockResponse.api;
-            context = mockResponse.context;
-            iFramePathBase = mockResponse.sandbox;
-            firebaseToken = mockResponse.fbToken;
-            firebaseUrl = mockResponse.firebase;
-
-            if (mockResponse && mockResponse.apiToken) {
-                $rootScope.$broadcast('vnSession.init', mockResponse);
-            }
-        }
-
-        /**
+    function initConfig() {
+      var mockResponse = {
+          account: 'asdf123',
+          context: 'SiteBuilder',
+          firebase: 'https://brilliant-fire-5600.firebaseio.com',
+          fbToken: ']idk - this comes from ??? server[',
+          apiToken: ']idk - how do I know if I am logging into edit[',
+          sandbox: 'http://localhost:8080'
+        };
+      //Simulate an admin login response
+      account = mockResponse.account;
+      apiToken = mockResponse.apiToken;
+      apiUrl = mockResponse.api;
+      context = mockResponse.context;
+      iFramePathBase = mockResponse.sandbox;
+      firebaseToken = mockResponse.fbToken;
+      firebaseUrl = mockResponse.firebase;
+      if (mockResponse && mockResponse.apiToken) {
+        $rootScope.$broadcast('vnSession.init', mockResponse);
+      }
+    }
+    /**
          * @ngdoc method
          * @name getAccount
          * @methodOf Volusion.toolboxCommon.vnConfig
@@ -1079,12 +1000,10 @@ angular.module('Volusion.toolboxCommon')
          *
          * Gets the account configured. Initial use was in generating Firebase urls.
          */
-        function getAccount() {
-
-            return account;
-        }
-
-        /**
+    function getAccount() {
+      return account;
+    }
+    /**
          * @ngdoc method
          * @name getIframePathBase
          * @methodOf Volusion.toolboxCommon.vnConfig
@@ -1096,14 +1015,13 @@ angular.module('Volusion.toolboxCommon')
          * Gets the account configured. Initial use was in generating the API urls.
          *
          */
-        function getIframePathBase() {
-            if ('' === iFramePathBase) {
-                initConfig();
-            }
-            return iFramePathBase;
-        }
-
-        /**
+    function getIframePathBase() {
+      if ('' === iFramePathBase) {
+        initConfig();
+      }
+      return iFramePathBase;
+    }
+    /**
          * @ngdoc method
          * @name getGlobalNavState
          * @methodOf Volusion.toolboxCommon.vnConfig
@@ -1115,11 +1033,10 @@ angular.module('Volusion.toolboxCommon')
          * Return the current state of the SiteBuilder app navigation directive.
          *
          */
-        function getGlobalNavState() {
-            return globalNavState;
-        }
-
-        /**
+    function getGlobalNavState() {
+      return globalNavState;
+    }
+    /**
          * @ngdoc method
          * @name setGlobalNavState
          * @methodOf Volusion.toolboxCommon.vnConfig
@@ -1130,12 +1047,11 @@ angular.module('Volusion.toolboxCommon')
          * Sets the globalNavState to the value passed in as a param. It $broadcasts a system
          * wide message: vlnGlobalNavState.change with the param.
          */
-        function setGlobalNavState(state) {
-            globalNavState = state;
-            $rootScope.$broadcast('vlnGlobalNavState.change', { state: state });
-        }
-
-        /**
+    function setGlobalNavState(state) {
+      globalNavState = state;
+      $rootScope.$broadcast('vlnGlobalNavState.change', { state: state });
+    }
+    /**
          * @ngdoc method
          * @name setCurrentAction
          * @methodOf Volusion.toolboxCommon.vnConfig
@@ -1145,12 +1061,11 @@ angular.module('Volusion.toolboxCommon')
          *
          * Set the app action to the param passed in and broadcast that change to the system.
          */
-        function setCurrentAction(action) {
-            currentAction = action;
-            $rootScope.$broadcast('vlnCurrentAction.change', {action: action });
-        }
-
-        /**
+    function setCurrentAction(action) {
+      currentAction = action;
+      $rootScope.$broadcast('vlnCurrentAction.change', { action: action });
+    }
+    /**
          * @ngdoc method
          * @name getCurrentAction
          * @methodOf Volusion.toolboxCommon.vnConfig
@@ -1160,11 +1075,10 @@ angular.module('Volusion.toolboxCommon')
          *
          * Returns the vnConfig property value for currentAction
          */
-        function getCurrentAction() {
-            return currentAction;
-        }
-
-        /**
+    function getCurrentAction() {
+      return currentAction;
+    }
+    /**
          * @ngdoc method
          * @name getGlobalAttrBucketState
          * @methodOf Volusion.toolboxCommon.vnConfig
@@ -1174,11 +1088,10 @@ angular.module('Volusion.toolboxCommon')
          *
          * Returns the vnConfig property vlaue for globalAttrBucketState
          */
-        function getGlobalAttrBucketState() {
-            return globalAttrBucketState;
-        }
-
-        /**
+    function getGlobalAttrBucketState() {
+      return globalAttrBucketState;
+    }
+    /**
          * @ngdoc method
          * @name setGlobalAttrBucketState
          * @methodOf Volusion.toolboxCommon.vnConfig
@@ -1190,12 +1103,11 @@ angular.module('Volusion.toolboxCommon')
          * passed in as the state param. It broadcasts the vlnGlobalAttrBucketState.change
          * notification.
          */
-        function setGlobalAttrBucketState(state) {
-            globalAttrBucketState = state;
-            $rootScope.$broadcast('vlnGlobalAttrBucketState.change', { state: state });
-        }
-
-        /**
+    function setGlobalAttrBucketState(state) {
+      globalAttrBucketState = state;
+      $rootScope.$broadcast('vlnGlobalAttrBucketState.change', { state: state });
+    }
+    /**
          * @ngdoc method
          * @name getScreenMode
          * @methodOf Volusion.toolboxCommon.vnConfig
@@ -1205,11 +1117,10 @@ angular.module('Volusion.toolboxCommon')
          *
          * Return the vnConfig property value of screenMode.
          */
-        function getScreenMode() {
-            return screenMode;
-        }
-
-        /**
+    function getScreenMode() {
+      return screenMode;
+    }
+    /**
          * @ngdoc method
          * @name setScreenMode
          * @methodOf Volusion.toolboxCommon.vnConfig
@@ -1218,11 +1129,10 @@ angular.module('Volusion.toolboxCommon')
          *
          * Set the vnConfig property screenMode to the value of the mode param passed in.
          */
-        function setScreenMode(mode) {
-            screenMode = mode;
-        }
-
-        /**
+    function setScreenMode(mode) {
+      screenMode = mode;
+    }
+    /**
          * @ngdoc method
          * @name getPreviewMode
          * @methodOf Volusion.toolboxCommon.vnConfig
@@ -1232,11 +1142,10 @@ angular.module('Volusion.toolboxCommon')
          *
          * Use Boolean value of vnProperty previewMode to decide which string to return.
          */
-        function getPreviewMode() {
-            return previewMode ? 'on' : 'off';
-        }
-
-        /**
+    function getPreviewMode() {
+      return previewMode ? 'on' : 'off';
+    }
+    /**
          * @ngdoc method
          * @name setPreviewMode
          * @methodOf Volusion.toolboxCommon.vnConfig
@@ -1247,11 +1156,10 @@ angular.module('Volusion.toolboxCommon')
          * Set the preview mode for the iframe by updating the vnConfig property to the value
          * passed in with mode param.
          */
-        function setPreviewMode(mode) {
-            previewMode = mode;
-        }
-
-        /**
+    function setPreviewMode(mode) {
+      previewMode = mode;
+    }
+    /**
          * @ngdoc method
          * @name getWorkspaceDimensions
          * @methodOf Volusion.toolboxCommon.vnConfig
@@ -1261,11 +1169,10 @@ angular.module('Volusion.toolboxCommon')
          *
          * Return the current value of the vnConfig property workspaceDimensions.
          */
-        function getWorkspaceDimensions() {
-            return workspaceDimensions;
-        }
-
-        /**
+    function getWorkspaceDimensions() {
+      return workspaceDimensions;
+    }
+    /**
          * @ngdoc method
          * @name setWorkspaceDimensions
          * @methodOf Volusion.toolboxCommon.vnConfig
@@ -1276,70 +1183,56 @@ angular.module('Volusion.toolboxCommon')
          * Takes an object with width and height properties and sets the vnConfig
          * workspaceDimension values for height and width.
          */
-        function setWorkspaceDimensions(d) {
-
-            if(d && d.width && d.height) {
-                workspaceDimensions.height = d.height;
-                workspaceDimensions.width = d.width;
-                return;
-            }
-            throw new Error('Unable to set workspace dimensions.');
-
-
-        }
-
-        // Public API here
-        return {
-            getAccount              : getAccount,
-            getGlobalNavState       : getGlobalNavState,
-            setGlobalNavState       : setGlobalNavState,
-            getCurrentAction        : getCurrentAction,
-            setCurrentAction        : setCurrentAction,
-            getGlobalAttrBucketState: getGlobalAttrBucketState,
-            setGlobalAttrBucketState: setGlobalAttrBucketState,
-            getIframePathBase       : getIframePathBase,
-            initConfig              : initConfig,
-            getFirebaseUrl          : getFirebaseUrl,
-            getScreenMode           : getScreenMode,
-            setScreenMode           : setScreenMode,
-            getPreviewMode          : getPreviewMode,
-            setPreviewMode          : setPreviewMode,
-            getWorkspaceDimensions  : getWorkspaceDimensions,
-            setWorkspaceDimensions  : setWorkspaceDimensions
-        };
-    }]);
-
-angular.module('Volusion.toolboxCommon')
-    .constant('vnDataEndpoint', (function () {
-        'use strict';
-        var firebase = 'https://brilliant-fire-5600.firebaseio.com',
-            apibase = 'http://www.samplestore.io/api/v1';
-            //apibase = 'http://txlpt374-vm.corp.volusion.com/api/v1';
-
-        return {
-            /**
-             * @ngdoc method
-             * @name fbUrl
-             * @propertyOf Volusion.toolboxCommon.vnDataEndpoint
-             * @returns {String} The string representing the base firebase url
-             */
-            fbUrl : firebase,
-            /**
-             * @ngdoc method
-             * @name apiUrl
-             * @propertyOf Volusion.toolboxCommon.vnDataEndpoint
-             * @returns {String} The string representing the base firebase url
-             */
-            apiUrl: apibase
-        };
-    })()); // Dev Note: Notice the immediate invocation. This gives us a constant with two values.
-
-angular.module('Volusion.toolboxCommon')
-    .factory('vnDataSrc', ['$q', 'vnEnvironment', 'vnApi', 'vnFirebase', 'vnApiArticles', 'vnApiCategories', 'vnApiProducts',
-        function ($q, vnEnvironment, vnApi, vnFirebase, vnApiArticles, vnApiCategories, vnApiProducts) {
-            'use strict';
-
-            /**
+    function setWorkspaceDimensions(d) {
+      if (d && d.width && d.height) {
+        workspaceDimensions.height = d.height;
+        workspaceDimensions.width = d.width;
+        return;
+      }
+      throw new Error('Unable to set workspace dimensions.');
+    }
+    // Public API here
+    return {
+      getAccount: getAccount,
+      getGlobalNavState: getGlobalNavState,
+      setGlobalNavState: setGlobalNavState,
+      getCurrentAction: getCurrentAction,
+      setCurrentAction: setCurrentAction,
+      getGlobalAttrBucketState: getGlobalAttrBucketState,
+      setGlobalAttrBucketState: setGlobalAttrBucketState,
+      getIframePathBase: getIframePathBase,
+      initConfig: initConfig,
+      getFirebaseUrl: getFirebaseUrl,
+      getScreenMode: getScreenMode,
+      setScreenMode: setScreenMode,
+      getPreviewMode: getPreviewMode,
+      setPreviewMode: setPreviewMode,
+      getWorkspaceDimensions: getWorkspaceDimensions,
+      setWorkspaceDimensions: setWorkspaceDimensions
+    };
+  }
+]);
+angular.module('Volusion.toolboxCommon').constant('vnDataEndpoint', function () {
+  'use strict';
+  var firebase = 'https://brilliant-fire-5600.firebaseio.com', apibase = 'http://www.samplestore.io/api/v1';
+  //apibase = 'http://txlpt374-vm.corp.volusion.com/api/v1';
+  return {
+    fbUrl: firebase,
+    apiUrl: apibase
+  };
+}());
+// Dev Note: Notice the immediate invocation. This gives us a constant with two values.
+angular.module('Volusion.toolboxCommon').factory('vnDataSrc', [
+  '$q',
+  'vnEnvironment',
+  'vnApi',
+  'vnFirebase',
+  'vnApiArticles',
+  'vnApiCategories',
+  'vnApiProducts',
+  function ($q, vnEnvironment, vnApi, vnFirebase, vnApiArticles, vnApiCategories, vnApiProducts) {
+    'use strict';
+    /**
              * @ngdoc property
              * @name environmentContext
              * @property {Object} environmentContext
@@ -1349,9 +1242,8 @@ angular.module('Volusion.toolboxCommon')
              * A Volusion.toolboxCommon value that can be set to the app/theme
              * environment
              */
-            var environmentContext = vnEnvironment;
-
-            /**
+    var environmentContext = vnEnvironment;
+    /**
              * @ngdoc function
              * @name getContextFn
              * @methodOf Volusion.toolboxCommon.vnDataSrc
@@ -1362,13 +1254,10 @@ angular.module('Volusion.toolboxCommon')
              * return the environmentContext property configured for the app.
              *
              */
-            function getContextFn() {
-
-                return environmentContext;
-
-            }
-
-            /**
+    function getContextFn() {
+      return environmentContext;
+    }
+    /**
              * @ngdoc function
              * @name getArticles
              * @methodOf Volusion.toolboxCommon.vnDataSrc
@@ -1380,23 +1269,21 @@ angular.module('Volusion.toolboxCommon')
              * the data response gets modified to make it look more like a $firebase object.
              *
              */
-            function getArticles() {
-                if ('Production' !== environmentContext) {
-                    return vnFirebase.getFirebaseData('articles');  // is an object
-                } else {
-                    vnApi.Article().get()
-                        .$promise.then(function (results) {
-                            angular.forEach(results.data, function (r) {
-                                var aid = r.id;
-                                vnApiArticles[aid] = r;
-                            });
-                            console.log('vds apiprods: ', vnApiArticles);
-                        });
-                    return vnApiArticles;
-                }
-            }
-
-            /**
+    function getArticles() {
+      if ('Production' !== environmentContext) {
+        return vnFirebase.getFirebaseData('articles');  // is an object
+      } else {
+        vnApi.Article().get().$promise.then(function (results) {
+          angular.forEach(results.data, function (r) {
+            var aid = r.id;
+            vnApiArticles[aid] = r;
+          });
+          console.log('vds apiprods: ', vnApiArticles);
+        });
+        return vnApiArticles;
+      }
+    }
+    /**
              * @ngdoc function
              * @name getCategories
              * @methodOf Volusion.toolboxCommon.vnDataSrc
@@ -1408,22 +1295,20 @@ angular.module('Volusion.toolboxCommon')
              * the data response gets modified to make it look more like a $firebase object.
              *
              */
-            function getCategories() {
-                if ('Production' !== environmentContext) {
-                    return vnFirebase.getFirebaseData('categories');
-                } else {
-                    vnApi.Category().get()
-                        .$promise.then(function (results) {
-                            angular.forEach(results.data, function (r) {
-                                var cid = r.id;
-                                vnApiCategories[cid] = r;
-                            });
-                        });
-                    return vnApiCategories;
-                }
-            }
-
-            /**
+    function getCategories() {
+      if ('Production' !== environmentContext) {
+        return vnFirebase.getFirebaseData('categories');
+      } else {
+        vnApi.Category().get().$promise.then(function (results) {
+          angular.forEach(results.data, function (r) {
+            var cid = r.id;
+            vnApiCategories[cid] = r;
+          });
+        });
+        return vnApiCategories;
+      }
+    }
+    /**
              * @ngdoc function
              * @name getProducts
              * @param {String} dataKey is the name of the key to access the results in the vnApiProducts value service
@@ -1437,41 +1322,34 @@ angular.module('Volusion.toolboxCommon')
              * the data response gets modified to make it look more like a $firebase object.
              *
              */
-
-            // http://volusion.apiary-mock.com/api/v1/products/?categoryId=10&filter=featured&facets=1822,1818,1829&pageNumber=1&pageSize=10
-            function getProducts(dataKey, queryParams) {
-
-                if ('Production' !== environmentContext) {
-                    return vnFirebase.getFirebaseData('products');
-                } else {
-//                    console.log('setting product for dataKey', dataKey);
-                    vnApiProducts[dataKey] = {};
-                    vnApi.Product(queryParams).get(queryParams)
-                        .$promise.then(function (results) {
-                            angular.forEach(results.data, function (r) {
-                                var pid = r.id;
-                                vnApiProducts[dataKey][pid] = r;
-                            });
-                        });
-//                    console.log('vnDataSrc vnApiProducts: ', vnApiProducts);
-                    return vnApiProducts;
-                }
-            }
-
-            return {
-                getArticles  : getArticles,
-                getCategories: getCategories,
-                getContext   : getContextFn,
-                getProducts  : getProducts
-            };
-        }]);
-
+    // http://volusion.apiary-mock.com/api/v1/products/?categoryId=10&filter=featured&facets=1822,1818,1829&pageNumber=1&pageSize=10
+    function getProducts(dataKey, queryParams) {
+      if ('Production' !== environmentContext) {
+        return vnFirebase.getFirebaseData('products');
+      } else {
+        //                    console.log('setting product for dataKey', dataKey);
+        vnApiProducts[dataKey] = {};
+        vnApi.Product(queryParams).get(queryParams).$promise.then(function (results) {
+          angular.forEach(results.data, function (r) {
+            var pid = r.id;
+            vnApiProducts[dataKey][pid] = r;
+          });
+        });
+        //                    console.log('vnDataSrc vnApiProducts: ', vnApiProducts);
+        return vnApiProducts;
+      }
+    }
+    return {
+      getArticles: getArticles,
+      getCategories: getCategories,
+      getContext: getContextFn,
+      getProducts: getProducts
+    };
+  }
+]);
 'use strict';
-
-angular.module('Volusion.toolboxCommon')
-//    .value('vnEnvironmentContext', 'SiteBuilder');  // can be overwritten later to be 'WorkSpace' or 'Production'
-    .value('vnEnvironment', 'Production');  // can be overwritten later to be 'WorkSpace' or 'Production'
-
+angular.module('Volusion.toolboxCommon').value('vnEnvironment', 'Production');
+// can be overwritten later to be 'WorkSpace' or 'Production'
 /**
  * @ngdoc service
  * @name Volusion.toolboxCommon.vnFirebase
@@ -1487,24 +1365,23 @@ angular.module('Volusion.toolboxCommon')
  * to the api as well as reseting the accounts firebase with data for a new session.
  *
  */
-
-angular.module('Volusion.toolboxCommon')
-    .factory('vnFirebase', ['vnConfig', 'vnDataEndpoint', '$firebase',
-        function (vnConfig, vnDataEndpoint, $firebase) {
-            'use strict';
-
-            var fbItems = {
-                articles   : '/account_articles',
-                carts      : '/account_carts',
-                categories : '/account_categories',
-                config     : '/account_config',
-                countries  : '/accounts_countries',
-                navs       : '/account_navs',
-                products   : '/account_products',
-                sitebuilder: '/account_sitebuilder'
-            };
-
-            /**
+angular.module('Volusion.toolboxCommon').factory('vnFirebase', [
+  'vnConfig',
+  'vnDataEndpoint',
+  '$firebase',
+  function (vnConfig, vnDataEndpoint, $firebase) {
+    'use strict';
+    var fbItems = {
+        articles: '/account_articles',
+        carts: '/account_carts',
+        categories: '/account_categories',
+        config: '/account_config',
+        countries: '/accounts_countries',
+        navs: '/account_navs',
+        products: '/account_products',
+        sitebuilder: '/account_sitebuilder'
+      };
+    /**
              * @ngdoc method
              * @name getFirebaseData
              * @methodOf Volusion.toolboxCommon.vnFirebase
@@ -1516,17 +1393,14 @@ angular.module('Volusion.toolboxCommon')
              * Takes a string path for a Firebase item and created a $firebase reference for
              * one of the
              */
-            function getFirebaseData(path) {
-
-                if (path && 'string' === typeof path) {
-                    return $firebase(new Firebase(vnDataEndpoint.fbUrl + fbItems[path] + '/' + vnConfig.getAccount() + '/'));
-                } else {
-                    throw new Error('vnFirebase.getFirebaseData function failed.');
-                }
-
-            }
-
-            /**
+    function getFirebaseData(path) {
+      if (path && 'string' === typeof path) {
+        return $firebase(new Firebase(vnDataEndpoint.fbUrl + fbItems[path] + '/' + vnConfig.getAccount() + '/'));
+      } else {
+        throw new Error('vnFirebase.getFirebaseData function failed.');
+      }
+    }
+    /**
              * @ngdoc method
              * @name generatePath
              * @methodOf Volusion.toolboxCommon.vnFirebase
@@ -1534,17 +1408,14 @@ angular.module('Volusion.toolboxCommon')
              * a Firebase resource to.
              * @returns {String} Directly returns the string created inline.
              */
-            function generatePath(path) {
-
-                if (path && 'string' === typeof path) {
-                    return vnDataEndpoint.fbUrl + fbItems[path] + '/' + vnConfig.getAccount() + '/';
-                } else {
-                    throw new Error('vnFirebase.generatePath function failed.');
-                }
-
-            }
-
-            /**
+    function generatePath(path) {
+      if (path && 'string' === typeof path) {
+        return vnDataEndpoint.fbUrl + fbItems[path] + '/' + vnConfig.getAccount() + '/';
+      } else {
+        throw new Error('vnFirebase.generatePath function failed.');
+      }
+    }
+    /**
              * @ngdoc method
              * @name resetSiteBuilder
              * @methodOf Volusion.toolboxCommon.vnFirebase
@@ -1560,15 +1431,13 @@ angular.module('Volusion.toolboxCommon')
              * 3. Sets that data for the Firebase reference.
              *
              */
-            function resetSiteBuilder() {
-
-                var sbRef = $firebase(new Firebase(vnDataEndpoint.fbUrl + '/account_sitebuilder/' + vnConfig.getAccount()));
-                var sbd = new SiteBuilderDefaults();
-                sbRef.$set(sbd);
-                return true;
-            }
-
-            /**
+    function resetSiteBuilder() {
+      var sbRef = $firebase(new Firebase(vnDataEndpoint.fbUrl + '/account_sitebuilder/' + vnConfig.getAccount()));
+      var sbd = new SiteBuilderDefaults();
+      sbRef.$set(sbd);
+      return true;
+    }
+    /**
              * @ngdoc method
              * @name resetDataForPath
              * @methodOf Volusion.toolboxCommon.vnFirebase
@@ -1582,21 +1451,18 @@ angular.module('Volusion.toolboxCommon')
              * is returned.
              *
              */
-            function resetDataForPath(path, data) {
-
-                var fullPath;
-                if (path && data && 'string' === typeof path) {
-                    fullPath = generatePath(path);
-                    var pathRef = $firebase(new Firebase(fullPath));
-                    pathRef.$set(data);
-                    return true;
-                } else {
-                    throw new Error('vnFirebase.resetDataForPath() error.');
-                }
-
-            }
-
-            /**
+    function resetDataForPath(path, data) {
+      var fullPath;
+      if (path && data && 'string' === typeof path) {
+        fullPath = generatePath(path);
+        var pathRef = $firebase(new Firebase(fullPath));
+        pathRef.$set(data);
+        return true;
+      } else {
+        throw new Error('vnFirebase.resetDataForPath() error.');
+      }
+    }
+    /**
              * @ngdoc method
              * @name SiteBuilderDefaults
              * @methodOf Volusion.toolboxCommon.vnFirebase
@@ -1608,51 +1474,46 @@ angular.module('Volusion.toolboxCommon')
              *  to the pre-determined sane defaults we have chosen.
              *
              */
-            function SiteBuilderDefaults() {
-                /**
+    function SiteBuilderDefaults() {
+      /**
                  @function
                  @name SiteBuilderDefaults
                  @description Return an object with the SiteBuilder Default settings for Firebase
                  @param {}
                  @return Object
                  */
-
-                // Note this will get more complicated when we want to start remembering things
-                // like current theme, state etc ...
-                return {
-                    component       : {
-                        id      : 'uniq id/code for the item',
-                        typeDesc: 'thing.attribute',
-                        typeId  : '9999 - each component/widget has a type to id it, thereby enabling bideirectional communication between sitebuilder and workspace '
-                    },
-                    product         : 'bucket for when a product is selected',
-                    category        : 'bucket for when a category is selected',
-                    page            : 'bucket for when a page is selected',
-                    theme           : {
-                        id       : '1',
-                        name     : 'default',
-                        thumbnail: 'http://localhost:8090/default.png',
-                        cssRef   : 'http://localhost:8090/default.css'
-                    },
-                    previewMode     : 'on',
-                    preferredLanguge: 'en-us'
-                };
-            }
-
-            // public api here
-            return {
-                getFirebaseData : getFirebaseData,
-                resetSiteBuilder: resetSiteBuilder,
-                resetDataForPath: resetDataForPath
-            };
-        }]);
-
-angular.module('Volusion.toolboxCommon')
-    .factory('vnProductParams', function () {
-
-        'use strict';
-
-        /**
+      // Note this will get more complicated when we want to start remembering things
+      // like current theme, state etc ...
+      return {
+        component: {
+          id: 'uniq id/code for the item',
+          typeDesc: 'thing.attribute',
+          typeId: '9999 - each component/widget has a type to id it, thereby enabling bideirectional communication between sitebuilder and workspace '
+        },
+        product: 'bucket for when a product is selected',
+        category: 'bucket for when a category is selected',
+        page: 'bucket for when a page is selected',
+        theme: {
+          id: '1',
+          name: 'default',
+          thumbnail: 'http://localhost:8090/default.png',
+          cssRef: 'http://localhost:8090/default.css'
+        },
+        previewMode: 'on',
+        preferredLanguge: 'en-us'
+      };
+    }
+    // public api here
+    return {
+      getFirebaseData: getFirebaseData,
+      resetSiteBuilder: resetSiteBuilder,
+      resetDataForPath: resetDataForPath
+    };
+  }
+]);
+angular.module('Volusion.toolboxCommon').factory('vnProductParams', function () {
+  'use strict';
+  /**
          * @ngdoc property
          * @name accountData
          * @property {Array} categoryIds
@@ -1661,8 +1522,9 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * An array to hold category ids that have been selected by someone.
          */
-        var categoryIds = [],    // Container for the category id's to query for
-        /**
+  var categoryIds = [],
+    // Container for the category id's to query for
+    /**
          * @ngdoc property
          * @name facets
          * @property {Array} facets
@@ -1671,11 +1533,12 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * An array to hold facet ids that have been selected by someone.
          */
-        facets = [],             // Container for the facets to query for
-        //        currentPageNumber = '',
-        //        nextPageNumber = '',
-        //        previousPageNumber = '',
-        /**
+    facets = [],
+    // Container for the facets to query for
+    //        currentPageNumber = '',
+    //        nextPageNumber = '',
+    //        previousPageNumber = '',
+    /**
          * @ngdoc property
          * @name paramsObject
          * @property {Array} paramsObject
@@ -1685,19 +1548,18 @@ angular.module('Volusion.toolboxCommon')
          * An object that holds properties representing all the possible product api parameter options. It should be
          * passed to the vnApi.Products().get( paramsObject ); and used with a promises pattern.
          */
-        paramsObject = {
-            categoryIds  : '',
-            slug         : '',
-            facets       : '',
-            minPrice     : '',
-            maxPrice     : '',
-            accessoriesOf: '',
-            sort         : '',
-            pageNumber   : '',
-            pageSize     : ''
-        };
-
-        /**
+    paramsObject = {
+      categoryIds: '',
+      slug: '',
+      facets: '',
+      minPrice: '',
+      maxPrice: '',
+      accessoriesOf: '',
+      sort: '',
+      pageNumber: '',
+      pageSize: ''
+    };
+  /**
          * @ngdoc function
          * @name setSort
          * @param {String} sortString is a string that can be passed to api to modify the sorting of the results
@@ -1706,11 +1568,10 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * Setter for the paramsObject sort property.
          */
-        function setSort(sortString) {
-            paramsObject.sort = sortString;
-        }
-
-        /**
+  function setSort(sortString) {
+    paramsObject.sort = sortString;
+  }
+  /**
          * @ngdoc function
          * @name getSort
          * @methodOf Volusion.toolboxCommon.vnProductParams
@@ -1718,11 +1579,10 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * Getter for the paramsObject sort property.
          */
-        function getSort() {
-            return paramsObject.sort;
-        }
-
-        /**
+  function getSort() {
+    return paramsObject.sort;
+  }
+  /**
          * @ngdoc function
          * @name removeSort
          * @methodOf Volusion.toolboxCommon.vnProductParams
@@ -1730,11 +1590,10 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * reset the paramsObject.sort property.
          */
-        function removeSort() {
-            paramsObject.sort = '';
-        }
-
-        /**
+  function removeSort() {
+    paramsObject.sort = '';
+  }
+  /**
          * @ngdoc function
          * @name setAccessories
          * @param {String} productCode is a string that will cause the api to return accessories of the product code.
@@ -1743,11 +1602,10 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * Setter for the paramsObject accessoriesOf property.
          */
-        function setAccessoriesOf(productCode) {
-            paramsObject.accessoriesOf = productCode;
-        }
-
-        /**
+  function setAccessoriesOf(productCode) {
+    paramsObject.accessoriesOf = productCode;
+  }
+  /**
          * @ngdoc function
          * @name getAccessoriesOf
          * @methodOf Volusion.toolboxCommon.vnProductParams
@@ -1755,11 +1613,10 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * Getter for the paramsObject accessoriesOf property.
          */
-        function getAccessoriesOf() {
-            return paramsObject.accessoriesOf;
-        }
-
-        /**
+  function getAccessoriesOf() {
+    return paramsObject.accessoriesOf;
+  }
+  /**
          * @ngdoc function
          * @name removeAccessoriesOf
          * @methodOf Volusion.toolboxCommon.vnProductParams
@@ -1767,14 +1624,13 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * reset the paramsObject.accessoriesOf property.
          */
-        function removeAccessoriesOf() {
-            paramsObject.accessoriesOf = '';
-        }
-
-        /**
+  function removeAccessoriesOf() {
+    paramsObject.accessoriesOf = '';
+  }
+  /**
          * Price Management
          */
-        /**
+  /**
          * @ngdoc function
          * @name setMaxPrice
          * @param {String} numString is a string representing the max prioce to query product by.
@@ -1783,11 +1639,10 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * Setter for the paramsObject.maxPrice  property.
          */
-        function setMaxPrice(numString) {
-            paramsObject.maxPrice = numString;
-        }
-
-        /**
+  function setMaxPrice(numString) {
+    paramsObject.maxPrice = numString;
+  }
+  /**
          * @ngdoc function
          * @name getMaxPrice
          * @methodOf Volusion.toolboxCommon.vnProductParams
@@ -1795,11 +1650,10 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * Getter for the paramsObject.maxPrice property.
          */
-        function getMaxPrice() {
-            return paramsObject.maxPrice;
-        }
-
-        /**
+  function getMaxPrice() {
+    return paramsObject.maxPrice;
+  }
+  /**
          * @ngdoc function
          * @name removeMaxPrice
          * @methodOf Volusion.toolboxCommon.vnProductParams
@@ -1807,11 +1661,10 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * reset the paramsObject.maxPrice property.
          */
-        function removeMaxPrice() {
-            paramsObject.maxPrice = '';
-        }
-
-        /**
+  function removeMaxPrice() {
+    paramsObject.maxPrice = '';
+  }
+  /**
          * @ngdoc function
          * @name setMinPrice
          * @param {String} numString is a string representing the min price to query product by.
@@ -1820,11 +1673,10 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * Setter for the paramsObject.minPrice  property.
          */
-        function setMinPrice(numString) {
-            paramsObject.minPrice = numString;
-        }
-
-        /**
+  function setMinPrice(numString) {
+    paramsObject.minPrice = numString;
+  }
+  /**
          * @ngdoc function
          * @name getMinPrice
          * @methodOf Volusion.toolboxCommon.vnProductParams
@@ -1832,11 +1684,10 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * Getter for the paramsObject.minPrice property.
          */
-        function getMinPrice() {
-            return paramsObject.minPrice;
-        }
-
-        /**
+  function getMinPrice() {
+    return paramsObject.minPrice;
+  }
+  /**
          * @ngdoc function
          * @name removeMinPrice
          * @methodOf Volusion.toolboxCommon.vnProductParams
@@ -1844,11 +1695,10 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * Reset the paramsObject.minPrice property to ''.
          */
-        function removeMinPrice() {
-            paramsObject.minPrice = '';
-        }
-
-        /**
+  function removeMinPrice() {
+    paramsObject.minPrice = '';
+  }
+  /**
          * @ngdoc function
          * @name updateSearch
          * @param {String} searchString is a string representing a string types by customer to search on products.
@@ -1857,11 +1707,10 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * No matter what, it updates the paramsObject.search property.
          */
-        function updateSearch(searchString) {
-            paramsObject.search = searchString;
-        }
-
-        /**
+  function updateSearch(searchString) {
+    paramsObject.search = searchString;
+  }
+  /**
          * @ngdoc function
          * @name removeSearch
          * @methodOf Volusion.toolboxCommon.vnProductParams
@@ -1869,11 +1718,10 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * Reset the paramsObject.search property to ''.
          */
-        function removeSearch() {
-            paramsObject.search = '';
-        }
-
-        /**
+  function removeSearch() {
+    paramsObject.search = '';
+  }
+  /**
          * @ngdoc function
          * @name updateSearch
          * @param {String} newSlug is a string representing the slug value of a product.
@@ -1882,11 +1730,10 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * No matter what, it updates the paramsObject.slug property.
          */
-        function updateSlug(newSlug) {
-            paramsObject.slug = newSlug;
-        }
-
-        /**
+  function updateSlug(newSlug) {
+    paramsObject.slug = newSlug;
+  }
+  /**
          * @ngdoc function
          * @name removeSlug
          * @methodOf Volusion.toolboxCommon.vnProductParams
@@ -1894,11 +1741,10 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * Reset the paramsObject.slug property to ''.
          */
-        function removeSlug() {
-            paramsObject.slug = '';
-        }
-
-        /**
+  function removeSlug() {
+    paramsObject.slug = '';
+  }
+  /**
          * @ngdoc function
          * @name addCategory
          * @methodOf Volusion.toolboxCommon.vnProductParams
@@ -1907,14 +1753,13 @@ angular.module('Volusion.toolboxCommon')
          * Given an id (as Int I believe at time of writing) If it is not already in the categoryIds array, add it to the
          * categoryIds array and update the paramsObject.categoryIds value.
          */
-        function addCategory(id) {
-            if(categoryIds.indexOf(id) < 0) {
-                categoryIds.push(id);
-                paramsObject.categoryIds = getCategoryString();
-            }
-        }
-
-        /**
+  function addCategory(id) {
+    if (categoryIds.indexOf(id) < 0) {
+      categoryIds.push(id);
+      paramsObject.categoryIds = getCategoryString();
+    }
+  }
+  /**
          * @ngdoc function
          * @name getCategoryString
          * @methodOf Volusion.toolboxCommon.vnProductParams
@@ -1922,11 +1767,10 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * Return the items in categoryIds as a string joined by commas.
          */
-        function getCategoryString() {
-            return categoryIds.join(',');
-        }
-
-        /**
+  function getCategoryString() {
+    return categoryIds.join(',');
+  }
+  /**
          * @ngdoc function
          * @name removeCategory
          * @methodOf Volusion.toolboxCommon.vnProductParams
@@ -1934,13 +1778,12 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * Remove the passed id from the categoryIds array and update the paramsObject.categoryIds value.
          */
-        function removeCategory(id) {
-            var index = categoryIds.indewxOf(id);
-            categoryIds.splice(index, 1);
-            paramsObject.categoryIds = getCategoryString();
-        }
-
-        /**
+  function removeCategory(id) {
+    var index = categoryIds.indewxOf(id);
+    categoryIds.splice(index, 1);
+    paramsObject.categoryIds = getCategoryString();
+  }
+  /**
          * @ngdoc function
          * @name getParamsObject
          * @methodOf Volusion.toolboxCommon.vnProductParams
@@ -1948,11 +1791,10 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * Return the paramsObject in its current state.
          */
-        function getParamsObject() {
-            return paramsObject;
-        }
-
-        /**
+  function getParamsObject() {
+    return paramsObject;
+  }
+  /**
          * @ngdoc function
          * @name resetParamsObject
          * @methodOf Volusion.toolboxCommon.vnProductParams
@@ -1960,23 +1802,22 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * Return everything in this factory to initial state, blank and fresh and ready for more product searches.
          */
-        function resetParamsObject() {
-            categoryIds = [];
-            facets = [];
-            paramsObject = {
-                categoryIds  : '',
-                slug         : '',
-                facets       : '',
-                minPrice     : '',
-                maxPrice     : '',
-                accessoriesOf: '',
-                sort         : '',
-                pageNumber   : '',
-                pageSize     : ''
-            };
-        }
-
-        /**
+  function resetParamsObject() {
+    categoryIds = [];
+    facets = [];
+    paramsObject = {
+      categoryIds: '',
+      slug: '',
+      facets: '',
+      minPrice: '',
+      maxPrice: '',
+      accessoriesOf: '',
+      sort: '',
+      pageNumber: '',
+      pageSize: ''
+    };
+  }
+  /**
          * @ngdoc function
          * @name addFacet
          * @methodOf Volusion.toolboxCommon.vnProductParams
@@ -1989,12 +1830,11 @@ angular.module('Volusion.toolboxCommon')
          * - this doesn't have a guard for adding duplicates. as I rely on the way I call it in the directive to check
          * if isFacetSelected
          */
-        function addFacet(id) {
-            facets.push(id);
-            paramsObject.facets = getFacetString();
-        }
-
-        /**
+  function addFacet(id) {
+    facets.push(id);
+    paramsObject.facets = getFacetString();
+  }
+  /**
          * @ngdoc function
          * @name getFacetString
          * @methodOf Volusion.toolboxCommon.vnProductParams
@@ -2003,12 +1843,11 @@ angular.module('Volusion.toolboxCommon')
          * Return the items in the facets array as a  string joined with commas.
          * if isFacetSelected
          */
-        function getFacetString() {
-            // stringify the facets array and return it.
-            return facets.join(',');
-        }
-
-        /**
+  function getFacetString() {
+    // stringify the facets array and return it.
+    return facets.join(',');
+  }
+  /**
          * @ngdoc function
          * @name isFacetSelected
          * @methodOf Volusion.toolboxCommon.vnProductParams
@@ -2017,11 +1856,10 @@ angular.module('Volusion.toolboxCommon')
          * Return true if the id is already in the facets array.
          * Return false if the id is not already in the facets array.
          */
-        function isFacetSelected(id) {
-            return (facets.indexOf(id) > -1);
-        }
-
-        /**
+  function isFacetSelected(id) {
+    return facets.indexOf(id) > -1;
+  }
+  /**
          * @ngdoc function
          * @name removeFacet
          * @methodOf Volusion.toolboxCommon.vnProductParams
@@ -2029,49 +1867,46 @@ angular.module('Volusion.toolboxCommon')
          * @description
          * Given an id, remove it from the facets array and update the paramsObject.facets value.
          */
-        function removeFacet(id) {
-            var index = facets.indexOf(id);
-            facets.splice(index, 1);
-            paramsObject.facets = getFacetString();
-        }
-
-        // Public API here
-        return {
-            addCategory        : addCategory,
-            getAccessoriesOf   : getAccessoriesOf,
-            addFacet           : addFacet,
-            getFacetString     : getFacetString,
-            getMinPrice        : getMinPrice,
-            getMaxPrice        : getMaxPrice,
-            getParamsObject    : getParamsObject,
-            getSort            : getSort,
-            isFacetSelected    : isFacetSelected,
-            removeSlug         : removeSlug,
-            removeSearch       : removeSearch,
-            setMinPrice        : setMinPrice,
-            removeMinPrice     : removeMinPrice,
-            removeMaxPrice     : removeMaxPrice,
-            removeAccessoriesOf: removeAccessoriesOf,
-            removeCategory     : removeCategory,
-            removeFacet        : removeFacet,
-            removeSort         : removeSort,
-            resetParamsObject  : resetParamsObject,
-            setAccessoriesOf   : setAccessoriesOf,
-            setMaxPrice        : setMaxPrice,
-            setSort            : setSort,
-            updateSearch       : updateSearch,
-            updateSlug         : updateSlug
-        };
-    });
-
-
-
-angular.module('Volusion.toolboxCommon')
-    .factory('vnSession', ['$rootScope', 'vnApi', 'vnFirebase',
-        function ($rootScope, vnApi, vnFirebase) {
-            'use strict';
-
-            /**
+  function removeFacet(id) {
+    var index = facets.indexOf(id);
+    facets.splice(index, 1);
+    paramsObject.facets = getFacetString();
+  }
+  // Public API here
+  return {
+    addCategory: addCategory,
+    getAccessoriesOf: getAccessoriesOf,
+    addFacet: addFacet,
+    getFacetString: getFacetString,
+    getMinPrice: getMinPrice,
+    getMaxPrice: getMaxPrice,
+    getParamsObject: getParamsObject,
+    getSort: getSort,
+    isFacetSelected: isFacetSelected,
+    removeSlug: removeSlug,
+    removeSearch: removeSearch,
+    setMinPrice: setMinPrice,
+    removeMinPrice: removeMinPrice,
+    removeMaxPrice: removeMaxPrice,
+    removeAccessoriesOf: removeAccessoriesOf,
+    removeCategory: removeCategory,
+    removeFacet: removeFacet,
+    removeSort: removeSort,
+    resetParamsObject: resetParamsObject,
+    setAccessoriesOf: setAccessoriesOf,
+    setMaxPrice: setMaxPrice,
+    setSort: setSort,
+    updateSearch: updateSearch,
+    updateSlug: updateSlug
+  };
+});
+angular.module('Volusion.toolboxCommon').factory('vnSession', [
+  '$rootScope',
+  'vnApi',
+  'vnFirebase',
+  function ($rootScope, vnApi, vnFirebase) {
+    'use strict';
+    /**
              * @ngdoc property
              * @name accountData
              * @property {Object} accountData
@@ -2081,9 +1916,8 @@ angular.module('Volusion.toolboxCommon')
              * A key/value object matching the expected response api/backend authentication
              * service.
              */
-            var accountData = {};
-
-            /**
+    var accountData = {};
+    /**
              * @ngdoc function
              * @name setFirebaseData
              * @param {String} path Is the <ITEM> path for the resource in our Firebase schema.
@@ -2104,17 +1938,14 @@ angular.module('Volusion.toolboxCommon')
              * THEN PART OF PROMISE WORKS AGAIN!!!
              *
              */
-            function setFirebaseData(path, resource) {
-//
-                console.log(path + ' / ' + resource);
-//                console.log('Porting issue with the prromise and data ... to fix with ng-stub');
-//                resource.get().$promise.then(function (result) {
-//                    vnFirebase.resetDataForPath(path, result.data);
-//                });
-
-            }
-
-            /**
+    function setFirebaseData(path, resource) {
+      //
+      console.log(path + ' / ' + resource);  //                console.log('Porting issue with the prromise and data ... to fix with ng-stub');
+                                             //                resource.get().$promise.then(function (result) {
+                                             //                    vnFirebase.resetDataForPath(path, result.data);
+                                             //                });
+    }
+    /**
              * @ngdoc function
              * @name bootstrapSessionData
              * @methodOf Volusion.toolboxCommon.vnSession
@@ -2134,32 +1965,28 @@ angular.module('Volusion.toolboxCommon')
              * here and return control to the caller.
              *
              */
-            function bootstrapSessionData() {
-
-                // The places interesting data sets live ...
-                var apiEndpoints = {
-                        articles  : vnApi.Article(),
-                        categories: vnApi.Category(),
-                        carts     : vnApi.Cart(),
-                        config    : vnApi.Configuration(),
-                        countries : vnApi.Country(),
-                        navs      : vnApi.Nav(),
-                        products  : vnApi.Product()
-                    },
-                    keys = Object.keys(apiEndpoints);
-
-                // proof-of-concept.
-                vnFirebase.resetSiteBuilder(); // i.e. called with no session state persistence considered.
-
-                // Grab the keys for api endpoints so we know what goes where in firebase
-                // NOTE: The key depends on accuracy of the firebase schema as it is used as a string elsewhere
-                //       for firebase url generation.
-                angular.forEach(keys, function (k) {
-                    setFirebaseData(k, apiEndpoints[k]);
-                });
-            }
-
-            /**
+    function bootstrapSessionData() {
+      // The places interesting data sets live ...
+      var apiEndpoints = {
+          articles: vnApi.Article(),
+          categories: vnApi.Category(),
+          carts: vnApi.Cart(),
+          config: vnApi.Configuration(),
+          countries: vnApi.Country(),
+          navs: vnApi.Nav(),
+          products: vnApi.Product()
+        }, keys = Object.keys(apiEndpoints);
+      // proof-of-concept.
+      vnFirebase.resetSiteBuilder();
+      // i.e. called with no session state persistence considered.
+      // Grab the keys for api endpoints so we know what goes where in firebase
+      // NOTE: The key depends on accuracy of the firebase schema as it is used as a string elsewhere
+      //       for firebase url generation.
+      angular.forEach(keys, function (k) {
+        setFirebaseData(k, apiEndpoints[k]);
+      });
+    }
+    /**
              * @ngdoc function
              * @name getAccountData
              * @methodOf Volusion.toolboxCommon.vnSession
@@ -2169,11 +1996,10 @@ angular.module('Volusion.toolboxCommon')
              * @description
              * Getter for the factory property accountData.
              */
-            function getAccountData() {
-                return accountData;
-            }
-
-            /**
+    function getAccountData() {
+      return accountData;
+    }
+    /**
              * @ngdoc function
              * @name init
              * @methodOf Volusion.toolboxCommon.vnSession
@@ -2183,12 +2009,11 @@ angular.module('Volusion.toolboxCommon')
              * Use this to call basic initialization. set up the vnConfig object with its environment
              * and any other stuff that site-dna needs to use when GETting data from the Volusion API.
              */
-            function init() {
-                // Pre authentication set up stuff goes here.
-                return true;
-            }
-
-            /**
+    function init() {
+      // Pre authentication set up stuff goes here.
+      return true;
+    }
+    /**
              * @ngdoc function
              * @name initSession
              * @methodOf Volusion.toolboxCommon.vnSession
@@ -2200,15 +2025,12 @@ angular.module('Volusion.toolboxCommon')
              * Use this to call basic initialization. set up the vnConfig object with its environment
              * and any other stuff that site-dna needs to use when GETting data from the Volusion API.
              */
-            function initSession(response) {
-
-//                we only init once per session but have not set this yet? 5-28.2014 -matth
-                accountData = response;
-                bootstrapSessionData();
-
-            }
-
-            /**
+    function initSession(response) {
+      //                we only init once per session but have not set this yet? 5-28.2014 -matth
+      accountData = response;
+      bootstrapSessionData();
+    }
+    /**
              * @ngdoc event
              * @name vnSession.init
              * @eventOf Volusion.toolboxCommon.vnSession
@@ -2219,14 +2041,24 @@ angular.module('Volusion.toolboxCommon')
              * Hears the vnSession.init event when it is broadcast and Passes the args to
              * the private init function.
              */
-            $rootScope.$on('vnSession.init', function (event, args) {
-                initSession(args);
-
-            });
-
-            return {
-                init          : init,
-                initSession   : initSession,
-                getAccountData: getAccountData
-            };
-        }]);
+    $rootScope.$on('vnSession.init', function (event, args) {
+      initSession(args);
+    });
+    return {
+      init: init,
+      initSession: initSession,
+      getAccountData: getAccountData
+    };
+  }
+]);
+angular.module('Volusion.toolboxCommon', []).run([
+  '$templateCache',
+  function ($templateCache) {
+    $templateCache.put('vn-product-option/checkboxes.html', '<label data-vn-block=vn-labeled-checkbox data-vn-modifiers={{option.class}} data-ng-repeat="itemKey in option.items" data-ng-init="item=product.optionItems[itemKey]"><div data-vn-element=checkbox><input type=checkbox data-ng-click=onCheckboxClicked(option)></div><div data-vn-element=content data-ng-include=" \'vn-product-option/content.html\' "></div></label>');
+    $templateCache.put('vn-product-option/content.html', '<div data-vn-element=color-image><div data-vn-element=color data-ng-show=item.color style="background-color: {{item.color}}"></div><img data-vn-element=image data-ng-show=item.image data-ng-src={{item.image}} alt={{item.text}}></div><div data-vn-element=text data-ng-bind=item.text></div><div data-vn-element=border data-ng-class="{ checked: option.selected===itemKey }"></div>');
+    $templateCache.put('vn-product-option/index.html', '<div data-vn-block=vn-product-option><label data-vn-element=label data-ng-if=option.label data-ng-bind=option.label></label><div data-ng-repeat="inputType in option.inputTypes"><div data-vn-element=group data-vn-modifiers="{{inputType.type}} {{option.class}}" data-ng-include=" \'vn-product-option/\' + inputType.type + \'.html\' "></div></div><div data-ng-if=option.selected><div data-ng-repeat="option in option.options" data-ng-include=" \'vn-product-option/index.html\' "></div></div></div>');
+    $templateCache.put('vn-product-option/radios.html', '<label data-vn-block=vn-labeled-radio data-vn-modifiers={{option.class}} data-ng-repeat="itemKey in option.items" data-ng-init="item=product.optionItems[itemKey]"><div data-vn-element=radio><input type=radio name={{option.id}} data-ng-value=itemKey data-ng-model=option.selected data-ng-click="onOptionChanged(option, item)"></div><div data-vn-element=content data-ng-include=" \'vn-product-option/content.html\' "></div></label>');
+    $templateCache.put('vn-product-option/select.html', '<select data-vn-element=select data-vn-modifiers={{option.class}} data-ng-attr-size={{inputType.size}} data-ng-model=option.selected data-ng-change="onOptionChanged(option, product.optionItems[option.selected])" data-ng-options="product.optionItems[itemKey].text for itemKey in option.items"></select>');
+    $templateCache.put('vn-product-option/text.html', '<div data-ng-if="inputType.rows > 1"><textarea data-vn-element=text data-vn-modifiers={{option.class}} data-ng-focus="saveTo=saveTo||{}" data-ng-model=saveTo[option.id] data-ng-maxlength={{inputType.maxlength}} placeholder={{inputType.placeholder}} rows={{inputType.rows}} cols={{inputType.cols}}></textarea></div><div data-ng-if="!inputType.rows || inputType.rows < 2"><input data-vn-element=text data-vn-modifiers={{option.class}} data-ng-focus="saveTo=saveTo||{}" data-ng-model=saveTo[option.id] data-ng-maxlength={{inputType.maxlength}} placeholder={{inputType.placeholder}}></div>');
+  }
+]);

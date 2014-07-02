@@ -1,0 +1,19 @@
+﻿<div data-ng-if="inputType.rows > 1">
+	<textarea data-vn-element="text"
+		data-vn-modifiers="{{option.class}}"
+		data-ng-focus="saveTo=saveTo||{}"
+		data-ng-model="saveTo[option.id]"
+		data-ng-maxlength="{{inputType.maxlength}}"
+		placeholder="{{inputType.placeholder}}"
+		rows="{{inputType.rows}}"
+		cols="{{inputType.cols}}"></textarea>
+</div>
+
+<div data-ng-if="!inputType.rows || inputType.rows < 2">
+	<input data-vn-element="text"
+		data-vn-modifiers="{{option.class}}"
+		data-ng-focus="saveTo=saveTo||{}"
+		data-ng-model="saveTo[option.id]"
+		data-ng-maxlength="{{inputType.maxlength}}"
+		placeholder="{{inputType.placeholder}}">
+</div>
