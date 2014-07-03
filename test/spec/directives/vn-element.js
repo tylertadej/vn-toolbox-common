@@ -1,9 +1,7 @@
-/*global describe */
-
-'use strict';
-
 // ReSharper disable WrongExpressionStatement
 describe('Directive: vn-element', function () {
+
+	'use strict';
 
 	function createElement(dataAttrs, modifiers) {
 		dataAttrs = dataAttrs || {};
@@ -34,80 +32,102 @@ describe('Directive: vn-element', function () {
 	it('supports .block__element scenario', function () {
 		var bar = createElement({ 'vn-element': 'bar' }),				// bem.element('bar'),
 			foo = createElement({ 'vn-block': 'foo' }).append(bar),		// bem.block('foo').append(bar),
-			block = $compile(foo)($rootScope.$new()); //,
-//			element;
+			scope = $rootScope.$new(),
+			block = $compile(foo)(scope),
+			element;
 
 		expect(block.attr('class')).toContain('foo');
-//		element = block.children().first();
-//		expect(element.attr('class')).toContain('foo__bar');
-//
-//		bar.attr('data-vn-element', '');
-//		block = $compile(foo)($rootScope.$new());
-//		expect(block.attr('class')).toContain('foo');
-//		element = block.children().first();
+		element = $(block).children().first();
+		expect(element.attr('class')).toContain('foo__bar');
+
+		bar.attr('data-vn-element', '');
+		block = $compile(foo)(scope);
+
+		expect(block.attr('class')).toContain('foo');
+
+//		element = $(block).children().first();
 //		expect(element.attr('class')).not.toContain('foo__');
 	});
 
-	xit('parses handlebars expressions', function () {
-		var $bar = bem.element('{{bar}}', '{{qux}}');
-		var $foo = bem.block('foo').append($bar);
-		var $scope = $rootScope.$new();
-		$scope.bar = 'baz';
-		$scope.qux = 'thud';
-		var $block = $compile($foo)($scope);
-		expect($block).to.have.class('foo');
-		var $element = $block.children().first();
-		expect($element).to.have.class('foo__baz');
-		expect($element).to.have.class('foo__baz--thud');
+	it('parses handlebars expressions', function () {
+		var bar = createElement({ 'vn-element': '{{bar}}' }, '{{qux}}'),		// bem.element('{{bar}}', '{{qux}}');
+			foo = createElement({ 'vn-block': 'foo' }).append(bar),				// bem.block('foo').append(bar),
+			scope = $rootScope.$new(),
+			block,
+			element;
+
+		scope.bar = 'baz';
+		scope.qux = 'thud';
+
+		block = $compile(foo)(scope);
+
+		expect($(block)).toHaveClass('foo');
+
+		element = $(block).children().first();
+		expect($(element)).toHaveClass('foo__baz');
+		expect($(element)).toHaveClass('foo__baz--thud');
 	});
 
-	xit('supports .block__element--modifier scenario', function () {
-		var $foo = bem.block('foo').append(bem.element('bar', 'baz'));
-		var $block = $compile($foo)($rootScope.$new());
-		expect($block).to.have.class('foo');
-		var $element = $block.children().first();
-		expect($element).to.have.class('foo__bar');
-		expect($element).to.have.class('foo__bar--baz');
+	it('supports .block__element--modifier scenario', function () {
+		var bar = createElement({ 'vn-element': 'bar' }, 'baz'),
+			foo = createElement({ 'vn-block': 'foo' }).append(bar),		// bem.block('foo').append(bem.element('bar', 'baz'));
+			block = $compile(foo)($rootScope.$new()),
+			element;
+
+		expect(block).toHaveClass('foo');
+
+		element = $(block).children().first();
+		expect(element).toHaveClass('foo__bar');
+		expect(element).toHaveClass('foo__bar--baz');
 	});
 
-	xit('supports .block--modifier__element scenario', function () {
-		var $foo = bem.block('foo', 'bar').append(bem.element('baz'));
-		var $block = $compile($foo)($rootScope.$new());
-		expect($block).to.have.class('foo');
-		expect($block).to.have.class('foo--bar');
-		var $element = $block.children().first();
-		expect($element).to.have.class('foo__baz');
-		expect($element).to.have.class('foo--bar__baz');
+	it('supports .block--modifier__element scenario', function () {
+		var baz = createElement({ 'vn-element': 'baz' }),
+			foo = createElement({ 'vn-block': 'foo' }, 'bar').append(baz),		// bem.block('foo', 'bar').append(bem.element('baz'));
+			block = $compile(foo)($rootScope.$new()),
+			element;
+
+		expect($(block)).toHaveClass('foo');
+		expect($(block)).toHaveClass('foo--bar');
+
+		element = $(block).children().first();
+		expect(element).toHaveClass('foo__baz');
+		expect(element).toHaveClass('foo--bar__baz');
 	});
 
-	xit('supports .block--modifier__element--modifier scenarios', function () {
-		var $foo = bem.block('foo', 'bar baz')
-			.append(bem.element('FOO', 'BAR BAZ'));
-		var $block = $compile($foo)($rootScope.$new());
-		expect($block).to.have.class('foo');
-		expect($block).to.have.class('foo--bar');
-		expect($block).to.have.class('foo--baz');
-		var $element = $block.children().first();
-		expect($element).to.have.class('foo__FOO');
-		expect($element).to.have.class('foo--bar__FOO');
-		expect($element).to.have.class('foo--baz__FOO');
-		expect($element).to.have.class('foo--bar__FOO--BAR');
-		expect($element).to.have.class('foo--baz__FOO--BAZ');
+	it('supports .block--modifier__element--modifier scenarios', function () {
+		var baz = createElement({ 'vn-element': 'FOO' }, 'BAR BAZ'),
+			foo = createElement({ 'vn-block': 'foo' }, 'bar baz').append(baz),		// bem.block('foo', 'bar baz').append(bem.element('FOO', 'BAR BAZ'));
+			block = $compile(foo)($rootScope.$new()),
+			element;
+
+		expect($(block)).toHaveClass('foo');
+		expect($(block)).toHaveClass('foo--bar');
+		expect($(block)).toHaveClass('foo--baz');
+
+		element = $(block).children().first();
+		expect(element).toHaveClass('foo__FOO');
+		expect(element).toHaveClass('foo--bar__FOO');
+		expect(element).toHaveClass('foo--baz__FOO');
+		expect(element).toHaveClass('foo--bar__FOO--BAR');
+		expect(element).toHaveClass('foo--baz__FOO--BAZ');
 	});
 
-	xit('adds trimmed classes only', function () {
-		var $foo = bem.block('  foo  ', '  bar  baz  ')
-			.append(bem.element('  FOO  ', '  BAR  BAZ  '));
-		var $block = $compile($foo)($rootScope.$new());
-		expect($block).to.have.class('foo');
-		expect($block).to.have.class('foo--bar');
-		expect($block).to.have.class('foo--baz');
-		var $element = $block.children().first();
-		expect($element).to.have.class('foo__FOO');
-		expect($element).to.have.class('foo--bar__FOO');
-		expect($element).to.have.class('foo--baz__FOO');
-		expect($element).to.have.class('foo--bar__FOO--BAR');
-		expect($element).to.have.class('foo--baz__FOO--BAZ');
-	});
+	it('adds trimmed classes only', function () {
+		var baz = createElement({ 'vn-element': '  FOO  ' }, '  BAR  BAZ  '),
+			foo = createElement({ 'vn-block': '  foo  ' }, '  bar  baz  ').append(baz),		// bem.block('  foo  ', '  bar  baz  ').append(bem.element('  FOO  ', '  BAR  BAZ  ')),
+			block = $compile(foo)($rootScope.$new()),
+			element;
 
+		expect($(block)).toHaveClass('foo');
+		expect($(block)).toHaveClass('foo--bar');
+		expect($(block)).toHaveClass('foo--baz');
+
+		element = $(block).children().first();
+		expect(element).toHaveClass('foo__FOO');
+		expect(element).toHaveClass('foo--bar__FOO');
+		expect(element).toHaveClass('foo--baz__FOO');
+		expect(element).toHaveClass('foo--bar__FOO--BAR');
+		expect(element).toHaveClass('foo--baz__FOO--BAZ');
+	});
 });

@@ -1,7 +1,21 @@
-'use strict';
 
 // ReSharper disable WrongExpressionStatement
 describe('Directive: vn-block', function() {
+
+	'use strict';
+
+	function createElement(dataAttrs, modifiers) {
+		dataAttrs = dataAttrs || {};
+		dataAttrs['vn-modifiers'] = modifiers || '';
+
+		var elem = angular.element('<div/>');
+
+		Object.keys(dataAttrs).forEach(function (key) {
+			elem.attr('data-' + key, dataAttrs[key]);
+		});
+
+		return elem;
+	}
 
 	// load the directive's module
 	beforeEach(module('Volusion.toolboxCommon'));
@@ -16,35 +30,42 @@ describe('Directive: vn-block', function() {
 		$compile = _$compile_;
 	}));
 
-	xit('adds a .block class when vn-block attribute is provided', function() {
-		var $foo = bem.block('foo'),
-			$block = $compile($foo)($rootScope.$new());
+	it('adds a .block class when vn-block attribute is provided', function() {
+		var foo = createElement({ 'vn-block': 'foo' }),		// bem.block('foo'),
+			block = $compile(foo)($rootScope.$new());
 
-		expect($block).to.have.class('foo');
+		expect($(block)).toHaveClass('foo');
 	});
 
-	xit('adds multiple .block--modifier classes when vn-modifiers exist', function() {
-		var $foo = bem.block('foo', 'bar baz');
-		var $block = $compile($foo)($rootScope.$new());
-		expect($block).to.have.class('foo');
-		expect($block).to.have.class('foo--bar');
-		expect($block).to.have.class('foo--baz');
+	it('adds multiple .block--modifier classes when vn-modifiers exist', function() {
+		var foo = createElement({ 'vn-block': 'foo' }, 'bar baz'),		// bem.block('foo', 'bar baz');
+			scope = $rootScope.$new(),
+			block = $compile(foo)(scope);
 
-		$foo.attr('data-vn-modifiers', '');
-		$block = $compile($foo)($rootScope.$new());
-		expect($block).to.have.class('foo');
-		expect($block).not.to.have.class('foo--');
+		expect($(block)).toHaveClass('foo');
+		expect($(block)).toHaveClass('foo--bar');
+		expect($(block)).toHaveClass('foo--baz');
+
+		foo.attr('data-vn-modifiers', '');
+		block = $compile(foo)(scope);
+
+		expect($(block)).toHaveClass('foo');
+		expect($(block)).not.toHaveClass('foo--');
 	});
 
-	xit('parses handlebars expressions', function() {
-		var $foo = bem.block('{{foo}}', '{{bar}} thud');
-		var $scope = $rootScope.$new();
-		$scope.foo = 'baz';
-		$scope.bar = 'qux';
-		var $block = $compile($foo)($scope);
-		expect($block).to.have.class('baz');
-		expect($block).to.have.class('baz--qux');
-		expect($block).to.have.class('baz--thud');
+	it('parses handlebars expressions', function() {
+		var foo = createElement({ 'vn-block': '{{foo}}' }, '{{bar}} thud'),		// bem.block('{{foo}}', '{{bar}} thud');
+			scope = $rootScope.$new(),
+			block;
+
+		scope.foo = 'baz';
+		scope.bar = 'qux';
+
+		block = $compile(foo)(scope);
+
+		expect($(block)).toHaveClass('baz');
+		expect($(block)).toHaveClass('baz--qux');
+		expect($(block)).toHaveClass('baz--thud');
 	});
 
 });
