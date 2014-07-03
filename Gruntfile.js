@@ -297,7 +297,6 @@ module.exports = function(grunt) {
 							'!*.{ico,png,txt}',
 							'!.htaccess',
 							'!*.html',
-							'views/widgets/*.html',
 							'images/{,*/}*.{webp}',
 							'fonts/*'
 						]
@@ -434,12 +433,13 @@ module.exports = function(grunt) {
 		'concat',
 		'ngmin',
 		'copy:dist',
-		'cssmin',
-		'uglify'
+		'cssmin'//,
+		// Minification will be performed when building the theme
+		//'uglify'
 	]);
 
 	grunt.registerTask('default', [
-		'newer:jshint',
+		'newer:jshint:all',
 		'test',
 		'build'
 	]);
