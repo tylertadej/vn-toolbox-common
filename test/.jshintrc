@@ -35,5 +35,8 @@
 		"module": true,
 		"bem": false,
 		"xdescribe": false,
-		"xit": false
+		"xit": false,
+		"$"         : false,
+		"jquery"    : false
+	}
 }
