@@ -1,4 +1,4 @@
-/*! vn-toolbox-common - ver.0.0.2 (2014-07-03) */
+/*! vn-toolbox-common - ver.0.0.2 (2014-07-02) */
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate']).config([
   '$translateProvider',
   function ($translateProvider) {
@@ -130,8 +130,8 @@ angular.module('Volusion.toolboxCommon').controller('VnProductOptionCtrl', [
  * @example
  */
 angular.module('Volusion.toolboxCommon').directive('vnBlock', [
-  'vnBem',
-  function (vnBem) {
+  'bem',
+  function (bem) {
     return {
       restrict: 'A',
       controller: function () {
@@ -147,7 +147,7 @@ angular.module('Volusion.toolboxCommon').directive('vnBlock', [
           pre: function (scope, iElement, iAttrs, controller) {
             var block = iAttrs.vnBlock;
             var modifiers = iAttrs.vnModifiers;
-            vnBem.addClasses(iElement, {
+            bem.addClasses(iElement, {
               block: block,
               blockModifiers: modifiers
             });
@@ -278,14 +278,14 @@ angular.module('Volusion.toolboxCommon').directive('vnCategorySearch', [
  * @example
  */
 angular.module('Volusion.toolboxCommon').directive('vnElement', [
-  'vnBem',
-  function (vnBem) {
+  'bem',
+  function (bem) {
     return {
       require: '^vnBlock',
       restrict: 'A',
       compile: function () {
         return function (scope, iElement, iAttrs, blockCtrl) {
-          vnBem.addClasses(iElement, {
+          bem.addClasses(iElement, {
             block: blockCtrl.getBlock(),
             blockModifiers: blockCtrl.getModifiers(),
             element: iAttrs.vnElement,
@@ -378,37 +378,6 @@ angular.module('Volusion.toolboxCommon').directive('vnImage', [
   function ($templateCache) {
     'use strict';
     $templateCache.put('template/image.html', '<div class="vn-image">' + '<p translate>VN-IMAGE-TITLE</p>' + '<img src="{{ image.src }}" alt="{{ image.alt }}" />' + '</div>');
-  }
-]);
-angular.module('Volusion.toolboxCommon').directive('vnLabeledRadio', function () {
-  'use strict';
-  return {
-    require: 'ngModel',
-    restrict: 'A',
-    replace: true,
-    transclude: true,
-    templateUrl: 'template/labeled-radio.html',
-    scope: {
-      ngModel: '=',
-      name: '@',
-      value: '@',
-      ngValue: '=',
-      ngChecked: '=',
-      ngDisabled: '@',
-      change: '&ngChange'
-    },
-    compile: function (tElement, tAttrs) {
-      var $radio = tElement.find('input'), value = tAttrs.value, ngValue = tAttrs.ngValue;
-      if (typeof value !== 'undefined' && typeof ngValue === 'undefined') {
-        $radio.removeAttr('data-ng-value');
-      }
-    }
-  };
-}).run([
-  '$templateCache',
-  function ($templateCache) {
-    'use strict';
-    $templateCache.put('template/labeled-radio.html', '<label data-vn-block="vn-labeled-radio">' + '<input data-vn-element="input" type="radio" ' + 'name="{{name}}" ' + 'value="{{value}}" ' + 'data-ng-model="ngModel" ' + 'data-ng-value="ngValue" ' + 'data-ng-checked="ngChecked" ' + 'data-ng-change="change()" ' + 'data-ng-disabled="{{ngDisabled}}">' + '<span data-vn-element="content" data-ng-transclude></span>' + '</label>');
   }
 ]);
 angular.module('Volusion.toolboxCommon').directive('vnLink', [
@@ -650,6 +619,59 @@ angular.module('Volusion.toolboxCommon').directive('vnRating', [
     $templateCache.put('template/rating.html', '<div class="vn-rating">' + '<!-- not happy with this but it seems better than angular-ui carousel' + 'http://blog.revolunet.com/angular-carousel/ -->' + '<p translate>VN-RATING-TITLE</p>' + '<ul class="rating">' + '<li ng-repeat="star in stars" class="tick" ng-class="star" ng-click="toggle($index)">' + '</li>' + '</ul>' + '</div>');
   }
 ]);
+'use strict';
+/**
+ * @ngdoc service
+ * @name Volusion.toolboxCommon.service:bem
+ *
+ * @requires
+ * @scope
+ *
+ * @description
+ *
+ *
+ * @usage
+ * @example
+ */
+angular.module('Volusion.toolboxCommon').factory('bem', function () {
+  function generateClasses(base, modifiers) {
+    var result = [base];
+    angular.forEach(splitModifiers(modifiers), function (modifier) {
+      result.push(base + '--' + modifier);
+    });
+    return result;
+  }
+  function splitModifiers(modifiers) {
+    modifiers = modifiers && modifiers.replace(/^\s+|\s+$/g, '');
+    if (!modifiers) {
+      return [];
+    }
+    return modifiers.split(/\s+/);
+  }
+  return {
+    addClasses: function ($elem, options) {
+      options = options || {};
+      var block = options.block;
+      if (!block) {
+        return;
+      }
+      var blockClasses = generateClasses(block, options.blockModifiers);
+      var element = options.element;
+      if (!element) {
+        angular.forEach(blockClasses, function (blockClass) {
+          $elem.addClass(blockClass);
+        });
+        return;
+      }
+      var elementClasses = generateClasses('__' + element, options.elementModifiers);
+      angular.forEach(blockClasses, function (blockClass) {
+        angular.forEach(elementClasses, function (elementClass) {
+          $elem.addClass(blockClass + elementClass);
+        });
+      });
+    }
+  };
+});
 angular.module('Volusion.toolboxCommon').value('vnApiArticles', {});
 angular.module('Volusion.toolboxCommon').value('vnApiCarts', {});
 angular.module('Volusion.toolboxCommon').value('vnApiCategories', {});
@@ -908,59 +930,6 @@ angular.module('Volusion.toolboxCommon').factory('vnApi', [
     };
   }
 ]);
-'use strict';
-/**
- * @ngdoc service
- * @name Volusion.toolboxCommon.service:vnBem
- *
- * @requires
- * @scope
- *
- * @description
- *
- *
- * @usage
- * @example
- */
-angular.module('Volusion.toolboxCommon').factory('vnBem', function () {
-  function generateClasses(base, modifiers) {
-    var result = [base];
-    angular.forEach(splitModifiers(modifiers), function (modifier) {
-      result.push(base + '--' + modifier);
-    });
-    return result;
-  }
-  function splitModifiers(modifiers) {
-    modifiers = modifiers && modifiers.replace(/^\s+|\s+$/g, '');
-    if (!modifiers) {
-      return [];
-    }
-    return modifiers.split(/\s+/);
-  }
-  return {
-    addClasses: function ($elem, options) {
-      options = options || {};
-      var block = options.block;
-      if (!block) {
-        return;
-      }
-      var blockClasses = generateClasses(block, options.blockModifiers);
-      var element = options.element;
-      if (!element) {
-        angular.forEach(blockClasses, function (blockClass) {
-          $elem.addClass(blockClass);
-        });
-        return;
-      }
-      var elementClasses = generateClasses('__' + element, options.elementModifiers);
-      angular.forEach(blockClasses, function (blockClass) {
-        angular.forEach(elementClasses, function (elementClass) {
-          $elem.addClass(blockClass + elementClass);
-        });
-      });
-    }
-  };
-});
 angular.module('Volusion.toolboxCommon').factory('vnConfig', [
   '$q',
   '$rootScope',
