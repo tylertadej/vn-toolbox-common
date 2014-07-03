@@ -24,6 +24,7 @@
 		"angular": true,
 		"before": true,
 		"beforeEach": true,
+		"bem": false,
 		"browser": false,
 		"describe": true,
 		"expect": true,

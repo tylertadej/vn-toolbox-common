@@ -6,3 +6,4 @@ node_modules
 app/bower_components
 coverage
 docs
+Gemfile.lock

@@ -377,8 +377,12 @@ module.exports = function(grunt) {
 
 		// Test settings
 		karma: {
-			unit: {
-				configFile: 'karma.conf.js',
+			jasmine: {
+				configFile: 'karma.conf.jasmine.js',
+				singleRun: true
+			},
+			mocha: {
+				configFile: 'karma.conf.mocha.js',
 				singleRun: true
 			}
 		}
