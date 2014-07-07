@@ -429,7 +429,11 @@ module.exports = function(grunt) {
 		'compass:dist',
 		'imagemin',
 		'svgmin',
-		'html2js',
+	/**
+	 * DEV NOTE RE html2js: This causes an issue when toolbox is build and templates use ng-include related to single quotes.
+	 * Removed for now so development can proceed. Revised depending on team discussion / decisions.
+	 */
+//		'html2js',
 		'concat',
 		'ngmin',
 		'copy:dist',
