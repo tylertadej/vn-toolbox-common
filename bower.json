@@ -1,6 +1,5 @@
 {
   "name": "vn-toolbox-common",
-  "version": "0.0.4",
   "main": [
     "dist/vn-toolbox-common.js",
     "dist/vn-toolbox-common-styles.css"
@@ -14,13 +13,11 @@
   ],
   "ignore": [
     "**/.*",
-    "node_modules",
-    "coverage",
-    "bower_components",
-    "test*",
-    "demo*",
+    "app",
     "Gemfile",
-    "*.js",
+    "Gruntfile.js",
+    "karma*.js",
+    "protractor.conf.js",
     "package.json",
     "*.sln*"
   ],
