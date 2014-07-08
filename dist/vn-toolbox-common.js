@@ -1,4 +1,4 @@
-/*! vn-toolbox-common - ver.0.0.4 (2014-07-08) */
+/*! vn-toolbox-common - ver.0.0.6 (2014-07-08) */
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate']).config([
   '$translateProvider',
   function ($translateProvider) {
