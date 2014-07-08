@@ -55,7 +55,6 @@ angular.module('Volusion.toolboxCommon')
         $templateCache.put(
             'template/vn-facet-search.html',
                 '<div class="-faceted-search">' +
-                    '<header>Refine by</header>' +
                     '<div class="facets">' +
                         '<div class="facet-item" ng-repeat="facet in facets track by $index">' +
                             '<header>{{ facet.title }}</header>' +

@@ -52,7 +52,6 @@ angular.module('Volusion.toolboxCommon')
         $templateCache.put(
             'template/vn-category-search.html',
                 '<div class="-category-search">' +
-                    '<header>Show results for</header>' +
                     '<div ng-repeat="category in categories">' +
                         '<a href="{{ category.url  }}">{{ category.name }}</a>' +
                     '</div>' +
