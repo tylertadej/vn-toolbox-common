@@ -260,7 +260,7 @@ angular.module('Volusion.toolboxCommon').directive('vnCategorySearch', [
   '$templateCache',
   function ($templateCache) {
     'use strict';
-    $templateCache.put('template/vn-category-search.html', '<div class="-category-search">' + '<div ng-repeat="category in categories">' + '<a href="{{ category.url  }}">{{ category.name }}</a>' + '</div>' + '<div ng-repeat="subCat in subCategories">' + '<a href="{{ subCat.url  }}">{{ subCat.name }}</a>' + '<!--<a href="" ng-click="updateCategory(subCat)">{{ subCat.name }}</a>-->' + '</div>' + '</div>');
+    $templateCache.put('template/vn-category-search.html', '<div class="-category-search">' + '<div ng-repeat="category in categories">' + '<a ng-href="{{ category.url  }}">{{ category.name }}</a>' + '</div>' + '<div ng-repeat="subCat in subCategories">' + '<a ng-href="{{ subCat.url  }}">{{ subCat.name }}</a>' + '</div>' + '</div>');
   }
 ]);
 'use strict';
