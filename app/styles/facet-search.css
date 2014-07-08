@@ -3,7 +3,7 @@
 .facets .facet-item .-facet-property input[type="checkbox"] + span:before {
   margin: 0;
   padding: 0;
-  font-family: "Glyphicons Halflings" !important;
+  font-family: 'Glyphicons Halflings' !important;
   padding-right: 3px !important;
   margin-top: 3px !important;
   font-size: 12px !important; }
@@ -16,11 +16,11 @@
 
 .facet-item .ng-enter,
 .facet-item .ng-leave {
-  -webkit-transition: 0.5s ease-out all, visibility 0.1s linear;
-  -moz-transition: 0.5 ease-out all, visibility 0.1s linear;
-  -ms-transition: 0.5 ease-out all, visibility 0.1s linear;
-  -o-transition: 0.5 ease-out all, visibility 0.1s linear;
-  transition: 0.5 ease-out all, visibility 0.1s linear;
+  -webkit-transition: 200ms ease-out all, visibility 200ms linear;
+  -moz-transition: 200ms ease-out all, visibility 200ms linear;
+  -ms-transition: 200ms ease-out all, visibility 200ms linear;
+  -o-transition: 200ms ease-out all, visibility 200ms linear;
+  transition: 200ms ease-out all, visibility 200ms linear;
   width: 100%;
   overflow: hidden; }
 .facet-item .ng-leave.ng-leave-active,
