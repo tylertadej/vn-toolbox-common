@@ -1,4 +1,4 @@
-/*! vn-toolbox-common - ver.0.0.4 (2014-07-07) */
+/*! vn-toolbox-common - ver.0.0.4 (2014-07-08) */
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate']).config([
   '$translateProvider',
   function ($translateProvider) {
@@ -329,7 +329,7 @@ angular.module('Volusion.toolboxCommon').directive('vnFacetSearch', [
   '$templateCache',
   function ($templateCache) {
     'use strict';
-    $templateCache.put('template/vn-facet-search.html', '<div class="-faceted-search">' + '<div class="facets">' + '<div class="facet-item" ng-repeat="facet in facets track by $index">' + '<header>{{ facet.title }}</header>' + '<div class="-facet-property" ng-repeat="property in facet.properties track by $index">' + '<div class="row">' + '<label>{{ property.name }}' + '<input type="checkbox"' + 'name="property.name"' + 'ng-checked="selectProperty(property)"' + 'ng-click="refineFacetSearch(property)"/>' + '</label>' + '</div>' + '</div>' + '<hr>' + '</div>' + '</div>' + '</div>');
+    $templateCache.put('template/vn-facet-search.html', '<div class="-faceted-search">' + '<div class="facets">' + '<div class="facet-item" ng-repeat="facet in facets track by $index">' + '<header>{{ facet.title }}</header>' + '<div ng-repeat="property in facet.properties track by $index">' + '<label class="-facet-property">' + '<input type="checkbox" ' + 'name="property.name" ' + 'ng-checked="selectProperty(property)" ' + 'ng-click="refineFacetSearch(property)" />' + '<span>{{ property.name }}</span>' + '</label>' + '</div>' + '<hr>' + '</div>' + '</div>' + '</div>');
   }
 ]);
 angular.module('Volusion.toolboxCommon').directive('vnImage', [

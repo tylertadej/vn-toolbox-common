@@ -12,63 +12,62 @@
  * TODO: Add html and javascript here to demo it in docs.
  */
 angular.module('Volusion.toolboxCommon')
-    .directive('vnFacetSearch', ['$rootScope', 'vnProductParams',
-        function ($rootScope, vnProductParams) {
-            'use strict';
+	.directive('vnFacetSearch', ['$rootScope', 'vnProductParams',
+		function ($rootScope, vnProductParams) {
+			'use strict';
 
-            return {
-                templateUrl: 'template/vn-facet-search.html',
-                restrict   : 'AE',
-                scope      : {
-                    facets: '='
-                },
-                link       : function postLink(scope) {
+			return {
+				templateUrl: 'template/vn-facet-search.html',
+				restrict   : 'AE',
+				scope      : {
+					facets: '='
+				},
+				link       : function postLink(scope) {
 
-                    scope.$watch('facets', function (facets) {
-                        scope.facets = facets;
-                    });
+					scope.$watch('facets', function (facets) {
+						scope.facets = facets;
+					});
 
-                    scope.selectProperty = function (facet) {
-                        return vnProductParams.isFacetSelected(facet.id);
-                    };
+					scope.selectProperty = function (facet) {
+						return vnProductParams.isFacetSelected(facet.id);
+					};
 
-                    scope.refineFacetSearch = function (facet) {
+					scope.refineFacetSearch = function (facet) {
 
-                        // Adding / Removeing facet to selectedFacets
-                        if (!vnProductParams.isFacetSelected(facet.id)) {
-                            vnProductParams.addFacet(facet.id);
+						// Adding / Removeing facet to selectedFacets
+						if (!vnProductParams.isFacetSelected(facet.id)) {
+							vnProductParams.addFacet(facet.id);
 //                            console.log('adding facet: ', vnProductParams.getParamsObject());
-                        } else {
-                            vnProductParams.removeFacet(facet.id);
+						} else {
+							vnProductParams.removeFacet(facet.id);
 //                            console.log('removing facet: ', vnProductParams.getParamsObject());
-                        }
+						}
 
-                        // Broadcast an update to whomever is subscribed.
-                        $rootScope.$broadcast('ProductSearch.facetsUpdated');
-                    };
-                }
-            };
-        }])    .run(['$templateCache', function ($templateCache) {
+						// Broadcast an update to whomever is subscribed.
+						$rootScope.$broadcast('ProductSearch.facetsUpdated');
+					};
+				}
+			};
+		}]).run(['$templateCache', function ($templateCache) {
 
-        'use strict';
+		'use strict';
 
-        $templateCache.put(
-            'template/vn-facet-search.html',
+		$templateCache.put(
+			'template/vn-facet-search.html',
                 '<div class="-faceted-search">' +
                     '<div class="facets">' +
                         '<div class="facet-item" ng-repeat="facet in facets track by $index">' +
                             '<header>{{ facet.title }}</header>' +
-                            '<div class="-facet-property" ng-repeat="property in facet.properties track by $index">' +
-                                '<div class="row">' +
-                                    '<label>{{ property.name }}' +
-                                        '<input type="checkbox"' +
-                                        'name="property.name"' +
-                                        'ng-checked="selectProperty(property)"' +
-                                        'ng-click="refineFacetSearch(property)"/>' +
-                                    '</label>' +
-                                '</div>' +
-                            '</div>' +
-                        '<hr>' +
+							'<div ng-repeat="property in facet.properties track by $index">' +
+								'<label class="-facet-property">' +
+									'<input type="checkbox" ' +
+											'name="property.name" ' +
+											'ng-checked="selectProperty(property)" ' +
+											'ng-click="refineFacetSearch(property)" />' +
+									'<span>{{ property.name }}</span>' +
+								'</label>' +
+							'</div>' +
+                        	'<hr>' +
                         '</div>' +
                     '</div>' +
                 '</div>'
