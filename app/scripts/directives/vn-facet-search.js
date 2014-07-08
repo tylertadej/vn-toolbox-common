@@ -57,7 +57,7 @@ angular.module('Volusion.toolboxCommon')
                 '<div class="-faceted-search">' +
                     '<div class="facets">' +
                         '<div class="facet-item" ng-repeat="facet in facets track by $index">' +
-                            '<header>{{ facet.title }}</header>' +
+                            '<h5>{{ facet.title }}</h5>' +
 							'<div ng-repeat="property in facet.properties track by $index">' +
 								'<label class="-facet-property">' +
 									'<input type="checkbox" ' +

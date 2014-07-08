@@ -329,7 +329,7 @@ angular.module('Volusion.toolboxCommon').directive('vnFacetSearch', [
   '$templateCache',
   function ($templateCache) {
     'use strict';
-    $templateCache.put('template/vn-facet-search.html', '<div class="-faceted-search">' + '<div class="facets">' + '<div class="facet-item" ng-repeat="facet in facets track by $index">' + '<header>{{ facet.title }}</header>' + '<div ng-repeat="property in facet.properties track by $index">' + '<label class="-facet-property">' + '<input type="checkbox" ' + 'name="property.name" ' + 'ng-checked="selectProperty(property)" ' + 'ng-click="refineFacetSearch(property)" />' + '<span>{{ property.name }}</span>' + '</label>' + '</div>' + '<hr>' + '</div>' + '</div>' + '</div>');
+    $templateCache.put('template/vn-facet-search.html', '<div class="-faceted-search">' + '<div class="facets">' + '<div class="facet-item" ng-repeat="facet in facets track by $index">' + '<h5>{{ facet.title }}</h5>' + '<div ng-repeat="property in facet.properties track by $index">' + '<label class="-facet-property">' + '<input type="checkbox" ' + 'name="property.name" ' + 'ng-checked="selectProperty(property)" ' + 'ng-click="refineFacetSearch(property)" />' + '<span>{{ property.name }}</span>' + '</label>' + '</div>' + '<hr>' + '</div>' + '</div>' + '</div>');
   }
 ]);
 angular.module('Volusion.toolboxCommon').directive('vnImage', [
