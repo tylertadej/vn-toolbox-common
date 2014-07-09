@@ -1,3 +1,4 @@
+// Default Toolbox Responsive Optimizations
 .facets {
 	.facet-item {
 		.-facet-property {
@@ -20,6 +21,32 @@
 				content : "\e067" !important; /* check */
 			}
 		}
+	}
+}
+
+// Mobile
+@media(max-width:767px){
+	.-faceted-search {
+		* {
+			text-align: center;
+		}
+	}
+}
+// Tablets
+@media(min-width:768px){
+	.-faceted-search {
+
+	}
+}
+// Browser
+@media(min-width:992px){
+	.-faceted-search {
+
+	}
+}
+// Retina ?
+@media(min-width:1200px){
+	.-faceted-search {
 	}
 }
 
