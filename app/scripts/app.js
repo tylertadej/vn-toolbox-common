@@ -20,11 +20,13 @@
  *
  */
 
+angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', [
     'ngResource',
     'ngRoute',
     'pascalprecht.translate',
-    'firebase'
+    'firebase',
+    'Volusion.toolboxCommon.templates'
 ])
     .config(
         ['$routeProvider', '$locationProvider', '$translateProvider', '$translatePartialLoaderProvider',

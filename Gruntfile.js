@@ -253,7 +253,7 @@ module.exports = function(grunt) {
 		html2js: {
 			options: {
 				singleModule: true,
-				module: 'Volusion.templates',
+				module: 'Volusion.toolboxCommon.templates',
 				rename: function(moduleName) {
 					return moduleName.replace('../app/views/partials/', '');
 				},
@@ -303,9 +303,9 @@ module.exports = function(grunt) {
 					},
 					{
 						expand: true,
-						cwd: '.tmp/images',
-						dest: '<%= yeoman.dist %>/images',
-						src: ['generated/*']
+						cwd: '.tmp',
+						dest: '<%= yeoman.dist %>',
+						src: ['images/generated/*']
 					}
 				]
 			},
