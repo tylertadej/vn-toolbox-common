@@ -1,4 +1,4 @@
-/*! vn-toolbox-common - ver.0.0.7 (2014-07-09) */
+/*! vn-toolbox-common - ver.0.0.8 (2014-07-09) */
 angular.module('Volusion.toolboxCommon', [
   'pascalprecht.translate',
   'Volusion.templates'
