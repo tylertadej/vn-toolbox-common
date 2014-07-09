@@ -253,7 +253,7 @@ module.exports = function(grunt) {
 		html2js: {
 			options: {
 				singleModule: true,
-				module: 'Volusion.toolboxCommon',
+				module: 'Volusion.templates',
 				rename: function(moduleName) {
 					return moduleName.replace('../app/views/partials/', '');
 				},

@@ -1,4 +1,4 @@
-angular.module('Volusion.toolboxCommon', ['pascalprecht.translate'])
+angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'Volusion.templates'])
     .config(
         ['$translateProvider',
             function ($translateProvider) {
