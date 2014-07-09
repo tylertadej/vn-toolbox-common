@@ -1,7 +1,8 @@
 /*! vn-toolbox-common - ver.0.0.8 (2014-07-09) */
+angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', [
   'pascalprecht.translate',
-  'Volusion.templates'
+  'Volusion.toolboxCommon.templates'
 ]).config([
   '$translateProvider',
   function ($translateProvider) {
@@ -2085,7 +2086,7 @@ angular.module('Volusion.toolboxCommon').factory('vnSession', [
     };
   }
 ]);
-angular.module('Volusion.templates', []).run([
+angular.module('Volusion.toolboxCommon.templates', []).run([
   '$templateCache',
   function ($templateCache) {
     $templateCache.put('vn-product-option/checkboxes.html', '<label data-vn-block=vn-labeled-checkbox data-vn-modifiers={{option.class}} data-ng-repeat="itemKey in option.items" data-ng-init="item=product.optionItems[itemKey]"><div data-vn-element=checkbox><input type=checkbox data-ng-click=onCheckboxClicked(option)></div><div data-vn-element=content data-ng-include=" \'vn-product-option/content.html\' "></div></label>');
