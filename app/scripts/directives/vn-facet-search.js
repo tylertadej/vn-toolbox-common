@@ -6,7 +6,9 @@
  * @requires vnProductParams
  * @scope
  * @description
- *
+ * - docs needed for the directive scope functions available
+ * - docs needed for the broadcast triggered so theme can listen for it
+ * - docs needed for the html
  *
  * @usage
  * TODO: Add html and javascript here to demo it in docs.
@@ -58,15 +60,13 @@ angular.module('Volusion.toolboxCommon')
                     '<div class="facets">' +
                         '<div class="facet-item" ng-repeat="facet in facets track by $index">' +
                             '<h5>{{ facet.title }}</h5>' +
-							'<div ng-repeat="property in facet.properties track by $index">' +
-								'<label class="-facet-property">' +
-									'<input type="checkbox" ' +
-											'name="property.name" ' +
-											'ng-checked="selectProperty(property)" ' +
-											'ng-click="refineFacetSearch(property)" />' +
-									'<span>{{ property.name }}</span>' +
-								'</label>' +
-							'</div>' +
+							'<label class="-facet-property" ng-repeat="property in facet.properties track by $index">' +
+								'<input type="checkbox" ' +
+										'name="property.name" ' +
+										'ng-checked="selectProperty(property)" ' +
+										'ng-click="refineFacetSearch(property)" />' +
+								'<span>{{ property.name }}</span>' +
+							'</label>' +
                         	'<hr>' +
                         '</div>' +
                     '</div>' +

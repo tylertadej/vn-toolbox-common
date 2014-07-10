@@ -1,5 +1,5 @@
 // Default Toolbox Responsive Optimizations
-@media(max-width:767px){
+@media screen and (max-width:767px){
 	.-category-search {
 		* {
 			text-align: center;
@@ -7,19 +7,19 @@
 	}
 }
 // Tablets
-@media(min-width:768px){
+@media screen and (min-width:768px){
 	.-category-search {
 
 	}
 }
 // Browser
-@media(min-width:992px){
+@media screen and (min-width:992px){
 	.-category-search {
 
 	}
 }
 // Retina ?
-@media(min-width:1200px){
+@media screen and (min-width:1200px){
 	.-category-search {
 
 	}

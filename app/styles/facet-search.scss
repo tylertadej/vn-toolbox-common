@@ -1,6 +1,10 @@
 // Default Toolbox Responsive Optimizations
 .facets {
 	.facet-item {
+		label {
+			display: block;
+		}
+
 		.-facet-property {
 			// Style for the checkboxes
 			input[type="checkbox"] {
@@ -27,8 +31,18 @@
 // Mobile
 @media(max-width:767px){
 	.-faceted-search {
+		border-bottom: 1px solid
 		* {
 			text-align: center;
+		}
+
+		.facets {
+			.facet-item {
+				label {
+					display: inline-block;
+					padding-left: 15px;
+				}
+			}
 		}
 	}
 }
@@ -54,24 +68,20 @@
 .facet-item {
 	.ng-enter,
 	.ng-leave {
-		-webkit-transition : 200ms ease-out all, visibility 200ms linear;
-		-moz-transition    : 200ms ease-out all, visibility 200ms linear;
-		-ms-transition     : 200ms ease-out all, visibility 200ms linear;
-		-o-transition      : 200ms ease-out all, visibility 200ms linear;
-		transition         : 200ms ease-out all, visibility 200ms linear;
-		width              : 100%;
-		overflow           : hidden;
+		-webkit-transition : 100ms ease-out all;
+		-moz-transition    : 100ms ease-out all;
+		-ms-transition     : 100ms ease-out all;
+		-o-transition      : 100ms ease-out all;
+		transition         : 100ms ease-out all;
 	}
 
 	.ng-leave.ng-leave-active,
 	.ng-enter {
-		width  : 0%;
-		height : 0px;
+		opacity: 0;
 	}
 
 	.ng-enter.ng-enter-active,
 	.ng-leave {
-		width  : 100%;
-		height : 30px;
+		opacity: 1;
 	}
 }
