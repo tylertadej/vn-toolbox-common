@@ -65,7 +65,8 @@ angular.module('Volusion.toolboxCommon')
 										'name="property.name" ' +
 										'ng-checked="selectProperty(property)" ' +
 										'ng-click="refineFacetSearch(property)" />' +
-								'<span>{{ property.name }}</span>' +
+                '<span class="name">{{ property.name }}</span>' +
+								'<span class="count">{{ property.count }}</span>' +
 							'</label>' +
                         	'<hr>' +
                         '</div>' +
