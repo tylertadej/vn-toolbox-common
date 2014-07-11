@@ -82,3 +82,21 @@ You can serve the docs locally if you so choose. I use nginx, here is my server 
             try_files $uri $uri/ /index.html =404;
         }
     }
+
+# Local Development Workflow
+
+If you're part of the core team working on vn-toolbox-common, here's how you can develop code changes in toolbox and see them reflected immediately in your theme for integration testing:
+
+1) In vn-toolbox-common via command line type:
+
+    bower link
+
+2) In your theme project, via command line type:
+
+    bower link vn-toolbox-common
+
+3) Each time you save a file in vn-toolbox-common, via command line type: 
+
+    grunt (which will update the dist folder which is used by the theme project)
+
+Done. See your changes reflected live in your theme project.
