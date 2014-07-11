@@ -52,12 +52,12 @@ angular.module('Volusion.toolboxCommon')
         $templateCache.put(
             'template/vn-category-search.html',
                 '<div class="-category-search">' +
-                    '<div ng-repeat="category in categories">' +
-                        '<a ng-href="{{ category.url  }}">{{ category.name }}</a>' +
+                    '<div data-ng-repeat="category in categories">' +
+                        '<a data-ng-href="{{ category.url  }}">{{ category.name }}</a>' +
                     '</div>' +
 
-                    '<div ng-repeat="subCat in subCategories">' +
-                        '<a ng-href="{{ subCat.url  }}">{{ subCat.name }}</a>' +
+                    '<div data-ng-repeat="subCat in subCategories">' +
+                        '<a data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a>' +
                     '</div>' +
                 '</div>'
         );

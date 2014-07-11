@@ -39,7 +39,7 @@
                     });
          </file>
          <file name="index.html">
-             <div ng-controller="ImageCtrl">
+             <div data-ng-controller="ImageCtrl">
                 <vn-image image="imageList[2]" />
              </div>
          </file>

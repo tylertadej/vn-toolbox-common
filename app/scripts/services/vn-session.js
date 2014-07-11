@@ -58,7 +58,7 @@ angular.module('Volusion.toolboxCommon')
             function setFirebaseData(path, resource) {
 //
                 console.log(path + ' / ' + resource);
-//                console.log('Porting issue with the prromise and data ... to fix with ng-stub');
+//                console.log('Porting issue with the prromise and data ... to fix with data-ng-stub');
 //                resource.get().$promise.then(function (result) {
 //                    vnFirebase.resetDataForPath(path, result.data);
 //                });

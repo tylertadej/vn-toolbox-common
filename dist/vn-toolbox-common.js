@@ -226,7 +226,7 @@ angular.module('Volusion.toolboxCommon').directive('vnCarousel', [
   '$templateCache',
   function ($templateCache) {
     'use strict';
-    $templateCache.put('template/carousel.html', '<div id="vnCarousel" class="carousel slide" data-ride="carousel">' + '<!-- Indicators -->' + '<ol class="carousel-indicators">' + '<li ng-repeat="image in imageList" data-target="#vnCarousel" data-slide-to="{{ $index }}"></li>' + '</ol>' + '<div ng-repeat="image in imageList" class="carousel-inner">' + '<div class="item active">' + '<img data-src="" alt="First slide" src="{{ image.src }}">' + '<div class="container">' + '<h1>Example headline.</h1>' + '<p>Note: If you\'re viewing this page via a <code>file://</code> URL, the "next" and "previous"  might not load/display properly.</p>' + '<p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>' + '</div>' + '</div>' + '<a class="left carousel-control" href="#myCarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>' + '<a class="right carousel-control" href="#myCarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>' + '</div>' + '</div>');
+    $templateCache.put('template/carousel.html', '<div id="vnCarousel" class="carousel slide" data-ride="carousel">' + '<!-- Indicators -->' + '<ol class="carousel-indicators">' + '<lidata-ng-repeat="image in imageList" data-target="#vnCarousel" data-slide-to="{{ $index }}"></li>' + '</ol>' + '<div data-ng-repeat="image in imageList" class="carousel-inner">' + '<div class="item active">' + '<img data-src="" alt="First slide" src="{{ image.src }}">' + '<div class="container">' + '<h1>Example headline.</h1>' + '<p>Note: If you\'re viewing this page via a <code>file://</code> URL, the "next" and "previous"  might not load/display properly.</p>' + '<p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>' + '</div>' + '</div>' + '<a class="left carousel-control" href="#myCarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>' + '<a class="right carousel-control" href="#myCarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>' + '</div>' + '</div>');
   }
 ]);
 angular.module('Volusion.toolboxCommon').directive('vnCategorySearch', [
@@ -264,7 +264,7 @@ angular.module('Volusion.toolboxCommon').directive('vnCategorySearch', [
   '$templateCache',
   function ($templateCache) {
     'use strict';
-    $templateCache.put('template/vn-category-search.html', '<div class="-category-search">' + '<div ng-repeat="category in categories">' + '<a ng-href="{{ category.url  }}">{{ category.name }}</a>' + '</div>' + '<div ng-repeat="subCat in subCategories">' + '<a ng-href="{{ subCat.url  }}">{{ subCat.name }}</a>' + '</div>' + '</div>');
+    $templateCache.put('template/vn-category-search.html', '<div class="-category-search">' + '<div data-ng-repeat="category in categories">' + '<a data-ng-href="{{ category.url  }}">{{ category.name }}</a>' + '</div>' + '<div data-ng-repeat="subCat in subCategories">' + '<a data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a>' + '</div>' + '</div>');
   }
 ]);
 'use strict';
@@ -333,7 +333,7 @@ angular.module('Volusion.toolboxCommon').directive('vnFacetSearch', [
   '$templateCache',
   function ($templateCache) {
     'use strict';
-    $templateCache.put('template/vn-facet-search.html', '<div class="-faceted-search">' + '<div class="facets">' + '<div class="facet-item" ng-repeat="facet in facets track by $index">' + '<h5>{{ facet.title }}</h5>' + '<label class="-facet-property" ng-repeat="property in facet.properties track by $index">' + '<input type="checkbox" ' + 'name="property.name" ' + 'ng-checked="selectProperty(property)" ' + 'ng-click="refineFacetSearch(property)" />' + '<span class="name">{{ property.name }}</span>' + '<span class="count">{{ property.count }}</span>' + '</label>' + '<hr>' + '</div>' + '</div>' + '</div>');
+    $templateCache.put('template/vn-facet-search.html', '<div class="-faceted-search">' + '<div class="facets">' + '<div class="facet-item" data-ng-repeat="facet in facets track by $index">' + '<h5>{{ facet.title }}</h5>' + '<label class="-facet-property" data-ng-repeat="property in facet.properties track by $index">' + '<input type="checkbox" ' + 'name="property.name" ' + 'ng-checked="selectProperty(property)" ' + 'ng-click="refineFacetSearch(property)" />' + '<span class="name">{{ property.name }}</span>' + '<span class="count">{{ property.count }}</span>' + '</label>' + '<hr>' + '</div>' + '</div>' + '</div>');
   }
 ]);
 angular.module('Volusion.toolboxCommon').directive('vnImage', [
@@ -458,7 +458,7 @@ angular.module('Volusion.toolboxCommon').directive('vnLink', [
   '$templateCache',
   function ($templateCache) {
     'use strict';
-    $templateCache.put('template/link.html', '<a class="vn-link" ng-transclude></a>');
+    $templateCache.put('template/link.html', '<a class="vn-link" data-ng-transclude></a>');
   }
 ]);
 angular.module('Volusion.toolboxCommon').directive('vnMetaTags', function () {
@@ -560,7 +560,7 @@ angular.module('Volusion.toolboxCommon').directive('vnNav', [
   '$templateCache',
   function ($templateCache) {
     'use strict';
-    $templateCache.put('template/navbar.html', '<div class="collapse navbar-collapse " id="th-main-menu" data-ng-class="!navCollapsed && \'in\'" data-ng-click="navCollapsed=true">' + '<ul class="nav navbar-nav">' + '<li class="dropdown" data-ng-repeat="category in categoryList">' + '<a href class="dropdown-toggle th-dropdown-toggle" data-toggle="dropdown">{{category.name}}</a>' + '<ul class="dropdown-menu" data-ng-if="category.subCategories.length">' + '<li data-ng-repeat="subCategory in category.subCategories">' + '<a ng-href="#/category/{{ subCategory.id }}">{{subCategory.name}}</a>' + '</li>' + '</ul>' + '</li>' + '</ul>' + '</div>');
+    $templateCache.put('template/navbar.html', '<div class="collapse navbar-collapse " id="th-main-menu" data-ng-class="!navCollapsed && \'in\'" data-ng-click="navCollapsed=true">' + '<ul class="nav navbar-nav">' + '<li class="dropdown" data-ng-repeat="category in categoryList">' + '<a href class="dropdown-toggle th-dropdown-toggle" data-toggle="dropdown">{{category.name}}</a>' + '<ul class="dropdown-menu" data-ng-if="category.subCategories.length">' + '<li data-ng-repeat="subCategory in category.subCategories">' + '<a data-ng-href="#/category/{{ subCategory.id }}">{{subCategory.name}}</a>' + '</li>' + '</ul>' + '</li>' + '</ul>' + '</div>');
   }
 ]);
 'use strict';
@@ -651,7 +651,7 @@ angular.module('Volusion.toolboxCommon').directive('vnRating', [
   '$templateCache',
   function ($templateCache) {
     'use strict';
-    $templateCache.put('template/rating.html', '<div class="vn-rating">' + '<!-- not happy with this but it seems better than angular-ui carousel' + 'http://blog.revolunet.com/angular-carousel/ -->' + '<p translate>VN-RATING-TITLE</p>' + '<ul class="rating">' + '<li ng-repeat="star in stars" class="tick" ng-class="star" ng-click="toggle($index)">' + '</li>' + '</ul>' + '</div>');
+    $templateCache.put('template/rating.html', '<div class="vn-rating">' + '<!-- not happy with this but it seems better than angular-ui carousel' + 'http://blog.revolunet.com/angular-carousel/ -->' + '<p translate>VN-RATING-TITLE</p>' + '<ul class="rating">' + '<li data-ng-repeat="star in stars" class="tick" data-ng-class="star" data-ng-click="toggle($index)">' + '</li>' + '</ul>' + '</div>');
   }
 ]);
 angular.module('Volusion.toolboxCommon').value('vnApiArticles', {});
@@ -1975,7 +1975,7 @@ angular.module('Volusion.toolboxCommon').factory('vnSession', [
              */
     function setFirebaseData(path, resource) {
       //
-      console.log(path + ' / ' + resource);  //                console.log('Porting issue with the prromise and data ... to fix with ng-stub');
+      console.log(path + ' / ' + resource);  //                console.log('Porting issue with the prromise and data ... to fix with data-ng-stub');
                                              //                resource.get().$promise.then(function (result) {
                                              //                    vnFirebase.resetDataForPath(path, result.data);
                                              //                });
