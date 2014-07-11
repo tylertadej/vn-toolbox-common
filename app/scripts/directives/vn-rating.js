@@ -29,7 +29,7 @@
                     });
          </file>
          <file name="index.html">
-             <div ng-controller="LinkCtrl">
+             <div data-ng-controller="LinkCtrl">
                 <vn-rating rating-value="ratingValue"></vn-rating>
              </div>
          </file>
@@ -122,7 +122,7 @@ angular.module('Volusion.toolboxCommon')
                     'http://blog.revolunet.com/angular-carousel/ -->' +
                 '<p translate>VN-RATING-TITLE</p>' +
                 '<ul class="rating">' +
-                    '<li ng-repeat="star in stars" class="tick" ng-class="star" ng-click="toggle($index)">' +
+                    '<li data-ng-repeat="star in stars" class="tick" data-ng-class="star" data-ng-click="toggle($index)">' +
                     '</li>' +
                 '</ul>' +
             '</div>'

@@ -34,7 +34,7 @@
                     });
  </file>
  <file name="index.html">
- <div ng-controller="CarouselCtrl">
+ <div data-ng-controller="CarouselCtrl">
  <vn-carousel image-list="imageList"></vn-carousel>
  </div>
  </file>
@@ -115,9 +115,9 @@ angular.module('Volusion.toolboxCommon')
 				'<div id="vnCarousel" class="carousel slide" data-ride="carousel">' +
 				'<!-- Indicators -->' +
 				'<ol class="carousel-indicators">' +
-				'<li ng-repeat="image in imageList" data-target="#vnCarousel" data-slide-to="{{ $index }}"></li>' +
+				'<lidata-ng-repeat="image in imageList" data-target="#vnCarousel" data-slide-to="{{ $index }}"></li>' +
 				'</ol>' +
-				'<div ng-repeat="image in imageList" class="carousel-inner">' +
+				'<div data-ng-repeat="image in imageList" class="carousel-inner">' +
 				'<div class="item active">' +
 				'<img data-src="" alt="First slide" src="{{ image.src }}">' +
 				'<div class="container">' +

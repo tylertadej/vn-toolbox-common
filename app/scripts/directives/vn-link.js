@@ -42,7 +42,7 @@
                     });
          </file>
          <file name="index.html">
-             <div ng-controller="LinkCtrl">
+             <div data-ng-controller="LinkCtrl">
                 <vn-link href="pathTo">Go to Yahoo</vn-link>
              </div>
          </file>
@@ -98,6 +98,6 @@ angular.module('Volusion.toolboxCommon')
 
         $templateCache.put(
             'template/link.html',
-            '<a class="vn-link" ng-transclude></a>'
+            '<a class="vn-link" data-ng-transclude></a>'
         );
     }]);

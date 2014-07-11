@@ -31,8 +31,9 @@
 // Mobile
 @media(max-width:767px){
 	.-faceted-search {
-		border-bottom: 1px solid
-		* {
+		border-bottom: 1px solid;
+
+		> div {
 			text-align: center;
 		}
 

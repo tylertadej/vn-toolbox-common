@@ -49,7 +49,7 @@
                     });
          </file>
          <file name="index.html">
-             <div ng-controller="NavCtrl">
+             <div data-ng-controller="NavCtrl">
                 <vn-nav category-list="categoryList"></vn-nav>
              </div>
          </file>
@@ -111,7 +111,7 @@ angular.module('Volusion.toolboxCommon')
                         '<a href class="dropdown-toggle th-dropdown-toggle" data-toggle="dropdown">{{category.name}}</a>' +
                         '<ul class="dropdown-menu" data-ng-if="category.subCategories.length">' +
                             '<li data-ng-repeat="subCategory in category.subCategories">' +
-                                '<a ng-href="#/category/{{ subCategory.id }}">{{subCategory.name}}</a>' +
+                                '<a data-ng-href="#/category/{{ subCategory.id }}">{{subCategory.name}}</a>' +
                             '</li>' +
                         '</ul>' +
                     '</li>' +
