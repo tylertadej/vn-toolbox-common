@@ -103,7 +103,7 @@ If you're part of the core team working on vn-toolbox-common, here's how you can
 2. Still on the command line, change directory to your theme project and type:
     - bower link vn-toolbox-common
     - This links the (already bower installed) vn-toolbox-common folder to the checkout on your computer
-3. Each time a change in made in the vn-toolbox-common project run grunt
+3. Each time a change is made in the vn-toolbox-common project run grunt
     - grunt builds the project and your changes get put into the dist files (used by the theme)
     - The theme method does not watch the bower_component/vn-toolbox-common/dist directory for file changes so you will have to reload your theme.
     
