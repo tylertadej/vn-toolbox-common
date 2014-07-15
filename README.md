@@ -85,18 +85,31 @@ You can serve the docs locally if you so choose. I use nginx, here is my server 
 
 # Local Development Workflow
 
+## Unix
+
 If you're part of the core team working on vn-toolbox-common, here's how you can develop code changes in toolbox and see them reflected immediately in your theme for integration testing:
 
-1) In vn-toolbox-common via command line type:
-
-    bower link
-
-2) In your theme project, via command line type:
-
-    bower link vn-toolbox-common
-
+1. In vn-toolbox-common via command line type:
+    - bower link
+2. In your theme project, via command line type:
+    - bower link vn-toolbox-common
 3) Each time you save a file in vn-toolbox-common, via command line type: 
+    - grunt (which will update the dist folder which is used by the theme project)
+    
+## Windows
+1. In your checkout of vn-toolbox-common, on the command line type:
+    - bower link
+    - This stores the symbolic link/path to the vn-toolbox-common folder 
+2. Still on the command line, change directory to your theme project and type:
+    - bower link vn-toolbox-common
+    - This links the (already bower installed) vn-toolbox-common folder to the checkout on your computer
+3. Each time a change in made in the vn-toolbox-common project run grunt
+    - grunt builds the project and your changes get put into the dist files (used by the theme)
+    - The theme method does not watch the bower_component/vn-toolbox-common/dist directory for file changes so you will have to reload your theme.
+    
+** External Resources For Bower docs and gh windows thread with some issues a windows user ran into last year related to linking**
+1. http://bower.io/docs/api/#link
+2. https://github.com/bower/bower/issues/472
 
-    grunt (which will update the dist folder which is used by the theme project)
 
 Done. See your changes reflected live in your theme project.
