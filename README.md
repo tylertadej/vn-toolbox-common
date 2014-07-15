@@ -108,6 +108,7 @@ If you're part of the core team working on vn-toolbox-common, here's how you can
     - The theme method does not watch the bower_component/vn-toolbox-common/dist directory for file changes so you will have to reload your theme.
     
 ** External Resources For Bower docs and gh windows thread with some issues a windows user ran into last year related to linking**
+
 1. http://bower.io/docs/api/#link
 2. https://github.com/bower/bower/issues/472
 
