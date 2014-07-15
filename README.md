@@ -85,9 +85,9 @@ You can serve the docs locally if you so choose. I use nginx, here is my server 
 
 # Local Development Workflow
 
-## Unix
-
 If you're part of the core team working on vn-toolbox-common, here's how you can develop code changes in toolbox and see them reflected immediately in your theme for integration testing:
+
+## Unix
 
 1. In vn-toolbox-common via command line type:
     - bower link
