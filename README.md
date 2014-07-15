@@ -93,7 +93,7 @@ If you're part of the core team working on vn-toolbox-common, here's how you can
     - bower link
 2. In your theme project, via command line type:
     - bower link vn-toolbox-common
-3) Each time you save a file in vn-toolbox-common, via command line type: 
+3. Each time you save a file in vn-toolbox-common, via command line type: 
     - grunt (which will update the dist folder which is used by the theme project)
     
 ## Windows
