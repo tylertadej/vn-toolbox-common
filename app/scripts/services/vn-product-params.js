@@ -321,6 +321,32 @@ angular.module('Volusion.toolboxCommon')
 
 		/**
 		 * @ngdoc function
+		 * @name resetCategories
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * reset the category list to nothing
+		 */
+		function resetCategories() {
+			categoryIds = [];
+			paramsObject.categoryIds = '';
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name resetFacets
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * reset the facet list to nothing
+		 */
+		function resetFacets() {
+			facets = [];
+			paramsObject.facets = '';
+		}
+		
+		/**
+		 * @ngdoc function
 		 * @name resetParamsObject
 		 * @methodOf Volusion.toolboxCommon.vnProductParams
 		 *
@@ -474,6 +500,8 @@ angular.module('Volusion.toolboxCommon')
 			removeCategory     : removeCategory,
 			removeFacet        : removeFacet,
 			removeSort         : removeSort,
+			resetCategories    : resetCategories,
+			resetFacets        : resetFacets,
 			resetParamsObject  : resetParamsObject,
 			setAccessoriesOf   : setAccessoriesOf,
 			setMaxPrice        : setMaxPrice,

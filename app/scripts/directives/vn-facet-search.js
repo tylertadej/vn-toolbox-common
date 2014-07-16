@@ -30,6 +30,7 @@ angular.module('Volusion.toolboxCommon')
 						scope.facets = facets;
 					});
 
+
 					scope.selectProperty = function (facet) {
 						return vnProductParams.isFacetSelected(facet.id);
 					};
