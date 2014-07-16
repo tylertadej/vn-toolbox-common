@@ -244,16 +244,12 @@ angular.module('Volusion.toolboxCommon').directive('vnCategorySearch', [
           vnProductParams.addCategory(category.id);
           $rootScope.$broadcast('ProductSearch.categoriesUpdated', { category: category });
         };
-        // Have to do this to listen for the data returned async
+        // Have to do this to listen for the data returned async and passed into the directive
         scope.$watch('categories', function (categories) {
           // Gaurd against the error message for while categories is not defined.
           if (!categories || !categories[0]) {
             return;
           } else {
-            // Navigating / parsing the api response to get the data
-            // Optimization opportunity: handle this in the api service so directive doesn't have to parse
-            // and just return an object or even better create a category model object.
-            scope.categories = categories[0];
             scope.subCategories = categories[0].subCategories;
           }
         });
@@ -264,7 +260,7 @@ angular.module('Volusion.toolboxCommon').directive('vnCategorySearch', [
   '$templateCache',
   function ($templateCache) {
     'use strict';
-    $templateCache.put('template/vn-category-search.html', '<div class="-category-search">' + '<div data-ng-repeat="category in categories">' + '<a data-ng-href="{{ category.url  }}">{{ category.name }}</a>' + '</div>' + '<div data-ng-repeat="subCat in subCategories">' + '<a data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a>' + '</div>' + '</div>');
+    $templateCache.put('template/vn-category-search.html', '<div class="-category-search">' + '<div data-ng-repeat="subCat in subCategories">' + '<a data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a>' + '</div>' + '</div>');
   }
 ]);
 'use strict';
@@ -654,11 +650,7 @@ angular.module('Volusion.toolboxCommon').directive('vnRating', [
     $templateCache.put('template/rating.html', '<div class="vn-rating">' + '<!-- not happy with this but it seems better than angular-ui carousel' + 'http://blog.revolunet.com/angular-carousel/ -->' + '<p translate>VN-RATING-TITLE</p>' + '<ul class="rating">' + '<li data-ng-repeat="star in stars" class="tick" data-ng-class="star" data-ng-click="toggle($index)">' + '</li>' + '</ul>' + '</div>');
   }
 ]);
-angular.module('Volusion.toolboxCommon').value('vnApiArticles', {});
-angular.module('Volusion.toolboxCommon').value('vnApiCarts', {});
-angular.module('Volusion.toolboxCommon').value('vnApiCategories', {});
 angular.module('Volusion.toolboxCommon').value('vnApiConfigurations', {});
-angular.module('Volusion.toolboxCommon').value('vnApiNavs', {});
 // TODO: Determine if this is still necessary and prune if no.
 /**
  * @ngdoc service
