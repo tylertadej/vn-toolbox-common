@@ -19,7 +19,7 @@ angular.module('Volusion.toolboxCommon')
 			'use strict';
 
 			return {
-				templateUrl: 'template/vn-facet-search.html',
+				templateUrl: 'vn-faceted-search/vn-facet-search.html',
 				restrict   : 'AE',
 				scope      : {
 					facets: '='
@@ -51,27 +51,4 @@ angular.module('Volusion.toolboxCommon')
 					};
 				}
 			};
-		}]).run(['$templateCache', function ($templateCache) {
-
-		'use strict';
-
-		$templateCache.put(
-			'template/vn-facet-search.html',
-                '<div class="-faceted-search">' +
-                    '<div class="facets">' +
-                        '<div class="facet-item" data-ng-repeat="facet in facets track by $index">' +
-                            '<h4>{{ facet.title }}</h4>' +
-							'<label class="-facet-property" data-ng-repeat="property in facet.properties track by $index">' +
-								'<input type="checkbox" ' +
-										'name="property.name" ' +
-										'ng-checked="selectProperty(property)" ' +
-										'ng-click="refineFacetSearch(property)" />' +
-								'<span class="name">{{ property.name }}</span>' +
-								'<span class="count">{{ property.count }}</span>' +
-							'</label>' +
-                        	'<hr>' +
-                        '</div>' +
-                    '</div>' +
-                '</div>'
-        );
-    }]);
+		}]);

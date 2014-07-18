@@ -16,7 +16,7 @@ angular.module('Volusion.toolboxCommon')
 	.directive('vnCategorySearch', ['$rootScope', 'vnProductParams', function ($rootScope, vnProductParams) {
 		'use strict';
 		return {
-			templateUrl: 'template/vn-category-search.html',
+			templateUrl: 'vn-faceted-search/vn-category-search.html',
 			restrict   : 'AE',
 			scope      : {
 				categories: '='
@@ -39,18 +39,4 @@ angular.module('Volusion.toolboxCommon')
 				});
 			}
 		};
-	}])
-	.run(['$templateCache', function ($templateCache) {
-
-		'use strict';
-
-		$templateCache.put(
-			'template/vn-category-search.html',
-				'<div class="-category-search">' +
-					'<h4>Categories</h4>' +
-					'<div data-ng-repeat="subCat in subCategories">' +
-						'<a data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a>' +
-					'</div>' +
-				'</div>'
-		);
 	}]);
