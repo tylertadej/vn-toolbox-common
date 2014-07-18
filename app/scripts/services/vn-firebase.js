@@ -46,7 +46,7 @@ angular.module('Volusion.toolboxCommon')
             function getFirebaseData(path) {
 
                 if (path && 'string' === typeof path) {
-                    return $firebase(new Firebase(vnDataEndpoint.fbUrl + fbItems[path] + '/' + vnConfig.getAccount() + '/'));
+                    return $firebase(new Firebase(vnDataEndpoint.getFirebaseUrl() + fbItems[path] + '/' + vnConfig.getAccount() + '/'));
                 } else {
                     throw new Error('vnFirebase.getFirebaseData function failed.');
                 }
@@ -64,7 +64,7 @@ angular.module('Volusion.toolboxCommon')
             function generatePath(path) {
 
                 if (path && 'string' === typeof path) {
-                    return vnDataEndpoint.fbUrl + fbItems[path] + '/' + vnConfig.getAccount() + '/';
+                    return vnDataEndpoint.getFirebaseUrl() + fbItems[path] + '/' + vnConfig.getAccount() + '/';
                 } else {
                     throw new Error('vnFirebase.generatePath function failed.');
                 }
@@ -89,7 +89,7 @@ angular.module('Volusion.toolboxCommon')
              */
             function resetSiteBuilder() {
 
-                var sbRef = $firebase(new Firebase(vnDataEndpoint.fbUrl + '/account_sitebuilder/' + vnConfig.getAccount()));
+                var sbRef = $firebase(new Firebase(vnDataEndpoint.getFirebaseUrl() + '/account_sitebuilder/' + vnConfig.getAccount()));
                 var sbd = new SiteBuilderDefaults();
                 sbRef.$set(sbd);
                 return true;

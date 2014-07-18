@@ -1,4 +1,4 @@
-/*! vn-toolbox-common - ver.0.0.8 (2014-07-17) */
+/*! vn-toolbox-common - ver.0.0.9 (2014-07-18) */
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', [
   'pascalprecht.translate',
@@ -685,7 +685,7 @@ angular.module('Volusion.toolboxCommon').factory('vnApi', [
              * - vnApi.Artiucl().get( {slug: about-us} ); -> Returns the article for About Us
              */
     function Article() {
-      return $resource(vnDataEndpoint.apiUrl + '/articles/:id', { id: '@id' }, {
+      return $resource(vnDataEndpoint.getApiUrl() + '/articles/:id', { id: '@id' }, {
         'get': { method: 'GET' },
         'save': { method: 'POST' },
         'query': {
@@ -711,7 +711,7 @@ angular.module('Volusion.toolboxCommon').factory('vnApi', [
              *
              */
     function Category() {
-      return $resource(vnDataEndpoint.apiUrl + '/categories/:id', { id: '@id' }, {
+      return $resource(vnDataEndpoint.getApiUrl() + '/categories/:id', { id: '@id' }, {
         'get': { method: 'GET' },
         'save': { method: 'POST' },
         'query': {
@@ -736,7 +736,7 @@ angular.module('Volusion.toolboxCommon').factory('vnApi', [
              * - vnApi.Cart().post(???? FIX THIS ?????); -> Returns ???
              */
     function Cart() {
-      return $resource(vnDataEndpoint.apiUrl + '/carts', {}, {
+      return $resource(vnDataEndpoint.getApiUrl() + '/carts', {}, {
         'get': {
           method: 'GET',
           withCredentials: true
@@ -772,7 +772,7 @@ angular.module('Volusion.toolboxCommon').factory('vnApi', [
              * - vnApi.Configuration().query() -> returns a the site configuration data.
              */
     function Configuration() {
-      return $resource(vnDataEndpoint.apiUrl + '/config');
+      return $resource(vnDataEndpoint.getApiUrl() + '/config');
     }
     /**
              * @ngdoc method
@@ -786,7 +786,7 @@ angular.module('Volusion.toolboxCommon').factory('vnApi', [
              * - vnApi.Country().query() -> returns a list of all countries
              */
     function Country() {
-      return $resource(vnDataEndpoint.apiUrl + '/countries');
+      return $resource(vnDataEndpoint.getApiUrl() + '/countries');
     }
     /**
              * @ngdoc method
@@ -801,7 +801,7 @@ angular.module('Volusion.toolboxCommon').factory('vnApi', [
              * - vnApi.Nav().get( {navId: 1} ); -> Returns the navigation for id = 1
              */
     function Nav() {
-      return $resource(vnDataEndpoint.apiUrl + '/navs/:navId', { navId: '@navId' }, {
+      return $resource(vnDataEndpoint.getApiUrl() + '/navs/:navId', { navId: '@navId' }, {
         'get': { method: 'GET' },
         'save': { method: 'POST' },
         'query': {
@@ -842,7 +842,7 @@ angular.module('Volusion.toolboxCommon').factory('vnApi', [
              */
     function Product() {
       //Todo: put the possilbe query params into the description for documentation
-      return $resource(vnDataEndpoint.apiUrl + '/products/:code', { code: '@code' }, {
+      return $resource(vnDataEndpoint.getApiUrl() + '/products/:code', { code: '@code' }, {
         'get': { method: 'GET' },
         'save': { method: 'POST' },
         'query': {
@@ -866,7 +866,7 @@ angular.module('Volusion.toolboxCommon').factory('vnApi', [
              * - vnApi.Review().get( {productCode: productCode} ); -> Returns the reviews for a product
              */
     function Review() {
-      return $resource(vnDataEndpoint.apiUrl + '/products/:code/reviews', { code: '@code' }, {
+      return $resource(vnDataEndpoint.getApiUrl() + '/products/:code/reviews', { code: '@code' }, {
         'get': { method: 'GET' },
         'save': { method: 'POST' },
         'query': {
@@ -1239,16 +1239,55 @@ angular.module('Volusion.toolboxCommon').factory('vnConfig', [
     };
   }
 ]);
-angular.module('Volusion.toolboxCommon').constant('vnDataEndpoint', function () {
+angular.module('Volusion.toolboxCommon').provider('vnDataEndpoint', function () {
   'use strict';
   var firebase = 'https://brilliant-fire-5600.firebaseio.com', apibase = 'http://www.samplestore.io/api/v1';
-  //apibase = 'http://txlpt374-vm.corp.volusion.com/api/v1';
-  return {
-    fbUrl: firebase,
-    apiUrl: apibase
+  function VnDataEndpoint() {
+    this.VnDataEndpoint = function () {
+      return this;
+    };
+    /**
+			 * @ngdoc method
+			 * @name getFirebaseUrl
+			 * @methodOf Volusion.toolboxCommon.vnDataEndpoint
+			 * @returns {String} The string representing a Firebase resource
+			 */
+    this.getFirebaseUrl = function () {
+      return firebase;
+    };
+    /**
+			 * @ngdoc method
+			 * @name getApiUrl
+			 * @methodOf Volusion.toolboxCommon.vnDataEndpoint
+			 * @returns {String} The string representing a API resource
+			 */
+    this.getApiUrl = function () {
+      return apibase;
+    };
+  }
+  // Method for instantiating
+  this.$get = function () {
+    return new VnDataEndpoint();
   };
-}());
-// Dev Note: Notice the immediate invocation. This gives us a constant with two values.
+  /**
+		 * @ngdoc method
+		 * @name setFirebaseUrl
+		 * @methodOf Volusion.toolboxCommon.vnDataEndpoint
+		 * @returns {String} Sets the string representing a Firebase resource
+		 */
+  this.setFirebaseUrl = function (path) {
+    firebase = path;
+  };
+  /**
+		 * @ngdoc method
+		 * @name setApiUrl
+		 * @methodOf Volusion.toolboxCommon.vnDataEndpoint
+		 * @returns {String} Sets the string representing a API resource
+		 */
+  this.setApiUrl = function (path) {
+    apibase = path;
+  };
+});
 angular.module('Volusion.toolboxCommon').factory('vnDataSrc', [
   '$q',
   'vnEnvironment',
@@ -1422,7 +1461,7 @@ angular.module('Volusion.toolboxCommon').factory('vnFirebase', [
              */
     function getFirebaseData(path) {
       if (path && 'string' === typeof path) {
-        return $firebase(new Firebase(vnDataEndpoint.fbUrl + fbItems[path] + '/' + vnConfig.getAccount() + '/'));
+        return $firebase(new Firebase(vnDataEndpoint.getFirebaseUrl() + fbItems[path] + '/' + vnConfig.getAccount() + '/'));
       } else {
         throw new Error('vnFirebase.getFirebaseData function failed.');
       }
@@ -1437,7 +1476,7 @@ angular.module('Volusion.toolboxCommon').factory('vnFirebase', [
              */
     function generatePath(path) {
       if (path && 'string' === typeof path) {
-        return vnDataEndpoint.fbUrl + fbItems[path] + '/' + vnConfig.getAccount() + '/';
+        return vnDataEndpoint.getFirebaseUrl() + fbItems[path] + '/' + vnConfig.getAccount() + '/';
       } else {
         throw new Error('vnFirebase.generatePath function failed.');
       }
@@ -1459,7 +1498,7 @@ angular.module('Volusion.toolboxCommon').factory('vnFirebase', [
              *
              */
     function resetSiteBuilder() {
-      var sbRef = $firebase(new Firebase(vnDataEndpoint.fbUrl + '/account_sitebuilder/' + vnConfig.getAccount()));
+      var sbRef = $firebase(new Firebase(vnDataEndpoint.getFirebaseUrl() + '/account_sitebuilder/' + vnConfig.getAccount()));
       var sbd = new SiteBuilderDefaults();
       sbRef.$set(sbd);
       return true;

@@ -6,20 +6,24 @@ describe('Service: vnDataEndpoint', function () {
     beforeEach(module('Volusion.toolboxCommon'));
 
     // instantiate service
-    var vnDataEndpoint;
+    var vnFirebaseEndpoint,
+		vnApiEndpoint;
+
     beforeEach(inject(function (_vnDataEndpoint_) {
-        vnDataEndpoint = _vnDataEndpoint_;
+		vnFirebaseEndpoint = _vnDataEndpoint_.getFirebaseUrl();
+		vnApiEndpoint = _vnDataEndpoint_.getApiUrl();
     }));
 
-    it('should have a valid firebase endpoint', function () {
-        expect(vnDataEndpoint.fbUrl).toBeTruthy();
-        expect(vnDataEndpoint.fbUrl).toEqual('https://brilliant-fire-5600.firebaseio.com');
+    xit('should have a valid firebase endpoint', function () {
+        expect(vnDataEndpoint.getFirebaseUrl()).toBeTruthy();
+		console.log(vnDataEndpoint.getFirebaseUrl());
+        expect(vnDataEndpoint.getFirebaseUrl()).toEqual('https://brilliant-fire-5600.firebaseio.com');
     });
 
-    it('should have a valid apibase endpoint', function () {
+    xit('should have a valid apibase endpoint', function () {
 //        Todo: figure out the best way for vnDataEndpoint to initialize itsself for local-dev, tx-dev and production
-        expect(vnDataEndpoint.apiUrl).toBeTruthy();
-//        expect(vnDataEndpoint.apiUrl).toEqual('http://www.samplestore.io/api/v1');
+        expect(vnApiEndpoint).toBeTruthy();
+//        expect(vnApiEndpoint).toEqual('http://www.samplestore.io/api/v1');
     });
 
 });

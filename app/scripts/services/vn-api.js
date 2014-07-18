@@ -37,7 +37,7 @@ angular.module('Volusion.toolboxCommon')
              */
             function Article() {
 
-                return $resource(vnDataEndpoint.apiUrl + '/articles/:id',
+                return $resource(vnDataEndpoint.getApiUrl() + '/articles/:id',
                     { id : '@id' },
                     {
                         'get'   : { method: 'GET'},
@@ -65,7 +65,7 @@ angular.module('Volusion.toolboxCommon')
              */
             function Category() {
 
-                return $resource(vnDataEndpoint.apiUrl + '/categories/:id',
+                return $resource(vnDataEndpoint.getApiUrl() + '/categories/:id',
                     { id: '@id' },
                     {
                         'get'   : { method: 'GET'},
@@ -91,7 +91,7 @@ angular.module('Volusion.toolboxCommon')
              * - vnApi.Cart().post(???? FIX THIS ?????); -> Returns ???
              */
             function Cart() {
-                return $resource(vnDataEndpoint.apiUrl + '/carts',
+                return $resource(vnDataEndpoint.getApiUrl() + '/carts',
                     {},
                     {
                         'get'   : { method: 'GET', withCredentials: true },
@@ -116,7 +116,7 @@ angular.module('Volusion.toolboxCommon')
              * - vnApi.Configuration().query() -> returns a the site configuration data.
              */
             function Configuration() {
-                return $resource(vnDataEndpoint.apiUrl + '/config');
+                return $resource(vnDataEndpoint.getApiUrl() + '/config');
             }
 
             /**
@@ -131,7 +131,7 @@ angular.module('Volusion.toolboxCommon')
              * - vnApi.Country().query() -> returns a list of all countries
              */
             function Country() {
-                return $resource(vnDataEndpoint.apiUrl + '/countries');
+                return $resource(vnDataEndpoint.getApiUrl() + '/countries');
             }
 
             /**
@@ -147,7 +147,7 @@ angular.module('Volusion.toolboxCommon')
              * - vnApi.Nav().get( {navId: 1} ); -> Returns the navigation for id = 1
              */
             function Nav() {
-                return $resource(vnDataEndpoint.apiUrl + '/navs/:navId',
+                return $resource(vnDataEndpoint.getApiUrl() + '/navs/:navId',
                     {navId: '@navId'},
                     {
                         'get'   : { method: 'GET'},
@@ -188,7 +188,7 @@ angular.module('Volusion.toolboxCommon')
              */
             function Product() {
                 //Todo: put the possilbe query params into the description for documentation
-                return $resource(vnDataEndpoint.apiUrl + '/products/:code',
+                return $resource(vnDataEndpoint.getApiUrl() + '/products/:code',
                     {
                         code: '@code'
                     },
@@ -215,7 +215,7 @@ angular.module('Volusion.toolboxCommon')
              */
 
             function Review() {
-                return $resource(vnDataEndpoint.apiUrl + '/products/:code/reviews',
+                return $resource(vnDataEndpoint.getApiUrl() + '/products/:code/reviews',
                     {
                         code: '@code'
                     },
