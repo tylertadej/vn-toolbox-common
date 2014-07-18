@@ -1,8 +1,12 @@
 // Default Toolbox Responsive Optimizations
 @media screen and (max-width:767px){
 	.-category-search {
-		* {
-			text-align: center;
+		> div {
+			text-align: left;
+		}
+
+		> h4 {
+			text-align: left;
 		}
 	}
 }
