@@ -311,44 +311,51 @@ angular.module('Volusion.toolboxCommon').directive('vnElement', [
 ]);
 angular.module('Volusion.toolboxCommon').directive('vnFacetSearch', [
   '$rootScope',
+  '$window',
   'vnProductParams',
-  function ($rootScope, vnProductParams) {
+  function ($rootScope, $window, vnProductParams) {
     'use strict';
     return {
       templateUrl: 'vn-faceted-search/vn-facet-search.html',
       restrict: 'AE',
       scope: { facets: '=' },
       link: function postLink(scope) {
-        scope.$watch('facets', function (facets) {
-          scope.facets = facets;
-          // Default the facets to show
-          angular.forEach(scope.facets, function (facet) {
-            var displayDefault = { hide: false };
-            console.log('facet before: ', facet);
-            angular.extend(facet, displayDefault);
-            console.log('facet after: ', facet);
+        function mobalizeFacetList(fList) {
+          angular.forEach(fList, function (facet) {
+            facet.show = false;
           });
-        });
+        }
+        function desktopizeFacetList(fList) {
+          angular.forEach(fList, function (facet) {
+            facet.show = true;
+          });
+        }
+        // Manage the differences in behavior for mobile vs. deesktop
         enquire.register('screen and (max-width:767px)', {
           setup: function () {
-            scope.areFacetItemsVisible = true;
+            scope.isDesktopFacet = true;
+            scope.isMobileMode = false;
+            console.log('window width setup: ', $window.innerWidth);
           },
           unmatch: function () {
-            scope.areFacetItemsVisible = true;
+            desktopizeFacetList(scope.facets);
+            scope.isDesktopFacet = true;
+            scope.isMobileMode = false;
           },
           match: function () {
-            scope.areFacetItemsVisible = false;
+            mobalizeFacetList(scope.facets);
+            scope.isDesktopFacet = false;
+            scope.isMobileMode = true;
           }
         });
+        // Handle the hide/show of a facet item's properties.
         scope.toggleFacetItems = function (idx) {
-          console.log('facet items: ', scope.facets[idx]);
-          console.log('toggle facet item: for index: ', idx);
-			var thisFacet = scope.facets[idx];
-          if (scope.areFacetItemsVisible && thisFacet.show) {
-			  thisFacet.show = false;
+          console.log('facet item: ', scope.facets[idx]);
+          if (scope.facets[idx].show) {
+            scope.facets[idx].show = false;
             return;
           }
-			thisFacet.show = true;
+          scope.facets[idx].show = true;
         };
         scope.selectProperty = function (facet) {
           return vnProductParams.isFacetSelected(facet.id);
@@ -363,6 +370,27 @@ angular.module('Volusion.toolboxCommon').directive('vnFacetSearch', [
           // Broadcast an update to whomever if any is subscribed.
           $rootScope.$broadcast('ProductSearch.facetsUpdated');
         };
+        scope.isMobileMode = false;
+        // default to desktop
+        //					function isMobileMode() {
+        //						return scope.isMobileMode;
+        //					}
+        scope.$watch('facets', function (facets) {
+          scope.facets = facets;
+          // Default the facets to show
+          // will need a more complicated routine here for checking if is selected
+          //						var isDesktopFacet = isMobileMode();
+          angular.forEach(scope.facets, function (facet) {
+            var displayDefault = { show: false };
+            angular.extend(facet, displayDefault);
+          });
+          // Need this to pre process responses and page load items
+          if ($window.innerWidth < 767) {
+            mobalizeFacetList(scope.facets);
+          } else {
+            desktopizeFacetList(scope.facets);
+          }
+        });
       }
     };
   }
@@ -2232,7 +2260,7 @@ angular.module('Volusion.toolboxCommon.templates', []).run([
   '$templateCache',
   function ($templateCache) {
     $templateCache.put('vn-faceted-search/vn-category-search.html', '<div class=-category-search><a href ng-click=toggleCategory()><h4>Categories</h4></a><div data-ng-repeat="subCat in subCategories" data-ng-show=isCategoryVisible><a data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a></div></div>');
-    $templateCache.put('vn-faceted-search/vn-facet-search.html', '<div class=-faceted-search><div class=facets><div class=facet-item data-ng-repeat="facet in facets track by $index"><h4 ng-click=toggleFacetItems($index)>{{ facet.title }}</h4><div ng-show=facets[$index].show><label class=-facet-property data-ng-repeat="property in facet.properties track by $index"><input type=checkbox name=property.name ng-checked=selectProperty(property) ng-click=refineFacetSearch(property)> <span class=name>{{ property.name }}</span> <span class=count>{{ property.count }}</span></label></div><hr></div></div></div>');
+    $templateCache.put('vn-faceted-search/vn-facet-search.html', '<div class=-faceted-search><div class=facets><div class=facet-item data-ng-repeat="facet in facets track by $index"><h4 ng-show=isDesktopFacet>{{ facet.title }}</h4><a ng-show=!isDesktopFacet ng-click=toggleFacetItems($index)><h4>{{ facet.title }}</h4></a><div ng-show=facets[$index].show><label class=-facet-property data-ng-repeat="property in facet.properties track by $index"><input type=checkbox name=property.name ng-checked=selectProperty(property) ng-click=refineFacetSearch(property)> <span class=name>{{ property.name }}</span> <span class=count>{{ property.count }}</span></label></div><hr></div></div></div>');
     $templateCache.put('vn-product-option/checkboxes.html', '<label data-vn-block=vn-labeled-checkbox data-vn-modifiers={{option.class}} data-ng-repeat="itemKey in option.items" data-ng-init="item=product.optionItems[itemKey]"><div data-vn-element=checkbox><input type=checkbox data-ng-click=onCheckboxClicked(option)></div><div data-vn-element=content data-ng-include=" \'vn-product-option/content.html\' "></div></label>');
     $templateCache.put('vn-product-option/content.html', '<div data-vn-element=color-image><div data-vn-element=color data-ng-show=item.color style="background-color: {{item.color}}"></div><img data-vn-element=image data-ng-show=item.image data-ng-src={{item.image}} alt={{item.text}}></div><div data-vn-element=text data-ng-bind=item.text></div><div data-vn-element=border data-ng-class="{ checked: option.selected===itemKey }"></div>');
     $templateCache.put('vn-product-option/index.html', '<div data-vn-block=vn-product-option><label data-vn-element=label data-ng-if=option.label data-ng-bind=option.label></label><div data-ng-repeat="inputType in option.inputTypes"><div data-vn-element=group data-vn-modifiers="{{inputType.type}} {{option.class}}" data-ng-include=" \'vn-product-option/\' + inputType.type + \'.html\' "></div></div><div data-ng-if=option.selected><div data-ng-repeat="option in option.options" data-ng-include=" \'vn-product-option/index.html\' "></div></div></div>');
