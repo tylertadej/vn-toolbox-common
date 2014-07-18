@@ -229,19 +229,6 @@ angular.module('Volusion.toolboxCommon').directive('vnCarousel', [
     $templateCache.put('template/carousel.html', '<div id="vnCarousel" class="carousel slide" data-ride="carousel">' + '<!-- Indicators -->' + '<ol class="carousel-indicators">' + '<lidata-ng-repeat="image in imageList" data-target="#vnCarousel" data-slide-to="{{ $index }}"></li>' + '</ol>' + '<div data-ng-repeat="image in imageList" class="carousel-inner">' + '<div class="item active">' + '<img data-src="" alt="First slide" src="{{ image.src }}">' + '<div class="container">' + '<h1>Example headline.</h1>' + '<p>Note: If you\'re viewing this page via a <code>file://</code> URL, the "next" and "previous"  might not load/display properly.</p>' + '<p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>' + '</div>' + '</div>' + '<a class="left carousel-control" href="#myCarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>' + '<a class="right carousel-control" href="#myCarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>' + '</div>' + '</div>');
   }
 ]);
-/**
- * @ngdoc directive
- * @name Volusion.toolboxCommon.directive:vnCategorySearch
- * @restrict EA
- * @requires $rootScope
- * @requires vnProductParams
- * @scope
- * @description
- *
- *
- * @usage
- * TODO: Add html and javascript here to demo it in docs.
- */
 angular.module('Volusion.toolboxCommon').directive('vnCategorySearch', [
   '$rootScope',
   'vnProductParams',
@@ -334,18 +321,42 @@ angular.module('Volusion.toolboxCommon').directive('vnFacetSearch', [
       link: function postLink(scope) {
         scope.$watch('facets', function (facets) {
           scope.facets = facets;
+          // Default the facets to show
+          angular.each(scope.facets, function (facet) {
+            angular.extend(facet, { hide: false });  //							facet.hide = false;
+          });
         });
+        enquire.register('screen and (max-width:767px)', {
+          setup: function () {
+            scope.areFacetItemsVisible = true;
+          },
+          unmatch: function () {
+            scope.areFacetItemsVisible = true;
+          },
+          match: function () {
+            scope.areFacetItemsVisible = false;
+          }
+        });
+        scope.toggleFacetItems = function (idx) {
+          console.log('facet items: ', scope.facets);
+          console.log('toggle facet item: for index: ', idx);
+          if (scope.areFacetItemsVisible && scope.fasets[idx].show) {
+            scope.fasets[idx].show = false;
+            return;
+          }
+          scope.fasets[idx].show = true;
+        };
         scope.selectProperty = function (facet) {
           return vnProductParams.isFacetSelected(facet.id);
         };
         scope.refineFacetSearch = function (facet) {
-          // Adding / Removeing facet to selectedFacets
+          // Adding / Removing facet to selectedFacets
           if (!vnProductParams.isFacetSelected(facet.id)) {
-            vnProductParams.addFacet(facet.id);  //                            console.log('adding facet: ', vnProductParams.getParamsObject());
+            vnProductParams.addFacet(facet.id);
           } else {
-            vnProductParams.removeFacet(facet.id);  //                            console.log('removing facet: ', vnProductParams.getParamsObject());
+            vnProductParams.removeFacet(facet.id);
           }
-          // Broadcast an update to whomever is subscribed.
+          // Broadcast an update to whomever if any is subscribed.
           $rootScope.$broadcast('ProductSearch.facetsUpdated');
         };
       }
@@ -2217,7 +2228,7 @@ angular.module('Volusion.toolboxCommon.templates', []).run([
   '$templateCache',
   function ($templateCache) {
     $templateCache.put('vn-faceted-search/vn-category-search.html', '<div class=-category-search><a href ng-click=toggleCategory()><h4>Categories</h4></a><div data-ng-repeat="subCat in subCategories" data-ng-show=isCategoryVisible><a data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a></div></div>');
-    $templateCache.put('vn-faceted-search/vn-facet-search.html', '<div class=-faceted-search><div class=facets><div class=facet-item data-ng-repeat="facet in facets track by $index"><h4>{{ facet.title }}</h4><label class=-facet-property data-ng-repeat="property in facet.properties track by $index"><input type=checkbox name=property.name ng-checked=selectProperty(property) ng-click=refineFacetSearch(property)> <span class=name>{{ property.name }}</span> <span class=count>{{ property.count }}</span></label><hr></div></div></div>');
+    $templateCache.put('vn-faceted-search/vn-facet-search.html', '<div class=-faceted-search><div class=facets><div class=facet-item data-ng-repeat="facet in facets track by $index"><h4 ng-click=toggleFacetItems($index)>{{ facet.title }}</h4><div ng-show=facets[$index].show><label class=-facet-property data-ng-repeat="property in facet.properties track by $index"><input type=checkbox name=property.name ng-checked=selectProperty(property) ng-click=refineFacetSearch(property)> <span class=name>{{ property.name }}</span> <span class=count>{{ property.count }}</span></label></div><hr></div></div></div>');
     $templateCache.put('vn-product-option/checkboxes.html', '<label data-vn-block=vn-labeled-checkbox data-vn-modifiers={{option.class}} data-ng-repeat="itemKey in option.items" data-ng-init="item=product.optionItems[itemKey]"><div data-vn-element=checkbox><input type=checkbox data-ng-click=onCheckboxClicked(option)></div><div data-vn-element=content data-ng-include=" \'vn-product-option/content.html\' "></div></label>');
     $templateCache.put('vn-product-option/content.html', '<div data-vn-element=color-image><div data-vn-element=color data-ng-show=item.color style="background-color: {{item.color}}"></div><img data-vn-element=image data-ng-show=item.image data-ng-src={{item.image}} alt={{item.text}}></div><div data-vn-element=text data-ng-bind=item.text></div><div data-vn-element=border data-ng-class="{ checked: option.selected===itemKey }"></div>');
     $templateCache.put('vn-product-option/index.html', '<div data-vn-block=vn-product-option><label data-vn-element=label data-ng-if=option.label data-ng-bind=option.label></label><div data-ng-repeat="inputType in option.inputTypes"><div data-vn-element=group data-vn-modifiers="{{inputType.type}} {{option.class}}" data-ng-include=" \'vn-product-option/\' + inputType.type + \'.html\' "></div></div><div data-ng-if=option.selected><div data-ng-repeat="option in option.options" data-ng-include=" \'vn-product-option/index.html\' "></div></div></div>');
