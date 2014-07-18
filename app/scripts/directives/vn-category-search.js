@@ -1,3 +1,5 @@
+/*global enquire*/
+
 /**
  * @ngdoc directive
  * @name Volusion.toolboxCommon.directive:vnCategorySearch
@@ -23,6 +25,31 @@ angular.module('Volusion.toolboxCommon')
 			},
 			link       : function postLink(scope) {
 				// Categories use this to update the search params.
+
+
+				enquire.register('screen and (max-width:767px)', {
+
+					setup: function() {
+						scope.isCategoryVisible = true;
+					},
+					unmatch: function () {
+						scope.isCategoryVisible = true;
+					},
+					// transitioning to mobile mode
+					match  : function () {
+						scope.isCategoryVisible = false;
+					}
+				});
+
+				scope.toggleCategory = function() {
+					console.log('toggle category');
+					if(scope.isCategoryVisible) {
+						scope.isCategoryVisible = false;
+						return;
+					}
+					scope.isCategoryVisible = true;
+				};
+
 				scope.updateCategory = function (category) {
 					vnProductParams.addCategory(category.id);
 					$rootScope.$broadcast('ProductSearch.categoriesUpdated', { category: category });

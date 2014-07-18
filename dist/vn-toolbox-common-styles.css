@@ -12,7 +12,6 @@
 .facets .facet-item .-facet-property input[type="checkbox"]:checked + span:before { content: "\e067" !important; /* check */ }
 
 @media (max-width: 767px) { .-faceted-search { border-bottom: 1px solid; }
-  .-faceted-search > div { text-align: center; }
   .-faceted-search .facets { text-align: left; } }
 .facet-item .ng-enter, .facet-item .ng-leave { -webkit-transition: 100ms ease-out all; -moz-transition: 100ms ease-out all; -ms-transition: 100ms ease-out all; -o-transition: 100ms ease-out all; transition: 100ms ease-out all; }
 .facet-item .ng-leave.ng-leave-active, .facet-item .ng-enter { opacity: 0; }
