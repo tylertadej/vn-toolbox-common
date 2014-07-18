@@ -1,4 +1,4 @@
-/*! vn-toolbox-common - ver.0.0.9 (2014-07-18) */
+/*! vn-toolbox-common - ver.0.0.10 (2014-07-18) */
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', [
   'pascalprecht.translate',
@@ -322,8 +322,11 @@ angular.module('Volusion.toolboxCommon').directive('vnFacetSearch', [
         scope.$watch('facets', function (facets) {
           scope.facets = facets;
           // Default the facets to show
-          angular.each(scope.facets, function (facet) {
-            angular.extend(facet, { hide: false });  //							facet.hide = false;
+          angular.forEach(scope.facets, function (facet) {
+            var displayDefault = { hide: false };
+            console.log('facet before: ', facet);
+            angular.extend(facet, displayDefault);
+            console.log('facet after: ', facet);
           });
         });
         enquire.register('screen and (max-width:767px)', {
@@ -338,13 +341,14 @@ angular.module('Volusion.toolboxCommon').directive('vnFacetSearch', [
           }
         });
         scope.toggleFacetItems = function (idx) {
-          console.log('facet items: ', scope.facets);
+          console.log('facet items: ', scope.facets[idx]);
           console.log('toggle facet item: for index: ', idx);
-          if (scope.areFacetItemsVisible && scope.fasets[idx].show) {
-            scope.fasets[idx].show = false;
+			var thisFacet = scope.facets[idx];
+          if (scope.areFacetItemsVisible && thisFacet.show) {
+			  thisFacet.show = false;
             return;
           }
-          scope.fasets[idx].show = true;
+			thisFacet.show = true;
         };
         scope.selectProperty = function (facet) {
           return vnProductParams.isFacetSelected(facet.id);

@@ -29,9 +29,11 @@ angular.module('Volusion.toolboxCommon')
 					scope.$watch('facets', function (facets) {
 						scope.facets = facets;
 						// Default the facets to show
-						angular.each(scope.facets, function(facet) {
-							angular.extend(facet, {hide:false});
-//							facet.hide = false;
+						angular.forEach(scope.facets, function(facet) {
+							var displayDefault = { hide: false };
+							console.log('facet before: ', facet);
+							angular.extend(facet, displayDefault);
+							console.log('facet after: ', facet);
 						});
 					});
 
