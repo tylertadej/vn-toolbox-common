@@ -1,5 +1,3 @@
-/*global enquire*/
-
 /**
  * @ngdoc directive
  * @name Volusion.toolboxCommon.directive:vnCategorySearch

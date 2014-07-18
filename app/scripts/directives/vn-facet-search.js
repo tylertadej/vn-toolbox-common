@@ -28,8 +28,36 @@ angular.module('Volusion.toolboxCommon')
 
 					scope.$watch('facets', function (facets) {
 						scope.facets = facets;
+						// Default the facets to show
+						angular.each(scope.facets, function(facet) {
+							angular.extend(facet, {hide:false});
+//							facet.hide = false;
+						});
 					});
 
+					enquire.register('screen and (max-width:767px)', {
+
+						setup: function() {
+							scope.areFacetItemsVisible = true;
+						},
+						unmatch: function () {
+							scope.areFacetItemsVisible = true;
+						},
+						// transitioning to mobile mode
+						match  : function () {
+							scope.areFacetItemsVisible = false;
+						}
+					});
+
+					scope.toggleFacetItems = function(idx) {
+						console.log('facet items: ', scope.facets);
+						console.log('toggle facet item: for index: ', idx);
+						if(scope.areFacetItemsVisible && scope.fasets[idx].show) {
+							scope.fasets[idx].show = false;
+							return;
+						}
+						scope.fasets[idx].show = true;
+					};
 
 					scope.selectProperty = function (facet) {
 						return vnProductParams.isFacetSelected(facet.id);
@@ -37,16 +65,14 @@ angular.module('Volusion.toolboxCommon')
 
 					scope.refineFacetSearch = function (facet) {
 
-						// Adding / Removeing facet to selectedFacets
+						// Adding / Removing facet to selectedFacets
 						if (!vnProductParams.isFacetSelected(facet.id)) {
 							vnProductParams.addFacet(facet.id);
-//                            console.log('adding facet: ', vnProductParams.getParamsObject());
 						} else {
 							vnProductParams.removeFacet(facet.id);
-//                            console.log('removing facet: ', vnProductParams.getParamsObject());
 						}
 
-						// Broadcast an update to whomever is subscribed.
+						// Broadcast an update to whomever if any is subscribed.
 						$rootScope.$broadcast('ProductSearch.facetsUpdated');
 					};
 				}
