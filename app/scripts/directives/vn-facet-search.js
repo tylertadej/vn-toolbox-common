@@ -47,7 +47,6 @@ angular.module('Volusion.toolboxCommon')
 						setup: function() {
 							scope.isDesktopFacet = true;
 							scope.isMobileMode = false;
-							console.log('window width setup: ', $window.innerWidth);
 						},
 
 						unmatch: function () {
@@ -65,16 +64,19 @@ angular.module('Volusion.toolboxCommon')
 
 					// Handle the hide/show of a facet item's properties.
 					scope.toggleFacetItems = function(idx) {
-						console.log('facet item: ', scope.facets[idx]);
+
 						if(scope.facets[idx].show) {
 							scope.facets[idx].show = false;
 							return;
 						}
 						scope.facets[idx].show = true;
+
 					};
 
 					scope.selectProperty = function (facet) {
+
 						return vnProductParams.isFacetSelected(facet.id);
+
 					};
 
 					scope.refineFacetSearch = function (facet) {
@@ -88,12 +90,10 @@ angular.module('Volusion.toolboxCommon')
 
 						// Broadcast an update to whomever if any is subscribed.
 						$rootScope.$broadcast('ProductSearch.facetsUpdated');
+
 					};
 
 					scope.isMobileMode = false; // default to desktop
-//					function isMobileMode() {
-//						return scope.isMobileMode;
-//					}
 
 					scope.$watch('facets', function (facets) {
 						scope.facets = facets;
@@ -106,7 +106,8 @@ angular.module('Volusion.toolboxCommon')
 							angular.extend(facet, displayDefault);
 						});
 
-						// Need this to pre process responses and page load items
+						// Need this to pre process responses and page load items and enquire wasn't
+						// responding to the match for data after initial page load.
 						if ($window.innerWidth < 767) {
 							mobalizeFacetList(scope.facets);
 						} else {

@@ -344,7 +344,37 @@ angular.module('Volusion.toolboxCommon')
 			facets = [];
 			paramsObject.facets = '';
 		}
-		
+
+		/**
+		 * @ngdoc function
+		 * @name resetParamsForCategory
+		 * @params {String} catId
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Given the catId, use it to reset everything else except for the category id.
+		 * First use was in Method Category Ctrl where I wanted to preserve the current category
+		 */
+		function resetParamsForCategory(catId) {
+			// Reset the world
+			categoryIds = [];
+			facets = [];
+			paramsObject = {
+				categoryIds  : '',
+				slug         : '',
+				facets       : '',
+				minPrice     : '',
+				maxPrice     : '',
+				accessoriesOf: '',
+				sort         : '',
+				pageNumber   : '',
+				pageSize     : ''
+			};
+
+			// Remember the category
+			addCategory(catId);
+		}
+
 		/**
 		 * @ngdoc function
 		 * @name resetParamsObject
@@ -480,36 +510,37 @@ angular.module('Volusion.toolboxCommon')
 
 		// Public API here
 		return {
-			addCategory        : addCategory,
-			getAccessoriesOf   : getAccessoriesOf,
-			addFacet           : addFacet,
-			getFacetString     : getFacetString,
-			getMinPrice        : getMinPrice,
-			getMaxPrice        : getMaxPrice,
-			getPageNumber      : getPageNumber,
-			getPageSize        : getPageSize,
-			getParamsObject    : getParamsObject,
-			getSort            : getSort,
-			isFacetSelected    : isFacetSelected,
-			removeSlug         : removeSlug,
-			removeSearch       : removeSearch,
-			setMinPrice        : setMinPrice,
-			removeMinPrice     : removeMinPrice,
-			removeMaxPrice     : removeMaxPrice,
-			removeAccessoriesOf: removeAccessoriesOf,
-			removeCategory     : removeCategory,
-			removeFacet        : removeFacet,
-			removeSort         : removeSort,
-			resetCategories    : resetCategories,
-			resetFacets        : resetFacets,
-			resetParamsObject  : resetParamsObject,
-			setAccessoriesOf   : setAccessoriesOf,
-			setMaxPrice        : setMaxPrice,
-			setPageNumber      : setPageNumber,
-			setPageSize        : setPageSize,
-			setSort            : setSort,
-			updateSearch       : updateSearch,
-			updateSlug         : updateSlug
+			addCategory           : addCategory,
+			getAccessoriesOf      : getAccessoriesOf,
+			addFacet              : addFacet,
+			getFacetString        : getFacetString,
+			getMinPrice           : getMinPrice,
+			getMaxPrice           : getMaxPrice,
+			getPageNumber         : getPageNumber,
+			getPageSize           : getPageSize,
+			getParamsObject       : getParamsObject,
+			getSort               : getSort,
+			isFacetSelected       : isFacetSelected,
+			removeSlug            : removeSlug,
+			removeSearch          : removeSearch,
+			setMinPrice           : setMinPrice,
+			removeMinPrice        : removeMinPrice,
+			removeMaxPrice        : removeMaxPrice,
+			removeAccessoriesOf   : removeAccessoriesOf,
+			removeCategory        : removeCategory,
+			removeFacet           : removeFacet,
+			removeSort            : removeSort,
+			resetCategories       : resetCategories,
+			resetFacets           : resetFacets,
+			resetParamsForCategory: resetParamsForCategory,
+			resetParamsObject     : resetParamsObject,
+			setAccessoriesOf      : setAccessoriesOf,
+			setMaxPrice           : setMaxPrice,
+			setPageNumber         : setPageNumber,
+			setPageSize           : setPageSize,
+			setSort               : setSort,
+			updateSearch          : updateSearch,
+			updateSlug            : updateSlug
 		};
 	});
 

@@ -1,4 +1,4 @@
-/*! vn-toolbox-common - ver.0.0.10 (2014-07-18) */
+/*! vn-toolbox-common - ver.0.0.10 (2014-07-21) */
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', [
   'pascalprecht.translate',
@@ -240,6 +240,7 @@ angular.module('Volusion.toolboxCommon').directive('vnCategorySearch', [
       scope: { categories: '=' },
       link: function postLink(scope) {
         // Categories use this to update the search params.
+        console.log('category-search: ', scope.categories);
         enquire.register('screen and (max-width:767px)', {
           setup: function () {
             scope.isCategoryVisible = true;
@@ -335,7 +336,6 @@ angular.module('Volusion.toolboxCommon').directive('vnFacetSearch', [
           setup: function () {
             scope.isDesktopFacet = true;
             scope.isMobileMode = false;
-            console.log('window width setup: ', $window.innerWidth);
           },
           unmatch: function () {
             desktopizeFacetList(scope.facets);
@@ -350,7 +350,6 @@ angular.module('Volusion.toolboxCommon').directive('vnFacetSearch', [
         });
         // Handle the hide/show of a facet item's properties.
         scope.toggleFacetItems = function (idx) {
-          console.log('facet item: ', scope.facets[idx]);
           if (scope.facets[idx].show) {
             scope.facets[idx].show = false;
             return;
@@ -372,9 +371,6 @@ angular.module('Volusion.toolboxCommon').directive('vnFacetSearch', [
         };
         scope.isMobileMode = false;
         // default to desktop
-        //					function isMobileMode() {
-        //						return scope.isMobileMode;
-        //					}
         scope.$watch('facets', function (facets) {
           scope.facets = facets;
           // Default the facets to show
@@ -384,7 +380,8 @@ angular.module('Volusion.toolboxCommon').directive('vnFacetSearch', [
             var displayDefault = { show: false };
             angular.extend(facet, displayDefault);
           });
-          // Need this to pre process responses and page load items
+          // Need this to pre process responses and page load items and enquire wasn't
+          // responding to the match for data after initial page load.
           if ($window.innerWidth < 767) {
             mobalizeFacetList(scope.facets);
           } else {
@@ -1949,6 +1946,34 @@ angular.module('Volusion.toolboxCommon').factory('vnProductParams', function () 
   }
   /**
 		 * @ngdoc function
+		 * @name resetParamsForCategory
+		 * @params {String} catId
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Given the catId, use it to reset everything else except for the category id.
+		 * First use was in Method Category Ctrl where I wanted to preserve the current category
+		 */
+  function resetParamsForCategory(catId) {
+    // Reset the world
+    categoryIds = [];
+    facets = [];
+    paramsObject = {
+      categoryIds: '',
+      slug: '',
+      facets: '',
+      minPrice: '',
+      maxPrice: '',
+      accessoriesOf: '',
+      sort: '',
+      pageNumber: '',
+      pageSize: ''
+    };
+    // Remember the category
+    addCategory(catId);
+  }
+  /**
+		 * @ngdoc function
 		 * @name resetParamsObject
 		 * @methodOf Volusion.toolboxCommon.vnProductParams
 		 *
@@ -2095,6 +2120,7 @@ angular.module('Volusion.toolboxCommon').factory('vnProductParams', function () 
     removeSort: removeSort,
     resetCategories: resetCategories,
     resetFacets: resetFacets,
+    resetParamsForCategory: resetParamsForCategory,
     resetParamsObject: resetParamsObject,
     setAccessoriesOf: setAccessoriesOf,
     setMaxPrice: setMaxPrice,
