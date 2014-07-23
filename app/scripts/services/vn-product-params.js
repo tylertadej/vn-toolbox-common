@@ -347,36 +347,6 @@ angular.module('Volusion.toolboxCommon')
 
 		/**
 		 * @ngdoc function
-		 * @name resetParamsForCategory
-		 * @params {String} catId
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * Given the catId, use it to reset everything else except for the category id.
-		 * First use was in Method Category Ctrl where I wanted to preserve the current category
-		 */
-		function resetParamsForCategory(catId) {
-			// Reset the world
-			categoryIds = [];
-			facets = [];
-			paramsObject = {
-				categoryIds  : '',
-				slug         : '',
-				facets       : '',
-				minPrice     : '',
-				maxPrice     : '',
-				accessoriesOf: '',
-				sort         : '',
-				pageNumber   : '',
-				pageSize     : ''
-			};
-
-			// Remember the category
-			addCategory(catId);
-		}
-
-		/**
-		 * @ngdoc function
 		 * @name resetParamsObject
 		 * @methodOf Volusion.toolboxCommon.vnProductParams
 		 *
@@ -532,7 +502,6 @@ angular.module('Volusion.toolboxCommon')
 			removeSort            : removeSort,
 			resetCategories       : resetCategories,
 			resetFacets           : resetFacets,
-			resetParamsForCategory: resetParamsForCategory,
 			resetParamsObject     : resetParamsObject,
 			setAccessoriesOf      : setAccessoriesOf,
 			setMaxPrice           : setMaxPrice,

@@ -10,14 +10,24 @@
 	<div class="list-group vn-category-search__category-items"
 		 data-ng-repeat="cat in categories"
 		 data-ng-show="isCategoryVisible">
-		<a ng-if="cat.displayStrategy == 'categoryDisplayTwo' || cat.displayStrategy == 'categoryDisplayThree' " data-ng-href="{{ cat.url  }}">{{ cat.name }}</a>
-		<span ng-if=" cat.displayStrategy == 'categoryDisplayOne'  ">{{ cat.name }}</span>
+		<a data-ng-href="{{ cat.url  }}">{{ cat.name }}</a>
 
 		<div class="list-group-item vn-category-search__category-items__category-item"
-		   data-ng-repeat="subCat in cat.subCategories">
-			<span data-ng-if="subCat.hideSubCatLink">{{ subCat.name }}</span>
-			<a data-ng-href="{{ subCat.url  }}"
-			   data-ng-if="subCat.hideSubCatLink == false">{{ subCat.name }}</a>
+			 data-ng-repeat="subCat in cat.subCategories">
+			<a data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a>
 		</div>
 	</div>
+	<!--<div class="list-group vn-category-search__category-items"-->
+		 <!--data-ng-repeat="cat in categories"-->
+		 <!--data-ng-show="isCategoryVisible">-->
+		<!--<a ng-if="cat.displayStrategy == 'categoryDisplayTwo' || cat.displayStrategy == 'categoryDisplayThree' " data-ng-href="{{ cat.url  }}">{{ cat.name }}</a>-->
+		<!--<span ng-if=" cat.displayStrategy == 'categoryDisplayOne'  ">{{ cat.name }}</span>-->
+
+		<!--<div class="list-group-item vn-category-search__category-items__category-item"-->
+		   <!--data-ng-repeat="subCat in cat.subCategories">-->
+			<!--<span data-ng-if="subCat.hideSubCatLink">{{ subCat.name }}</span>-->
+			<!--<a data-ng-href="{{ subCat.url  }}"-->
+			   <!--data-ng-if="subCat.hideSubCatLink == false">{{ subCat.name }}</a>-->
+		<!--</div>-->
+	<!--</div>-->
 </div>
