@@ -1,6 +1,8 @@
 <div class="vn-category-search">
+	<h4 ng-show="isDesktopCategory">Categories</h4>
 	<a href
 	   class="vn-category-search__category-title"
+	   ng-show="!isDesktopCategory"
 	   ng-click="toggleCategory()">
 		<h4>Categories</h4>
 	</a>
@@ -13,4 +15,3 @@
 		   data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a>
 	</div>
 </div>
- 

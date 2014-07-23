@@ -231,23 +231,31 @@ angular.module('Volusion.toolboxCommon').directive('vnCarousel', [
 ]);
 angular.module('Volusion.toolboxCommon').directive('vnCategorySearch', [
   '$rootScope',
+  '$routeParams',
   'vnProductParams',
-  function ($rootScope, vnProductParams) {
+  function ($rootScope, $routeParams, vnProductParams) {
     'use strict';
     return {
       templateUrl: 'vn-faceted-search/vn-category-search.html',
       restrict: 'AE',
       scope: { categories: '=' },
       link: function postLink(scope) {
+        function processCategoryList(cList) {
+          console.log('the route params: ', $routeParams);
+          console.log('only have one top level category', cList);
+        }
         // Categories use this to update the search params.
         enquire.register('screen and (max-width:767px)', {
           setup: function () {
+            scope.isDesktopCategory = true;
             scope.isCategoryVisible = true;
           },
           unmatch: function () {
+            scope.isDesktopCategory = true;
             scope.isCategoryVisible = true;
           },
           match: function () {
+            scope.isDesktopCategory = false;
             scope.isCategoryVisible = false;
           }
         });
@@ -268,9 +276,8 @@ angular.module('Volusion.toolboxCommon').directive('vnCategorySearch', [
           // Gaurd against the error message for while categories is not defined.
           if (!categories || !categories[0]) {
             return;
-          } else {
-            scope.subCategories = categories[0].subCategories;
-            scope.categories = categories;
+          } else if (1 === categories.length) {
+            processCategoryList(categories);
           }
         });
       }
@@ -2285,7 +2292,7 @@ angular.module('Volusion.toolboxCommon').factory('vnSession', [
 angular.module('Volusion.toolboxCommon.templates', []).run([
   '$templateCache',
   function ($templateCache) {
-    $templateCache.put('vn-faceted-search/vn-category-search.html', '<div class=vn-category-search><a href class=vn-category-search__category-title ng-click=toggleCategory()><h4>Categories</h4></a><div class="list-group vn-category-search__category-items" data-ng-repeat="cat in categories" data-ng-show=isCategoryVisible><a data-ng-href="{{ cat.url  }}">{{ cat.name }}</a> <a class="list-group-item vn-category-search__category-items__category-item" data-ng-repeat="subCat in cat.subCategories" data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a></div></div>');
+    $templateCache.put('vn-faceted-search/vn-category-search.html', '<div class=vn-category-search><h4 ng-show=isDesktopCategory>Categories</h4><a href class=vn-category-search__category-title ng-show=!isDesktopCategory ng-click=toggleCategory()><h4>Categories</h4></a><div class="list-group vn-category-search__category-items" data-ng-repeat="cat in categories" data-ng-show=isCategoryVisible><a data-ng-href="{{ cat.url  }}">{{ cat.name }}</a> <a class="list-group-item vn-category-search__category-items__category-item" data-ng-repeat="subCat in cat.subCategories" data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a></div></div>');
     $templateCache.put('vn-faceted-search/vn-facet-search.html', '<div class=-faceted-search><div class=facets><div class=facet-item data-ng-repeat="facet in facets track by $index"><h4 ng-show=isDesktopFacet>{{ facet.title }}</h4><a ng-show=!isDesktopFacet ng-click=toggleFacetItems($index)><h4>{{ facet.title }}</h4></a><div ng-show=facets[$index].show><label class=-facet-property data-ng-repeat="property in facet.properties track by $index"><input type=checkbox name=property.name ng-checked=selectProperty(property) ng-click=refineFacetSearch(property)> <span class=name>{{ property.name }}</span> <span class=count>{{ property.count }}</span></label></div><hr></div></div></div>');
     $templateCache.put('vn-product-option/checkboxes.html', '<label data-vn-block=vn-labeled-checkbox data-vn-modifiers={{option.class}} data-ng-repeat="itemKey in option.items" data-ng-init="item=product.optionItems[itemKey]"><div data-vn-element=checkbox><input type=checkbox data-ng-click=onCheckboxClicked(option)></div><div data-vn-element=content data-ng-include=" \'vn-product-option/content.html\' "></div></label>');
     $templateCache.put('vn-product-option/content.html', '<div data-vn-element=color-image><div data-vn-element=color data-ng-show=item.color style="background-color: {{item.color}}"></div><img data-vn-element=image data-ng-show=item.image data-ng-src={{item.image}} alt={{item.text}}></div><div data-vn-element=text data-ng-bind=item.text></div><div data-vn-element=border data-ng-class="{ checked: option.selected===itemKey }"></div>');
