@@ -15,7 +15,9 @@
 angular.module('Volusion.toolboxCommon')
 	.directive('vnCategorySearch', ['$rootScope', '$routeParams', '$location', 'vnProductParams',
 		function ($rootScope, $routeParams, $location, vnProductParams) {
+
 			'use strict';
+
 			return {
 				templateUrl: 'vn-faceted-search/vn-category-search.html',
 				restrict   : 'AE',

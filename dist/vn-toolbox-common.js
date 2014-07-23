@@ -322,7 +322,6 @@ angular.module('Volusion.toolboxCommon').directive('vnCategorySearch', [
           } else {
             throw new Error('Is there a new display strategy for the category-search directive in toolbox?');
           }
-          console.log(categories);
         });
       }
     };
