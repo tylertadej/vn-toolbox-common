@@ -9,9 +9,12 @@
 	<div class="list-group vn-category-search__category-items"
 		 data-ng-repeat="cat in categories"
 		 data-ng-show="isCategoryVisible">
-		<a ng-if="cat.displayStrategy == 'categoryDisplayTwo' || cat.displayStrategy == 'categoryDisplayThree' " data-ng-href="{{ cat.url  }}">{{ cat.name }}</a>
+		<a ng-if="cat.displayStrategy == 'categoryDisplayTwo' || cat.displayStrategy == 'categoryDisplayThree' " data-ng-href="{{ cat.url  }}">
+			<span ng-if="cat.displayStrategy == 'categoryDisplayTwo' "
+				  class="glyphicon glyphicon-chevron-left"></span>
+			{{ cat.name }}
+		</a>
 		<span ng-if="cat.displayStrategy == 'categoryDisplayOne'  ">{{ cat.name }}</span>
-
 		<div class="list-group-item vn-category-search__category-items__category-item"
 		   data-ng-repeat="subCat in cat.subCategories">
 			<span data-ng-if="subCat.hideSubCatLink">{{ subCat.name }}</span>

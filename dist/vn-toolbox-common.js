@@ -248,7 +248,6 @@ angular.module('Volusion.toolboxCommon').directive('vnCategorySearch', [
 					 */
         function processFirstCategoryStrategy(cList) {
           angular.extend(cList, { displayStrategy: 'categoryDisplayOne' });
-          console.log('First category display strategy', cList);
         }
         /**
 					 * Second Display Strategy: 1 top level category &&
@@ -259,7 +258,6 @@ angular.module('Volusion.toolboxCommon').directive('vnCategorySearch', [
 					 */
         function processSecondCategoryStrategy(cList) {
           angular.extend(cList, { displayStrategy: 'categoryDisplayTwo' });
-          console.log('second display strategy for categories: ', cList);
         }
         /**
 					 * Third Display Strategy: on the search route
@@ -273,7 +271,6 @@ angular.module('Volusion.toolboxCommon').directive('vnCategorySearch', [
               angular.extend(subCat, { hideSubCatLink: true });
             });
           });
-          console.log('third display strategy for categories: ', cList);
         }
         /**
 					 * Utility function used in depermining which strategy to apply to this set of category response data
@@ -282,11 +279,9 @@ angular.module('Volusion.toolboxCommon').directive('vnCategorySearch', [
           var catMatchTest = false;
           for (var i = categoryObject.subCategories.length - 1; i >= 0; i--) {
             if (slug === categoryObject.subCategories[i].slug) {
-              console.log('matched, this slug should be txt: ', categoryObject.subCategories[i].slug);
               angular.extend(categoryObject.subCategories[i], { hideSubCatLink: true });
               catMatchTest = true;
             } else {
-              console.log('not matched, this slug should be link: ', categoryObject.subCategories[i].slug);
               angular.extend(categoryObject.subCategories[i], { hideSubCatLink: false });
             }
           }
@@ -308,7 +303,6 @@ angular.module('Volusion.toolboxCommon').directive('vnCategorySearch', [
           }
         });
         scope.toggleCategory = function () {
-          console.log('toggle category');
           if (scope.isCategoryVisible) {
             scope.isCategoryVisible = false;
             return;
@@ -2316,7 +2310,7 @@ angular.module('Volusion.toolboxCommon').factory('vnSession', [
 angular.module('Volusion.toolboxCommon.templates', []).run([
   '$templateCache',
   function ($templateCache) {
-    $templateCache.put('vn-faceted-search/vn-category-search.html', '<div class=vn-category-search><h4 ng-show=isDesktopCategory>Categories</h4><a href class=vn-category-search__category-title ng-show=!isDesktopCategory ng-click=toggleCategory()><h4>Categories</h4></a><div class="list-group vn-category-search__category-items" data-ng-repeat="cat in categories" data-ng-show=isCategoryVisible><a ng-if="cat.displayStrategy == \'categoryDisplayTwo\' || cat.displayStrategy == \'categoryDisplayThree\' " data-ng-href="{{ cat.url  }}">{{ cat.name }}</a> <span ng-if="cat.displayStrategy == \'categoryDisplayOne\'  ">{{ cat.name }}</span><div class="list-group-item vn-category-search__category-items__category-item" data-ng-repeat="subCat in cat.subCategories"><span data-ng-if=subCat.hideSubCatLink>{{ subCat.name }}</span> <a data-ng-if=!subCat.hideSubCatLink data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a></div></div></div>');
+    $templateCache.put('vn-faceted-search/vn-category-search.html', '<div class=vn-category-search><h4 ng-show=isDesktopCategory>Categories</h4><a href class=vn-category-search__category-title ng-show=!isDesktopCategory ng-click=toggleCategory()><h4>Categories</h4></a><div class="list-group vn-category-search__category-items" data-ng-repeat="cat in categories" data-ng-show=isCategoryVisible><a ng-if="cat.displayStrategy == \'categoryDisplayTwo\' || cat.displayStrategy == \'categoryDisplayThree\' " data-ng-href="{{ cat.url  }}"><span ng-if="cat.displayStrategy == \'categoryDisplayTwo\' " class="glyphicon glyphicon-chevron-left"></span> {{ cat.name }}</a> <span ng-if="cat.displayStrategy == \'categoryDisplayOne\'  ">{{ cat.name }}</span><div class="list-group-item vn-category-search__category-items__category-item" data-ng-repeat="subCat in cat.subCategories"><span data-ng-if=subCat.hideSubCatLink>{{ subCat.name }}</span> <a data-ng-if=!subCat.hideSubCatLink data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a></div></div></div>');
     $templateCache.put('vn-faceted-search/vn-facet-search.html', '<div class=-faceted-search><div class=facets><div class=facet-item data-ng-repeat="facet in facets track by $index"><h4 ng-show=isDesktopFacet>{{ facet.title }}</h4><a ng-show=!isDesktopFacet ng-click=toggleFacetItems($index)><h4>{{ facet.title }}</h4></a><div ng-show=facets[$index].show><label class=-facet-property data-ng-repeat="property in facet.properties track by $index"><input type=checkbox name=property.name ng-checked=selectProperty(property) ng-click=refineFacetSearch(property)> <span class=name>{{ property.name }}</span> <span class=count>{{ property.count }}</span></label></div><hr></div></div></div>');
     $templateCache.put('vn-product-option/checkboxes.html', '<label data-vn-block=vn-labeled-checkbox data-vn-modifiers={{option.class}} data-ng-repeat="itemKey in option.items" data-ng-init="item=product.optionItems[itemKey]"><div data-vn-element=checkbox><input type=checkbox data-ng-click=onCheckboxClicked(option)></div><div data-vn-element=content data-ng-include=" \'vn-product-option/content.html\' "></div></label>');
     $templateCache.put('vn-product-option/content.html', '<div data-vn-element=color-image><div data-vn-element=color data-ng-show=item.color style="background-color: {{item.color}}"></div><img data-vn-element=image data-ng-show=item.image data-ng-src={{item.image}} alt={{item.text}}></div><div data-vn-element=text data-ng-bind=item.text></div><div data-vn-element=border data-ng-class="{ checked: option.selected===itemKey }"></div>');

@@ -33,7 +33,6 @@ angular.module('Volusion.toolboxCommon')
 					 */
 					function processFirstCategoryStrategy(cList) {
 						angular.extend(cList, {displayStrategy: 'categoryDisplayOne'});
-						console.log('First category display strategy', cList);
 					}
 
 					/**
@@ -45,7 +44,6 @@ angular.module('Volusion.toolboxCommon')
 					 */
 					function processSecondCategoryStrategy(cList) {
 						angular.extend(cList, {displayStrategy: 'categoryDisplayTwo'});
-						console.log('second display strategy for categories: ', cList);
 					}
 
 					/**
@@ -61,8 +59,7 @@ angular.module('Volusion.toolboxCommon')
 								angular.extend(subCat, { hideSubCatLink: true });
 							});
 						});
-						console.log('third display strategy for categories: ', cList);
-						
+
 					}
 
 					/**
@@ -73,11 +70,9 @@ angular.module('Volusion.toolboxCommon')
 						var catMatchTest = false;
 						for (var i = categoryObject.subCategories.length - 1; i >= 0; i--) {
 							if (slug === categoryObject.subCategories[i].slug) {
-								console.log('matched, this slug should be txt: ', categoryObject.subCategories[i].slug);
 								angular.extend(categoryObject.subCategories[i], { hideSubCatLink: true });
 								catMatchTest = true;
 							} else {
-								console.log('not matched, this slug should be link: ', categoryObject.subCategories[i].slug);
 								angular.extend(categoryObject.subCategories[i], { hideSubCatLink: false });
 							}
 						}
@@ -104,7 +99,6 @@ angular.module('Volusion.toolboxCommon')
 					});
 
 					scope.toggleCategory = function () {
-						console.log('toggle category');
 						if (scope.isCategoryVisible) {
 							scope.isCategoryVisible = false;
 							return;
