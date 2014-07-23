@@ -2,8 +2,10 @@
 /*! vn-toolbox-common - ver.0.0.10 (2014-07-23) */
 
 
-@media screen and (max-width: 767px) { .-category-search > div { text-align: left; }
-  .-category-search > h4 { text-align: left; } }
+@media screen and (max-width: 767px) { .vn-category-search .__category-title, .vn-category-search .__category-item { text-align: left; } }
+@media screen and (max-width: 767px) and (max-width: 767px) { .vn-category-search { background-color: forestgreen; } }
+
+@media screen and (min-width: 768px) { .vn-category-search .__category-title { border-bottom: 2px solid crimson; } }
 
 .facets .facet-item label { display: block; }
 .facets .facet-item .-facet-property input[type="checkbox"] { display: none; }

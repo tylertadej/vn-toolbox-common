@@ -1,6 +1,7 @@
-<div class="-category-search">
+<div class="vn-category-search">
 	<a href ng-click="toggleCategory()"><h4>Categories</h4></a>
-	<div data-ng-repeat="subCat in subCategories"
+	<div class="vn-category-search__category-item"
+		 data-ng-repeat="subCat in subCategories"
 			data-ng-show="isCategoryVisible">
 		<a data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a>
 	</div>
