@@ -14,8 +14,8 @@
  * TODO: Add html and javascript here to demo it in docs.
  */
 angular.module('Volusion.toolboxCommon')
-	.directive('vnFacetSearch', ['$rootScope', 'vnProductParams',
-		function ($rootScope, vnProductParams) {
+	.directive('vnFacetSearch', ['$rootScope', '$window', 'vnProductParams',
+		function ($rootScope, $window, vnProductParams) {
 			'use strict';
 
 			return {
@@ -26,39 +26,51 @@ angular.module('Volusion.toolboxCommon')
 				},
 				link       : function postLink(scope) {
 
-					scope.$watch('facets', function (facets) {
-						scope.facets = facets;
-						// Default the facets to show
-						angular.forEach(scope.facets, function(facet) {
-							var displayDefault = { hide: false };
-							console.log('facet before: ', facet);
-							angular.extend(facet, displayDefault);
-							console.log('facet after: ', facet);
-						});
-					});
+					function mobalizeFacetList(fList) {
 
+						angular.forEach(fList, function(facet) {
+							facet.show = false;
+						});
+
+					}
+
+					function desktopizeFacetList(fList) {
+
+						angular.forEach(fList, function(facet) {
+							facet.show = true;
+						});
+					}
+
+					// Manage the differences in behavior for mobile vs. deesktop
 					enquire.register('screen and (max-width:767px)', {
 
 						setup: function() {
-							scope.areFacetItemsVisible = true;
+							scope.isDesktopFacet = true;
+							scope.isMobileMode = false;
+							console.log('window width setup: ', $window.innerWidth);
 						},
+
 						unmatch: function () {
-							scope.areFacetItemsVisible = true;
+							desktopizeFacetList(scope.facets);
+							scope.isDesktopFacet = true;
+							scope.isMobileMode = false;
 						},
 						// transitioning to mobile mode
 						match  : function () {
-							scope.areFacetItemsVisible = false;
+							mobalizeFacetList(scope.facets);
+							scope.isDesktopFacet = false;
+							scope.isMobileMode = true;
 						}
 					});
 
+					// Handle the hide/show of a facet item's properties.
 					scope.toggleFacetItems = function(idx) {
-						console.log('facet items: ', scope.facets);
-						console.log('toggle facet item: for index: ', idx);
-						if(scope.areFacetItemsVisible && scope.fasets[idx].show) {
-							scope.fasets[idx].show = false;
+						console.log('facet item: ', scope.facets[idx]);
+						if(scope.facets[idx].show) {
+							scope.facets[idx].show = false;
 							return;
 						}
-						scope.fasets[idx].show = true;
+						scope.facets[idx].show = true;
 					};
 
 					scope.selectProperty = function (facet) {
@@ -77,6 +89,30 @@ angular.module('Volusion.toolboxCommon')
 						// Broadcast an update to whomever if any is subscribed.
 						$rootScope.$broadcast('ProductSearch.facetsUpdated');
 					};
+
+					scope.isMobileMode = false; // default to desktop
+//					function isMobileMode() {
+//						return scope.isMobileMode;
+//					}
+
+					scope.$watch('facets', function (facets) {
+						scope.facets = facets;
+						// Default the facets to show
+
+						// will need a more complicated routine here for checking if is selected
+//						var isDesktopFacet = isMobileMode();
+						angular.forEach(scope.facets, function (facet) {
+							var displayDefault = { show: false };
+							angular.extend(facet, displayDefault);
+						});
+
+						// Need this to pre process responses and page load items
+						if ($window.innerWidth < 767) {
+							mobalizeFacetList(scope.facets);
+						} else {
+							desktopizeFacetList(scope.facets);
+						}
+					});
 				}
 			};
 		}]);
