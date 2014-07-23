@@ -1,4 +1,4 @@
-/*! vn-toolbox-common - ver.0.0.8 (2014-07-11) */
+/*! vn-toolbox-common - ver.0.0.8 (2014-07-23) */
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', [
   'pascalprecht.translate',
@@ -1814,7 +1814,7 @@ angular.module('Volusion.toolboxCommon').factory('vnProductParams', function () 
 		 * Remove the passed id from the categoryIds array and update the paramsObject.categoryIds value.
 		 */
   function removeCategory(id) {
-    var index = categoryIds.indewxOf(id);
+    var index = categoryIds.indexOf(id);
     categoryIds.splice(index, 1);
     paramsObject.categoryIds = getCategoryString();
   }
