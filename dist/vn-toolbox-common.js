@@ -1,4 +1,4 @@
-/*! vn-toolbox-common - ver.0.0.9 (2014-07-23) */
+/*! vn-toolbox-common - ver.0.0.10 (2014-07-23) */
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', [
   'pascalprecht.translate',
@@ -322,8 +322,11 @@ angular.module('Volusion.toolboxCommon').directive('vnFacetSearch', [
         scope.$watch('facets', function (facets) {
           scope.facets = facets;
           // Default the facets to show
-          angular.each(scope.facets, function (facet) {
-            angular.extend(facet, { hide: false });  //							facet.hide = false;
+          angular.forEach(scope.facets, function (facet) {
+            var displayDefault = { hide: false };
+            console.log('facet before: ', facet);
+            angular.extend(facet, displayDefault);
+            console.log('facet after: ', facet);
           });
         });
         enquire.register('screen and (max-width:767px)', {
