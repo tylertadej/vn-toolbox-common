@@ -1,8 +1,16 @@
 <div class="vn-category-search">
-	<a href ng-click="toggleCategory()"><h4>Categories</h4></a>
-	<div class="vn-category-search__category-item"
-		 data-ng-repeat="subCat in subCategories"
-			data-ng-show="isCategoryVisible">
-		<a data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a>
+	<a href
+	   class="vn-category-search__category-title"
+	   ng-click="toggleCategory()">
+		<h4>Categories</h4>
+	</a>
+	<div class="list-group vn-category-search__category-items"
+		 data-ng-repeat="cat in categories"
+		 data-ng-show="isCategoryVisible">
+		<a data-ng-href="{{ cat.url  }}">{{ cat.name }}</a>
+		<a class="list-group-item vn-category-search__category-items__category-item"
+		   data-ng-repeat="subCat in cat.subCategories"
+		   data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a>
 	</div>
 </div>
+ 

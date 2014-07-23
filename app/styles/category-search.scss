@@ -1,20 +1,30 @@
 // Default Toolbox Responsive Optimizations
-@media screen and (max-width:767px){
-	.vn-category-search {
-		.__category-title, .__category-item {
-			text-align: left;
+.vn-category-search {
+	padding: 5px 0;
+	border-top: 1px solid #e6e6e6;
+	border-bottom: 1px solid #e6e6e6;
+
+	&__category-title, &__category-items {
+		text-align: left;
+
+		&__category-item {
+			border: none!important; // is my bem wrong? overiding bootstrap here.
 		}
 
 		@media(max-width : 767px) {
-			background-color: forestgreen;
+
 		}
 	}
-}
-// Tablets
-@media screen and (min-width:768px){
-	.vn-category-search {
-		.__category-title {
-			border-bottom: 2px solid crimson;
+
+	&__category-items {
+		text-align: left;
+
+		&__category-item {
+			border: none;
+		}
+
+		@media(max-width : 767px) {
+
 		}
 	}
 }

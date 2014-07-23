@@ -24,8 +24,6 @@ angular.module('Volusion.toolboxCommon')
 			link       : function postLink(scope) {
 				// Categories use this to update the search params.
 
-				console.log('category-search: ', scope.categories);
-
 				enquire.register('screen and (max-width:767px)', {
 
 					setup: function() {
@@ -61,6 +59,7 @@ angular.module('Volusion.toolboxCommon')
 						return;
 					} else {
 						scope.subCategories = categories[0].subCategories;
+						scope.categories = categories;
 					}
 				});
 			}

@@ -2,10 +2,11 @@
 /*! vn-toolbox-common - ver.0.0.10 (2014-07-23) */
 
 
-@media screen and (max-width: 767px) { .vn-category-search .__category-title, .vn-category-search .__category-item { text-align: left; } }
-@media screen and (max-width: 767px) and (max-width: 767px) { .vn-category-search { background-color: forestgreen; } }
-
-@media screen and (min-width: 768px) { .vn-category-search .__category-title { border-bottom: 2px solid crimson; } }
+.vn-category-search { padding: 5px 0; border-top: 1px solid #e6e6e6; border-bottom: 1px solid #e6e6e6; }
+.vn-category-search__category-title, .vn-category-search__category-items { text-align: left; }
+.vn-category-search__category-title__category-item, .vn-category-search__category-items__category-item { border: none !important; }
+.vn-category-search__category-items { text-align: left; }
+.vn-category-search__category-items__category-item { border: none; }
 
 .facets .facet-item label { display: block; }
 .facets .facet-item .-facet-property input[type="checkbox"] { display: none; }
