@@ -6,9 +6,11 @@
 
 	&__category-title, &__category-items {
 		text-align: left;
+		margin-bottom: 5px!important;
 
 		&__category-item {
 			border: none!important; // is my bem wrong? overiding bootstrap here.
+			padding: 0 25px!important;
 		}
 
 		@media(max-width : 767px) {
