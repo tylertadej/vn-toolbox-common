@@ -61,13 +61,21 @@ angular.module('Volusion.toolboxCommon')
 						$rootScope.$broadcast('ProductSearch.categoriesUpdated', { category: category });
 					};
 
-					// Have to do this to listen for the data returned async and passed into the directive
+					console.log('currentSlug: ', currentSlug);
 					scope.$watch('categories', function (categories) {
 						// Gaurd against the error message for while categories is not defined.
 						if (!categories || !categories[0]) {
 							return;
-						} else if (1 === categories.length) {
+						}
+						/**
+						 * First Display Strategy: 1 top level category && on that route
+						 * - for example: current route is /c/home-decor
+						 * - slug is home-decor and it matches category.slug
+						 */
+						else if (1 === categories.length && $routeParams.slug === categories.slug) {
 							processCategoryList(categories);
+						} else {
+							console.log('and of logic in category-search directive watch.');
 						}
 					});
 				}
