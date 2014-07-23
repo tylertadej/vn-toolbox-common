@@ -53,8 +53,16 @@ angular.module('Volusion.toolboxCommon')
 					 * - everything is clickable
 					 */
 					function processThirdCategoryStrategy(cList) {
-						angular.extend(cList, {displayStrategy: 'categoryDisplayThree'});
+
+						angular.forEach(cList, function(category) {
+							angular.extend(category, {displayStrategy: 'categoryDisplayThree'});
+							// Make sure that the sub cats will be links as well
+							angular.forEach(category.subCategories, function(subCat) {
+								angular.extend(subCat, { hideSubCatLink: true });
+							});
+						});
 						console.log('third display strategy for categories: ', cList);
+						
 					}
 
 					/**
@@ -65,10 +73,13 @@ angular.module('Volusion.toolboxCommon')
 						var catMatchTest = false;
 						for (var i = categoryObject.subCategories.length - 1; i >= 0; i--) {
 							if (slug === categoryObject.subCategories[i].slug) {
+								console.log('matched, this slug should be txt: ', categoryObject.subCategories[i].slug);
 								angular.extend(categoryObject.subCategories[i], { hideSubCatLink: true });
 								catMatchTest = true;
+							} else {
+								console.log('not matched, this slug should be link: ', categoryObject.subCategories[i].slug);
+								angular.extend(categoryObject.subCategories[i], { hideSubCatLink: false });
 							}
-//							angular.extend(categoryObject.subCategories[i], { hideSubCatLink: false });
 						}
 						return catMatchTest;
 
