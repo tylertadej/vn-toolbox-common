@@ -341,7 +341,8 @@ module.exports = function(grunt) {
 				files: [
 					{
 						src: [
-							'<%= yeoman.app %>/scripts/{,*/}*.js',
+							//'<%= yeoman.app %>/scripts/{,*/}*.js',
+							'<%= yeoman.app %>/scripts/**/*.js',
 							'!<%= yeoman.app %>/scripts/app.js',
 							'!<%= yeoman.app %>/scripts/{,*/}main.js',
 							'.tmp/partial-views.js'

@@ -1,4 +1,4 @@
-/*! vn-toolbox-common - ver.0.0.9 (2014-07-18) */
+/*! vn-toolbox-common - ver.0.0.10 (2014-07-23) */
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', [
   'pascalprecht.translate',
@@ -19,28 +19,30 @@ angular.module('Volusion.toolboxCommon', [
     $translateProvider.translations('en', translationsEn).translations('es', translationsEs).preferredLanguage('en');
   }
 ]);
-'use strict';
-/**
- * @ngdoc function
- * @name Volusion.toolboxCommon.controller:VnProductOptionCtrl
- * @description
- * # VnProductOptionCtrl
- * Controller of the Volusion.toolboxCommon
- */
+angular.module('Volusion.toolboxCommon').controller('OptionsCtrl', [
+  '$rootScope',
+  '$scope',
+  function ($rootScope, $scope) {
+    'use strict';
+    $scope.isItemAvailable = true;
+    $scope.itemToken = $scope.option.id + ':' + $scope.item.id;
+    $scope.$on('VN_PRODUCT_SELECTED', function (event, selection) {
+      for (var key in selection.product.optionSelections) {
+        if (selection.product.optionSelections.hasOwnProperty(key)) {
+          var selectionToken = selection.option.id + ':' + selection.option.selected;
+          if (selectionToken !== $scope.itemToken && key.indexOf(selectionToken) > -1 && key.indexOf($scope.itemToken) > -1) {
+            $scope.isItemAvailable = $scope.product.optionSelections[key].available > 0;  // TODO: What about the state?
+          }
+        }
+      }
+    });
+  }
+]);
 angular.module('Volusion.toolboxCommon').controller('VnProductOptionCtrl', [
   '$rootScope',
   '$scope',
   function ($rootScope, $scope) {
-    $scope.onOptionChanged = function (option, item) {
-      $scope.saveTo[option.id] = item.id;
-      preserveSubOptions();
-      $rootScope.$emit('VN_PRODUCT_SELECTED', angular.extend({}, {
-        product: $scope.product,
-        option: option,
-        item: item,
-        isValid: verifyRequiredOptionsAreSelected($scope.product.options)
-      }, buildSelection()));
-    };
+    'use strict';
     function preserveSubOptions() {
       traverseSelectedOptions($scope.product.options, null, function (option, item) {
         option.selected = item.id;
@@ -104,6 +106,16 @@ angular.module('Volusion.toolboxCommon').controller('VnProductOptionCtrl', [
       }
       return true;
     }
+    $scope.onOptionChanged = function (option, item) {
+      $scope.saveTo[option.id] = item.id;
+      preserveSubOptions();
+      $rootScope.$broadcast('VN_PRODUCT_SELECTED', angular.extend({}, {
+        product: $scope.product,
+        option: option,
+        item: item,
+        isValid: verifyRequiredOptionsAreSelected($scope.product.options)
+      }, buildSelection()));
+    };
     $scope.onCheckboxClicked = function (option, itemKey) {
       var saveTo = $scope.saveTo;
       var items = saveTo[option.id] = saveTo[option.id] || [];
@@ -2197,7 +2209,7 @@ angular.module('Volusion.toolboxCommon.templates', []).run([
   '$templateCache',
   function ($templateCache) {
     $templateCache.put('vn-product-option/checkboxes.html', '<label data-vn-block=vn-labeled-checkbox data-vn-modifiers={{option.class}} data-ng-repeat="itemKey in option.items" data-ng-init="item=product.optionItems[itemKey]"><div data-vn-element=checkbox><input type=checkbox data-ng-click=onCheckboxClicked(option)></div><div data-vn-element=content data-ng-include=" \'vn-product-option/content.html\' "></div></label>');
-    $templateCache.put('vn-product-option/content.html', '<div data-vn-element=color-image><div data-vn-element=color data-ng-show=item.color style="background-color: {{item.color}}"></div><img data-vn-element=image data-ng-show=item.image data-ng-src={{item.image}} alt={{item.text}}></div><div data-vn-element=text data-ng-bind=item.text></div><div data-vn-element=border data-ng-class="{ checked: option.selected===itemKey }"></div>');
+    $templateCache.put('vn-product-option/content.html', '<div data-vn-element=color-image><div data-vn-element=color data-ng-show=item.color style="background-color: {{item.color}}"></div><img data-vn-element=image data-ng-show=item.image data-ng-src={{item.image}} alt={{item.text}}></div><div data-vn-element=text data-ng-bind=item.text data-ng-controller=OptionsCtrl data-ng-class="{ \'-disabled\': !isItemAvailable }"></div><div data-vn-element=border data-ng-class="{ checked: option.selected===itemKey }"></div>');
     $templateCache.put('vn-product-option/index.html', '<div data-vn-block=vn-product-option><label data-vn-element=label data-ng-if=option.label data-ng-bind=option.label></label><div data-ng-repeat="inputType in option.inputTypes"><div data-vn-element=group data-vn-modifiers="{{inputType.type}} {{option.class}}" data-ng-include=" \'vn-product-option/\' + inputType.type + \'.html\' "></div></div><div data-ng-if=option.selected><div data-ng-repeat="option in option.options" data-ng-include=" \'vn-product-option/index.html\' "></div></div></div>');
     $templateCache.put('vn-product-option/radios.html', '<label data-vn-block=vn-labeled-radio data-vn-modifiers={{option.class}} data-ng-repeat="itemKey in option.items" data-ng-init="item=product.optionItems[itemKey]"><div data-vn-element=radio><input type=radio name={{option.id}} data-ng-value=itemKey data-ng-model=option.selected data-ng-click="onOptionChanged(option, item)"></div><div data-vn-element=content data-ng-include=" \'vn-product-option/content.html\' "></div></label>');
     $templateCache.put('vn-product-option/select.html', '<select data-vn-element=select data-vn-modifiers={{option.class}} data-ng-attr-size={{inputType.size}} data-ng-model=option.selected data-ng-change="onOptionChanged(option, product.optionItems[option.selected])" data-ng-options="product.optionItems[itemKey].text for itemKey in option.items"></select>');
