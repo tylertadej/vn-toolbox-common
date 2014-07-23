@@ -13,8 +13,8 @@
  */
 
 angular.module('Volusion.toolboxCommon')
-	.directive('vnCategorySearch', ['$rootScope', '$routeParams', 'vnProductParams',
-		function ($rootScope, $routeParams, vnProductParams) {
+	.directive('vnCategorySearch', ['$rootScope', '$routeParams', '$location', 'vnProductParams',
+		function ($rootScope, $routeParams, $location, vnProductParams) {
 			'use strict';
 			return {
 				templateUrl: 'vn-faceted-search/vn-category-search.html',
@@ -24,9 +24,52 @@ angular.module('Volusion.toolboxCommon')
 				},
 				link       : function postLink(scope) {
 
-					function processCategoryList(cList) {
-						console.log('the route params: ', $routeParams);
-						console.log('only have one top level category', cList);
+					/**
+					 * First Display Strategy: 1 top level category && on that route
+					 * - for example: current route is /c/home-decor
+					 * - slug is home-decor and it matches category.slug
+					 */
+					function processFirstCategoryStrategy(cList) {
+						angular.extend(cList, {displayStrategy: 'categoryDisplayOne'});
+						console.log('First category display strategy', cList);
+					}
+
+					/**
+					 * Second Display Strategy: 1 top level category &&
+					 * also on one of the sub category route slugs
+					 * - for example: current route is /c/furniture
+					 * - routeParams.slug is furniture and it matches one of the
+					 * - category.subCategories[i].slug values
+					 */
+					function processSecondCategoryStrategy(cList) {
+						angular.extend(cList, {displayStrategy: 'categoryDisplayTwo'});
+						console.log('second display strategy for categories: ', cList);
+					}
+
+					/**
+					 * Third Display Strategy: on the search route
+					 * - everything is clickable
+					 */
+					function processThirdCategoryStrategy(cList) {
+						angular.extend(cList, {displayStrategy: 'categoryDisplayThree'});
+						console.log('third display strategy for categories: ', cList);
+					}
+
+					/**
+					 * Utility function used in depermining which strategy to apply to this set of category response data
+					 */
+					function checkSubCategoriesForSlugMatch(slug, categoryObject) {
+
+						var catMatchTest = false;
+						for (var i = categoryObject.subCategories.length - 1; i >= 0; i--) {
+							if (slug === categoryObject.subCategories[i].slug) {
+								angular.extend(categoryObject.subCategories[i], { hideSubCatLink: true });
+								catMatchTest = true;
+							}
+//							angular.extend(categoryObject.subCategories[i], { hideSubCatLink: false });
+						}
+						return catMatchTest;
+
 					}
 
 					// Categories use this to update the search params.
@@ -61,21 +104,19 @@ angular.module('Volusion.toolboxCommon')
 						$rootScope.$broadcast('ProductSearch.categoriesUpdated', { category: category });
 					};
 
-					console.log('currentSlug: ', currentSlug);
 					scope.$watch('categories', function (categories) {
+
 						// Gaurd against the error message for while categories is not defined.
 						if (!categories || !categories[0]) {
 							return;
-						}
-						/**
-						 * First Display Strategy: 1 top level category && on that route
-						 * - for example: current route is /c/home-decor
-						 * - slug is home-decor and it matches category.slug
-						 */
-						else if (1 === categories.length && $routeParams.slug === categories.slug) {
-							processCategoryList(categories);
+						} else if ('/search' === $location.path()) {
+							processThirdCategoryStrategy(categories);
+						} else if (1 === categories.length && $routeParams.slug === categories[0].slug) {
+							processFirstCategoryStrategy(categories[0]);
+						} else if (1 === categories.length && checkSubCategoriesForSlugMatch($routeParams.slug, categories[0])) {
+							processSecondCategoryStrategy(categories[0]);
 						} else {
-							console.log('and of logic in category-search directive watch.');
+							throw new Error('Is there a new display strategy for the category-search directive in toolbox?');
 						}
 					});
 				}
