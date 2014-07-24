@@ -39,9 +39,7 @@ angular.module('Volusion.toolboxCommon')
 		 * An array to hold facet ids that have been selected by someone.
 		 */
 		facets = [],             // Container for the facets to query for
-		//        currentPageNumber = '',
-		//        nextPageNumber = '',
-		//        previousPageNumber = '',
+		//        currentPage = '',
 		/**
 		 * @ngdoc property
 		 * @name paramsObject
@@ -60,9 +58,34 @@ angular.module('Volusion.toolboxCommon')
 			maxPrice     : '',
 			accessoriesOf: '',
 			sort         : '',
-			pageNumber   : '',
+			page         : '',
 			pageSize     : ''
 		};
+
+
+		/**
+		 * @ngdoc function
+		 * @name nextPage
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Sets the paramsObject page property to the next page.
+		 */
+		function nextPage() {
+			paramsObject.page++;
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name previousPage
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Sets the paramsObject page property to the previous page.
+		 */
+		function previousPage() {
+			paramsObject.page--;
+		}
 
 		/**
 		 * @ngdoc function
@@ -364,7 +387,7 @@ angular.module('Volusion.toolboxCommon')
 				maxPrice     : '',
 				accessoriesOf: '',
 				sort         : '',
-				pageNumber   : '',
+				page         : '',
 				pageSize     : ''
 			};
 		}
@@ -430,37 +453,37 @@ angular.module('Volusion.toolboxCommon')
 
 		/**
 		 * @ngdoc function
-		 * @name setPageNumber
-		 * @param {String} setPageNumber is a string that can be passed to api to modify the page to ask backend for
+		 * @name setPage
+		 * @param {String} setPage is a string that can be passed to api to modify the page to ask backend for
 		 * @methodOf Volusion.toolboxCommon.vnProductParams
 		 *
 		 * @description
-		 * Setter for the paramsObject pageNumber property.
+		 * Setter for the paramsObject page property.
 		 */
-		function setPageNumber(pageNumber) {
-			paramsObject.pageNumber = pageNumber;
+		function setPage(page) {
+			paramsObject.page = page;
 		}
 
 		/**
 		 * @ngdoc function
-		 * @name getPageNumber
+		 * @name getPage
 		 * @methodOf Volusion.toolboxCommon.vnProductParams
 		 *
 		 * @description
-		 * Getter for the paramsObject pageNumber property.
+		 * Getter for the paramsObject page property.
 		 */
-		function getPageNumber() {
-			return paramsObject.pageNumber;
+		function getPage() {
+			return paramsObject.page;
 		}
 
 		/**
 		 * @ngdoc function
-		 * @name setPageNumber
-		 * @param {String} setPageNumber is a string that can be passed to api to modify the page to ask backend for
+		 * @name setPageSize
+		 * @param {String} setPageSize is a string that can be passed to api to modify the page to ask backend for
 		 * @methodOf Volusion.toolboxCommon.vnProductParams
 		 *
 		 * @description
-		 * Setter for the paramsObject pageNumber property.
+		 * Setter for the paramsObject page property.
 		 */
 		function setPageSize(pageSize) {
 			paramsObject.pageSize = pageSize;
@@ -468,11 +491,11 @@ angular.module('Volusion.toolboxCommon')
 
 		/**
 		 * @ngdoc function
-		 * @name getPageNumber
+		 * @name getPageSize
 		 * @methodOf Volusion.toolboxCommon.vnProductParams
 		 *
 		 * @description
-		 * Getter for the paramsObject pageNumber property.
+		 * Getter for the paramsObject pageSize property.
 		 */
 		function getPageSize() {
 			return paramsObject.pageSize;
@@ -480,36 +503,38 @@ angular.module('Volusion.toolboxCommon')
 
 		// Public API here
 		return {
-			addCategory           : addCategory,
-			getAccessoriesOf      : getAccessoriesOf,
-			addFacet              : addFacet,
-			getFacetString        : getFacetString,
-			getMinPrice           : getMinPrice,
-			getMaxPrice           : getMaxPrice,
-			getPageNumber         : getPageNumber,
-			getPageSize           : getPageSize,
-			getParamsObject       : getParamsObject,
-			getSort               : getSort,
-			isFacetSelected       : isFacetSelected,
-			removeSlug            : removeSlug,
-			removeSearch          : removeSearch,
-			setMinPrice           : setMinPrice,
-			removeMinPrice        : removeMinPrice,
-			removeMaxPrice        : removeMaxPrice,
-			removeAccessoriesOf   : removeAccessoriesOf,
-			removeCategory        : removeCategory,
-			removeFacet           : removeFacet,
-			removeSort            : removeSort,
-			resetCategories       : resetCategories,
-			resetFacets           : resetFacets,
-			resetParamsObject     : resetParamsObject,
-			setAccessoriesOf      : setAccessoriesOf,
-			setMaxPrice           : setMaxPrice,
-			setPageNumber         : setPageNumber,
-			setPageSize           : setPageSize,
-			setSort               : setSort,
-			updateSearch          : updateSearch,
-			updateSlug            : updateSlug
+			addCategory        : addCategory,
+			getAccessoriesOf   : getAccessoriesOf,
+			addFacet           : addFacet,
+			getFacetString     : getFacetString,
+			getMinPrice        : getMinPrice,
+			getMaxPrice        : getMaxPrice,
+			getPage            : getPage,
+			getPageSize        : getPageSize,
+			getParamsObject    : getParamsObject,
+			getSort            : getSort,
+			isFacetSelected    : isFacetSelected,
+			nextPage           : nextPage,
+			previousPage       : previousPage,
+			removeSlug         : removeSlug,
+			removeSearch       : removeSearch,
+			setMinPrice        : setMinPrice,
+			removeMinPrice     : removeMinPrice,
+			removeMaxPrice     : removeMaxPrice,
+			removeAccessoriesOf: removeAccessoriesOf,
+			removeCategory     : removeCategory,
+			removeFacet        : removeFacet,
+			removeSort         : removeSort,
+			resetCategories    : resetCategories,
+			resetFacets        : resetFacets,
+			resetParamsObject  : resetParamsObject,
+			setAccessoriesOf   : setAccessoriesOf,
+			setMaxPrice        : setMaxPrice,
+			setPage            : setPage,
+			setPageSize        : setPageSize,
+			setSort            : setSort,
+			updateSearch       : updateSearch,
+			updateSlug         : updateSlug
 		};
 	});
 
