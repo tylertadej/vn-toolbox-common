@@ -1,37 +1,12 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 3cd08d2... Merge conflicts.
 
-/*! vn-toolbox-common - ver.0.0.10 (2014-07-23) */
+/*! vn-toolbox-common - ver.0.0.10 (2014-07-24) */
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 .vn-category-search { padding: 5px 0; border-top: 1px solid #e6e6e6; border-bottom: 1px solid #e6e6e6; }
 .vn-category-search__category-title, .vn-category-search__category-items { text-align: left; margin-bottom: 5px !important; }
 .vn-category-search__category-title__category-item, .vn-category-search__category-items__category-item { border: none !important; padding: 0 25px !important; }
 .vn-category-search__category-items { text-align: left; }
 .vn-category-search__category-items__category-item { border: none; }
-=======
-@media screen and (max-width: 767px) { .-category-search > div { text-align: left; }
-  .-category-search > h4 { text-align: left; } }
->>>>>>> 3cd08d2... Merge conflicts.
-=======
-@media screen and (max-width: 767px) { .vn-category-search .__category-title, .vn-category-search .__category-item { text-align: left; } }
-@media screen and (max-width: 767px) and (max-width: 767px) { .vn-category-search { background-color: forestgreen; } }
-
-@media screen and (min-width: 768px) { .vn-category-search .__category-title { border-bottom: 2px solid crimson; } }
->>>>>>> 98b2f5a... Merge conflicts
-=======
-.vn-category-search { padding: 5px 0; border-top: 1px solid #e6e6e6; border-bottom: 1px solid #e6e6e6; }
-.vn-category-search__category-title, .vn-category-search__category-items { text-align: left; }
-.vn-category-search__category-title__category-item, .vn-category-search__category-items__category-item { border: none !important; }
-.vn-category-search__category-items { text-align: left; }
-.vn-category-search__category-items__category-item { border: none; }
->>>>>>> 8429457... Regenerate dist files.
 
 .facets .facet-item label { display: block; }
 .facets .facet-item .-facet-property input[type="checkbox"] { display: none; }
@@ -65,9 +40,3 @@ ul.rating { display: inline-block; }
 .rating .filled { color: #21568b; }
 
 /*!***************************************************************************/
-<<<<<<< HEAD
-=======
->>>>>>> ddb9ce4... Merge conflicts & remove dist code for now.
-=======
->>>>>>> Regenerate dist files.
->>>>>>> 3cd08d2... Merge conflicts.

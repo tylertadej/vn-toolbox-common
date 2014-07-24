@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 3cd08d2... Merge conflicts.
-/*! vn-toolbox-common - ver.0.0.10 (2014-07-23) */
+/*! vn-toolbox-common - ver.0.0.10 (2014-07-24) */
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', [
   'pascalprecht.translate',
@@ -236,22 +231,16 @@ angular.module('Volusion.toolboxCommon').directive('vnCarousel', [
 ]);
 angular.module('Volusion.toolboxCommon').directive('vnCategorySearch', [
   '$rootScope',
-<<<<<<< HEAD
   '$routeParams',
   '$location',
   'vnProductParams',
   function ($rootScope, $routeParams, $location, vnProductParams) {
-=======
-  'vnProductParams',
-  function ($rootScope, vnProductParams) {
->>>>>>> 3cd08d2... Merge conflicts.
     'use strict';
     return {
       templateUrl: 'vn-faceted-search/vn-category-search.html',
       restrict: 'AE',
       scope: { categories: '=' },
       link: function postLink(scope) {
-<<<<<<< HEAD
         /**
 					 * First Display Strategy: 1 top level category && on that route
 					 * - for example: current route is /c/home-decor
@@ -310,25 +299,10 @@ angular.module('Volusion.toolboxCommon').directive('vnCategorySearch', [
           },
           match: function () {
             scope.isDesktopCategory = false;
-=======
-        // Categories use this to update the search params.
-        enquire.register('screen and (max-width:767px)', {
-          setup: function () {
-            scope.isCategoryVisible = true;
-          },
-          unmatch: function () {
-            scope.isCategoryVisible = true;
-          },
-          match: function () {
->>>>>>> 3cd08d2... Merge conflicts.
             scope.isCategoryVisible = false;
           }
         });
         scope.toggleCategory = function () {
-<<<<<<< HEAD
-=======
-          console.log('toggle category');
->>>>>>> 3cd08d2... Merge conflicts.
           if (scope.isCategoryVisible) {
             scope.isCategoryVisible = false;
             return;
@@ -339,15 +313,10 @@ angular.module('Volusion.toolboxCommon').directive('vnCategorySearch', [
           vnProductParams.addCategory(category.id);
           $rootScope.$broadcast('ProductSearch.categoriesUpdated', { category: category });
         };
-<<<<<<< HEAD
-=======
-        // Have to do this to listen for the data returned async and passed into the directive
->>>>>>> 3cd08d2... Merge conflicts.
         scope.$watch('categories', function (categories) {
           // Gaurd against the error message for while categories is not defined.
           if (!categories || !categories[0]) {
             return;
-<<<<<<< HEAD
           } else if ('/search' === $location.path()) {
             processThirdCategoryStrategy(categories);
           } else if (1 === categories.length && $routeParams.slug === categories[0].slug) {
@@ -356,14 +325,6 @@ angular.module('Volusion.toolboxCommon').directive('vnCategorySearch', [
             processSecondCategoryStrategy(categories[0]);
           } else {
             throw new Error('Is there a new display strategy for the category-search directive in toolbox?');
-=======
-          } else {
-            scope.subCategories = categories[0].subCategories;
-<<<<<<< HEAD
->>>>>>> 3cd08d2... Merge conflicts.
-=======
-            scope.categories = categories;
->>>>>>> 8429457... Regenerate dist files.
           }
         });
       }
@@ -429,13 +390,6 @@ angular.module('Volusion.toolboxCommon').directive('vnFacetSearch', [
           setup: function () {
             scope.isDesktopFacet = true;
             scope.isMobileMode = false;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-            console.log('window width setup: ', $window.innerWidth);
->>>>>>> 3cd08d2... Merge conflicts.
-=======
->>>>>>> 98b2f5a... Merge conflicts
           },
           unmatch: function () {
             desktopizeFacetList(scope.facets);
@@ -450,13 +404,6 @@ angular.module('Volusion.toolboxCommon').directive('vnFacetSearch', [
         });
         // Handle the hide/show of a facet item's properties.
         scope.toggleFacetItems = function (idx) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-          console.log('facet item: ', scope.facets[idx]);
->>>>>>> 3cd08d2... Merge conflicts.
-=======
->>>>>>> 98b2f5a... Merge conflicts
           if (scope.facets[idx].show) {
             scope.facets[idx].show = false;
             return;
@@ -478,35 +425,15 @@ angular.module('Volusion.toolboxCommon').directive('vnFacetSearch', [
         };
         scope.isMobileMode = false;
         // default to desktop
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-        //					function isMobileMode() {
-        //						return scope.isMobileMode;
-        //					}
->>>>>>> 3cd08d2... Merge conflicts.
-=======
->>>>>>> 98b2f5a... Merge conflicts
         scope.$watch('facets', function (facets) {
           scope.facets = facets;
           // Default the facets to show
-          // will need a more complicated routine here for checking if is selected
-          //						var isDesktopFacet = isMobileMode();
           angular.forEach(scope.facets, function (facet) {
             var displayDefault = { show: false };
             angular.extend(facet, displayDefault);
           });
-<<<<<<< HEAD
-<<<<<<< HEAD
           // Need this to pre process responses and page load items and enquire wasn't
           // responding to the match for data after initial page load.
-=======
-          // Need this to pre process responses and page load items
->>>>>>> 3cd08d2... Merge conflicts.
-=======
-          // Need this to pre process responses and page load items and enquire wasn't
-          // responding to the match for data after initial page load.
->>>>>>> 98b2f5a... Merge conflicts
           if ($window.innerWidth < 767) {
             mobalizeFacetList(scope.facets);
           } else {
@@ -2071,34 +1998,6 @@ angular.module('Volusion.toolboxCommon').factory('vnProductParams', function () 
   }
   /**
 		 * @ngdoc function
-		 * @name resetParamsForCategory
-		 * @params {String} catId
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * Given the catId, use it to reset everything else except for the category id.
-		 * First use was in Method Category Ctrl where I wanted to preserve the current category
-		 */
-  function resetParamsForCategory(catId) {
-    // Reset the world
-    categoryIds = [];
-    facets = [];
-    paramsObject = {
-      categoryIds: '',
-      slug: '',
-      facets: '',
-      minPrice: '',
-      maxPrice: '',
-      accessoriesOf: '',
-      sort: '',
-      pageNumber: '',
-      pageSize: ''
-    };
-    // Remember the category
-    addCategory(catId);
-  }
-  /**
-		 * @ngdoc function
 		 * @name resetParamsObject
 		 * @methodOf Volusion.toolboxCommon.vnProductParams
 		 *
@@ -2245,7 +2144,6 @@ angular.module('Volusion.toolboxCommon').factory('vnProductParams', function () 
     removeSort: removeSort,
     resetCategories: resetCategories,
     resetFacets: resetFacets,
-    resetParamsForCategory: resetParamsForCategory,
     resetParamsObject: resetParamsObject,
     setAccessoriesOf: setAccessoriesOf,
     setMaxPrice: setMaxPrice,
@@ -2410,19 +2308,7 @@ angular.module('Volusion.toolboxCommon').factory('vnSession', [
 angular.module('Volusion.toolboxCommon.templates', []).run([
   '$templateCache',
   function ($templateCache) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     $templateCache.put('vn-faceted-search/vn-category-search.html', '<div class=vn-category-search><h4 ng-show=isDesktopCategory>Categories</h4><a href class=vn-category-search__category-title ng-show=!isDesktopCategory ng-click=toggleCategory()><h4>Categories</h4></a><div class="list-group vn-category-search__category-items" data-ng-repeat="cat in categories" data-ng-show=isCategoryVisible><a ng-if="cat.displayStrategy == \'categoryDisplayTwo\' || cat.displayStrategy == \'categoryDisplayThree\' " data-ng-href="{{ cat.url  }}"><span ng-if="cat.displayStrategy == \'categoryDisplayTwo\' " class="glyphicon glyphicon-chevron-left"></span> {{ cat.name }}</a> <span ng-if="cat.displayStrategy == \'categoryDisplayOne\'  ">{{ cat.name }}</span><div class="list-group-item vn-category-search__category-items__category-item" data-ng-repeat="subCat in cat.subCategories"><span data-ng-if=subCat.hideSubCatLink>{{ subCat.name }}</span> <a data-ng-if=!subCat.hideSubCatLink data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a></div></div></div>');
-=======
-    $templateCache.put('vn-faceted-search/vn-category-search.html', '<div class=-category-search><a href ng-click=toggleCategory()><h4>Categories</h4></a><div data-ng-repeat="subCat in subCategories" data-ng-show=isCategoryVisible><a data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a></div></div>');
->>>>>>> 3cd08d2... Merge conflicts.
-=======
-    $templateCache.put('vn-faceted-search/vn-category-search.html', '<div class=vn-category-search><a href ng-click=toggleCategory()><h4>Categories</h4></a><div class=vn-category-search__category-item data-ng-repeat="subCat in subCategories" data-ng-show=isCategoryVisible><a data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a></div></div>');
->>>>>>> 98b2f5a... Merge conflicts
-=======
-    $templateCache.put('vn-faceted-search/vn-category-search.html', '<div class=vn-category-search><a href class=vn-category-search__category-title ng-click=toggleCategory()><h4>Categories</h4></a><div class="list-group vn-category-search__category-items" data-ng-repeat="cat in categories" data-ng-show=isCategoryVisible><a data-ng-href="{{ cat.url  }}">{{ cat.name }}</a> <a class="list-group-item vn-category-search__category-items__category-item" data-ng-repeat="subCat in cat.subCategories" data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a></div></div>');
->>>>>>> 8429457... Regenerate dist files.
     $templateCache.put('vn-faceted-search/vn-facet-search.html', '<div class=-faceted-search><div class=facets><div class=facet-item data-ng-repeat="facet in facets track by $index"><h4 ng-show=isDesktopFacet>{{ facet.title }}</h4><a ng-show=!isDesktopFacet ng-click=toggleFacetItems($index)><h4>{{ facet.title }}</h4></a><div ng-show=facets[$index].show><label class=-facet-property data-ng-repeat="property in facet.properties track by $index"><input type=checkbox name=property.name ng-checked=selectProperty(property) ng-click=refineFacetSearch(property)> <span class=name>{{ property.name }}</span> <span class=count>{{ property.count }}</span></label></div><hr></div></div></div>');
     $templateCache.put('vn-product-option/checkboxes.html', '<label data-vn-block=vn-labeled-checkbox data-vn-modifiers={{option.class}} data-ng-repeat="itemKey in option.items" data-ng-init="item=product.optionItems[itemKey]"><div data-vn-element=checkbox><input type=checkbox data-ng-click=onCheckboxClicked(option)></div><div data-vn-element=content data-ng-include=" \'vn-product-option/content.html\' "></div></label>');
     $templateCache.put('vn-product-option/content.html', '<div data-vn-element=color-image><div data-vn-element=color data-ng-show=item.color style="background-color: {{item.color}}"></div><img data-vn-element=image data-ng-show=item.image data-ng-src={{item.image}} alt={{item.text}}></div><div data-vn-element=text data-ng-bind=item.text></div><div data-vn-element=border data-ng-class="{ checked: option.selected===itemKey }"></div>');
@@ -2432,9 +2318,3 @@ angular.module('Volusion.toolboxCommon.templates', []).run([
     $templateCache.put('vn-product-option/text.html', '<div data-ng-if="inputType.rows > 1"><textarea data-vn-element=text data-vn-modifiers={{option.class}} data-ng-focus="saveTo=saveTo||{}" data-ng-model=saveTo[option.id] data-ng-maxlength={{inputType.maxlength}} placeholder={{inputType.placeholder}} rows={{inputType.rows}} cols={{inputType.cols}}></textarea></div><div data-ng-if="!inputType.rows || inputType.rows < 2"><input data-vn-element=text data-vn-modifiers={{option.class}} data-ng-focus="saveTo=saveTo||{}" data-ng-model=saveTo[option.id] data-ng-maxlength={{inputType.maxlength}} placeholder={{inputType.placeholder}}></div>');
   }
 ]);
-<<<<<<< HEAD
-=======
->>>>>>> ddb9ce4... Merge conflicts & remove dist code for now.
-=======
->>>>>>> Regenerate dist files.
->>>>>>> 3cd08d2... Merge conflicts.
