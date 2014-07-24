@@ -31,14 +31,11 @@ angular.module('Volusion.toolboxCommon')
 						angular.forEach(fList, function (facet) {
 							facet.show = false;
 						});
-
 					}
 
 					function desktopizeFacetList(fList) {
 
-
 						angular.forEach(fList, function (facet) {
-
 							facet.show = true;
 						});
 					}
@@ -100,10 +97,8 @@ angular.module('Volusion.toolboxCommon')
 
 					scope.$watch('facets', function (facets) {
 						scope.facets = facets;
-						// Default the facets to show
 
-						// will need a more complicated routine here for checking if is selected
-//						var isDesktopFacet = isMobileMode();
+						// Default the facets to show
 						angular.forEach(scope.facets, function (facet) {
 							var displayDefault = { show: false };
 							angular.extend(facet, displayDefault);

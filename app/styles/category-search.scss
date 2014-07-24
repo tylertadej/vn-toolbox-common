@@ -6,11 +6,17 @@
 
 	&__category-title, &__category-items {
 		text-align: left;
+<<<<<<< HEAD
 		margin-bottom: 5px!important;
 
 		&__category-item {
 			border: none!important; // is my bem wrong? overiding bootstrap here.
 			padding: 0 25px!important;
+=======
+
+		&__category-item {
+			border: none!important; // is my bem wrong? overiding bootstrap here.
+>>>>>>> 8429457... Regenerate dist files.
 		}
 
 		@media(max-width : 767px) {
