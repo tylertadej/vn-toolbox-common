@@ -29,13 +29,13 @@
 }
 
 // Mobile
+// Todo : change to bem syntax and move back into method
 @media(max-width:767px){
 	.-faceted-search {
-		border-bottom: 1px solid;
 
-		> div {
-			text-align: center;
-		}
+//		> div {
+//			text-align: center;
+//		}
 
 		.facets {
 			text-align: left;
@@ -50,20 +50,15 @@
 }
 // Tablets
 @media(min-width:768px){
-	.-faceted-search {
 
-	}
 }
 // Browser
 @media(min-width:992px){
-	.-faceted-search {
 
-	}
 }
 // Retina ?
 @media(min-width:1200px){
-	.-faceted-search {
-	}
+
 }
 
 // Animation style for the list management

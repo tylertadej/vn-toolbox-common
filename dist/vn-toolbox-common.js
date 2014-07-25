@@ -1,4 +1,4 @@
-/*! vn-toolbox-common - ver.0.0.9 (2014-07-24) */
+/*! vn-toolbox-common - ver.0.0.11 (2014-07-24) */
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', [
   'pascalprecht.translate',
@@ -231,36 +231,107 @@ angular.module('Volusion.toolboxCommon').directive('vnCarousel', [
 ]);
 angular.module('Volusion.toolboxCommon').directive('vnCategorySearch', [
   '$rootScope',
+  '$routeParams',
+  '$location',
   'vnProductParams',
-  function ($rootScope, vnProductParams) {
+  function ($rootScope, $routeParams, $location, vnProductParams) {
     'use strict';
     return {
-      templateUrl: 'template/vn-category-search.html',
+      templateUrl: 'vn-faceted-search/vn-category-search.html',
       restrict: 'AE',
-      scope: { categories: '=' },
+      scope: {
+        categories: '=',
+        queryProducts: '&'
+      },
       link: function postLink(scope) {
+        /**
+					 * First Display Strategy: 1 top level category && on that route
+					 * - for example: current route is /c/home-decor
+					 * - slug is home-decor and it matches category.slug
+					 */
+        function processFirstCategoryStrategy(cList) {
+          angular.extend(cList, { displayStrategy: 'categoryDisplayOne' });
+        }
+        /**
+					 * Second Display Strategy: 1 top level category &&
+					 * also on one of the sub category route slugs
+					 * - for example: current route is /c/furniture
+					 * - routeParams.slug is furniture and it matches one of the
+					 * - category.subCategories[i].slug values
+					 */
+        function processSecondCategoryStrategy(cList) {
+          angular.extend(cList, { displayStrategy: 'categoryDisplayTwo' });
+        }
+        /**
+					 * Third Display Strategy: on the search route
+					 * - everything is clickable
+					 */
+        function processThirdCategoryStrategy(cList) {
+          angular.forEach(cList, function (category) {
+            angular.extend(category, { displayStrategy: 'categoryDisplayThree' });
+            // Make sure that the sub cats will be links as well
+            angular.forEach(category.subCategories, function (subCat) {
+              angular.extend(subCat, { hideSubCatLink: true });
+            });
+          });
+        }
+        /**
+					 * Utility function used in depermining which strategy to apply to this set of category response data
+					 */
+        function checkSubCategoriesForSlugMatch(slug, categoryObject) {
+          var catMatchTest = false;
+          for (var i = categoryObject.subCategories.length - 1; i >= 0; i--) {
+            if (slug === categoryObject.subCategories[i].slug) {
+              angular.extend(categoryObject.subCategories[i], { hideSubCatLink: true });
+              catMatchTest = true;
+            } else {
+              angular.extend(categoryObject.subCategories[i], { hideSubCatLink: false });
+            }
+          }
+          return catMatchTest;
+        }
         // Categories use this to update the search params.
+        enquire.register('screen and (max-width:767px)', {
+          setup: function () {
+            scope.isDesktopCategory = true;
+            scope.isCategoryVisible = true;
+          },
+          unmatch: function () {
+            scope.isDesktopCategory = true;
+            scope.isCategoryVisible = true;
+          },
+          match: function () {
+            scope.isDesktopCategory = false;
+            scope.isCategoryVisible = false;
+          }
+        });
+        scope.toggleCategory = function () {
+          if (scope.isCategoryVisible) {
+            scope.isCategoryVisible = false;
+            return;
+          }
+          scope.isCategoryVisible = true;
+        };
         scope.updateCategory = function (category) {
           vnProductParams.addCategory(category.id);
-          $rootScope.$broadcast('ProductSearch.categoriesUpdated', { category: category });
+          scope.queryProducts();  //						$rootScope.$broadcast('ProductSearch.categoriesUpdated', { category: category });
         };
-        // Have to do this to listen for the data returned async and passed into the directive
         scope.$watch('categories', function (categories) {
           // Gaurd against the error message for while categories is not defined.
           if (!categories || !categories[0]) {
             return;
+          } else if ('/search' === $location.path()) {
+            processThirdCategoryStrategy(categories);
+          } else if (1 === categories.length && $routeParams.slug === categories[0].slug) {
+            processFirstCategoryStrategy(categories[0]);
+          } else if (1 === categories.length && checkSubCategoriesForSlugMatch($routeParams.slug, categories[0])) {
+            processSecondCategoryStrategy(categories[0]);
           } else {
-            scope.subCategories = categories[0].subCategories;
+            throw new Error('Is there a new display strategy for the category-search directive in toolbox?');
           }
         });
       }
     };
-  }
-]).run([
-  '$templateCache',
-  function ($templateCache) {
-    'use strict';
-    $templateCache.put('template/vn-category-search.html', '<div class="-category-search">' + '<h4>Categories</h4>' + '<div data-ng-repeat="subCat in subCategories">' + '<a data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a>' + '</div>' + '</div>');
   }
 ]);
 'use strict';
@@ -298,38 +369,86 @@ angular.module('Volusion.toolboxCommon').directive('vnElement', [
 ]);
 angular.module('Volusion.toolboxCommon').directive('vnFacetSearch', [
   '$rootScope',
+  '$window',
   'vnProductParams',
-  function ($rootScope, vnProductParams) {
+  function ($rootScope, $window, vnProductParams) {
     'use strict';
     return {
-      templateUrl: 'template/vn-facet-search.html',
+      templateUrl: 'vn-faceted-search/vn-facet-search.html',
       restrict: 'AE',
-      scope: { facets: '=' },
+      scope: {
+        facets: '=',
+        queryProducts: '&'
+      },
       link: function postLink(scope) {
-        scope.$watch('facets', function (facets) {
-          scope.facets = facets;
+        function mobalizeFacetList(fList) {
+          angular.forEach(fList, function (facet) {
+            facet.show = false;
+          });
+        }
+        function desktopizeFacetList(fList) {
+          angular.forEach(fList, function (facet) {
+            facet.show = true;
+          });
+        }
+        // Manage the differences in behavior for mobile vs. deesktop
+        enquire.register('screen and (max-width:767px)', {
+          setup: function () {
+            scope.isDesktopFacet = true;
+            scope.isMobileMode = false;
+          },
+          unmatch: function () {
+            desktopizeFacetList(scope.facets);
+            scope.isDesktopFacet = true;
+            scope.isMobileMode = false;
+          },
+          match: function () {
+            mobalizeFacetList(scope.facets);
+            scope.isDesktopFacet = false;
+            scope.isMobileMode = true;
+          }
         });
+        // Handle the hide/show of a facet item's properties.
+        scope.toggleFacetItems = function (idx) {
+          if (scope.facets[idx].show) {
+            scope.facets[idx].show = false;
+            return;
+          }
+          scope.facets[idx].show = true;
+        };
         scope.selectProperty = function (facet) {
           return vnProductParams.isFacetSelected(facet.id);
         };
         scope.refineFacetSearch = function (facet) {
-          // Adding / Removeing facet to selectedFacets
+          // Adding / Removing facet to selectedFacets
           if (!vnProductParams.isFacetSelected(facet.id)) {
-            vnProductParams.addFacet(facet.id);  //                            console.log('adding facet: ', vnProductParams.getParamsObject());
+            vnProductParams.addFacet(facet.id);
           } else {
-            vnProductParams.removeFacet(facet.id);  //                            console.log('removing facet: ', vnProductParams.getParamsObject());
+            vnProductParams.removeFacet(facet.id);
           }
-          // Broadcast an update to whomever is subscribed.
-          $rootScope.$broadcast('ProductSearch.facetsUpdated');
+          // Broadcast an update to whomever if any is subscribed.
+          //						$rootScope.$broadcast('ProductSearch.facetsUpdated');
+          scope.queryProducts();
         };
+        scope.isMobileMode = false;
+        // default to desktop
+        scope.$watch('facets', function (facets) {
+          scope.facets = facets;
+          // Default the facets to show
+          angular.forEach(scope.facets, function (facet) {
+            var displayDefault = { show: false };
+            angular.extend(facet, displayDefault);
+          });
+          // Need this to pre process responses and page load items and enquire wasn't
+          // responding to the match for data after initial page load.
+          if ($window.innerWidth < 767) {
+            mobalizeFacetList(scope.facets);
+          } else {
+            desktopizeFacetList(scope.facets);
+          }
+        });
       }
     };
-  }
-]).run([
-  '$templateCache',
-  function ($templateCache) {
-    'use strict';
-    $templateCache.put('template/vn-facet-search.html', '<div class="-faceted-search">' + '<div class="facets">' + '<div class="facet-item" data-ng-repeat="facet in facets track by $index">' + '<h4>{{ facet.title }}</h4>' + '<label class="-facet-property" data-ng-repeat="property in facet.properties track by $index">' + '<input type="checkbox" ' + 'name="property.name" ' + 'ng-checked="selectProperty(property)" ' + 'ng-click="refineFacetSearch(property)" />' + '<span class="name">{{ property.name }}</span>' + '<span class="count">{{ property.count }}</span>' + '</label>' + '<hr>' + '</div>' + '</div>' + '</div>');
   }
 ]);
 angular.module('Volusion.toolboxCommon').directive('vnImage', [
@@ -1630,7 +1749,7 @@ angular.module('Volusion.toolboxCommon').factory('vnProductParams', function () 
 		 *
 		 * @description
 		 * Sets the paramsObject page property to the next page.
-		*/
+		 */
   function nextPage() {
     paramsObject.page++;
   }
@@ -1641,7 +1760,7 @@ angular.module('Volusion.toolboxCommon').factory('vnProductParams', function () 
 		 *
 		 * @description
 		 * Sets the paramsObject page property to the previous page.
-		*/
+		 */
   function previousPage() {
     paramsObject.page--;
   }
@@ -2218,6 +2337,8 @@ angular.module('Volusion.toolboxCommon').factory('vnSession', [
 angular.module('Volusion.toolboxCommon.templates', []).run([
   '$templateCache',
   function ($templateCache) {
+    $templateCache.put('vn-faceted-search/vn-category-search.html', '<div class=vn-category-search><h4 data-ng-show=isDesktopCategory>Categories</h4><a href class=vn-category-search__category-title data-ng-show=!isDesktopCategory data-ng-click=toggleCategory()><h4>Categories</h4></a><div class="list-group vn-category-search__category-items" data-ng-repeat="cat in categories" data-ng-show=isCategoryVisible><a data-ng-if="cat.displayStrategy == \'categoryDisplayTwo\' || cat.displayStrategy == \'categoryDisplayThree\' " data-ng-href="{{ cat.url  }}"><span data-ng-if="cat.displayStrategy == \'categoryDisplayTwo\' " class="glyphicon glyphicon-chevron-left"></span> {{ cat.name }}</a> <span data-ng-if="cat.displayStrategy == \'categoryDisplayOne\'  ">{{ cat.name }}</span><div class="list-group-item vn-category-search__category-items__category-item" data-ng-repeat="subCat in cat.subCategories"><span data-ng-if=subCat.hideSubCatLink>{{ subCat.name }}</span> <a data-ng-if=!subCat.hideSubCatLink data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a></div></div></div>');
+    $templateCache.put('vn-faceted-search/vn-facet-search.html', '<div class=-faceted-search><div class=facets><div class=facet-item data-ng-repeat="facet in facets track by $index"><h4 data-ng-show=isDesktopFacet>{{ facet.title }}</h4><a ng-show=!isDesktopFacet data-ng-click=toggleFacetItems($index)><h4>{{ facet.title }}</h4></a><div data-ng-show=facets[$index].show><label class=-facet-property data-ng-repeat="property in facet.properties track by $index"><input type=checkbox name=property.name data-ng-checked=selectProperty(property) data-ng-click=refineFacetSearch(property)> <span class=name>{{ property.name }}</span> <span class=count>{{ property.count }}</span></label></div><hr></div></div></div>');
     $templateCache.put('vn-product-option/checkboxes.html', '<label data-vn-block=vn-labeled-checkbox data-vn-modifiers={{option.class}} data-ng-repeat="itemKey in option.items" data-ng-init="item=product.optionItems[itemKey]"><div data-vn-element=checkbox><input type=checkbox data-ng-click=onCheckboxClicked(option)></div><div data-vn-element=content data-ng-include=" \'vn-product-option/content.html\' "></div></label>');
     $templateCache.put('vn-product-option/content.html', '<div data-vn-element=color-image><div data-vn-element=color data-ng-show=item.color style="background-color: {{item.color}}"></div><img data-vn-element=image data-ng-show=item.image data-ng-src={{item.image}} alt={{item.text}}></div><div data-vn-element=text data-ng-bind=item.text></div><div data-vn-element=border data-ng-class="{ checked: option.selected===itemKey }"></div>');
     $templateCache.put('vn-product-option/index.html', '<div data-vn-block=vn-product-option><label data-vn-element=label data-ng-if=option.label data-ng-bind=option.label></label><div data-ng-repeat="inputType in option.inputTypes"><div data-vn-element=group data-vn-modifiers="{{inputType.type}} {{option.class}}" data-ng-include=" \'vn-product-option/\' + inputType.type + \'.html\' "></div></div><div data-ng-if=option.selected><div data-ng-repeat="option in option.options" data-ng-include=" \'vn-product-option/index.html\' "></div></div></div>');

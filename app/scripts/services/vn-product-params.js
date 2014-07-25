@@ -70,7 +70,7 @@ angular.module('Volusion.toolboxCommon')
 		 *
 		 * @description
 		 * Sets the paramsObject page property to the next page.
-		*/
+		 */
 		function nextPage() {
 			paramsObject.page++;
 		}
@@ -82,7 +82,7 @@ angular.module('Volusion.toolboxCommon')
 		 *
 		 * @description
 		 * Sets the paramsObject page property to the previous page.
-		*/
+		 */
 		function previousPage() {
 			paramsObject.page--;
 		}
@@ -367,7 +367,7 @@ angular.module('Volusion.toolboxCommon')
 			facets = [];
 			paramsObject.facets = '';
 		}
-		
+
 		/**
 		 * @ngdoc function
 		 * @name resetParamsObject
@@ -387,7 +387,7 @@ angular.module('Volusion.toolboxCommon')
 				maxPrice     : '',
 				accessoriesOf: '',
 				sort         : '',
-				page   : '',
+				page         : '',
 				pageSize     : ''
 			};
 		}
@@ -513,9 +513,9 @@ angular.module('Volusion.toolboxCommon')
 			getPageSize        : getPageSize,
 			getParamsObject    : getParamsObject,
 			getSort            : getSort,
-			isFacetSelected: isFacetSelected,
-			nextPage: nextPage,
-			previousPage: previousPage,
+			isFacetSelected    : isFacetSelected,
+			nextPage           : nextPage,
+			previousPage       : previousPage,
 			removeSlug         : removeSlug,
 			removeSearch       : removeSearch,
 			setMinPrice        : setMinPrice,
