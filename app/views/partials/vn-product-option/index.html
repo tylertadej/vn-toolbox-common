@@ -1,17 +1,17 @@
-﻿<div data-vn-block="vn-product-option">
+<div data-vn-block="vn-product-option">
 
 	<label data-vn-element="label" data-ng-if="option.label" data-ng-bind="option.label"></label>
 
 	<div data-ng-repeat="inputType in option.inputTypes">
 		<div data-vn-element="group"
-			data-vn-modifiers="{{inputType.type}} {{option.class}}"
-			data-ng-include=" 'vn-product-option/' + inputType.type + '.html' ">
+			 data-vn-modifiers="{{inputType.type}} {{option.class}}"
+			 data-ng-include=" 'vn-product-option/' + inputType.type + '.html' ">
 		</div>
 	</div>
 
 	<div data-ng-if="option.selected">
 		<div data-ng-repeat="option in option.options"
-			data-ng-include=" 'vn-product-option/index.html' ">
+		     data-ng-include=" 'vn-product-option/index.html' ">
 		</div>
 	</div>
 
