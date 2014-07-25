@@ -81,32 +81,6 @@ angular.module('Volusion.toolboxCommon')
 
 					}
 
-					// Categories use this to update the search params.
-					enquire.register('screen and (max-width:767px)', {
-
-						setup  : function () {
-							scope.isDesktopCategory = true;
-							scope.isCategoryVisible = true;
-						},
-						unmatch: function () {
-							scope.isDesktopCategory = true;
-							scope.isCategoryVisible = true;
-						},
-						// transitioning to mobile mode
-						match  : function () {
-							scope.isDesktopCategory = false;
-							scope.isCategoryVisible = false;
-						}
-					});
-
-					scope.toggleCategory = function () {
-						if (scope.isCategoryVisible) {
-							scope.isCategoryVisible = false;
-							return;
-						}
-						scope.isCategoryVisible = true;
-					};
-
 					scope.updateCategory = function (category) {
 						vnProductParams.addCategory(category.id);
 						scope.queryProducts();

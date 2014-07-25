@@ -1,22 +1,16 @@
-<div class="-faceted-search">
-	<div class="facets">
-		<div class="facet-item" data-ng-repeat="facet in facets track by $index">
-			<h4 data-ng-show="isDesktopFacet">{{ facet.title }}</h4>
-			<a ng-show="!isDesktopFacet"
-				data-ng-click="toggleFacetItems($index)">
-				<h4>{{ facet.title }}</h4></a>
-			<div data-ng-show="facets[$index].show">
-				<label class="-facet-property"
-					   data-ng-repeat="property in facet.properties track by $index">
-					<input type="checkbox"
-						   name="property.name"
-						   data-ng-checked="selectProperty(property)"
-						   data-ng-click="refineFacetSearch(property)"/>
-					<span class="name">{{ property.name }}</span>
-					<span class="count">{{ property.count }}</span>
-				</label>
-			</div>
-			<hr>
-		</div>
+<div data-accordion-group class="facet-item"
+		 data-ng-repeat="facet in facets track by $index"
+		 data-is-open="defaultAccordianOpen">
+	<div data-accordion-heading>
+		<span>{{ facet.title }}</span>  <i class="pull-right glyphicon" data-ng-class="{'glyphicon-chevron-down': defaultAccordianOpen, 'glyphicon-chevron-right': !defaultAccordianOpen}"></i>
 	</div>
+	<label class="-facet-property"
+		   data-ng-repeat="property in facet.properties track by $index">
+		<input type="checkbox"
+			   name="property.name"
+			   data-ng-checked="selectProperty(property)"
+			   data-ng-click="refineFacetSearch(property)"/>
+		<span class="name">{{ property.name }}</span>
+		<span class="count">{{ property.count }}</span>
+	</label>
 </div>

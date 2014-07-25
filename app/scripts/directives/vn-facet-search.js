@@ -27,52 +27,21 @@ angular.module('Volusion.toolboxCommon')
 				},
 				link       : function postLink(scope) {
 
-					function mobalizeFacetList(fList) {
-
-						angular.forEach(fList, function (facet) {
-							facet.show = false;
-						});
-					}
-
-					function desktopizeFacetList(fList) {
-
-						angular.forEach(fList, function (facet) {
-							facet.show = true;
-						});
-					}
-
 					// Manage the differences in behavior for mobile vs. deesktop
 					enquire.register('screen and (max-width:767px)', {
 
-
 						setup: function () {
-							scope.isDesktopFacet = true;
-							scope.isMobileMode = false;
+							scope.defaultAccordianOpen = true;
 						},
 
 						unmatch: function () {
-							desktopizeFacetList(scope.facets);
-							scope.isDesktopFacet = true;
-							scope.isMobileMode = false;
+							scope.defaultAccordianOpen = true;
 						},
 						// transitioning to mobile mode
 						match  : function () {
-							mobalizeFacetList(scope.facets);
-							scope.isDesktopFacet = false;
-							scope.isMobileMode = true;
+							scope.defaultAccordianOpen = false;
 						}
 					});
-
-					// Handle the hide/show of a facet item's properties.
-					scope.toggleFacetItems = function (idx) {
-
-						if (scope.facets[idx].show) {
-							scope.facets[idx].show = false;
-							return;
-						}
-						scope.facets[idx].show = true;
-
-					};
 
 					scope.selectProperty = function (facet) {
 
@@ -95,24 +64,8 @@ angular.module('Volusion.toolboxCommon')
 
 					};
 
-					scope.isMobileMode = false; // default to desktop
-
 					scope.$watch('facets', function (facets) {
 						scope.facets = facets;
-
-						// Default the facets to show
-						angular.forEach(scope.facets, function (facet) {
-							var displayDefault = { show: false };
-							angular.extend(facet, displayDefault);
-						});
-
-						// Need this to pre process responses and page load items and enquire wasn't
-						// responding to the match for data after initial page load.
-						if ($window.innerWidth < 767) {
-							mobalizeFacetList(scope.facets);
-						} else {
-							desktopizeFacetList(scope.facets);
-						}
 					});
 				}
 			};

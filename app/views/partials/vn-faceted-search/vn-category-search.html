@@ -1,26 +1,15 @@
-<div class="vn-category-search">
-	<h4 data-ng-show="isDesktopCategory">Categories</h4>
-	<a href
-	   class="vn-category-search__category-title"
-	   data-ng-show="!isDesktopCategory"
-	   data-ng-click="toggleCategory()">
-		<h4>Categories</h4>
+<div class="list-group vn-category-search__category-items"
+	 data-ng-repeat="cat in categories">
+	<a data-ng-if="cat.displayStrategy == 'categoryDisplayTwo' || cat.displayStrategy == 'categoryDisplayThree' " data-ng-href="{{ cat.url  }}">
+		<span data-ng-if="cat.displayStrategy == 'categoryDisplayTwo' "
+			  class="glyphicon glyphicon-chevron-left"></span>
+		{{ cat.name }}
 	</a>
-	<div class="list-group vn-category-search__category-items"
-		 data-ng-repeat="cat in categories"
-		 data-ng-show="isCategoryVisible">
-		<a data-ng-if="cat.displayStrategy == 'categoryDisplayTwo' || cat.displayStrategy == 'categoryDisplayThree' " data-ng-href="{{ cat.url  }}">
-			<span data-ng-if="cat.displayStrategy == 'categoryDisplayTwo' "
-				  class="glyphicon glyphicon-chevron-left"></span>
-			{{ cat.name }}
-		</a>
-		<span data-ng-if="cat.displayStrategy == 'categoryDisplayOne'  ">{{ cat.name }}</span>
-		<div class="list-group-item vn-category-search__category-items__category-item"
-		   data-ng-repeat="subCat in cat.subCategories">
-			<span data-ng-if="subCat.hideSubCatLink">{{ subCat.name }}</span>
-			<a data-ng-if="!subCat.hideSubCatLink"
-			   data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a>
-		</div>
+	<span data-ng-if="cat.displayStrategy == 'categoryDisplayOne' ">{{ cat.name }}</span>
+	<div class="list-group-item vn-category-search__category-items__category-item"
+	   data-ng-repeat="subCat in cat.subCategories">
+		<span data-ng-if="subCat.hideSubCatLink">{{ subCat.name }}</span>
+		<a data-ng-if="!subCat.hideSubCatLink"
+		   data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a>
 	</div>
 </div>
- 
