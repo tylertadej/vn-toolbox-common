@@ -22,7 +22,8 @@ angular.module('Volusion.toolboxCommon')
 				templateUrl: 'vn-faceted-search/vn-category-search.html',
 				restrict   : 'AE',
 				scope      : {
-					categories: '='
+					categories: '=',
+					queryProducts: '&'
 				},
 				link       : function postLink(scope) {
 
@@ -108,7 +109,8 @@ angular.module('Volusion.toolboxCommon')
 
 					scope.updateCategory = function (category) {
 						vnProductParams.addCategory(category.id);
-						$rootScope.$broadcast('ProductSearch.categoriesUpdated', { category: category });
+						scope.queryProducts();
+//						$rootScope.$broadcast('ProductSearch.categoriesUpdated', { category: category });
 					};
 
 					scope.$watch('categories', function (categories) {

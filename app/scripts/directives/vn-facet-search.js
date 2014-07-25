@@ -22,7 +22,8 @@ angular.module('Volusion.toolboxCommon')
 				templateUrl: 'vn-faceted-search/vn-facet-search.html',
 				restrict   : 'AE',
 				scope      : {
-					facets: '='
+					facets     : '=',
+					queryProducts: '&'
 				},
 				link       : function postLink(scope) {
 
@@ -44,7 +45,7 @@ angular.module('Volusion.toolboxCommon')
 					enquire.register('screen and (max-width:767px)', {
 
 
-						setup: function() {
+						setup: function () {
 							scope.isDesktopFacet = true;
 							scope.isMobileMode = false;
 						},
@@ -63,9 +64,9 @@ angular.module('Volusion.toolboxCommon')
 					});
 
 					// Handle the hide/show of a facet item's properties.
-					scope.toggleFacetItems = function(idx) {
+					scope.toggleFacetItems = function (idx) {
 
-						if(scope.facets[idx].show) {
+						if (scope.facets[idx].show) {
 							scope.facets[idx].show = false;
 							return;
 						}
@@ -89,7 +90,8 @@ angular.module('Volusion.toolboxCommon')
 						}
 
 						// Broadcast an update to whomever if any is subscribed.
-						$rootScope.$broadcast('ProductSearch.facetsUpdated');
+//						$rootScope.$broadcast('ProductSearch.facetsUpdated');
+						scope.queryProducts();
 
 					};
 
