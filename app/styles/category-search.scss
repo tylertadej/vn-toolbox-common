@@ -1,30 +1,32 @@
 // Default Toolbox Responsive Optimizations
-@media screen and (max-width:767px){
-	.-category-search {
-		> div {
-			text-align: left;
+.vn-category-search {
+	padding: 5px 0;
+	border-top: 1px solid #e6e6e6;
+	border-bottom: 1px solid #e6e6e6;
+
+	&__category-title, &__category-items {
+		text-align: left;
+		margin-bottom: 5px!important;
+
+		&__category-item {
+			border: none!important; // is my bem wrong? overiding bootstrap here.
+			padding: 0 25px!important;
 		}
 
-		> h4 {
-			text-align: left;
+		@media(max-width : 767px) {
+
 		}
 	}
-}
-// Tablets
-@media screen and (min-width:768px){
-	.-category-search {
 
-	}
-}
-// Browser
-@media screen and (min-width:992px){
-	.-category-search {
+	&__category-items {
+		text-align: left;
 
-	}
-}
-// Retina ?
-@media screen and (min-width:1200px){
-	.-category-search {
+		&__category-item {
+			border: none;
+		}
 
+		@media(max-width : 767px) {
+
+		}
 	}
 }

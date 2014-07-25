@@ -14,64 +14,106 @@
  * TODO: Add html and javascript here to demo it in docs.
  */
 angular.module('Volusion.toolboxCommon')
-	.directive('vnFacetSearch', ['$rootScope', 'vnProductParams',
-		function ($rootScope, vnProductParams) {
+	.directive('vnFacetSearch', ['$rootScope', '$window', 'vnProductParams',
+		function ($rootScope, $window, vnProductParams) {
 			'use strict';
 
 			return {
-				templateUrl: 'template/vn-facet-search.html',
+				templateUrl: 'vn-faceted-search/vn-facet-search.html',
 				restrict   : 'AE',
 				scope      : {
-					facets: '='
+					facets     : '=',
+					queryProducts: '&'
 				},
 				link       : function postLink(scope) {
 
-					scope.$watch('facets', function (facets) {
-						scope.facets = facets;
+					function mobalizeFacetList(fList) {
+
+						angular.forEach(fList, function (facet) {
+							facet.show = false;
+						});
+					}
+
+					function desktopizeFacetList(fList) {
+
+						angular.forEach(fList, function (facet) {
+							facet.show = true;
+						});
+					}
+
+					// Manage the differences in behavior for mobile vs. deesktop
+					enquire.register('screen and (max-width:767px)', {
+
+
+						setup: function () {
+							scope.isDesktopFacet = true;
+							scope.isMobileMode = false;
+						},
+
+						unmatch: function () {
+							desktopizeFacetList(scope.facets);
+							scope.isDesktopFacet = true;
+							scope.isMobileMode = false;
+						},
+						// transitioning to mobile mode
+						match  : function () {
+							mobalizeFacetList(scope.facets);
+							scope.isDesktopFacet = false;
+							scope.isMobileMode = true;
+						}
 					});
 
+					// Handle the hide/show of a facet item's properties.
+					scope.toggleFacetItems = function (idx) {
+
+						if (scope.facets[idx].show) {
+							scope.facets[idx].show = false;
+							return;
+						}
+						scope.facets[idx].show = true;
+
+					};
 
 					scope.selectProperty = function (facet) {
+
 						return vnProductParams.isFacetSelected(facet.id);
+
 					};
 
 					scope.refineFacetSearch = function (facet) {
 
-						// Adding / Removeing facet to selectedFacets
+						// Adding / Removing facet to selectedFacets
 						if (!vnProductParams.isFacetSelected(facet.id)) {
 							vnProductParams.addFacet(facet.id);
-//                            console.log('adding facet: ', vnProductParams.getParamsObject());
 						} else {
 							vnProductParams.removeFacet(facet.id);
-//                            console.log('removing facet: ', vnProductParams.getParamsObject());
 						}
 
-						// Broadcast an update to whomever is subscribed.
-						$rootScope.$broadcast('ProductSearch.facetsUpdated');
+						// Broadcast an update to whomever if any is subscribed.
+//						$rootScope.$broadcast('ProductSearch.facetsUpdated');
+						scope.queryProducts();
+
 					};
+
+					scope.isMobileMode = false; // default to desktop
+
+					scope.$watch('facets', function (facets) {
+						scope.facets = facets;
+
+						// Default the facets to show
+						angular.forEach(scope.facets, function (facet) {
+							var displayDefault = { show: false };
+							angular.extend(facet, displayDefault);
+						});
+
+						// Need this to pre process responses and page load items and enquire wasn't
+						// responding to the match for data after initial page load.
+						if ($window.innerWidth < 767) {
+							mobalizeFacetList(scope.facets);
+						} else {
+							desktopizeFacetList(scope.facets);
+						}
+					});
 				}
 			};
-		}]).run(['$templateCache', function ($templateCache) {
-
-		'use strict';
-
-		$templateCache.put(
-			'template/vn-facet-search.html',
-                '<div class="-faceted-search">' +
-                    '<div class="facets">' +
-                        '<div class="facet-item" data-ng-repeat="facet in facets track by $index">' +
-                            '<h4>{{ facet.title }}</h4>' +
-							'<label class="-facet-property" data-ng-repeat="property in facet.properties track by $index">' +
-								'<input type="checkbox" ' +
-										'name="property.name" ' +
-										'ng-checked="selectProperty(property)" ' +
-										'ng-click="refineFacetSearch(property)" />' +
-								'<span class="name">{{ property.name }}</span>' +
-								'<span class="count">{{ property.count }}</span>' +
-							'</label>' +
-                        	'<hr>' +
-                        '</div>' +
-                    '</div>' +
-                '</div>'
-        );
-    }]);
+		}]);
