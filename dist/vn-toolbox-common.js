@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.14 (2014-07-25) */
+/*! vn-toolbox-common - ver.0.0.14 (2014-07-28) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'Volusion.toolboxCommon.templates'])
@@ -409,7 +409,6 @@ angular.module('Volusion.toolboxCommon')
 					scope.updateCategory = function (category) {
 						vnProductParams.addCategory(category.id);
 						scope.queryProducts();
-//						$rootScope.$broadcast('ProductSearch.categoriesUpdated', { category: category });
 					};
 
 					scope.$watch('categories', function (categories) {
@@ -509,9 +508,6 @@ angular.module('Volusion.toolboxCommon')
 						} else {
 							vnProductParams.removeFacet(facet.id);
 						}
-
-						// Broadcast an update to whomever if any is subscribed.
-//						$rootScope.$broadcast('ProductSearch.facetsUpdated');
 						scope.queryProducts();
 
 					};
@@ -522,6 +518,54 @@ angular.module('Volusion.toolboxCommon')
 				}
 			};
 		}]);
+
+angular.module('Volusion.toolboxCommon')
+	.directive('vnFacetedSearch', function () {
+
+		'use strict';
+
+		return {
+			templateUrl: 'vn-faceted-search/vn-faceted-search.html',
+			restrict   : 'EA',
+			link       : function postLink(scope) {
+
+				scope.showCategorySearch = false;
+				scope.showFacetSearch = true;
+				scope.showApplyButton = false;
+
+				scope.$watch('categoryList', function (categoryList) {
+
+					if(categoryList) {
+						scope.showCategorySearch = true;
+					}
+
+				});
+
+				scope.$watch('facets', function (facets) {
+
+					if (facets) {
+						scope.showFacetSearch = true;
+					}
+
+				});
+
+				enquire.register('screen and (max-width:767px)', {
+
+					setup: function() {
+						scope.showApplyButton = false;
+					},
+					unmatch: function () {
+						scope.showApplyButton = false;
+					},
+					// transitioning to mobile mode
+					match  : function () {
+						scope.showApplyButton = true;
+					}
+				});
+			}
+		};
+	});
+
 
 angular.module('Volusion.toolboxCommon')
     .directive('vnImage',
@@ -813,6 +857,62 @@ angular.module('Volusion.toolboxCommon')
             '</div>'
         );
     }]);
+
+'use strict';
+
+/**
+ * @ngdoc directive
+ * @name vnToolboxCommonApp.directive:vnPriceSearch
+ * @description
+ * # vnPriceSearch
+ */
+angular.module('Volusion.toolboxCommon')
+	.directive('vnPriceSearch', ['vnProductParams', function (vnProductParams) {
+		return {
+			templateUrl: 'vn-faceted-search/vn-price-search.html',
+			restrict   : 'AE',
+			scope      : {
+				queryProducts: '&'
+			},
+			link       : function postLink(scope) {
+
+				scope.searchByPrice = function (event) {
+
+
+					vnProductParams.setMinPrice(scope.minPrice);
+					vnProductParams.setMaxPrice(scope.maxPrice);
+
+					scope.$watch(
+						function() {
+							return vnProductParams.getMinPrice();
+						},
+						function(min) {
+							scope.minPrice = min;
+						}
+					);
+
+					scope.$watch(
+						function() {
+							return vnProductParams.getMaxPrice();
+						},
+						function(min) {
+							scope.maxPrice = min;
+						}
+					);
+
+					vnProductParams.setMinPrice(scope.minPrice);
+					vnProductParams.setMaxPrice(scope.maxPrice);
+
+					if (event.which === 13) {
+						console.log('enter detected running a product query');
+						scope.queryProducts();
+						console.log('log prodParams from price directive after query run: ', vnProductParams.getParamsObject());
+					}
+
+				};
+			}
+		};
+	}]);
 
 'use strict';
 
@@ -2637,7 +2737,11 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
   $templateCache.put("vn-faceted-search/vn-category-search.html",
     "<div class=\"list-group vn-category-search__category-items\" data-ng-repeat=\"cat in categories\"><a data-ng-if=\"cat.displayStrategy == 'categoryDisplayTwo' || cat.displayStrategy == 'categoryDisplayThree' \" data-ng-href=\"{{ cat.url  }}\"><span data-ng-if=\"cat.displayStrategy == 'categoryDisplayTwo' \" class=\"glyphicon glyphicon-chevron-left\"></span> {{ cat.name }}</a> <span data-ng-if=\"cat.displayStrategy == 'categoryDisplayOne' \">{{ cat.name }}</span><div class=\"list-group-item vn-category-search__category-items__category-item\" data-ng-repeat=\"subCat in cat.subCategories\"><span data-ng-if=subCat.hideSubCatLink>{{ subCat.name }}</span> <a data-ng-if=!subCat.hideSubCatLink data-ng-href=\"{{ subCat.url  }}\">{{ subCat.name }}</a></div></div>");
   $templateCache.put("vn-faceted-search/vn-facet-search.html",
-    "<div data-accordion-group class=facet-item data-ng-repeat=\"facet in facets track by $index\" data-is-open=defaultAccordianOpen><div data-accordion-heading><span>{{ facet.title }}</span> <i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': defaultAccordianOpen, 'glyphicon-chevron-right': !defaultAccordianOpen}\"></i></div><label class=-facet-property data-ng-repeat=\"property in facet.properties track by $index\"><input type=checkbox name=property.name data-ng-checked=selectProperty(property) data-ng-click=refineFacetSearch(property)> <span class=name>{{ property.name }}</span> <span class=count>{{ property.count }}</span></label></div>");
+    "<div data-accordion-group class=facet-item data-ng-repeat=\"facet in facets track by $index\" data-is-open=defaultAccordianOpen><div data-accordion-heading><div><span>{{ facet.title }}</span> <i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': defaultAccordianOpen, 'glyphicon-chevron-right': !defaultAccordianOpen}\"></i></div></div><label class=facet-property data-ng-repeat=\"property in facet.properties track by $index\"><input type=checkbox name=property.name data-ng-checked=selectProperty(property) data-ng-click=refineFacetSearch(property)> <span class=name>{{ property.name }}</span> <span class=count>{{ property.count }}</span></label></div>");
+  $templateCache.put("vn-faceted-search/vn-faceted-search.html",
+    "<div class=vn-faceted-search-header data-ng-show=showApplyButton><button class=\"btn btn-success __cancel-action\" href data-ng-click=dismissMobileFilters()>Apply</button>  <button class=\"btn __clear-action\" href data-ng-click=clearAllFilters()>Clear</button> </div><div class=-faceted-search data-ng-show=showFacetSearch><div class=facets><div data-accordion data-close-others=false><div data-accordion-group class=facet-item__by-category data-is-open=categoryAccordiansOpen data-ng-show=\"categoryList.length > 0\"><div data-accordion-heading><div><span>Category</span> <i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': categoryAccordiansOpen, 'glyphicon-chevron-right': !categoryAccordiansOpen}\"></i></div></div><div vn-category-search categories=categoryList query-products=queryProducts() data-ng-show=showCategorySearch></div></div><div vn-facet-search facets=facets query-products=queryProducts() data-ng-show=\"facets.length > 0\"></div><div data-accordion-group class=facet-item__by-price data-is-open=priceAccordiansOpen data-ng-show=\"facets.length > 0\"><div data-accordion-heading><div><span>Price</span> <i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': priceAccordiansOpen, 'glyphicon-chevron-right': !priceAccordiansOpen}\"></i></div></div><div class=facet-item__by-price__inputs vn-price-search query-products=queryProducts()></div></div></div><div class=vn-faceted-search-footer data-ng-show=!showApplyButton><button class=\"btn __clear-action\" href data-ng-click=clearAllFilters()>Clear</button> </div></div></div>");
+  $templateCache.put("vn-faceted-search/vn-price-search.html",
+    "<input data-ng-model=minPrice data-ng-keypress=searchByPrice($event)> to <input data-ng-model=maxPrice data-ng-keypress=searchByPrice($event)>");
   $templateCache.put("vn-product-option/checkboxes.html",
     "<label data-vn-block=vn-labeled-checkbox data-vn-modifiers={{option.class}} data-ng-repeat=\"itemKey in option.items\" data-ng-init=\"item=product.optionItems[itemKey]\"><div data-vn-element=checkbox><input type=checkbox data-ng-click=onCheckboxClicked(option)></div><div data-vn-element=content data-ng-include=\" 'vn-product-option/content.html' \"></div></label>");
   $templateCache.put("vn-product-option/content.html",

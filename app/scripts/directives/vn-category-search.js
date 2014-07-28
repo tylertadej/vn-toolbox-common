@@ -84,7 +84,6 @@ angular.module('Volusion.toolboxCommon')
 					scope.updateCategory = function (category) {
 						vnProductParams.addCategory(category.id);
 						scope.queryProducts();
-//						$rootScope.$broadcast('ProductSearch.categoriesUpdated', { category: category });
 					};
 
 					scope.$watch('categories', function (categories) {
