@@ -16,6 +16,7 @@
 angular.module('Volusion.toolboxCommon')
 	.directive('vnFacetSearch', ['$rootScope', '$window', 'vnProductParams',
 		function ($rootScope, $window, vnProductParams) {
+
 			'use strict';
 
 			return {

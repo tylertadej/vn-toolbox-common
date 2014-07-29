@@ -17,51 +17,85 @@
  *
  * @usage
  * TODO: Add html and javascript here to demo it in docs.
- */
+ */q
 angular.module('Volusion.toolboxCommon')
-	.directive('vnFacetedSearch', function () {
+	.directive('vnFacetedSearch', ['$location', 'vnProductParams',
+		function ($location, vnProductParams) {
 
-		'use strict';
+			'use strict';
 
-		return {
-			templateUrl: 'vn-faceted-search/vn-faceted-search.html',
-			restrict   : 'EA',
-			link       : function postLink(scope) {
+			return {
+				templateUrl: 'vn-faceted-search/vn-faceted-search.html',
+				restrict   : 'EA',
+				link       : function postLink(scope) {
 
-				scope.showCategorySearch = false;
-				scope.showFacetSearch = true;
-				scope.showApplyButton = false;
+					scope.showCategorySearch = false;
+					scope.showFacetSearch = true;
+					scope.showApplyButton = false;
 
-				scope.$watch('categoryList', function (categoryList) {
+					/* Control for the sort directive UI */
+					// Only be visible on search pages
+					var location = $location.url(),
+						matcher;
+					matcher = /^\/search/;
+					scope.onSearchPage = matcher.test(location);
 
-					if(categoryList) {
-						scope.showCategorySearch = true;
-					}
+					scope.$watch('categoryList', function (categoryList) {
+						if (categoryList) {
+							scope.showCategorySearch = true;
+						}
+					});
 
-				});
+					scope.$watch('facets', function (facets) {
+						if (facets) {
+							scope.showFacetSearch = true;
+						}
+					});
 
-				scope.$watch('facets', function (facets) {
+					scope.$watch(
+						function() {
+							return vnProductParams.getSort();
+						},
+						function(strategy) {
+							scope.currentSort = strategy;
+						}
+					);
 
-					if (facets) {
-						scope.showFacetSearch = true;
-					}
+					enquire.register('screen and (max-width:767px)', {
 
-				});
-
-				enquire.register('screen and (max-width:767px)', {
-
-					setup: function() {
-						scope.showApplyButton = false;
-					},
-					unmatch: function () {
-						scope.showApplyButton = false;
-					},
-					// transitioning to mobile mode
-					match  : function () {
-						scope.showApplyButton = true;
-					}
-				});
-			}
-		};
-	});
+						setup  : function () {
+							scope.showApplyButton = false;
+							scope.mobileDisplay = true;
+							scope.showMobileSearch = false;
+							scope.isMobileAndVisible = false;
+							scope.isMobileAndHidden = true;
+							scope.categoryAccordiansOpen = true;
+							scope.priceAccordiansOpen = true;
+							scope.sortAccordianIsOpen = true;
+						},
+						unmatch: function () {
+							scope.showApplyButton = false;
+							scope.mobileDisplay = true; // default cats and facets to open
+							scope.showMobileSearch = false;
+							scope.isMobileAndVisible = false;
+							scope.isMobileAndHidden = true;
+							scope.categoryAccordiansOpen = true;
+							scope.priceAccordiansOpen = true;
+							scope.sortAccordianIsOpen = true;
+						},
+						// transitioning to mobile mode
+						match  : function () {
+							scope.showApplyButton = true;
+							scope.mobileDisplay = false; // default cats and facets default to closed
+							scope.showMobileSearch = true;
+							scope.isMobileAndVisible = false;
+							scope.isMobileAndHidden = true;
+							scope.categoryAccordiansOpen = false;
+							scope.priceAccordiansOpen = false;
+							scope.sortAccordianIsOpen = false;
+						}
+					});
+				}
+			};
+		}]);
 
