@@ -44,9 +44,7 @@ angular.module('Volusion.toolboxCommon')
 					vnProductParams.setMaxPrice(scope.maxPrice);
 
 					if (event.which === 13) {
-						console.log('enter detected running a product query');
 						scope.queryProducts();
-						console.log('log prodParams from price directive after query run: ', vnProductParams.getParamsObject());
 					}
 
 				};
