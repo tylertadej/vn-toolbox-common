@@ -17,7 +17,7 @@
  *
  * @usage
  * TODO: Add html and javascript here to demo it in docs.
- */q
+ */
 angular.module('Volusion.toolboxCommon')
 	.directive('vnFacetedSearch', ['$location', 'vnProductParams',
 		function ($location, vnProductParams) {
