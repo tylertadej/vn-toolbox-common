@@ -3,8 +3,16 @@
 /**
  * @ngdoc directive
  * @name vnToolboxCommonApp.directive:vnPriceSearch
+ * @restrict EA
+ * @requires vnProductParams
  * @description
- * # vnPriceSearch
+ * - Implewments search by price for a min::max range
+ * $watches via vnProductParams.getMinPrice() for resetting the field
+ * $watches via vnProductParams.getMaxPrice() for resetting the field
+ *
+ * Inherits the parent $controller's queryProducts function and calls if enter is keyed
+ * The parent controller is responsible for resetting these values to nil as needed. 
+ *
  */
 angular.module('Volusion.toolboxCommon')
 	.directive('vnPriceSearch', ['vnProductParams', function (vnProductParams) {
