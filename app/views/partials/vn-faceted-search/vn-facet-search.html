@@ -2,9 +2,12 @@
 		 data-ng-repeat="facet in facets track by $index"
 		 data-is-open="defaultAccordianOpen">
 	<div data-accordion-heading>
-		<span>{{ facet.title }}</span>  <i class="pull-right glyphicon" data-ng-class="{'glyphicon-chevron-down': defaultAccordianOpen, 'glyphicon-chevron-right': !defaultAccordianOpen}"></i>
+		<div>
+			<span>{{ facet.title }}</span>
+			<i class="pull-right glyphicon" data-ng-class="{'glyphicon-chevron-down': defaultAccordianOpen, 'glyphicon-chevron-right': !defaultAccordianOpen}"></i>
+		</div>
 	</div>
-	<label class="-facet-property"
+	<label class="facet-property"
 		   data-ng-repeat="property in facet.properties track by $index">
 		<input type="checkbox"
 			   name="property.name"

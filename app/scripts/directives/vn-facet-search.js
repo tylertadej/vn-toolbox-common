@@ -57,9 +57,6 @@ angular.module('Volusion.toolboxCommon')
 						} else {
 							vnProductParams.removeFacet(facet.id);
 						}
-
-						// Broadcast an update to whomever if any is subscribed.
-//						$rootScope.$broadcast('ProductSearch.facetsUpdated');
 						scope.queryProducts();
 
 					};

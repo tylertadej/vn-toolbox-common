@@ -1,64 +1,129 @@
 // Default Toolbox Responsive Optimizations
-.facets {
-	.facet-item {
-		label {
-			display: block;
-		}
 
-		.-facet-property {
-			// Style for the checkboxes
-			input[type="checkbox"] {
-				display : none;
-			}
-			input[type="checkbox"] + span:before {
-				margin        : 0;
-				padding       : 0;
-				font-family   : 'Glyphicons Halflings' !important;
-				padding-right : 3px !important;
-				margin-top    : 3px !important;
-				font-size     : 12px !important;
-			}
-			input[type="checkbox"] + span:before {
-				content : "\e157" !important; /* check-empty */
-			}
-			input[type="checkbox"]:checked + span:before {
-				content : "\e067" !important; /* check */
-			}
+.vn-faceted-search-header {
+	text-align : center;
+
+	.__cancel-action, .__clear-action {
+		width   : 96%;
+		margin  : 15px auto;
+		display : inline-block;
+
+		@media(max-width : 767px) {
+			width        : 44%;
 		}
 	}
 }
 
-// Mobile
-// Todo : change to bem syntax and move back into method
-@media(max-width:767px){
-	.-faceted-search {
+.vn-facet-search-control {
+	border-bottom : 1px solid #333333;
+}
 
-//		> div {
-//			text-align: center;
-//		}
+.vn-faceted-search {
 
-		.facets {
-			text-align: left;
-			.facet-item {
-				label {
-//					display: inline-block;
-//					padding-left: 15px;
-				}
-			}
+	label {
+		display : block;
+	}
+
+	input {
+		width : 50px;
+	}
+
+	.name {
+		display : inline-block;
+	}
+
+	.count {
+		margin-left      : 2px;
+		padding-left     : 5px;
+		padding-right    : 5px;
+		float            : right;
+		background-color : #999;
+		color            : white;
+		display          : block;
+		border-radius    : 2px;
+	}
+
+	@media(max-width : 767px) {
+
+		//Todo: move property into the directive and out of theme
+		&.isMobileAndVisible {
+			position         : relative;
+			left             : 0;
+			right            : 0;
+			top              : 0;
+			bottom           : 0;
+			z-index          : 1001;
+			background-color : #fff;
 		}
 	}
 }
-// Tablets
-@media(min-width:768px){
 
+.mobile-filters {
+	align: center;
+	text-align: center;
+	margin-top: 10px;
 }
-// Browser
-@media(min-width:992px){
 
+.vn-category-product-tiles {
+	// Note: This is also a variable name in the controller
+	// Not sure how to make that work with bem syntax though.
+	// Todo: move property into the directive and out of theme
+	&.isMobileAndHidden {
+		display : none;
+	}
 }
-// Retina ?
-@media(min-width:1200px){
 
+.facet-property {
+	label {
+		display: block;
+	}
+
+	input[type="checkbox"] {
+		display : none;
+	}
+	input[type="checkbox"] + span:before {
+		margin        : 0;
+		padding       : 0;
+		font-family   : 'Glyphicons Halflings' !important;
+		padding-right : 3px !important;
+		margin-top    : 3px !important;
+		font-size     : 12px !important;
+	}
+	input[type="checkbox"] + span:before {
+		content : "\e157" !important; /* check-empty */
+	}
+	input[type="checkbox"]:checked + span:before {
+		content : "\e067" !important; /* check */
+	}
+
+//	.name {
+//		display : inline-block;
+//		margin-right: 5px;
+//	}
+
+	.count {
+		margin-left      : 2px;
+		padding-left     : 5px;
+		padding-right    : 5px;
+		float            : right;
+		background-color : #999;
+		color            : white;
+		display          : block;
+		border-radius    : 2px;
+	}
+
+	@media(max-width : 767px) {
+
+		&.isMobileAndVisible {
+			position         : relative;
+			left             : 0;
+			right            : 0;
+			top              : 0;
+			bottom           : 0;
+			z-index          : 1001;
+			background-color : #fff;
+		}
+	}
 }
 
 // Animation style for the list management
