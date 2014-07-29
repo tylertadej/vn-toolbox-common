@@ -5,14 +5,17 @@
  * @requires vnProductParams
  * @scope
  * @description
- * - Used on pages that have a list of products and need to filter or narrow the list by:
- *     - category
- *     - facet
- *     - price
- *     - sort?
+ * - Used on pages that have a list of products and need to filter
+ * or narrow the list with 'things'
+ * - Some things are returned from the /products api endpoint:
+ *     - category object
+ *     - facet object
+ * - Other things need to be build into the product query:
+ *     - min & max price
+ *     - sorting strategy
  *
  * ## Notes:
- * - The parent controller for the directive muxt implement a queryProducts() function
+ * - The parent controller for the directive must implement a queryProducts() function
  * - The Function must implement its get products routine with the vnParamsObject
  *
  * @usage

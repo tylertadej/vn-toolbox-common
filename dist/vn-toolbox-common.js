@@ -539,24 +539,19 @@ angular.module('Volusion.toolboxCommon')
 					// Only be visible on search pages
 					var location = $location.url(),
 						matcher;
-
 					matcher = /^\/search/;
 					scope.onSearchPage = matcher.test(location);
 
 					scope.$watch('categoryList', function (categoryList) {
-
 						if (categoryList) {
 							scope.showCategorySearch = true;
 						}
-
 					});
 
 					scope.$watch('facets', function (facets) {
-
 						if (facets) {
 							scope.showFacetSearch = true;
 						}
-
 					});
 
 					scope.$watch(
@@ -2816,7 +2811,7 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
   $templateCache.put("vn-faceted-search/vn-facet-search.html",
     "<div data-accordion-group class=facet-item data-ng-repeat=\"facet in facets track by $index\" data-is-open=defaultAccordianOpen><div data-accordion-heading><div><span>{{ facet.title }}</span> <i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': defaultAccordianOpen, 'glyphicon-chevron-right': !defaultAccordianOpen}\"></i></div></div><label class=facet-property data-ng-repeat=\"property in facet.properties track by $index\"><input type=checkbox name=property.name data-ng-checked=selectProperty(property) data-ng-click=refineFacetSearch(property)> <span class=name>{{ property.name }}</span> <span class=count>{{ property.count }}</span></label></div>");
   $templateCache.put("vn-faceted-search/vn-faceted-search.html",
-    "<div class=vn-faceted-search-header data-ng-show=showApplyButton><button class=\"btn btn-success __cancel-action\" href data-ng-click=dismissMobileFilters()>Apply</button>  <button class=\"btn __clear-action\" href data-ng-click=clearAllFilters()>Clear</button> </div><div class=-faceted-search data-ng-show=showFacetSearch><div class=facets><div data-accordion data-close-others=false><div data-accordion-group class=facet-item__by-category data-is-open=categoryAccordiansOpen data-ng-show=\"categoryList.length > 0\"><div data-accordion-heading><div><span>Category</span> <i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': categoryAccordiansOpen, 'glyphicon-chevron-right': !categoryAccordiansOpen}\"></i></div></div><div vn-category-search categories=categoryList query-products=queryProducts() data-ng-show=showCategorySearch></div></div><div vn-facet-search facets=facets query-products=queryProducts() data-ng-show=\"facets.length > 0\"></div><div data-accordion-group class=facet-item__by-price data-is-open=priceAccordiansOpen data-ng-show=\"facets.length > 0\"><div data-accordion-heading><div><span>Price</span> <i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': priceAccordiansOpen, 'glyphicon-chevron-right': !priceAccordiansOpen}\"></i></div></div><div class=facet-item__by-price__inputs vn-price-search query-products=queryProducts()></div></div><div data-accordion-group class=facet-item__sort data-is-open=sortAccordianIsOpen data-ng-if=onSearchPage><div data-accordion-heading><div class=sort-header><span>Sort by</span> <span class=\"small sort-header__mobile\" ng-if=isMobileAndVisible>{{ currentSort }}</span> <i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': sortAccordianIsOpen, 'glyphicon-chevron-right': !sortAccordianIsOpen}\"></i></div></div><div vn-sort-search query-products=queryProducts()></div></div></div><div class=vn-faceted-search-footer data-ng-show=!showApplyButton><button class=\"btn __clear-action\" href data-ng-click=clearAllFilters()>Clear</button> </div></div></div>");
+    "<div class=vn-faceted-search-header data-ng-show=showApplyButton><button class=\"btn btn-success __cancel-action\" href data-ng-click=dismissMobileFilters()>Apply</button>  <button class=\"btn __clear-action\" href data-ng-click=clearAllFilters()>Clear</button> </div><div class=-faceted-search data-ng-show=showFacetSearch><div class=facets><div data-accordion data-close-others=false><div data-accordion-group class=facet-item__by-category data-is-open=categoryAccordiansOpen data-ng-show=\"categoryList.length > 0\"><div data-accordion-heading><div><span>Category</span> <i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': categoryAccordiansOpen, 'glyphicon-chevron-right': !categoryAccordiansOpen}\"></i></div></div><div vn-category-search categories=categoryList query-products=queryProducts() data-ng-show=showCategorySearch></div></div><div vn-facet-search facets=facets query-products=queryProducts() data-ng-show=\"facets.length > 0\"></div><div data-accordion-group class=facet-item__by-price data-is-open=priceAccordiansOpen data-ng-show=\"facets.length > 0\"><div data-accordion-heading><div><span>Price</span> <i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': priceAccordiansOpen, 'glyphicon-chevron-right': !priceAccordiansOpen}\"></i></div></div><div class=facet-item__by-price__inputs vn-price-search query-products=queryProducts()></div></div><div data-accordion-group class=facet-item__sort data-is-open=sortAccordianIsOpen data-ng-if=onSearchPage><div data-accordion-heading><div class=sort-header><span>Sort by</span> <span class=sort-header__mobile ng-if=isMobileAndVisible>{{ currentSort }}</span> <i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': sortAccordianIsOpen, 'glyphicon-chevron-right': !sortAccordianIsOpen}\"></i></div></div><div vn-sort-search query-products=queryProducts()></div></div></div><div class=vn-faceted-search-footer data-ng-show=!showApplyButton><button class=\"btn __clear-action\" href data-ng-click=clearAllFilters()>Clear</button> </div></div></div>");
   $templateCache.put("vn-faceted-search/vn-price-search.html",
     "<input data-ng-model=minPrice data-ng-keypress=searchByPrice($event)> to <input data-ng-model=maxPrice data-ng-keypress=searchByPrice($event)>");
   $templateCache.put("vn-faceted-search/vn-sort-search.html",
