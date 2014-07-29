@@ -24,22 +24,22 @@
 
 .vn-facet-search-control { border-bottom: 1px solid #333333; }
 
-.vn-faceted-search label { display: block; padding: 2px 13px; }
+.vn-faceted-search label { display: block; padding: 2px 13px; position: relative; }
+.vn-faceted-search label .name { display: inline-block; }
+.vn-faceted-search label .count { position: absolute; top: 4px; right: 0; margin-left: 2px; padding: 0 5px; background-color: #999999; color: white; display: block; border-radius: 2px; }
 .vn-faceted-search input { width: 50px; }
-.vn-faceted-search .name { display: inline-block; }
-.vn-faceted-search .count { margin-left: 2px; padding-left: 5px; padding-right: 5px; float: right; background-color: #999999; color: white; display: block; border-radius: 2px; }
 @media (max-width: 767px) { .vn-faceted-search.isMobileAndVisible { position: relative; left: 0; right: 0; top: 0; bottom: 0; z-index: 1001; background-color: #FFFFFF; } }
 
 .mobile-filters { align: center; text-align: center; margin-top: 10px; }
 
 .vn-category-product-tiles.isMobileAndHidden { display: none; }
 
-.facet-property label { display: block; }
+.facet-property label { display: block; position: relative; }
+.facet-property label .count { position: absolute; top: 4px; right: 0; margin-left: 2px; padding: 0 5px; background-color: #999999; color: white; display: block; border-radius: 2px; }
 .facet-property input[type="checkbox"] { display: none; }
 .facet-property input[type="checkbox"] + span:before { margin: 0; padding: 0; font-family: 'Glyphicons Halflings' !important; padding-right: 3px !important; margin-top: 3px !important; font-size: 12px !important; }
 .facet-property input[type="checkbox"] + span:before { content: "\e157" !important; /* check-empty */ }
 .facet-property input[type="checkbox"]:checked + span:before { content: "\e067" !important; /* check */ }
-.facet-property .count { margin-left: 2px; padding-left: 5px; padding-right: 5px; float: right; background-color: #999999; color: white; display: block; border-radius: 2px; }
 @media (max-width: 767px) { .facet-property.isMobileAndVisible { position: relative; left: 0; right: 0; top: 0; bottom: 0; z-index: 1001; background-color: #FFFFFF; } }
 
 .facet-item .ng-enter, .facet-item .ng-leave { -webkit-transition: 100ms ease-out all; -moz-transition: 100ms ease-out all; -ms-transition: 100ms ease-out all; -o-transition: 100ms ease-out all; transition: 100ms ease-out all; }

@@ -5,9 +5,10 @@
 }
 
 .panel-group .panel {
-	margin-bottom: 15px !important;
-	border-bottom: none;
+	margin-bottom : 15px !important;
+	border-bottom : none;
 }
+
 // *******************************************************
 
 .vn-faceted-search-header {
@@ -31,27 +32,29 @@
 .vn-faceted-search {
 
 	label {
-		display : block;
-		padding : 2px 13px;
+		display  : block;
+		padding  : 2px 13px;
+		position : relative;
+
+		.name {
+			display : inline-block;
+		}
+
+		.count {
+			position         : absolute;
+			top              : 4px;
+			right            : 0;
+			margin-left      : 2px;
+			padding          : 0 5px;
+			background-color : #999999;
+			color            : white;
+			display          : block;
+			border-radius    : 2px;
+		}
 	}
 
 	input {
 		width : 50px;
-	}
-
-	.name {
-		display : inline-block;
-	}
-
-	.count {
-		margin-left      : 2px;
-		padding-left     : 5px;
-		padding-right    : 5px;
-		float            : right;
-		background-color : #999999;
-		color            : white;
-		display          : block;
-		border-radius    : 2px;
 	}
 
 	@media(max-width : 767px) {
@@ -86,12 +89,26 @@
 
 .facet-property {
 	label {
-		display : block;
+		display  : block;
+		position : relative;
+
+		.count {
+			position         : absolute;
+			top              : 4px;
+			right            : 0;
+			margin-left      : 2px;
+			padding          : 0 5px;
+			background-color : #999999;
+			color            : white;
+			display          : block;
+			border-radius    : 2px;
+		}
 	}
 
 	input[type="checkbox"] {
 		display : none;
 	}
+
 	input[type="checkbox"] + span:before {
 		margin        : 0;
 		padding       : 0;
@@ -100,27 +117,13 @@
 		margin-top    : 3px !important;
 		font-size     : 12px !important;
 	}
+
 	input[type="checkbox"] + span:before {
 		content : "\e157" !important; /* check-empty */
 	}
+
 	input[type="checkbox"]:checked + span:before {
 		content : "\e067" !important; /* check */
-	}
-
-	//	.name {
-	//		display : inline-block;
-	//		margin-right: 5px;
-	//	}
-
-	.count {
-		margin-left      : 2px;
-		padding-left     : 5px;
-		padding-right    : 5px;
-		float            : right;
-		background-color : #999999;
-		color            : white;
-		display          : block;
-		border-radius    : 2px;
 	}
 
 	@media(max-width : 767px) {
