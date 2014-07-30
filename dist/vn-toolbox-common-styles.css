@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.14 (2014-07-29) */
+/*! vn-toolbox-common - ver.0.0.14 (2014-07-30) */
 
 
 .panel-body { padding: 0 !important; }
@@ -14,11 +14,11 @@
 .vn-category-search__category-items__category-item { border-bottom: 1px solid #E6E6E6; }
 .vn-category-search__category-items__category-title.-noborder, .vn-category-search__category-items__category-item.-noborder { border: none; margin-bottom: 15px; }
 
+.facet-item__by-category { border-bottom: none !important; }
+
 .panel-body { padding: 0 !important; }
 
 .panel-group .panel { border-bottom: none; }
-
-.facet-item__by-category { border-bottom: none !important; }
 
 .vn-faceted-search-header { text-align: center; }
 .vn-faceted-search-header .__cancel-action, .vn-faceted-search-header .__clear-action { width: 96%; margin: 15px auto; display: inline-block; }
