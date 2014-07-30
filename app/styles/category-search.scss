@@ -5,9 +5,9 @@
 }
 
 .panel-group .panel {
-	margin-bottom: 15px !important;
-	border-bottom: none;
+	border-bottom : none;
 }
+
 // *******************************************************
 .vn-category-search {
 	padding       : 5px 0;
@@ -15,7 +15,7 @@
 	border-bottom : 1px solid #E6E6E6;
 
 	&__category-title, &__category-items {
-		text-align    : left;
+		text-align : left;
 
 		&__category-item {
 			padding : 0 15px 0 25px !important;
@@ -28,7 +28,7 @@
 
 	&__category-items {
 		text-align : left;
-		word-wrap: break-word;
+		word-wrap  : break-word;
 
 		&__category-title {
 			display       : block;
@@ -42,7 +42,8 @@
 
 		&__category-title, &__category-item {
 			&.-noborder {
-				border : none;
+				border        : none;
+				margin-bottom : 15px;
 			}
 		}
 
