@@ -5,7 +5,7 @@
 	<a data-ng-if="cat.displayStrategy == 'categoryDisplayTwo' || cat.displayStrategy == 'categoryDisplayThree' "
 	   data-ng-href="{{ cat.url  }}"
 	   class="vn-category-search__category-items__category-title"
-	   data-ng-class="{ '-noborder': $last }">
+	   data-ng-class="{ '-noborder': $last && cat.displayStrategy == 'categoryDisplayOne' }">
 
 		<span data-ng-if="cat.displayStrategy == 'categoryDisplayTwo' " class="glyphicon glyphicon-chevron-left"></span>
 		{{ cat.name }}

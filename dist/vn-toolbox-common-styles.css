@@ -8,10 +8,10 @@
 
 .vn-category-search { padding: 5px 0; border-top: 1px solid #E6E6E6; border-bottom: 1px solid #E6E6E6; }
 .vn-category-search__category-title, .vn-category-search__category-items { text-align: left; }
-.vn-category-search__category-title__category-item, .vn-category-search__category-items__category-item { padding: 0 15px 0 25px !important; }
+.vn-category-search__category-title__category-item, .vn-category-search__category-items__category-item { padding: 3px 15px 3px 25px !important; }
 .vn-category-search__category-items { text-align: left; word-wrap: break-word; }
 .vn-category-search__category-items.-last { margin-bottom: 15px; }
-.vn-category-search__category-items__category-title { display: block; padding: 0 13px; border-bottom: 1px solid #E6E6E6; }
+.vn-category-search__category-items__category-title { display: block; padding: 3px 13px; border-bottom: 1px solid #E6E6E6; }
 .vn-category-search__category-items__category-item { border-bottom: 1px solid #E6E6E6; }
 .vn-category-search__category-items__category-title.-noborder, .vn-category-search__category-items__category-item.-noborder { border: none; }
 

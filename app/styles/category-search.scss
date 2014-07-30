@@ -18,7 +18,7 @@
 		text-align : left;
 
 		&__category-item {
-			padding : 0 15px 0 25px !important;
+			padding : 3px 15px 3px 25px !important;
 		}
 
 		@media(max-width : 767px) {
@@ -36,7 +36,7 @@
 
 		&__category-title {
 			display       : block;
-			padding       : 0 13px;
+			padding       : 3px 13px;
 			border-bottom : 1px solid #E6E6E6;
 		}
 
