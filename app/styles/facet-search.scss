@@ -1,4 +1,14 @@
 // Default Toolbox Responsive Optimizations
+// Overwrite Bootstrap auto generated elements ***********
+.panel-body {
+	padding : 0 !important;
+}
+
+.panel-group .panel {
+	margin-bottom: 15px !important;
+	border-bottom: none;
+}
+// *******************************************************
 
 .vn-faceted-search-header {
 	text-align : center;
@@ -22,6 +32,7 @@
 
 	label {
 		display : block;
+		padding : 2px 13px;
 	}
 
 	input {
@@ -37,7 +48,7 @@
 		padding-left     : 5px;
 		padding-right    : 5px;
 		float            : right;
-		background-color : #999;
+		background-color : #999999;
 		color            : white;
 		display          : block;
 		border-radius    : 2px;
@@ -53,15 +64,15 @@
 			top              : 0;
 			bottom           : 0;
 			z-index          : 1001;
-			background-color : #fff;
+			background-color : #FFFFFF;
 		}
 	}
 }
 
 .mobile-filters {
-	align: center;
-	text-align: center;
-	margin-top: 10px;
+	align      : center;
+	text-align : center;
+	margin-top : 10px;
 }
 
 .vn-category-product-tiles {
@@ -75,7 +86,7 @@
 
 .facet-property {
 	label {
-		display: block;
+		display : block;
 	}
 
 	input[type="checkbox"] {
@@ -96,17 +107,17 @@
 		content : "\e067" !important; /* check */
 	}
 
-//	.name {
-//		display : inline-block;
-//		margin-right: 5px;
-//	}
+	//	.name {
+	//		display : inline-block;
+	//		margin-right: 5px;
+	//	}
 
 	.count {
 		margin-left      : 2px;
 		padding-left     : 5px;
 		padding-right    : 5px;
 		float            : right;
-		background-color : #999;
+		background-color : #999999;
 		color            : white;
 		display          : block;
 		border-radius    : 2px;
@@ -121,7 +132,7 @@
 			top              : 0;
 			bottom           : 0;
 			z-index          : 1001;
-			background-color : #fff;
+			background-color : #FFFFFF;
 		}
 	}
 }
@@ -143,11 +154,11 @@
 
 	.ng-leave.ng-leave-active,
 	.ng-enter {
-		opacity: 0;
+		opacity : 0;
 	}
 
 	.ng-enter.ng-enter-active,
 	.ng-leave {
-		opacity: 1;
+		opacity : 1;
 	}
 }
