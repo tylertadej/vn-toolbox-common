@@ -82,7 +82,7 @@
 
 		<!-- Clear button -->
 		<div class="vn-faceted-search-footer"
-			 data-ng-show="!showApplyButton">
+			 data-ng-show="!showApplyButton && facets.length > 0">
 			<button class="btn __clear-action"
 					href data-ng-click="clearAllFilters()">Clear
 			</button>
