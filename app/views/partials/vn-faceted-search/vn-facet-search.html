@@ -8,7 +8,9 @@
 		</div>
 	</div>
 	<label class="facet-property"
-		   data-ng-repeat="property in facet.properties track by $index">
+		   data-ng-repeat="property in facet.properties track by $index"
+		   data-ng-class="{ '-last': $last }">
+
 		<input type="checkbox"
 			   name="property.name"
 			   data-ng-checked="selectProperty(property)"

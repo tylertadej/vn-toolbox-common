@@ -4,7 +4,7 @@
 
 .panel-body { padding: 0 !important; }
 
-.panel-group .panel { margin-bottom: 15px !important; border-bottom: none; }
+.panel-group .panel { border-bottom: none; }
 
 .vn-category-search { padding: 5px 0; border-top: 1px solid #E6E6E6; border-bottom: 1px solid #E6E6E6; }
 .vn-category-search__category-title, .vn-category-search__category-items { text-align: left; }
@@ -12,11 +12,11 @@
 .vn-category-search__category-items { text-align: left; word-wrap: break-word; }
 .vn-category-search__category-items__category-title { display: block; padding: 0 13px; border-bottom: 1px solid #E6E6E6; }
 .vn-category-search__category-items__category-item { border-bottom: 1px solid #E6E6E6; }
-.vn-category-search__category-items__category-title.-noborder, .vn-category-search__category-items__category-item.-noborder { border: none; }
+.vn-category-search__category-items__category-title.-noborder, .vn-category-search__category-items__category-item.-noborder { border: none; margin-bottom: 15px; }
 
 .panel-body { padding: 0 !important; }
 
-.panel-group .panel { margin-bottom: 15px !important; border-bottom: none; }
+.panel-group .panel { border-bottom: none; }
 
 .facet-item__by-category { border-bottom: none !important; }
 
@@ -27,6 +27,7 @@
 .vn-facet-search-control { border-bottom: 1px solid #333333; }
 
 .vn-faceted-search label { display: block; padding: 2px 13px; position: relative; }
+.vn-faceted-search label.-last { margin-bottom: 15px; }
 .vn-faceted-search label .name { display: inline-block; }
 .vn-faceted-search label .count { position: absolute; top: 4px; right: 0; margin-left: 2px; padding: 0 5px; background-color: #999999; color: white; display: block; border-radius: 2px; }
 .vn-faceted-search input { width: 50px; }
@@ -49,6 +50,7 @@
 .facet-item .ng-enter, .facet-item .ng-leave { -webkit-transition: 100ms ease-out all; -moz-transition: 100ms ease-out all; -ms-transition: 100ms ease-out all; -o-transition: 100ms ease-out all; transition: 100ms ease-out all; }
 .facet-item .ng-leave.ng-leave-active, .facet-item .ng-enter { opacity: 0; }
 .facet-item .ng-enter.ng-enter-active, .facet-item .ng-leave { opacity: 1; }
+.facet-item__by-price__inputs { text-align: center; margin: 5px 0; }
 
 /*! IMAGE */
 /*!***************************************************************************/
