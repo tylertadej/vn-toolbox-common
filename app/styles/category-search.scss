@@ -30,6 +30,10 @@
 		text-align : left;
 		word-wrap  : break-word;
 
+		&.-last {
+			margin-bottom : 15px;
+		}
+
 		&__category-title {
 			display       : block;
 			padding       : 0 13px;
@@ -43,7 +47,6 @@
 		&__category-title, &__category-item {
 			&.-noborder {
 				border        : none;
-				margin-bottom : 15px;
 			}
 		}
 

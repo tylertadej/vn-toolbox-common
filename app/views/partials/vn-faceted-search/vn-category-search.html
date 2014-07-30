@@ -1,5 +1,6 @@
 <div class="vn-category-search__category-items"
-	 data-ng-repeat="cat in categories">
+	 data-ng-repeat="cat in categories"
+	 data-ng-class="{ '-last': $last }">
 
 	<a data-ng-if="cat.displayStrategy == 'categoryDisplayTwo' || cat.displayStrategy == 'categoryDisplayThree' "
 	   data-ng-href="{{ cat.url  }}"
