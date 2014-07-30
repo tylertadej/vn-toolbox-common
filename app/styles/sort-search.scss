@@ -1,0 +1,31 @@
+.facet-item__sort {
+	.panel-body {
+		padding : 0;
+	}
+}
+
+.sort-option {
+	border-top : 1px solid #e6e6e6;
+	padding    : 5px;
+
+	&__strategy {
+
+		&--active {
+		}
+
+		span {
+			font-family : Glyphicons Halflings;
+		}
+
+		&--active {
+			color : green;
+		}
+	}
+
+	&:nth-child(1) {
+		border-top : none;
+	}
+	&:nth-last-child(1) {
+		border-bottom : none;
+	}
+}

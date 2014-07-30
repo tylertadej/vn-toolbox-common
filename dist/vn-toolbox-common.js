@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.14 (2014-07-28) */
+/*! vn-toolbox-common - ver.0.0.14 (2014-07-29) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'Volusion.toolboxCommon.templates'])
@@ -467,6 +467,7 @@ angular.module('Volusion.toolboxCommon')
 angular.module('Volusion.toolboxCommon')
 	.directive('vnFacetSearch', ['$rootScope', '$window', 'vnProductParams',
 		function ($rootScope, $window, vnProductParams) {
+
 			'use strict';
 
 			return {
@@ -520,51 +521,85 @@ angular.module('Volusion.toolboxCommon')
 		}]);
 
 angular.module('Volusion.toolboxCommon')
-	.directive('vnFacetedSearch', function () {
+	.directive('vnFacetedSearch', ['$location', 'vnProductParams',
+		function ($location, vnProductParams) {
 
-		'use strict';
+			'use strict';
 
-		return {
-			templateUrl: 'vn-faceted-search/vn-faceted-search.html',
-			restrict   : 'EA',
-			link       : function postLink(scope) {
+			return {
+				templateUrl: 'vn-faceted-search/vn-faceted-search.html',
+				restrict   : 'EA',
+				link       : function postLink(scope) {
 
-				scope.showCategorySearch = false;
-				scope.showFacetSearch = true;
-				scope.showApplyButton = false;
+					scope.showCategorySearch = false;
+					scope.showFacetSearch = true;
+					scope.showApplyButton = false;
 
-				scope.$watch('categoryList', function (categoryList) {
+					/* Control for the sort directive UI */
+					// Only be visible on search pages
+					var location = $location.url(),
+						matcher;
+					matcher = /^\/search/;
+					scope.onSearchPage = matcher.test(location);
 
-					if(categoryList) {
-						scope.showCategorySearch = true;
-					}
+					scope.$watch('categoryList', function (categoryList) {
+						if (categoryList) {
+							scope.showCategorySearch = true;
+						}
+					});
 
-				});
+					scope.$watch('facets', function (facets) {
+						if (facets) {
+							scope.showFacetSearch = true;
+						}
+					});
 
-				scope.$watch('facets', function (facets) {
+					scope.$watch(
+						function() {
+							return vnProductParams.getSort();
+						},
+						function(strategy) {
+							scope.currentSort = strategy;
+						}
+					);
 
-					if (facets) {
-						scope.showFacetSearch = true;
-					}
+					enquire.register('screen and (max-width:767px)', {
 
-				});
-
-				enquire.register('screen and (max-width:767px)', {
-
-					setup: function() {
-						scope.showApplyButton = false;
-					},
-					unmatch: function () {
-						scope.showApplyButton = false;
-					},
-					// transitioning to mobile mode
-					match  : function () {
-						scope.showApplyButton = true;
-					}
-				});
-			}
-		};
-	});
+						setup  : function () {
+							scope.showApplyButton = false;
+							scope.mobileDisplay = true;
+							scope.showMobileSearch = false;
+							scope.isMobileAndVisible = false;
+							scope.isMobileAndHidden = true;
+							scope.categoryAccordiansOpen = true;
+							scope.priceAccordiansOpen = true;
+							scope.sortAccordianIsOpen = true;
+						},
+						unmatch: function () {
+							scope.showApplyButton = false;
+							scope.mobileDisplay = true; // default cats and facets to open
+							scope.showMobileSearch = false;
+							scope.isMobileAndVisible = false;
+							scope.isMobileAndHidden = true;
+							scope.categoryAccordiansOpen = true;
+							scope.priceAccordiansOpen = true;
+							scope.sortAccordianIsOpen = true;
+						},
+						// transitioning to mobile mode
+						match  : function () {
+							scope.showApplyButton = true;
+							scope.mobileDisplay = false; // default cats and facets default to closed
+							scope.showMobileSearch = true;
+							scope.isMobileAndVisible = false;
+							scope.isMobileAndHidden = true;
+							scope.categoryAccordiansOpen = false;
+							scope.priceAccordiansOpen = false;
+							scope.sortAccordianIsOpen = false;
+						}
+					});
+				}
+			};
+		}]);
 
 
 angular.module('Volusion.toolboxCommon')
@@ -863,8 +898,16 @@ angular.module('Volusion.toolboxCommon')
 /**
  * @ngdoc directive
  * @name vnToolboxCommonApp.directive:vnPriceSearch
+ * @restrict EA
+ * @requires vnProductParams
  * @description
- * # vnPriceSearch
+ * - Implewments search by price for a min::max range
+ * $watches via vnProductParams.getMinPrice() for resetting the field
+ * $watches via vnProductParams.getMaxPrice() for resetting the field
+ *
+ * Inherits the parent $controller's queryProducts function and calls if enter is keyed
+ * The parent controller is responsible for resetting these values to nil as needed. 
+ *
  */
 angular.module('Volusion.toolboxCommon')
 	.directive('vnPriceSearch', ['vnProductParams', function (vnProductParams) {
@@ -904,9 +947,7 @@ angular.module('Volusion.toolboxCommon')
 					vnProductParams.setMaxPrice(scope.maxPrice);
 
 					if (event.which === 13) {
-						console.log('enter detected running a product query');
 						scope.queryProducts();
-						console.log('log prodParams from price directive after query run: ', vnProductParams.getParamsObject());
 					}
 
 				};
@@ -1029,6 +1070,37 @@ angular.module('Volusion.toolboxCommon')
             '</div>'
         );
     }]);
+
+angular.module('Volusion.toolboxCommon')
+	.directive('vnSortSearch', ['vnProductParams', function (vnProductParams) {
+
+		'use strict';
+
+		return {
+			templateUrl: 'vn-faceted-search/vn-sort-search.html',
+			restrict   : 'AE',
+			scope: {
+				queryProducts: '&'
+			},
+			link       : function postLink(scope) {
+				vnProductParams.setSort('relevance'); // Default to this
+
+				scope.$watch(
+					function() {
+						return vnProductParams.getSort();
+					},
+					function(strategy) {
+						scope.activeSort = strategy;
+					}
+				);
+
+				scope.sortBy = function (strategy) {
+					vnProductParams.setSort(strategy);
+					scope.queryProducts();
+				};
+			}
+		};
+	}]);
 
 angular.module('Volusion.toolboxCommon')
     .value('vnApiConfigurations', {});
@@ -2739,9 +2811,11 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
   $templateCache.put("vn-faceted-search/vn-facet-search.html",
     "<div data-accordion-group class=facet-item data-ng-repeat=\"facet in facets track by $index\" data-is-open=defaultAccordianOpen><div data-accordion-heading><div><span>{{ facet.title }}</span> <i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': defaultAccordianOpen, 'glyphicon-chevron-right': !defaultAccordianOpen}\"></i></div></div><label class=facet-property data-ng-repeat=\"property in facet.properties track by $index\"><input type=checkbox name=property.name data-ng-checked=selectProperty(property) data-ng-click=refineFacetSearch(property)> <span class=name>{{ property.name }}</span> <span class=count>{{ property.count }}</span></label></div>");
   $templateCache.put("vn-faceted-search/vn-faceted-search.html",
-    "<div class=vn-faceted-search-header data-ng-show=showApplyButton><button class=\"btn btn-success __cancel-action\" href data-ng-click=dismissMobileFilters()>Apply</button>  <button class=\"btn __clear-action\" href data-ng-click=clearAllFilters()>Clear</button> </div><div class=-faceted-search data-ng-show=showFacetSearch><div class=facets><div data-accordion data-close-others=false><div data-accordion-group class=facet-item__by-category data-is-open=categoryAccordiansOpen data-ng-show=\"categoryList.length > 0\"><div data-accordion-heading><div><span>Category</span> <i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': categoryAccordiansOpen, 'glyphicon-chevron-right': !categoryAccordiansOpen}\"></i></div></div><div vn-category-search categories=categoryList query-products=queryProducts() data-ng-show=showCategorySearch></div></div><div vn-facet-search facets=facets query-products=queryProducts() data-ng-show=\"facets.length > 0\"></div><div data-accordion-group class=facet-item__by-price data-is-open=priceAccordiansOpen data-ng-show=\"facets.length > 0\"><div data-accordion-heading><div><span>Price</span> <i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': priceAccordiansOpen, 'glyphicon-chevron-right': !priceAccordiansOpen}\"></i></div></div><div class=facet-item__by-price__inputs vn-price-search query-products=queryProducts()></div></div></div><div class=vn-faceted-search-footer data-ng-show=!showApplyButton><button class=\"btn __clear-action\" href data-ng-click=clearAllFilters()>Clear</button> </div></div></div>");
+    "<div class=vn-faceted-search-header data-ng-show=showApplyButton><button class=\"btn btn-success __cancel-action\" href data-ng-click=dismissMobileFilters()>Apply</button>  <button class=\"btn __clear-action\" href data-ng-click=clearAllFilters()>Clear</button> </div><div class=-faceted-search data-ng-show=showFacetSearch><div class=facets><div data-accordion data-close-others=false><div data-accordion-group class=facet-item__by-category data-is-open=categoryAccordiansOpen data-ng-show=\"categoryList.length > 0\"><div data-accordion-heading><div><span>Category</span> <i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': categoryAccordiansOpen, 'glyphicon-chevron-right': !categoryAccordiansOpen}\"></i></div></div><div vn-category-search categories=categoryList query-products=queryProducts() data-ng-show=showCategorySearch></div></div><div vn-facet-search facets=facets query-products=queryProducts() data-ng-show=\"facets.length > 0\"></div><div data-accordion-group class=facet-item__by-price data-is-open=priceAccordiansOpen data-ng-show=\"facets.length > 0\"><div data-accordion-heading><div><span>Price</span> <i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': priceAccordiansOpen, 'glyphicon-chevron-right': !priceAccordiansOpen}\"></i></div></div><div class=facet-item__by-price__inputs vn-price-search query-products=queryProducts()></div></div><div data-accordion-group class=facet-item__sort data-is-open=sortAccordianIsOpen data-ng-if=onSearchPage><div data-accordion-heading><div class=sort-header><span>Sort by</span> <span class=sort-header__mobile ng-if=isMobileAndVisible>{{ currentSort }}</span> <i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': sortAccordianIsOpen, 'glyphicon-chevron-right': !sortAccordianIsOpen}\"></i></div></div><div vn-sort-search query-products=queryProducts()></div></div></div><div class=vn-faceted-search-footer data-ng-show=!showApplyButton><button class=\"btn __clear-action\" href data-ng-click=clearAllFilters()>Clear</button> </div></div></div>");
   $templateCache.put("vn-faceted-search/vn-price-search.html",
     "<input data-ng-model=minPrice data-ng-keypress=searchByPrice($event)> to <input data-ng-model=maxPrice data-ng-keypress=searchByPrice($event)>");
+  $templateCache.put("vn-faceted-search/vn-sort-search.html",
+    "<div class=\"accordion-inner sort\"><div class=\"row-fluid sort-option\" ng-click=\"sortBy('relevance')\"><a href class=sort-option__strategy>Relevance <span class=\"pull-right glyphicon-ok-sign\" ng-if=\"activeSort == 'relevance'\" ng-class=\" {'sort-option__strategy--active': activeSort == 'relevance'} \"></span></a></div><div class=\"row-fluid sort-option\" ng-click=\"sortBy('highest price')\"><a href class=sort-option__strategy>Price: High to Low <span class=\"pull-right glyphicon-ok-sign\" ng-if=\"activeSort == 'highest price'\" ng-class=\" {'sort-option__strategy--active': activeSort == 'highest price'} \"></span></a></div><div class=\"row-fluid sort-option\" ng-click=\"sortBy('lowest price')\"><a href class=sort-option__strategy>Price: Low to High <span class=\"pull-right glyphicon-ok-sign\" ng-if=\"activeSort == 'lowest price'\" ng-class=\" {'sort-option__strategy--active': activeSort == 'lowest price'} \"></span></a></div><div class=\"row-fluid sort-option\" ng-click=\"sortBy('popularity')\"><a href class=sort-option__strategy>Most Popular <span class=\"pull-right glyphicon-ok-sign\" ng-if=\"activeSort == 'popularity'\" ng-class=\" {'sort-option__strategy--active': activeSort == 'popularity'} \"></span></a></div><div class=\"row-fluid sort-option\" ng-click=\"sortBy('newest')\"><a href class=sort-option__strategy>Newest <span class=\"pull-right glyphicon-ok-sign\" ng-if=\"activeSort == 'newest'\" ng-class=\" {'sort-option__strategy--active': activeSort == 'newest'} \"></span></a></div><div class=\"row-fluid sort-option\" ng-click=\"sortBy('oldest')\"><a href class=sort-option__strategy>Oldest <span class=\"pull-right glyphicon-ok-sign\" ng-if=\"activeSort == 'oldest'\" ng-class=\" {'sort-option__strategy--active': activeSort == 'oldest'} \"></span></a></div></div>");
   $templateCache.put("vn-product-option/checkboxes.html",
     "<label data-vn-block=vn-labeled-checkbox data-vn-modifiers={{option.class}} data-ng-repeat=\"itemKey in option.items\" data-ng-init=\"item=product.optionItems[itemKey]\"><div data-vn-element=checkbox><input type=checkbox data-ng-click=onCheckboxClicked(option)></div><div data-vn-element=content data-ng-include=\" 'vn-product-option/content.html' \"></div></label>");
   $templateCache.put("vn-product-option/content.html",

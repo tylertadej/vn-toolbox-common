@@ -2,10 +2,14 @@
 	 data-ng-show="showApplyButton">
 	<button class="btn btn-success __cancel-action"
 			href
-			data-ng-click="dismissMobileFilters()">Apply</button> <!-- close() -->
+			data-ng-click="dismissMobileFilters()">Apply
+	</button>
+	<!-- close() -->
 	<button class="btn __clear-action"
 			href
-			data-ng-click="clearAllFilters()">Clear</button> <!-- close() & apply() -->
+			data-ng-click="clearAllFilters()">Clear
+	</button>
+	<!-- close() & apply() -->
 </div>
 <div class="-faceted-search"
 	 data-ng-show="showFacetSearch">
@@ -32,7 +36,7 @@
 				</div>
 			</div>
 
-			<!-- By Facets -->
+			<!-- By Facets: Note, the accordion groups live inside that view! -->
 			<div vn-facet-search
 				 facets="facets"
 				 query-products="queryProducts()"
@@ -55,13 +59,33 @@
 					 query-products="queryProducts()"></div>
 			</div>
 
+			<!-- Sort By -->
+			<div data-accordion-group
+				 class="facet-item__sort"
+				 data-is-open="sortAccordianIsOpen"
+				 data-ng-if="onSearchPage">
+				<div data-accordion-heading>
+					<div class="sort-header">
+						<span>Sort by</span>
+						<span class="sort-header__mobile"
+							  ng-if="isMobileAndVisible">{{ currentSort }}</span>
+						<i class="pull-right glyphicon"
+						   data-ng-class="{'glyphicon-chevron-down': sortAccordianIsOpen, 'glyphicon-chevron-right': !sortAccordianIsOpen}"></i>
+					</div>
+				</div>
+				<div vn-sort-search
+					 query-products="queryProducts()"></div>
+			</div>
+
 		</div>
 
 		<!-- Clear button -->
 		<div class="vn-faceted-search-footer"
 			 data-ng-show="!showApplyButton">
 			<button class="btn __clear-action"
-					href data-ng-click="clearAllFilters()">Clear</button> <!-- close() & apply() -->
+					href data-ng-click="clearAllFilters()">Clear
+			</button>
+			<!-- close() & apply() -->
 		</div>
 
 	</div>
