@@ -1,4 +1,14 @@
 // Default Toolbox Responsive Optimizations
+// Overwrite Bootstrap auto generated elements ***********
+.panel-body {
+	padding : 0 !important;
+}
+
+.panel-group .panel {
+	border-bottom : none;
+}
+
+// *******************************************************
 
 .vn-faceted-search-header {
 	text-align : center;
@@ -21,26 +31,33 @@
 .vn-faceted-search {
 
 	label {
-		display : block;
+		display  : block;
+		padding  : 2px 13px;
+		position : relative;
+
+		&.-last {
+			margin-bottom : 15px;
+		}
+
+		.name {
+			display : inline-block;
+		}
+
+		.count {
+			position         : absolute;
+			top              : 4px;
+			right            : 0;
+			margin-left      : 2px;
+			padding          : 0 5px;
+			background-color : #999999;
+			color            : white;
+			display          : block;
+			border-radius    : 2px;
+		}
 	}
 
 	input {
 		width : 50px;
-	}
-
-	.name {
-		display : inline-block;
-	}
-
-	.count {
-		margin-left      : 2px;
-		padding-left     : 5px;
-		padding-right    : 5px;
-		float            : right;
-		background-color : #999;
-		color            : white;
-		display          : block;
-		border-radius    : 2px;
 	}
 
 	@media(max-width : 767px) {
@@ -53,15 +70,15 @@
 			top              : 0;
 			bottom           : 0;
 			z-index          : 1001;
-			background-color : #fff;
+			background-color : #FFFFFF;
 		}
 	}
 }
 
 .mobile-filters {
-	align: center;
-	text-align: center;
-	margin-top: 10px;
+	align      : center;
+	text-align : center;
+	margin-top : 10px;
 }
 
 .vn-category-product-tiles {
@@ -75,12 +92,26 @@
 
 .facet-property {
 	label {
-		display: block;
+		display  : block;
+		position : relative;
+
+		.count {
+			position         : absolute;
+			top              : 4px;
+			right            : 0;
+			margin-left      : 2px;
+			padding          : 0 5px;
+			background-color : #999999;
+			color            : white;
+			display          : block;
+			border-radius    : 2px;
+		}
 	}
 
 	input[type="checkbox"] {
 		display : none;
 	}
+
 	input[type="checkbox"] + span:before {
 		margin        : 0;
 		padding       : 0;
@@ -89,27 +120,13 @@
 		margin-top    : 3px !important;
 		font-size     : 12px !important;
 	}
+
 	input[type="checkbox"] + span:before {
 		content : "\e157" !important; /* check-empty */
 	}
+
 	input[type="checkbox"]:checked + span:before {
 		content : "\e067" !important; /* check */
-	}
-
-//	.name {
-//		display : inline-block;
-//		margin-right: 5px;
-//	}
-
-	.count {
-		margin-left      : 2px;
-		padding-left     : 5px;
-		padding-right    : 5px;
-		float            : right;
-		background-color : #999;
-		color            : white;
-		display          : block;
-		border-radius    : 2px;
 	}
 
 	@media(max-width : 767px) {
@@ -121,7 +138,7 @@
 			top              : 0;
 			bottom           : 0;
 			z-index          : 1001;
-			background-color : #fff;
+			background-color : #FFFFFF;
 		}
 	}
 }
@@ -143,11 +160,18 @@
 
 	.ng-leave.ng-leave-active,
 	.ng-enter {
-		opacity: 0;
+		opacity : 0;
 	}
 
 	.ng-enter.ng-enter-active,
 	.ng-leave {
-		opacity: 1;
+		opacity : 1;
+	}
+
+	&__by-price {
+		&__inputs {
+			text-align : center;
+			margin     : 5px 0;
+		}
 	}
 }

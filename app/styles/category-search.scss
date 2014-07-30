@@ -1,16 +1,24 @@
 // Default Toolbox Responsive Optimizations
+// Overwrite Bootstrap auto generated elements ***********
+.panel-body {
+	padding : 0 !important;
+}
+
+.panel-group .panel {
+	border-bottom : none;
+}
+
+// *******************************************************
 .vn-category-search {
-	padding: 5px 0;
-	border-top: 1px solid #e6e6e6;
-	border-bottom: 1px solid #e6e6e6;
+	padding       : 5px 0;
+	border-top    : 1px solid #E6E6E6;
+	border-bottom : 1px solid #E6E6E6;
 
 	&__category-title, &__category-items {
-		text-align: left;
-		margin-bottom: 5px!important;
+		text-align : left;
 
 		&__category-item {
-			border: none!important; // is my bem wrong? overiding bootstrap here.
-			padding: 0 25px!important;
+			padding : 0 15px 0 25px !important;
 		}
 
 		@media(max-width : 767px) {
@@ -19,10 +27,24 @@
 	}
 
 	&__category-items {
-		text-align: left;
+		text-align : left;
+		word-wrap  : break-word;
+
+		&__category-title {
+			display       : block;
+			padding       : 0 13px;
+			border-bottom : 1px solid #E6E6E6;
+		}
 
 		&__category-item {
-			border: none;
+			border-bottom : 1px solid #E6E6E6;
+		}
+
+		&__category-title, &__category-item {
+			&.-noborder {
+				border        : none;
+				margin-bottom : 15px;
+			}
 		}
 
 		@media(max-width : 767px) {
