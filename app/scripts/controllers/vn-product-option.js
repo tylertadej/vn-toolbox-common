@@ -93,6 +93,8 @@ angular.module('Volusion.toolboxCommon')
 
 			$scope.onOptionChanged = function (option, item) {
 
+				$scope.currentSelectionText = item.text;
+
 				var optionKey = option.key,
 					haveThisOption = $scope.saveTo.filter(function (obj) {
 						return obj.id === item.id;
