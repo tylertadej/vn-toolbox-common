@@ -196,12 +196,12 @@ describe('Directive: vnProductOption', function() {
 				return $component.find('[data-vn-element=select]');
 			}
 
-			it('adds class to modifiers', function() {
+			it.skip('adds class to modifiers', function() {
 				$select = createSelect();
 				expect($select).to.have.attr('data-vn-modifiers', 'colorClass');
 			});
 
-			it('adds a size attributes when size is specified', function() {
+			it.skip('adds a size attributes when size is specified', function() {
 				$select = createSelect({ size: 5 });
 				expect($select).to.have.attr('size', '5');
 			});
