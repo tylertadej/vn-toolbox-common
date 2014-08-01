@@ -1073,44 +1073,6 @@ angular.module('Volusion.toolboxCommon')
         );
     }]);
 
-'use strict';
-
-/**
- * @ngdoc directive
- * @name vnToolboxCommonApp.directive:vnSortDesktopSearch
- * @description
- * # vnSortDesktopSearch
- */
-angular.module('Volusion.toolboxCommon')
-	.directive('vnSortDesktopSearch', function () {
-		return {
-			templateUrl: 'vn-faceted-search/vn-sort-mobile-search.html',
-			restrict   : 'AE',
-			link       : function postLink() {
-				// Code
-			}
-		};
-	});
-
-'use strict';
-
-/**
- * @ngdoc directive
- * @name vnToolboxCommonApp.directive:vnSortMobileSearch
- * @description
- * # vnSortMobileSearch
- */
-angular.module('Volusion.toolboxCommon')
-	.directive('vnSortMobileSearch', function () {
-		return {
-			templateUrl: 'vn-faceted-search/vn-sort-mobile-search.html',
-			restrict   : 'AE',
-			link       : function postLink() {
-				// Code
-			}
-		};
-	});
-
 /**
  * @ngdoc directive
  * @name methodApp.directive:vnSortSearch
@@ -1140,14 +1102,14 @@ angular.module('Volusion.toolboxCommon')
 			link       : function postLink(scope) {
 				vnProductParams.setSort('relevance'); // Default to this
 
-				scope.$watch(
-					function() {
-						return vnProductParams.getSort();
-					},
-					function(strategy) {
-						scope.activeSort = strategy;
-					}
-				);
+//				scope.$watch(
+//					function() {
+//						return vnProductParams.getSort();
+//					},
+//					function(strategy) {
+//						scope.activeSort = strategy;
+//					}
+//				);
 
 				scope.sortBy = function (strategy) {
 					vnProductParams.setSort(strategy);
@@ -2869,10 +2831,6 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "<div class=vn-faceted-search-header data-ng-show=showApplyButton><button class=\"btn btn-success __cancel-action\" href data-ng-click=dismissMobileFilters()>Apply</button>  <button class=\"btn __clear-action\" href data-ng-click=clearAllFilters()>Clear</button> </div><div class=-faceted-search data-ng-show=showFacetSearch><div class=facets><div data-accordion data-close-others=false><div data-accordion-group class=facet-item__by-category data-is-open=categoryAccordiansOpen data-ng-show=\"categoryList.length > 0\"><div data-accordion-heading><div><span>Category</span> <i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': categoryAccordiansOpen, 'glyphicon-chevron-right': !categoryAccordiansOpen}\"></i></div></div><div vn-category-search categories=categoryList query-products=queryProducts() data-ng-show=showCategorySearch class=category-search></div></div><div vn-facet-search facets=facets query-products=queryProducts() data-ng-show=\"facets.length > 0\"></div><div data-accordion-group class=facet-item__by-price data-is-open=priceAccordiansOpen data-ng-show=\"facets.length > 0\"><div data-accordion-heading><div><span>Price</span> <i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': priceAccordiansOpen, 'glyphicon-chevron-right': !priceAccordiansOpen}\"></i></div></div><div class=facet-item__by-price__inputs vn-price-search query-products=queryProducts()></div></div></div><div class=vn-faceted-search-footer data-ng-show=\"!showApplyButton && facets.length > 0\"><button class=\"btn __clear-action\" href data-ng-click=clearAllFilters()>Clear</button> </div></div></div>");
   $templateCache.put("vn-faceted-search/vn-price-search.html",
     "<input data-ng-model=minPrice data-ng-keypress=searchByPrice($event)> to <input data-ng-model=maxPrice data-ng-keypress=searchByPrice($event)>");
-  $templateCache.put("vn-faceted-search/vn-sort-desktop-search.html",
-    "<div>desktop sort search</div>");
-  $templateCache.put("vn-faceted-search/vn-sort-mobile-search.html",
-    "<div class=dropdown data-vn-element=select><button class=\"btn btn-default dropdown-toggle\" type=button id=\"dropdownMenuOption{{ option.id }}\" data-toggle=dropdown>{{ currentSelectionText }} <span class=caret></span></button><ul class=dropdown-menu role=menu aria-labelledby=\"dropdownMenuOption{{ option.id }}\"><li role=presentation data-ng-repeat=\"itemKey in option.items\"><a role=menuitem tabindex=-1 href data-ng-click=\"onOptionChanged(option, product.optionItems[itemKey])\">{{ product.optionItems[itemKey].text }}</a></li></ul></div>");
   $templateCache.put("vn-faceted-search/vn-sort-search.html",
     "<div class=dropdown><button class=\"btn btn-default dropdown-toggle\" type=button id=dropdownMenu1 data-toggle=dropdown>Sort by <span class=caret></span></button><ul class=dropdown-menu role=menu aria-labelledby=dropdownMenu1><li role=presentation><a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('relevence')\">Relevance</a></li><li role=presentation><a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('highest price')\">Highest price</a></li><li role=presentation><a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('lowest price')\">Lowest price</a></li><li role=presentation><a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('relevence')\">Popularity</a></li><li role=presentation><a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('newest')\">Newest</a></li><li role=presentation><a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('oldest')\">Oldest</a></li></ul></div>");
   $templateCache.put("vn-product-option/checkboxes.html",
