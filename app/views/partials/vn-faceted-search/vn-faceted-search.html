@@ -59,25 +59,6 @@
 					 vn-price-search
 					 query-products="queryProducts()"></div>
 			</div>
-
-			<!-- Sort By -->
-			<div data-accordion-group
-				 class="facet-item__sort"
-				 data-is-open="sortAccordianIsOpen"
-				 data-ng-if="onSearchPage">
-				<div data-accordion-heading>
-					<div class="sort-header">
-						<span>Sort by</span>
-						<span class="sort-header__mobile"
-							  ng-if="isMobileAndVisible">{{ currentSort }}</span>
-						<i class="pull-right glyphicon"
-						   data-ng-class="{'glyphicon-chevron-down': sortAccordianIsOpen, 'glyphicon-chevron-right': !sortAccordianIsOpen}"></i>
-					</div>
-				</div>
-				<div vn-sort-search
-					 query-products="queryProducts()"></div>
-			</div>
-
 		</div>
 
 		<!-- Clear button -->

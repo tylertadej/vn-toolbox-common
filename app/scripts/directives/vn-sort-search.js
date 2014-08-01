@@ -33,15 +33,16 @@ angular.module('Volusion.toolboxCommon')
 			},
 			link       : function postLink(scope) {
 				vnProductParams.setSort('relevance'); // Default to this
+				var 
 
-				scope.$watch(
-					function() {
-						return vnProductParams.getSort();
-					},
-					function(strategy) {
-						scope.activeSort = strategy;
-					}
-				);
+//				scope.$watch(
+//					function() {
+//						return vnProductParams.getSort();
+//					},
+//					function(strategy) {
+//						scope.activeSort = strategy;
+//					}
+//				);
 
 				scope.sortBy = function (strategy) {
 					vnProductParams.setSort(strategy);
