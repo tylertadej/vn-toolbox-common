@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.14 (2014-07-30) */
+/*! vn-toolbox-common - ver.0.0.14 (2014-08-01) */
 
 
 .panel-body { padding: 0 !important; }
@@ -75,10 +75,3 @@ ul.rating { display: inline-block; }
 
 /*!***************************************************************************/
 
-.facet-item__sort .panel-body { padding: 0; }
-
-.sort-option { border-top: 1px solid #e6e6e6; padding: 5px; }
-.sort-option__strategy span { font-family: Glyphicons Halflings; }
-.sort-option__strategy--active { color: green; }
-.sort-option:nth-child(1) { border-top: none; }
-.sort-option:nth-last-child(1) { border-bottom: none; }

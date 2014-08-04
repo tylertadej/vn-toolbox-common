@@ -1,62 +1,44 @@
-<div class="accordion-inner sort">
-	<div class="row-fluid sort-option"
-		 ng-click="sortBy('relevance')">
-		<a href
-		   class="sort-option__strategy">
-			Relevance
-			<span class="pull-right glyphicon-ok-sign"
-				  ng-if="activeSort == 'relevance'"
-				  ng-class=" {'sort-option__strategy--active': activeSort == 'relevance'} "></span>
-		</a>
-	</div>
-	<div class="row-fluid sort-option"
-		 ng-click="sortBy('highest price')">
-		<a href
-		   class="sort-option__strategy">
-			Price: High to Low
-			<span class="pull-right glyphicon-ok-sign"
-				  ng-if="activeSort == 'highest price'"
-				  ng-class=" {'sort-option__strategy--active': activeSort == 'highest price'} "></span>
-		</a>
-	</div>
-	<div class="row-fluid sort-option"
-		 ng-click="sortBy('lowest price')">
-		<a href
-		   class="sort-option__strategy">
-			Price: Low to High
-			<span class="pull-right glyphicon-ok-sign"
-				  ng-if="activeSort == 'lowest price'"
-				  ng-class=" {'sort-option__strategy--active': activeSort == 'lowest price'} "></span>
-		</a>
-	</div>
-	<div class="row-fluid sort-option"
-		 ng-click="sortBy('popularity')">
-		<a href
-		   class="sort-option__strategy">
-			Most Popular
-			<span class="pull-right glyphicon-ok-sign"
-				  ng-if="activeSort == 'popularity'"
-				  ng-class=" {'sort-option__strategy--active': activeSort == 'popularity'} "></span>
-		</a>
-	</div>
-	<div class="row-fluid sort-option"
-		 ng-click="sortBy('newest')">
-		<a href
-		   class="sort-option__strategy">
-			Newest
-			<span class="pull-right glyphicon-ok-sign"
-				  ng-if="activeSort == 'newest'"
-				  ng-class=" {'sort-option__strategy--active': activeSort == 'newest'} "></span>
-		</a>
-	</div>
-	<div class="row-fluid sort-option"
-		 ng-click="sortBy('oldest')">
-		<a href
-		   class="sort-option__strategy">
-			Oldest
-			<span class="pull-right glyphicon-ok-sign"
-				  ng-if="activeSort == 'oldest'"
-				  ng-class=" {'sort-option__strategy--active': activeSort == 'oldest'} "></span>
-		</a>
-	</div>
+<div class="dropdown">
+	<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+		Sort by
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+		<li role="presentation">
+			<a role="menuitem"
+			   tabindex="-1"
+			   href=""
+			   data-ng-click="sortBy('relevence')">Relevance</a>
+		</li>
+		<li role="presentation">
+			<a role="menuitem"
+			   tabindex="-1"
+			   href=""
+			   data-ng-click="sortBy('highest price')">Highest price</a>
+		</li>
+		<li role="presentation">
+			<a role="menuitem"
+			   tabindex="-1"
+			   href=""
+			   data-ng-click="sortBy('lowest price')">Lowest price</a>
+		</li>
+		<li role="presentation">
+			<a role="menuitem"
+			   tabindex="-1"
+			   href=""
+			   data-ng-click="sortBy('relevence')">Popularity</a>
+		</li>
+		<li role="presentation">
+			<a role="menuitem"
+			   tabindex="-1"
+			   href=""
+			   data-ng-click="sortBy('newest')">Newest</a>
+		</li>
+		<li role="presentation">
+			<a role="menuitem"
+			   tabindex="-1"
+			   href=""
+			   data-ng-click="sortBy('oldest')">Oldest</a>
+		</li>
+	</ul>
 </div>
