@@ -34,15 +34,6 @@ angular.module('Volusion.toolboxCommon')
 			link       : function postLink(scope) {
 				vnProductParams.setSort('relevance'); // Default to this
 
-//				scope.$watch(
-//					function() {
-//						return vnProductParams.getSort();
-//					},
-//					function(strategy) {
-//						scope.activeSort = strategy;
-//					}
-//				);
-
 				scope.sortBy = function (strategy) {
 					vnProductParams.setSort(strategy);
 					scope.queryProducts();
