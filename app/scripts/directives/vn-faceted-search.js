@@ -1,6 +1,6 @@
 /**
  * @ngdoc directive
- * @name methodApp.directive:facetedSearch
+ * @name Volusion.toolboxCommon.directive:vnFacetedSearch
  * @restrict EA
  * @requires vnProductParams
  * @scope
