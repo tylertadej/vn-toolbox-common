@@ -1,7 +1,6 @@
 'use strict';
 
 describe('Service: vnAppRoute', function () {
-
 	// load the service's module
 	beforeEach(module('Volusion.toolboxCommon'));
 
@@ -14,5 +13,4 @@ describe('Service: vnAppRoute', function () {
 	it('should do something', function () {
 		expect(!!vnAppRoute).toBe(true);
 	});
-
 });
