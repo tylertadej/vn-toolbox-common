@@ -39,15 +39,14 @@ angular.module('Volusion.toolboxCommon')
 						return;
 					}
 					for (var i = 0, len = itemKeys.length; i < len; i++) {
-						var itemKey = itemKeys[i],
-							item = $scope.product.optionItems[itemKey],
+						var item = option.items[i],
 							haveThisOption = isThisOptionSelected(item);
 
 						if (haveThisOption.length > 0) {
 							if (filter(option)) {
 								callback(option, item);
 							}
-							if (option.options) {
+							if (option.options && option.options.length > 0) {
 								traverseSelectedOptions(option.options, filter, callback);
 							}
 							break;
@@ -56,9 +55,8 @@ angular.module('Volusion.toolboxCommon')
 				});
 			}
 
-			function buildSelection() {
+			function getCurrentSelections () {
 				var selections = [],
-					optionSelections = $scope.product.optionSelections,
 					filter = function (option) {
 						return option.isComputedInSelection;
 					};
@@ -70,7 +68,21 @@ angular.module('Volusion.toolboxCommon')
 					].join(':'));
 				});
 
-				return angular.extend({}, optionSelections.template, optionSelections[selections.join('|')]);
+				return selections.join('|');
+			}
+
+			function buildSelection() {
+				var selections = getCurrentSelections(),
+					optionSelections = {},
+					optionTemplateSelection = $scope.product.optionSelections.filter(function (selection) {
+						return selection.key === 'template';
+					})[0];
+
+				optionSelections = $scope.product.optionSelections.filter(function (selection) {
+					return selection.key === selections;
+				})[0];
+
+				return angular.extend({}, optionTemplateSelection, optionSelections);
 			}
 
 			function verifyRequiredOptionsAreSelected(options) {
@@ -115,12 +127,18 @@ angular.module('Volusion.toolboxCommon')
 
 				preserveSubOptions();
 
-				$rootScope.$broadcast('VN_PRODUCT_SELECTED', angular.extend({}, {
-					product: $scope.product,
-					option : option,
-					item   : item,
-					isValid: verifyRequiredOptionsAreSelected($scope.product.options)
-				}, buildSelection()));
+				var buildSel = buildSelection(),
+					currentSel = getCurrentSelections(),
+					verifySel = verifyRequiredOptionsAreSelected($scope.product.options);
+
+				$rootScope.$broadcast('VN_PRODUCT_SELECTED',
+					angular.extend({}, {
+						product: $scope.product,
+						option : option,
+						item   : item,
+						isValid: verifySel
+					}, buildSel),
+					currentSel);
 			};
 
 			$scope.onCheckboxClicked = function(option, itemKey) {

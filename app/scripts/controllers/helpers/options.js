@@ -15,23 +15,25 @@ angular.module('Volusion.toolboxCommon')
 			$scope.isItemAvailable = true;
 			$scope.itemToken = $scope.option.key + ':' + $scope.item.key;
 
-			$scope.$on('VN_PRODUCT_SELECTED', function (event, selection) {
+			$scope.$on('VN_PRODUCT_SELECTED', function (event, selection, currentSelections) {
 
-				for (var key in selection.product.optionSelections) {
-					if (selection.product.optionSelections.hasOwnProperty(key)) {
+				var selections = currentSelections.split('|');
 
-						var selectionToken = selection.option.key + ':' + selection.option.selected;
+				for (var idxSel = 0; idxSel < selections.length; idxSel++) {
+					console.log(selections[idxSel]);
+				}
 
-						if (selectionToken !== $scope.itemToken &&
-							key.indexOf(selectionToken) > -1 &&
-							key.indexOf($scope.itemToken) > -1) {
+				for (var idx = 0; idx < selection.product.optionSelections.length; idx++) {
+					if (selection.key !== $scope.itemToken &&
+						$scope.product.optionSelections[idx].key.indexOf(selection.key) > -1 &&
+						$scope.product.optionSelections[idx].key.indexOf($scope.itemToken) > -1) {
 
-							// TODO: What about the optionSelection's state?
-							// According to Kevin at this moment we do not care ...
-							$scope.isItemAvailable = ($scope.product.optionSelections[key].available > 0);
-						}
+						// TODO: What about the optionSelection's state?
+						// According to Kevin at this moment we do not care ...
+						$scope.isItemAvailable = ($scope.product.optionSelections[idx].available > 0);
 					}
 				}
+
 			});
 
 		}]);

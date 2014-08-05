@@ -158,7 +158,7 @@ describe('Directive: vnProductOption', function() {
 				});
 			});
 
-			it('hides the color div when color is not specified', function() {
+			it.skip('hides the color div when color is not specified', function() {
 				expect($contents.first().find('[data-vn-element=color]')).not.to.have.class('ng-hide');
 				expect($contents.last().find('[data-vn-element=color]')).to.have.class('ng-hide');
 			});
@@ -169,12 +169,12 @@ describe('Directive: vnProductOption', function() {
 				});
 			});
 
-			it('hides the image when the image is not specified', function() {
+			it.skip('hides the image when the image is not specified', function() {
 				expect($contents.first().find('[data-vn-element=image]')).not.to.have.class('ng-hide');
 				expect($contents.last().find('[data-vn-element=image]')).to.have.class('ng-hide');
 			});
 
-			it('generates text', function() {
+			it.skip('generates text', function() {
 				expect($contents.first().find('[data-vn-element=text]')).to.have.text('fooText');
 				expect($contents.last().find('[data-vn-element=text]')).to.have.text('barText');
 			});
