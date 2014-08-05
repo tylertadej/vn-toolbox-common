@@ -1216,11 +1216,9 @@ angular.module('Volusion.toolboxCommon')
 			// Filter logic and gaurd code
 			var imagePath = '';
 
-			if (!imageCollections || imageCollections.length <= 0) {										// Guard for when not a valid image collection
-//				throw new Error('vnProductImageFilter needs an image collection.');
+			if (imageCollections && imageCollections.length <= 0) {					// Guard for when not a valid image collection, but passed
 				imagePath = '';
-			} else if (arguments.length === 1) {										// When only imageCollections arg is passed, do default
-				// do the default
+			} else if (arguments.length === 1) {									// When only imageCollections arg is passed, do default
 				imagePath = parseImage('default', 'medium');
 			} else if(arguments.length === 3) {										// Get non-default image url from one of imageCollections.
 				// return theme default
@@ -1493,6 +1491,42 @@ angular.module('Volusion.toolboxCommon')
                 ThemeSettings: ThemeSettings
             };
         }]);
+
+'use strict';
+
+/**
+ * @ngdoc service
+ * @name vnToolboxCommonApp.vnAppRoute
+ * @description
+ * # vnAppRoute
+ * Provider in the vnToolboxCommonApp.
+ */
+angular.module('Volusion.toolboxCommon')
+	.provider('vnAppRoute', function () {
+
+		// Private variables
+		var currentRoute = '',
+			newRoute = '';
+
+		// Private constructor
+		function AppRoute() {
+			this.AppRoute = function () {
+				return this;
+			};
+		}
+
+		// Public API for configuration
+		this.updateRoute = function () {
+			console.log('ok this is the openeing.');
+			console.log('curRoute: ', currentRoute);
+			console.log('prevRoute: ', newRoute);
+		};
+
+		// Method for instantiating
+		this.$get = function () {
+			return new AppRoute();
+		};
+	});
 
 'use strict';
 
