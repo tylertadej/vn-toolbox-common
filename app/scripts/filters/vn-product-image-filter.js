@@ -31,18 +31,19 @@ angular.module('Volusion.toolboxCommon')
 			 * @returns {String} imagePath is the configured url for the image site needs to display
 			 *
 			 * @description
-			 * Uses the given option and size params to return a string with an image url in it
+			 * This is a private function used by the filter to parse images.
+			 * If it doesn't find an image it returns an empty string.
+			 * It uses the given option and size params to build and return a string with an image url in it If available.
 			 */
 			function parseImage(option, size) {
 				var imagePath = '';
 
-				if(imageCollections.length === 0) {
-					imagePath = '/images/theme/tcp-no-image.jpg';
-				} else {
+				if(imageCollections.length >= 0) {
 					for(var i = imageCollections.length - 1; i >=0; i--) {
 						var currentImageCollection = imageCollections[i];
 						if(option === currentImageCollection.key) {
 							imagePath =  'http:' + currentImageCollection.images[0][size];
+							break;
 						}
 					}
 				}
@@ -50,18 +51,20 @@ angular.module('Volusion.toolboxCommon')
 				return imagePath;
 			}
 
+
+			// Filter logic and gaurd code
 			var imagePath = '';
-			if (imageCollections.length <= 0) {
-				throw new Error('vnPRoductImageFilter needs an image collection to work correctly.');
-			} else if (!optionName && !imageSize) {
+
+			if (imageCollections.length <= 0) {										// Guard for when not a valid image collection
+				throw new Error('vnPRoductImageFilter needs an image collection.');
+			} else if (arguments.length === 1) {										// When only imageCollections arg is passed, do default
 				// do the default
 				imagePath = parseImage('default', 'medium');
-			} else if(!optionName || !imageSize) {
+			} else if(arguments.length === 3) {										// Get non-default image url from one of imageCollections.
 				// return theme default
-				return '';
-			} else {
-				// use option name and image size to parse the corrent url
 				imagePath = parseImage(optionName, imageSize);
+			} else {
+				throw new Error('vnProductImageFilter was unable to process the arguments supplied.');
 			}
 
 			return imagePath;
