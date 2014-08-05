@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.14 (2014-08-01) */
+/*! vn-toolbox-common - ver.0.0.14 (2014-08-04) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'Volusion.toolboxCommon.templates'])
@@ -1102,15 +1102,6 @@ angular.module('Volusion.toolboxCommon')
 			link       : function postLink(scope) {
 				vnProductParams.setSort('relevance'); // Default to this
 
-//				scope.$watch(
-//					function() {
-//						return vnProductParams.getSort();
-//					},
-//					function(strategy) {
-//						scope.activeSort = strategy;
-//					}
-//				);
-
 				scope.sortBy = function (strategy) {
 					vnProductParams.setSort(strategy);
 					scope.queryProducts();
@@ -1118,6 +1109,61 @@ angular.module('Volusion.toolboxCommon')
 			}
 		};
 	}]);
+
+'use strict';
+
+/**
+ * @ngdoc filter
+ * @name Volusion.toolboxCommon.filter:vnProductImageFilter
+ * @param {option||size} option name and image size to parse for if not default
+ * @function
+ * @description
+ * # vnProductImageFilter
+ * Filter for product.imageCollections
+ *
+ * ## Default behavior
+ * Given a product.imageCollections object, return the url of the medium size image
+ * - If wnat default: $filter('vnProductImageFilter')(product.imageCollections);
+ * - if want default,small: $filter('vnProductImageFilter')(product.imageCollections, 'default', 'small');
+ * - If want option named fuzzyFoo: $filter('vnProductImageFilter')(product.imageCollections, 'fuzzyFoo', 'medium');
+ * ##
+ */
+angular.module('Volusion.toolboxCommon')
+	.filter('vnProductImageFilter', function () {
+		return function (imageCollections, optionName, imageSize) {
+
+			function parseImage(option, size) {
+				if(imageCollections.length === 0) {
+					return '/images/theme/tcp-no-image.jpg';
+				} else {
+					for(var i = imageCollections.length - 1; i >=0; i--) {
+						var currentImageCollection = imageCollections[i];
+						if(option === currentImageCollection.key) {
+							return 'http:' + currentImageCollection.images[0][size];
+						}
+					}
+				}
+			}
+
+			var imagePath = 'http://test.c';
+			if (imageCollections.length <= 0) {
+				throw new Error('vnPRoductImageFilter needs an image collection to work correctly.');
+			} else if (!optionName && !imageSize) {
+				// do the default
+				imagePath = parseImage('default', 'medium');
+			} else if(!optionName || !imageSize) {
+				// return theme default
+				// How to get the theme defaults here?
+				return '/images/theme/tcp-no-image.jpg';
+			} else {
+				// use option name and image size to parse the corrent url
+				imagePath = parseImage(optionName, imageSize);
+			}
+			console.log('parsed image path is: ', imagePath);
+			console.log('imageCollections are: ', imageCollections);
+			return imagePath;
+		};
+	});
 
 angular.module('Volusion.toolboxCommon')
     .value('vnApiConfigurations', {});

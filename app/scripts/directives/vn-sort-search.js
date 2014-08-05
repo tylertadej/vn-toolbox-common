@@ -1,13 +1,6 @@
 /**
  * @ngdoc directive
- * @name vnToolboxCommonApp.directive:vnSortSearch
- * @description
- * # vnSortSearch
- */
-
-/**
- * @ngdoc directive
- * @name methodApp.directive:vnSortSearch
+ * @name Volusion.toolboxCommon.directive:vnSortSearch
  * @restrict EA
  * @requires vnProductParams
  * @scope
