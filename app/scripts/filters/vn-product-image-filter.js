@@ -55,11 +55,9 @@ angular.module('Volusion.toolboxCommon')
 			// Filter logic and gaurd code
 			var imagePath = '';
 
-			if (!imageCollections || imageCollections.length <= 0) {										// Guard for when not a valid image collection
-//				throw new Error('vnProductImageFilter needs an image collection.');
+			if (imageCollections && imageCollections.length <= 0) {					// Guard for when not a valid image collection, but passed
 				imagePath = '';
-			} else if (arguments.length === 1) {										// When only imageCollections arg is passed, do default
-				// do the default
+			} else if (arguments.length === 1) {									// When only imageCollections arg is passed, do default
 				imagePath = parseImage('default', 'medium');
 			} else if(arguments.length === 3) {										// Get non-default image url from one of imageCollections.
 				// return theme default

@@ -1,6 +1,6 @@
-/*globals chai*/
-
 describe('Filter: vnProductImageFilter', function () {
+
+	'use strict';
 
 	// load the filter's module
 	beforeEach(module('Volusion.toolboxCommon'));
@@ -18,6 +18,5 @@ describe('Filter: vnProductImageFilter', function () {
 	it('should return empty string when not called with an imageCollection', function() {
 		expect(vnProductImageFilter()).to.equal('');
 	});
-
 
 });
