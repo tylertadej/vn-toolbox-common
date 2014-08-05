@@ -1012,22 +1012,30 @@ angular.module('Volusion.toolboxCommon')
                     replace    : true,
                     scope      : {
                         currMode   : '@currMode',
-                        ratingValue: '=',
-                        readonly   : '@'
+                        editable   : '=',
+                        maximum    : '=',
+                        ratingValue: '='
                     },
-                    link       : function postLink(scope, element) {
+                link       : function postLink(scope, element, attrs) {
+                    var filledClass = attrs.filledClass || 'filled';
+                    var emptyClass = attrs.emptyClass || '';
 
-                        if (scope.currMode === undefined) {
+                    var idx,
+                        max = scope.maximum || 5;
+
+                    if (scope.currMode === undefined) {
                             scope.currMode = 'on';
                         }
 
-                        if (scope.ratingValue === undefined || scope.ratingValue === '') {
+                    if (scope.ratingValue === undefined || scope.ratingValue === '') {
                             scope.ratingValue = 0;
                         }
 
-                        // Component constants *****************
+                    // Component constants *****************
                         scope.componentId = '100004';
+
                         scope.componentName = 'rating';
+
                         // *************************************
 
                         // Component is not selected by default
@@ -1038,8 +1046,7 @@ angular.module('Volusion.toolboxCommon')
                                 scope.selected = (component.id === scope.componentId);
                             }
                         });
-
-                        element.on('click', function (event) {
+                    element.on('click', function (event) {
                             // if in EDIT mode
                             if (scope.currMode === 'off') {
                                 event.preventDefault();
@@ -1047,15 +1054,14 @@ angular.module('Volusion.toolboxCommon')
                             }
                         });
 
-                        var idx,
-                            max = 5;
-
                         scope.stars = [];
-
                         function updateStars() {
                             scope.stars = [];
                             for (idx = 0; idx < max; idx++) {
-                                scope.stars.push({filled: idx < scope.ratingValue});
+                                scope.stars.push({
+                                	filled: idx < scope.ratingValue,
+                                	cssClass: idx < scope.ratingValue ? filledClass : emptyClass
+                                });
                             }
                         }
 
@@ -1066,7 +1072,7 @@ angular.module('Volusion.toolboxCommon')
                         });
 
                         scope.toggle = function (index) {
-                            if (scope.readonly && scope.readonly === 'true') {
+                            if (!scope.editable) {
                                 return;
                             }
 
@@ -1082,11 +1088,9 @@ angular.module('Volusion.toolboxCommon')
         $templateCache.put(
             'template/rating.html',
             '<div class="vn-rating">' +
-                '<!-- not happy with this but it seems better than angular-ui carousel' +
-                    'http://blog.revolunet.com/angular-carousel/ -->' +
-                '<p translate>VN-RATING-TITLE</p>' +
+                '<p data-translate="VN-RATING-TITLE">Rating</p>' +
                 '<ul class="rating">' +
-                    '<li data-ng-repeat="star in stars" class="tick" data-ng-class="star" data-ng-click="toggle($index)">' +
+                    '<li data-ng-repeat="star in stars" class="tick {{ star.cssClass }}" data-ng-click="toggle($index)">' +
                     '</li>' +
                 '</ul>' +
             '</div>'
