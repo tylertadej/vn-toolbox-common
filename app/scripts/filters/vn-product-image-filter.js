@@ -42,7 +42,7 @@ angular.module('Volusion.toolboxCommon')
 					for(var i = imageCollections.length - 1; i >=0; i--) {
 						var currentImageCollection = imageCollections[i];
 						if(option === currentImageCollection.key) {
-							imagePath =  '//' + currentImageCollection.images[0][size];
+							imagePath = currentImageCollection.images[0][size];
 							break;
 						}
 					}

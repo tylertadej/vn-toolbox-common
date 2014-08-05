@@ -46,23 +46,25 @@ angular.module('Volusion.toolboxCommon')
 			$scope.isItemAvailable = true;
 			$scope.itemToken = $scope.option.key + ':' + $scope.item.key;
 
-			$scope.$on('VN_PRODUCT_SELECTED', function (event, selection) {
+			$scope.$on('VN_PRODUCT_SELECTED', function (event, selection, currentSelections) {
 
-				for (var key in selection.product.optionSelections) {
-					if (selection.product.optionSelections.hasOwnProperty(key)) {
+				var selections = currentSelections.split('|');
 
-						var selectionToken = selection.option.key + ':' + selection.option.selected;
+				for (var idxSel = 0; idxSel < selections.length; idxSel++) {
+					console.log(selections[idxSel]);
+				}
 
-						if (selectionToken !== $scope.itemToken &&
-							key.indexOf(selectionToken) > -1 &&
-							key.indexOf($scope.itemToken) > -1) {
+				for (var idx = 0; idx < selection.product.optionSelections.length; idx++) {
+					if (selection.key !== $scope.itemToken &&
+						$scope.product.optionSelections[idx].key.indexOf(selection.key) > -1 &&
+						$scope.product.optionSelections[idx].key.indexOf($scope.itemToken) > -1) {
 
-							// TODO: What about the optionSelection's state?
-							// According to Kevin at this moment we do not care ...
-							$scope.isItemAvailable = ($scope.product.optionSelections[key].available > 0);
-						}
+						// TODO: What about the optionSelection's state?
+						// According to Kevin at this moment we do not care ...
+						$scope.isItemAvailable = ($scope.product.optionSelections[idx].available > 0);
 					}
 				}
+
 			});
 
 		}]);
@@ -100,15 +102,14 @@ angular.module('Volusion.toolboxCommon')
 						return;
 					}
 					for (var i = 0, len = itemKeys.length; i < len; i++) {
-						var itemKey = itemKeys[i],
-							item = $scope.product.optionItems[itemKey],
+						var item = option.items[i],
 							haveThisOption = isThisOptionSelected(item);
 
 						if (haveThisOption.length > 0) {
 							if (filter(option)) {
 								callback(option, item);
 							}
-							if (option.options) {
+							if (option.options && option.options.length > 0) {
 								traverseSelectedOptions(option.options, filter, callback);
 							}
 							break;
@@ -117,9 +118,8 @@ angular.module('Volusion.toolboxCommon')
 				});
 			}
 
-			function buildSelection() {
+			function getCurrentSelections () {
 				var selections = [],
-					optionSelections = $scope.product.optionSelections,
 					filter = function (option) {
 						return option.isComputedInSelection;
 					};
@@ -131,7 +131,21 @@ angular.module('Volusion.toolboxCommon')
 					].join(':'));
 				});
 
-				return angular.extend({}, optionSelections.template, optionSelections[selections.join('|')]);
+				return selections.join('|');
+			}
+
+			function buildSelection() {
+				var selections = getCurrentSelections(),
+					optionSelections = {},
+					optionTemplateSelection = $scope.product.optionSelections.filter(function (selection) {
+						return selection.key === 'template';
+					})[0];
+
+				optionSelections = $scope.product.optionSelections.filter(function (selection) {
+					return selection.key === selections;
+				})[0];
+
+				return angular.extend({}, optionTemplateSelection, optionSelections);
 			}
 
 			function verifyRequiredOptionsAreSelected(options) {
@@ -176,12 +190,18 @@ angular.module('Volusion.toolboxCommon')
 
 				preserveSubOptions();
 
-				$rootScope.$broadcast('VN_PRODUCT_SELECTED', angular.extend({}, {
-					product: $scope.product,
-					option : option,
-					item   : item,
-					isValid: verifyRequiredOptionsAreSelected($scope.product.options)
-				}, buildSelection()));
+				var buildSel = buildSelection(),
+					currentSel = getCurrentSelections(),
+					verifySel = verifyRequiredOptionsAreSelected($scope.product.options);
+
+				$rootScope.$broadcast('VN_PRODUCT_SELECTED',
+					angular.extend({}, {
+						product: $scope.product,
+						option : option,
+						item   : item,
+						isValid: verifySel
+					}, buildSel),
+					currentSel);
 			};
 
 			$scope.onCheckboxClicked = function(option, itemKey) {
@@ -1139,7 +1159,7 @@ angular.module('Volusion.toolboxCommon')
 					for(var i = imageCollections.length - 1; i >=0; i--) {
 						var currentImageCollection = imageCollections[i];
 						if(option === currentImageCollection.key) {
-							imagePath =  'http:' + currentImageCollection.images[0][size];
+							imagePath = currentImageCollection.images[0][size];
 							break;
 						}
 					}
@@ -1152,8 +1172,8 @@ angular.module('Volusion.toolboxCommon')
 			// Filter logic and gaurd code
 			var imagePath = '';
 
-			if (imageCollections.length <= 0) {										// Guard for when not a valid image collection
-				throw new Error('vnPRoductImageFilter needs an image collection.');
+			if (!imageCollections || imageCollections.length <= 0) {										// Guard for when not a valid image collection
+				throw new Error('vnProductImageFilter needs an image collection.');
 			} else if (arguments.length === 1) {										// When only imageCollections arg is passed, do default
 				// do the default
 				imagePath = parseImage('default', 'medium');
@@ -2873,25 +2893,179 @@ angular.module('Volusion.toolboxCommon')
 
 angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', function($templateCache) {
   $templateCache.put("vn-faceted-search/vn-category-search.html",
-    "<div class=vn-category-search__category-items data-ng-repeat=\"cat in categories\" data-ng-class=\"{ '-last': $last }\"><a data-ng-if=\"cat.displayStrategy == 'categoryDisplayTwo' || cat.displayStrategy == 'categoryDisplayThree' \" data-ng-href=\"{{ cat.url  }}\" class=vn-category-search__category-items__category-title data-ng-class=\"{ '-noborder': $last && cat.displayStrategy == 'categoryDisplayOne' }\"><span data-ng-if=\"cat.displayStrategy == 'categoryDisplayTwo' \" class=\"glyphicon glyphicon-chevron-left\"></span> {{ cat.name }}</a> <span class=vn-category-search__category-items__category-title data-ng-if=\"cat.displayStrategy == 'categoryDisplayOne' \">{{ cat.name }}</span><div class=vn-category-search__category-items__category-item data-ng-repeat=\"subCat in cat.subCategories\" data-ng-class=\"{ '-noborder': $last }\"><span data-ng-if=subCat.hideSubCatLink>{{ subCat.name }}</span> <a data-ng-if=!subCat.hideSubCatLink data-ng-href=\"{{ subCat.url  }}\">{{ subCat.name }}</a></div></div>");
+    "<div class=vn-category-search__category-items data-ng-repeat=\"cat in categories\" data-ng-class=\"{ '-last': $last }\">\n" +
+    "\n" +
+    "	<a data-ng-if=\"cat.displayStrategy == 'categoryDisplayTwo' || cat.displayStrategy == 'categoryDisplayThree' \" data-ng-href=\"{{ cat.url  }}\" class=vn-category-search__category-items__category-title data-ng-class=\"{ '-noborder': $last && cat.displayStrategy == 'categoryDisplayOne' }\">\n" +
+    "\n" +
+    "		<span data-ng-if=\"cat.displayStrategy == 'categoryDisplayTwo' \" class=\"glyphicon glyphicon-chevron-left\"></span>\n" +
+    "		{{ cat.name }}\n" +
+    "	</a>\n" +
+    "	<span class=vn-category-search__category-items__category-title data-ng-if=\"cat.displayStrategy == 'categoryDisplayOne' \">{{ cat.name }}</span>\n" +
+    "	<div class=vn-category-search__category-items__category-item data-ng-repeat=\"subCat in cat.subCategories\" data-ng-class=\"{ '-noborder': $last }\">\n" +
+    "\n" +
+    "		<span data-ng-if=subCat.hideSubCatLink>{{ subCat.name }}</span>\n" +
+    "		<a data-ng-if=!subCat.hideSubCatLink data-ng-href=\"{{ subCat.url  }}\">{{ subCat.name }}</a>\n" +
+    "	</div>\n" +
+    "</div>");
   $templateCache.put("vn-faceted-search/vn-facet-search.html",
-    "<div data-accordion-group class=facet-item data-ng-repeat=\"facet in facets track by $index\" data-is-open=defaultAccordianOpen><div data-accordion-heading><div><span>{{ facet.title }}</span> <i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': defaultAccordianOpen, 'glyphicon-chevron-right': !defaultAccordianOpen}\"></i></div></div><label class=facet-property data-ng-repeat=\"property in facet.properties track by $index\" data-ng-class=\"{ '-last': $last }\"><input type=checkbox name=property.name data-ng-checked=selectProperty(property) data-ng-click=refineFacetSearch(property)> <span class=name>{{ property.name }}</span> <span class=count>{{ property.count }}</span></label></div>");
+    "<div data-accordion-group class=facet-item data-ng-repeat=\"facet in facets track by $index\" data-is-open=defaultAccordianOpen>\n" +
+    "	<div data-accordion-heading>\n" +
+    "		<div>\n" +
+    "			<span>{{ facet.title }}</span>\n" +
+    "			<i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': defaultAccordianOpen, 'glyphicon-chevron-right': !defaultAccordianOpen}\"></i>\n" +
+    "		</div>\n" +
+    "	</div>\n" +
+    "	<label class=facet-property data-ng-repeat=\"property in facet.properties track by $index\" data-ng-class=\"{ '-last': $last }\">\n" +
+    "\n" +
+    "		<input type=checkbox name=property.name data-ng-checked=selectProperty(property) data-ng-click=refineFacetSearch(property)>\n" +
+    "		<span class=name>{{ property.name }}</span>\n" +
+    "		<span class=count>{{ property.count }}</span>\n" +
+    "	</label>\n" +
+    "</div>");
   $templateCache.put("vn-faceted-search/vn-faceted-search.html",
-    "<div class=vn-faceted-search-header data-ng-show=showApplyButton><button class=\"btn btn-success __cancel-action\" href data-ng-click=dismissMobileFilters()>Apply</button>  <button class=\"btn __clear-action\" href data-ng-click=clearAllFilters()>Clear</button> </div><div class=-faceted-search data-ng-show=showFacetSearch><div class=facets><div data-accordion data-close-others=false><div data-accordion-group class=facet-item__by-category data-is-open=categoryAccordiansOpen data-ng-show=\"categoryList.length > 0\"><div data-accordion-heading><div><span>Category</span> <i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': categoryAccordiansOpen, 'glyphicon-chevron-right': !categoryAccordiansOpen}\"></i></div></div><div vn-category-search categories=categoryList query-products=queryProducts() data-ng-show=showCategorySearch class=category-search></div></div><div vn-facet-search facets=facets query-products=queryProducts() data-ng-show=\"facets.length > 0\"></div><div data-accordion-group class=facet-item__by-price data-is-open=priceAccordiansOpen data-ng-show=\"facets.length > 0\"><div data-accordion-heading><div><span>Price</span> <i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': priceAccordiansOpen, 'glyphicon-chevron-right': !priceAccordiansOpen}\"></i></div></div><div class=facet-item__by-price__inputs vn-price-search query-products=queryProducts()></div></div></div><div class=vn-faceted-search-footer data-ng-show=\"!showApplyButton && facets.length > 0\"><button class=\"btn __clear-action\" href data-ng-click=clearAllFilters()>Clear</button> </div></div></div>");
+    "<div class=vn-faceted-search-header data-ng-show=showApplyButton>\n" +
+    "	<button class=\"btn btn-success __cancel-action\" href data-ng-click=dismissMobileFilters()>Apply\n" +
+    "	</button>\n" +
+    "	\n" +
+    "	<button class=\"btn __clear-action\" href data-ng-click=clearAllFilters()>Clear\n" +
+    "	</button>\n" +
+    "	\n" +
+    "</div>\n" +
+    "<div class=-faceted-search data-ng-show=showFacetSearch>\n" +
+    "	<div class=facets>\n" +
+    "		<div data-accordion data-close-others=false>\n" +
+    "\n" +
+    "			\n" +
+    "			<div data-accordion-group class=facet-item__by-category data-is-open=categoryAccordiansOpen data-ng-show=\"categoryList.length > 0\">\n" +
+    "				<div data-accordion-heading>\n" +
+    "					<div>\n" +
+    "						<span>Category</span>\n" +
+    "						<i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': categoryAccordiansOpen, 'glyphicon-chevron-right': !categoryAccordiansOpen}\"></i>\n" +
+    "					</div>\n" +
+    "				</div>\n" +
+    "				<div vn-category-search categories=categoryList query-products=queryProducts() data-ng-show=showCategorySearch class=category-search>\n" +
+    "				</div>\n" +
+    "			</div>\n" +
+    "\n" +
+    "			\n" +
+    "			<div vn-facet-search facets=facets query-products=queryProducts() data-ng-show=\"facets.length > 0\"></div>\n" +
+    "\n" +
+    "			\n" +
+    "			<div data-accordion-group class=facet-item__by-price data-is-open=priceAccordiansOpen data-ng-show=\"facets.length > 0\">\n" +
+    "				<div data-accordion-heading>\n" +
+    "					<div>\n" +
+    "						<span>Price</span>\n" +
+    "						<i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': priceAccordiansOpen, 'glyphicon-chevron-right': !priceAccordiansOpen}\"></i>\n" +
+    "					</div>\n" +
+    "				</div>\n" +
+    "				<div class=facet-item__by-price__inputs vn-price-search query-products=queryProducts()></div>\n" +
+    "			</div>\n" +
+    "		</div>\n" +
+    "\n" +
+    "		\n" +
+    "		<div class=vn-faceted-search-footer data-ng-show=\"!showApplyButton && facets.length > 0\">\n" +
+    "			<button class=\"btn __clear-action\" href data-ng-click=clearAllFilters()>Clear\n" +
+    "			</button>\n" +
+    "			\n" +
+    "		</div>\n" +
+    "\n" +
+    "	</div>\n" +
+    "</div>");
   $templateCache.put("vn-faceted-search/vn-price-search.html",
-    "<input data-ng-model=minPrice data-ng-keypress=searchByPrice($event)> to <input data-ng-model=maxPrice data-ng-keypress=searchByPrice($event)>");
+    "<input data-ng-model=minPrice data-ng-keypress=searchByPrice($event)>\n" +
+    "to\n" +
+    "<input data-ng-model=maxPrice data-ng-keypress=searchByPrice($event)>");
   $templateCache.put("vn-faceted-search/vn-sort-search.html",
-    "<div class=dropdown><button class=\"btn btn-default dropdown-toggle\" type=button id=dropdownMenu1 data-toggle=dropdown>Sort by <span class=caret></span></button><ul class=dropdown-menu role=menu aria-labelledby=dropdownMenu1><li role=presentation><a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('relevence')\">Relevance</a></li><li role=presentation><a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('highest price')\">Highest price</a></li><li role=presentation><a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('lowest price')\">Lowest price</a></li><li role=presentation><a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('relevence')\">Popularity</a></li><li role=presentation><a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('newest')\">Newest</a></li><li role=presentation><a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('oldest')\">Oldest</a></li></ul></div>");
+    "<div class=dropdown>\n" +
+    "	<button class=\"btn btn-default dropdown-toggle\" type=button id=dropdownMenu1 data-toggle=dropdown>\n" +
+    "		Sort by\n" +
+    "		<span class=caret></span>\n" +
+    "	</button>\n" +
+    "	<ul class=dropdown-menu role=menu aria-labelledby=dropdownMenu1>\n" +
+    "		<li role=presentation>\n" +
+    "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('relevence')\">Relevance</a>\n" +
+    "		</li>\n" +
+    "		<li role=presentation>\n" +
+    "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('highest price')\">Highest price</a>\n" +
+    "		</li>\n" +
+    "		<li role=presentation>\n" +
+    "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('lowest price')\">Lowest price</a>\n" +
+    "		</li>\n" +
+    "		<li role=presentation>\n" +
+    "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('relevence')\">Popularity</a>\n" +
+    "		</li>\n" +
+    "		<li role=presentation>\n" +
+    "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('newest')\">Newest</a>\n" +
+    "		</li>\n" +
+    "		<li role=presentation>\n" +
+    "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('oldest')\">Oldest</a>\n" +
+    "		</li>\n" +
+    "	</ul>\n" +
+    "</div>");
   $templateCache.put("vn-product-option/checkboxes.html",
-    "<label data-vn-block=vn-labeled-checkbox data-vn-modifiers={{option.class}} data-ng-repeat=\"itemKey in option.items\" data-ng-init=\"item=product.optionItems[itemKey]\"><div data-vn-element=checkbox><input type=checkbox data-ng-click=onCheckboxClicked(option)></div><div data-vn-element=content data-ng-include=\" 'vn-product-option/content.html' \"></div></label>");
+    "<label data-vn-block=vn-labeled-checkbox data-vn-modifiers={{option.class}} data-ng-repeat=\"itemKey in option.items\" data-ng-init=\"item=product.optionItems[itemKey]\">\n" +
+    "\n" +
+    "	<div data-vn-element=checkbox>\n" +
+    "		<input type=checkbox data-ng-click=onCheckboxClicked(option)>\n" +
+    "	</div>\n" +
+    "\n" +
+    "	<div data-vn-element=content data-ng-include=\" 'vn-product-option/content.html' \"></div>\n" +
+    "</label>");
   $templateCache.put("vn-product-option/content.html",
-    "<div data-vn-element=color-image><div data-vn-element=color data-ng-show=item.color style=\"background-color: {{item.color}}\"></div><img data-vn-element=image data-ng-show=item.image data-ng-src={{item.image}} alt={{item.text}}></div><div data-vn-element=text data-ng-bind=item.text data-ng-controller=OptionsCtrl data-ng-class=\"{ '-disabled': !isItemAvailable }\"></div><div data-vn-element=border data-ng-class=\"{ checked: option.selected===itemKey }\"></div>");
+    "<div data-vn-element=color-image>\n" +
+    "	<div data-vn-element=color data-ng-show=item.color style=\"background-color: {{item.color}}\"></div>\n" +
+    "	<img data-vn-element=image data-ng-show=item.image data-ng-src={{item.image}} alt={{item.text}}>\n" +
+    "</div>\n" +
+    "<div data-vn-element=text data-ng-bind=item.text data-ng-controller=OptionsCtrl data-ng-class=\"{ '-disabled': !isItemAvailable }\"></div>\n" +
+    "<div data-vn-element=border data-ng-class=\"{ checked: option.selected === item.key }\"></div>");
   $templateCache.put("vn-product-option/index.html",
-    "<div data-vn-block=vn-product-option><label data-vn-element=label data-ng-if=option.label data-ng-bind=option.label></label><div data-ng-repeat=\"inputType in option.inputTypes\"><div data-vn-element=group data-vn-modifiers=\"{{inputType.type}} {{option.class}}\" data-ng-include=\" 'vn-product-option/' + inputType.type + '.html' \"></div></div><div data-ng-if=option.selected><div data-ng-repeat=\"option in option.options\" data-ng-include=\" 'vn-product-option/index.html' \"></div></div></div>");
+    "<div data-vn-block=vn-product-option>\n" +
+    "\n" +
+    "	<label data-vn-element=label data-ng-if=option.label data-ng-bind=option.label></label>\n" +
+    "\n" +
+    "	<div data-ng-repeat=\"inputType in option.inputTypes\">\n" +
+    "		<div data-vn-element=group data-vn-modifiers=\"{{inputType.type}} {{option.class}}\" data-ng-include=\" 'vn-product-option/' + inputType.type + '.html' \">\n" +
+    "		</div>\n" +
+    "	</div>\n" +
+    "\n" +
+    "	<div data-ng-if=option.selected>\n" +
+    "		<div data-ng-repeat=\"option in option.options\" data-ng-include=\" 'vn-product-option/index.html' \">\n" +
+    "		</div>\n" +
+    "	</div>\n" +
+    "\n" +
+    "</div>");
   $templateCache.put("vn-product-option/radios.html",
-    "<label data-vn-block=vn-labeled-radio data-vn-modifiers={{option.class}} data-ng-repeat=\"itemKey in option.items\" data-ng-init=\"item=product.optionItems[itemKey]\"><div data-vn-element=radio><input type=radio name={{option.id}} data-ng-value=itemKey data-ng-model=option.selected data-ng-click=\"onOptionChanged(option, item)\"></div><div data-vn-element=content data-ng-include=\" 'vn-product-option/content.html' \"></div></label>");
+    "<label data-vn-block=vn-labeled-radio data-vn-modifiers={{option.class}} data-ng-repeat=\"item in option.items\" data-ng-init=item>\n" +
+    "\n" +
+    "	<div data-vn-element=radio>\n" +
+    "		<input type=radio name={{option.id}} data-ng-value=itemKey data-ng-model=option.selected data-ng-click=\"onOptionChanged(option, item)\">\n" +
+    "	</div>\n" +
+    "\n" +
+    "	<div data-vn-element=content data-ng-include=\" 'vn-product-option/content.html' \"></div>\n" +
+    "\n" +
+    "</label>");
   $templateCache.put("vn-product-option/select.html",
-    "<div class=dropdown data-vn-element=select data-vn-modifiers=\"{{ option.class }}\" data-ng-attr-size=\"{{ inputType.size }}\"><button class=\"btn btn-default dropdown-toggle\" type=button id=\"dropdownMenuOption{{ option.id }}\" data-toggle=dropdown>{{ currentSelectionText }} <span class=caret></span></button><ul class=dropdown-menu role=menu aria-labelledby=\"dropdownMenuOption{{ option.id }}\"><li role=presentation data-ng-repeat=\"itemKey in option.items\"><a role=menuitem tabindex=-1 href data-ng-click=\"onOptionChanged(option, product.optionItems[itemKey])\">{{ product.optionItems[itemKey].text }}</a></li></ul></div>");
+    "<div class=dropdown data-vn-element=select data-vn-modifiers=\"{{ option.class }}\" data-ng-attr-size=\"{{ inputType.size }}\">\n" +
+    "\n" +
+    "	<button class=\"btn btn-default dropdown-toggle\" type=button id=\"dropdownMenuOption{{ option.id }}\" data-toggle=dropdown>\n" +
+    "		{{ currentSelectionText }}\n" +
+    "		<span class=caret></span>\n" +
+    "	</button>\n" +
+    "	<ul class=dropdown-menu role=menu aria-labelledby=\"dropdownMenuOption{{ option.id }}\">\n" +
+    "		<li role=presentation data-ng-repeat=\"itemKey in option.items\">\n" +
+    "			<a role=menuitem tabindex=-1 href data-ng-click=\"onOptionChanged(option, product.optionItems[itemKey])\">\n" +
+    "\n" +
+    "				{{ product.optionItems[itemKey].text }}\n" +
+    "			</a>\n" +
+    "		</li>\n" +
+    "	</ul>\n" +
+    "</div>");
   $templateCache.put("vn-product-option/text.html",
-    "<div data-ng-if=\"inputType.rows > 1\"><textarea data-vn-element=text data-vn-modifiers={{option.class}} data-ng-focus=\"saveTo=saveTo||{}\" data-ng-model=saveTo[option.id] data-ng-maxlength={{inputType.maxlength}} placeholder={{inputType.placeholder}} rows={{inputType.rows}} cols={{inputType.cols}}></textarea></div><div data-ng-if=\"!inputType.rows || inputType.rows < 2\"><input data-vn-element=text data-vn-modifiers={{option.class}} data-ng-focus=\"saveTo=saveTo||{}\" data-ng-model=saveTo[option.id] data-ng-maxlength={{inputType.maxlength}} placeholder={{inputType.placeholder}}></div>");
+    "<div data-ng-if=\"inputType.rows > 1\">\n" +
+    "	<textarea data-vn-element=text data-vn-modifiers={{option.class}} data-ng-focus=\"saveTo=saveTo||{}\" data-ng-model=saveTo[option.id] data-ng-maxlength={{inputType.maxlength}} placeholder={{inputType.placeholder}} rows={{inputType.rows}} cols={{inputType.cols}}></textarea>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div data-ng-if=\"!inputType.rows || inputType.rows < 2\">\n" +
+    "	<input data-vn-element=text data-vn-modifiers={{option.class}} data-ng-focus=\"saveTo=saveTo||{}\" data-ng-model=saveTo[option.id] data-ng-maxlength={{inputType.maxlength}} placeholder={{inputType.placeholder}}>\n" +
+    "</div>");
 }]);
