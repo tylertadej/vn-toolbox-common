@@ -15,8 +15,8 @@ describe('Filter: vnProductImageFilter', function () {
 		expect(vnProductImageFilter({})).to.equal('');
 	});
 
-	it('should throw an error when not called with an imageCollection', function() {
-		chai.expect(function() { vnProductImageFilter(); }).to.throw('vnProductImageFilter needs an image collection.');
+	it('should return empty string when not called with an imageCollection', function() {
+		expect(vnProductImageFilter()).to.equal('');
 	});
 
 
