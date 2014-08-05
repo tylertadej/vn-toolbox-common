@@ -16,6 +16,7 @@
  * - If callee wants default: $filter('vnProductImageFilter')(product.imageCollections);
  * - if callee want default,small: $filter('vnProductImageFilter')(product.imageCollections, 'default', 'small');
  * - If callee want option named fuzzyFoo: $filter('vnProductImageFilter')(product.imageCollections, 'fuzzyFoo', 'medium');
+ * - if no match is found an empty string is returned so callee can handle it with the theme default.
  */
 angular.module('Volusion.toolboxCommon')
 	.filter('vnProductImageFilter', function () {
@@ -49,7 +50,7 @@ angular.module('Volusion.toolboxCommon')
 				return imagePath;
 			}
 
-			var imagePath = 'http://test.c';
+			var imagePath = '';
 			if (imageCollections.length <= 0) {
 				throw new Error('vnPRoductImageFilter needs an image collection to work correctly.');
 			} else if (!optionName && !imageSize) {
@@ -57,7 +58,7 @@ angular.module('Volusion.toolboxCommon')
 				imagePath = parseImage('default', 'medium');
 			} else if(!optionName || !imageSize) {
 				// return theme default
-				return '/images/theme/tcp-no-image.jpg';
+				return '';
 			} else {
 				// use option name and image size to parse the corrent url
 				imagePath = parseImage(optionName, imageSize);
