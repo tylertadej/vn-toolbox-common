@@ -1522,12 +1522,12 @@ angular.module('Volusion.toolboxCommon')
 			};
 		}
 
-		// Public API for configuration (available in config phase)
-		this.updateRoute = function () {
-			console.log('ok this is in config phase.');
-			console.log('curRoute: ', currentRoute);
-			console.log('prevRoute: ', newRoute);
-		};
+//		// Public API for configuration (available in config phase)
+//		this.updateRoute = function () {
+//			console.log('ok this is in config phase.');
+//			console.log('curRoute: ', currentRoute);
+//			console.log('prevRoute: ', newRoute);
+//		};
 
 		// Method for instantiating
 		this.$get = function () {
