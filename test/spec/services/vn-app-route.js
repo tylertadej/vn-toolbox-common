@@ -2,17 +2,17 @@
 
 describe('Service: vnAppRoute', function () {
 
-  // load the service's module
-  beforeEach(module('Volusion.toolboxCommon'));
+	// load the service's module
+	beforeEach(module('Volusion.toolboxCommon'));
 
-  // instantiate service
-  var vnAppRoute;
-  beforeEach(inject(function (_vnAppRoute_) {
-    vnAppRoute = _vnAppRoute_;
-  }));
+	// instantiate service
+	var VnAppRoute;
+	beforeEach(inject(function (_VnAppRoute_) {
+		VnAppRoute = _VnAppRoute_;
+	}));
 
-  it('should do something', function () {
-    expect(!!vnAppRoute).toBe(true);
-  });
+	it('should do something', function () {
+		expect(!!VnAppRoute).toBe(true);
+	});
 
 });
