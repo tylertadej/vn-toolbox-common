@@ -2,7 +2,6 @@
 
 /**
  * @ngdoc service
-<<<<<<< HEAD
  * @name Volusion.toolboxCommon.vnAppRoute
  * @requires vnProductParams
  * @requires $location
