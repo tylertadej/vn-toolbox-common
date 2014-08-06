@@ -3,7 +3,8 @@
 	 data-vn-modifiers="{{ option.class }}"
 	 data-ng-attr-size="{{ inputType.size }}">
 
-	<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuOption{{ option.id }}" data-toggle="dropdown">
+	<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuOption{{ option.id }}"
+			data-toggle="dropdown">
 		{{ currentSelectionText }}
 		<span class="caret"></span>
 	</button>
@@ -12,7 +13,6 @@
 			<a role="menuitem" tabindex="-1" href
 			   data-ng-click="onOptionChanged(option, item)"
 			   data-ng-controller="OptionsCtrl" data-ng-class="{ '-disabled': !isItemAvailable }">
-
 				{{ item.text }}
 			</a>
 		</li>

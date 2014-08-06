@@ -1,4 +1,3 @@
-
 /*! vn-toolbox-common - ver.0.0.15 (2014-08-13) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
@@ -3164,3 +3163,4 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "	<input data-vn-element=text data-vn-modifiers={{option.class}} data-ng-focus=\"saveTo=saveTo||{}\" data-ng-model=saveTo[option.id] data-ng-maxlength={{inputType.maxlength}} placeholder={{inputType.placeholder}}>\n" +
     "</div>");
 }]);
+

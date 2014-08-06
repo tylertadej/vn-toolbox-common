@@ -21,7 +21,18 @@ angular.module('Volusion.toolboxCommon')
 
 		/**
 		 * @ngdoc property
-		 * @name accountData
+		 * @name hasActiveSession
+		 * @property {Boolean} hasAActiveSession
+		 * @propertyOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * A flag that is active when customer is starting a new product filtering session.
+		 */
+		var hasSctiveSession = false;
+
+		/**
+		 * @ngdoc property
+		 * @name categoryIds
 		 * @property {Array} categoryIds
 		 * @propertyOf Volusion.toolboxCommon.vnProductParams
 		 *
@@ -62,6 +73,30 @@ angular.module('Volusion.toolboxCommon')
 			pageSize     : ''
 		};
 
+		/**
+		 * @ngdoc function
+		 * @name startActiveSession
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Starts a product filtering session by setting hasActiveSession to true;
+		 */
+		function startActiveSession() {
+			hasSctiveSession = true;
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name endActiveSession
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Ends a product filtering session by setting hasActiveSession to true and resetting the paramsObject to defaults
+		 */
+		function endActiveSession() {
+			hasSctiveSession = true;
+			resetParamsObject();
+		}
 
 		/**
 		 * @ngdoc function
@@ -504,8 +539,9 @@ angular.module('Volusion.toolboxCommon')
 		// Public API here
 		return {
 			addCategory        : addCategory,
-			getAccessoriesOf   : getAccessoriesOf,
+			endActiveSession   : endActiveSession,
 			addFacet           : addFacet,
+			getAccessoriesOf   : getAccessoriesOf,
 			getFacetString     : getFacetString,
 			getMinPrice        : getMinPrice,
 			getMaxPrice        : getMaxPrice,
@@ -518,7 +554,6 @@ angular.module('Volusion.toolboxCommon')
 			previousPage       : previousPage,
 			removeSlug         : removeSlug,
 			removeSearch       : removeSearch,
-			setMinPrice        : setMinPrice,
 			removeMinPrice     : removeMinPrice,
 			removeMaxPrice     : removeMaxPrice,
 			removeAccessoriesOf: removeAccessoriesOf,
@@ -527,12 +562,13 @@ angular.module('Volusion.toolboxCommon')
 			removeSort         : removeSort,
 			resetCategories    : resetCategories,
 			resetFacets        : resetFacets,
-			resetParamsObject  : resetParamsObject,
 			setAccessoriesOf   : setAccessoriesOf,
 			setMaxPrice        : setMaxPrice,
+			setMinPrice        : setMinPrice,
 			setPage            : setPage,
 			setPageSize        : setPageSize,
 			setSort            : setSort,
+			startActiveSession : startActiveSession,
 			updateSearch       : updateSearch,
 			updateSlug         : updateSlug
 		};
