@@ -127,13 +127,25 @@ angular.module('Volusion.toolboxCommon')
 		 * @methodOf Volusion.toolboxCommon.vnProductParams
 		 *
 		 * @description
-		 * Ends a product filtering session by setting hasActiveSession to true and resetting the paramsObject to defaults
+		 * Ends a product filtering session by setting getSessionState to true and resetting the paramsObject to defaults
 		 */
 		function endActiveSession() {
 			hasActiveSession = true;
 			resetParamsObject();
 		}
 
+		function getSessionState() {
+			return hasActiveSession;
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name getSessionState
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Use as a test to see if there is a product search
+		 */
 		function getSessionState() {
 			return hasActiveSession;
 		}
