@@ -103,6 +103,21 @@ angular.module('Volusion.toolboxCommon')
 				return true;
 			}
 
+			function buildAndBroadcast (option, item) {
+				var buildSel = buildSelection(),
+					currentSel = getCurrentSelections(),
+					verifySel = verifyRequiredOptionsAreSelected($scope.product.options);
+
+				$rootScope.$broadcast('VN_PRODUCT_SELECTED',
+					angular.extend({}, {
+						product: $scope.product,
+						option : option,
+						item   : item,
+						isValid: verifySel
+					}, buildSel),
+					currentSel);
+			}
+
 			$scope.onOptionChanged = function (option, item) {
 
 				$scope.currentSelectionText = item.text;
@@ -126,32 +141,23 @@ angular.module('Volusion.toolboxCommon')
 				}
 
 				preserveSubOptions();
-
-				var buildSel = buildSelection(),
-					currentSel = getCurrentSelections(),
-					verifySel = verifyRequiredOptionsAreSelected($scope.product.options);
-
-				$rootScope.$broadcast('VN_PRODUCT_SELECTED',
-					angular.extend({}, {
-						product: $scope.product,
-						option : option,
-						item   : item,
-						isValid: verifySel
-					}, buildSel),
-					currentSel);
+				buildAndBroadcast(option, item);
 			};
 
-			$scope.onCheckboxClicked = function(option, itemKey) {
-				var saveTo = $scope.saveTo;
-				var items = saveTo[option.key] = saveTo[option.key] || [];
-				var idx = items.indexOf(itemKey);
-				if (idx > -1) {
-					items.splice(idx, 1);
+			$scope.onCheckboxClicked = function(option, item) {
+				var optionKey = option.key,
+					haveThisOption = $scope.saveTo.filter(function (obj) {
+						return obj.id === item.id;
+					});
+
+				if (0 === haveThisOption.length) {
+					$scope.saveTo.push({ id: item.id, option: optionKey });
 				} else {
-					items.push(itemKey);
+					$scope.saveTo = $scope.saveTo.filter(function (obj) {
+						return obj.id !== item.id;
+					});
 				}
-				if (!items.length) {
-					delete saveTo[option.key];
-				}
+
+				buildAndBroadcast(option, item);
 			};
 		}]);
