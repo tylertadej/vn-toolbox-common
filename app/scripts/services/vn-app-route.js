@@ -47,25 +47,96 @@
  */
 
 angular.module('Volusion.toolboxCommon')
-	.factory('vnAppRoute', ['$rootScope', '$route', '$location', 'vnProductParams', function ($rootScope, $route, $location, vnProductParams) {
+	.factory('vnAppRoute', ['$rootScope', '$route', '$location', '$routeParams', 'vnProductParams',
+		function ($rootScope, $route, $location, $routeParams, vnProductParams) {
 
-		// Detect changes in the route params ands apply logic.
-		$rootScope.$watch(
-			function() {
-				return vnProductParams.getParamsObject();
-			}, function watchCallback(newParams) {
-				console.log('newParams are: ', newParams);
-				updateRoute($route.current.params);
-			}, true  // Deep watch the params object.
-		);
 
-		function updateRoute(locationObj) {
-//			$location.path(locationObj.slug + '/haha/haha');
-			console.log('Updating app route: ', locationObj);
-			console.log('Watching paramsObj: ', vnProductParams.getParamsObject());
-		}
+			var RouteStrategies = {
+					search  : 'search',
+					category: 'category'
+				},
+				activeStrategy = RouteStrategies.category;
 
-		return {
-			updateRoute: updateRoute
-		};
-	}]);
+			/**
+			 * Detect changes in the route params and apply logic.
+			 * The logic here that is used in vnAppRoute must remain idempotent with regards to the vnProductParams.
+			 * The $watch callback function registered to listen to the get vnParamsObject will likely be called more than
+			 * once in the $digest cycle.
+			 */
+
+			$rootScope.$watch(
+				function () {
+					return vnProductParams.getParamsObject();
+				}, function watchForParamChange() {
+					updateUrl();
+				}, true  // Deep watch the params object.
+			);
+
+			function setActiveStrategy(strategy) {
+				activeStrategy = strategy;
+			}
+
+			function getActiveStrategy() {
+				return activeStrategy;
+			}
+
+			function updateUrlForCategory() {
+				// Handle facets
+
+				if ('' !== vnProductParams.getCategoryString()) {
+					// getActiveCategory is set with slug by vn-category-search directive when customer uses one of the
+					// category response links.
+					if (vnProductParams.getActiveCategory()) {
+						$location.path('/c/' + vnProductParams.getActiveCategory());
+					}
+					$location.search('categoryIds', vnProductParams.getCategoryString());
+				} else {
+					$location.search('categoryIds', null);
+				}
+
+				if ('' !== vnProductParams.getFacetString()) {
+					$location.search('facetIds', vnProductParams.getFacetString());
+				} else {
+					$location.search('facetIds', null);
+				}
+
+				//handle min price
+				if ('' !== vnProductParams.getMinPrice()) {
+					$location.search('minPrice', vnProductParams.getMinPrice());
+				} else {
+					$location.search('minPrice', null);
+				}
+
+				//handle max price
+				if ('' !== vnProductParams.getMaxPrice()) {
+					$location.search('maxPrice', vnProductParams.getMaxPrice());
+				} else {
+					$location.search('maxPrice', null);
+				}
+			}
+
+			function updateUrlForSearch() {
+				console.log('search is not implemented yet.');
+			}
+
+//			function update(currentRoute, currentProductParams) {
+			function updateUrl() {
+				//Are we in a category or search session? Decide which strategy to apply
+				switch (activeStrategy) {
+					case RouteStrategies.category:
+						updateUrlForCategory();
+						break;
+					case RouteStrategies.search:
+						updateUrlForSearch();
+						break;
+					default:
+						break;
+				}
+			}
+
+			return {
+				setActiveStrategy: setActiveStrategy,
+				getActiveStrategy: getActiveStrategy,
+				updateUrl        : updateUrl
+			};
+		}]);

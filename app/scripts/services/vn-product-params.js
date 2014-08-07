@@ -21,14 +21,25 @@ angular.module('Volusion.toolboxCommon')
 
 		/**
 		 * @ngdoc property
-		 * @name hasActiveSession
+		 * @name activeCategory
+		 * @property {String} activeCategory
+		 * @propertyOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * A placeholder for the category slug to load
+		 */
+		var activeCategory = false;
+
+		/**
+		 * @ngdoc property
+		 * @name getSessionState
 		 * @property {Boolean} hasAActiveSession
 		 * @propertyOf Volusion.toolboxCommon.vnProductParams
 		 *
 		 * @description
-		 * A flag that is active when customer is starting a new product filtering session.
+		 * A flag that is active when customer has already started a new product filtering session.
 		 */
-		var hasSctiveSession = false;
+		var hasActiveSession = false;
 
 		/**
 		 * @ngdoc property
@@ -79,10 +90,35 @@ angular.module('Volusion.toolboxCommon')
 		 * @methodOf Volusion.toolboxCommon.vnProductParams
 		 *
 		 * @description
-		 * Starts a product filtering session by setting hasActiveSession to true;
+		 * Starts a product filtering session by setting getSessionState to true;
 		 */
 		function startActiveSession() {
-			hasSctiveSession = true;
+			hasActiveSession = true;
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name getActiveCategory
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Returns the current value for the activeCategory
+		 */
+		function getActiveCategory() {
+			return activeCategory;
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name setActiveCategory
+		 * @param {String} slug is the identifier of the category
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * gets the current value for the activeCategory
+		 */
+		function setActiveCategory(slug) {
+			activeCategory = slug;
 		}
 
 		/**
@@ -91,11 +127,23 @@ angular.module('Volusion.toolboxCommon')
 		 * @methodOf Volusion.toolboxCommon.vnProductParams
 		 *
 		 * @description
-		 * Ends a product filtering session by setting hasActiveSession to true and resetting the paramsObject to defaults
+		 * Ends a product filtering session by setting getSessionState to true and resetting the paramsObject to defaults
 		 */
 		function endActiveSession() {
-			hasSctiveSession = true;
+			hasActiveSession = false;
 			resetParamsObject();
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name getSessionState
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Use as a test to see if there is a product search
+		 */
+		function getSessionState() {
+			return hasActiveSession;
 		}
 
 		/**
@@ -541,13 +589,16 @@ angular.module('Volusion.toolboxCommon')
 			addCategory        : addCategory,
 			endActiveSession   : endActiveSession,
 			addFacet           : addFacet,
+			getActiveCategory  : getActiveCategory,
 			getAccessoriesOf   : getAccessoriesOf,
+			getCategoryString  : getCategoryString,
 			getFacetString     : getFacetString,
 			getMinPrice        : getMinPrice,
 			getMaxPrice        : getMaxPrice,
 			getPage            : getPage,
 			getPageSize        : getPageSize,
 			getParamsObject    : getParamsObject,
+			getSessionState    : getSessionState,
 			getSort            : getSort,
 			isFacetSelected    : isFacetSelected,
 			nextPage           : nextPage,
@@ -563,6 +614,7 @@ angular.module('Volusion.toolboxCommon')
 			resetCategories    : resetCategories,
 			resetFacets        : resetFacets,
 			setAccessoriesOf   : setAccessoriesOf,
+			setActiveCategory  : setActiveCategory,
 			setMaxPrice        : setMaxPrice,
 			setMinPrice        : setMinPrice,
 			setPage            : setPage,

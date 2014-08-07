@@ -83,6 +83,7 @@ angular.module('Volusion.toolboxCommon')
 
 					scope.updateCategory = function (category) {
 						vnProductParams.addCategory(category.id);
+						vnProductParams.setActiveCategory(category.slug);
 						scope.queryProducts();
 					};
 
