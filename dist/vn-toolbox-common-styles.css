@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.14 (2014-08-05) */
+/*! vn-toolbox-common - ver.0.0.15 (2014-08-08) */
 
 
 .panel-body { padding: 0 !important; }
@@ -65,13 +65,11 @@
 /*!***************************************************************************/
 .tick:before { content: "\2605"; }
 
-.rating { color: #a9a9a9; margin: 0; padding: 0; }
+.rating { margin: 0; padding: 0; }
 
 ul.rating { display: inline-block; }
 
-.rating li { list-style-type: none; display: inline-block; padding: 1px; text-align: center; font-weight: bold; cursor: pointer; }
-
-.rating .filled { color: #21568b; }
+.rating li { list-style-type: none; display: inline-block; padding: 1px; text-align: center; font-weight: bold; cursor: pointer; color: #000; }
 
 /*!***************************************************************************/
 
