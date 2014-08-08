@@ -72,6 +72,14 @@ angular.module('Volusion.toolboxCommon')
 				}, true  // Deep watch the params object.
 			);
 
+			$rootScope.$watch(
+				function () {
+					return vnProductParams.getActiveCategory();
+				}, function watchForCategoryChange() {
+					updateUrl();
+				}, true  // Deep watch the params object.
+			);
+
 			function setActiveStrategy(strategy) {
 				activeStrategy = strategy;
 			}
