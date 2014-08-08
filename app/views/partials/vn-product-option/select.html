@@ -10,7 +10,8 @@
 	<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuOption{{ option.id }}">
 		<li role="presentation" data-ng-repeat="item in option.items">
 			<a role="menuitem" tabindex="-1" href
-			   data-ng-click="onOptionChanged(option, item)">
+			   data-ng-click="onOptionChanged(option, item)"
+			   data-ng-controller="OptionsCtrl" data-ng-class="{ '-disabled': !isItemAvailable }">
 
 				{{ item.text }}
 			</a>

@@ -104,7 +104,7 @@ describe('Directive: vnProductOption', function() {
 			});
 		}
 
-		describe('radios', function() {
+		describe.skip('radios', function() {
 
 			var $labels;
 			beforeEach(function() {
@@ -124,7 +124,7 @@ describe('Directive: vnProductOption', function() {
 
 		});
 
-		describe('checkboxes', function() {
+		describe.skip('checkboxes', function() {
 
 			var $labels;
 			beforeEach(function() {
@@ -140,7 +140,7 @@ describe('Directive: vnProductOption', function() {
 
 		});
 
-		describe('content partial', function() {
+		describe.skip('content partial', function() {
 
 			var $contents;
 			beforeEach(function() {
