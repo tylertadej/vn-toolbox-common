@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.14 (2014-08-05) */
+/*! vn-toolbox-common - ver.0.0.15 (2014-08-08) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'Volusion.toolboxCommon.templates'])
@@ -1002,98 +1002,112 @@ angular.module('Volusion.toolboxCommon')
 
 angular.module('Volusion.toolboxCommon')
     .directive('vnRating',
-        ['$rootScope',
-            function ($rootScope) {
-                'use strict';
+    ['$rootScope',
+        function ($rootScope) {
+            'use strict';
 
-                return {
-                    templateUrl: 'template/rating.html',
-                    restrict   : 'EA',
-                    replace    : true,
-                    scope      : {
-                        currMode   : '@currMode',
-                        editable   : '=',
-                        maximum    : '=',
-                        ratingValue: '='
-                    },
+            return {
+                templateUrl: 'template/rating.html',
+                restrict   : 'EA',
+                replace    : true,
+                scope      : {
+                    currMode   : '@currMode',
+                    editable   : '=',
+                    maximum    : '=',
+                    ratingValue: '='
+                },
                 link       : function postLink(scope, element, attrs) {
-                    var filledClass = attrs.filledClass || 'filled';
-                    var emptyClass = attrs.emptyClass || '';
+                    var filledClass = attrs.filledClass || 'fa fa-star';
+                    var emptyClass = attrs.emptyClass || 'fa fa-star-o';
+                    var halfFilledClass = attrs.halfFilledClass || 'fa fa-star-half-o';
+                    scope.title = typeof attrs.title !== 'undefined' ? attrs.title : 'Rating';
 
                     var idx,
                         max = scope.maximum || 5;
 
                     if (scope.currMode === undefined) {
-                            scope.currMode = 'on';
-                        }
+                        scope.currMode = 'on';
+                    }
 
                     if (scope.ratingValue === undefined || scope.ratingValue === '') {
-                            scope.ratingValue = 0;
-                        }
+                        scope.ratingValue = 0;
+                    }
 
                     // Component constants *****************
-                        scope.componentId = '100004';
+                    scope.componentId = '100004';
 
-                        scope.componentName = 'rating';
+                    scope.componentName = 'rating';
 
-                        // *************************************
+                    // *************************************
 
-                        // Component is not selected by default
-                        scope.selected = false;
+                    // Component is not selected by default
+                    scope.selected = false;
 
-                        scope.$on('currentComponent.change', function (event, component) {
-                            if (component && component.id && scope.currMode === 'off') {
-                                scope.selected = (component.id === scope.componentId);
-                            }
-                        });
+                    scope.$on('currentComponent.change', function (event, component) {
+                        if (component && component.id && scope.currMode === 'off') {
+                            scope.selected = (component.id === scope.componentId);
+                        }
+                    });
                     element.on('click', function (event) {
-                            // if in EDIT mode
-                            if (scope.currMode === 'off') {
-                                event.preventDefault();
-                                $rootScope.$broadcast('currentComponent.change', {'id': scope.componentId, 'name': scope.componentName, 'action': 'set'});
-                            }
-                        });
+                        // if in EDIT mode
+                        if (scope.currMode === 'off') {
+                            event.preventDefault();
+                            $rootScope.$broadcast('currentComponent.change', {'id': scope.componentId, 'name': scope.componentName, 'action': 'set'});
+                        }
+                    });
 
+                    function getStarCssClass(index) {
+                        if (scope.ratingValue % 1 === 0 && index < scope.ratingValue) {
+                            return filledClass;
+                        } else if(scope.ratingValue % 1 === 0.5 && scope.ratingValue - index > 0.5) {
+                                return filledClass;
+                        } else  if (scope.ratingValue % 1 === 0.5 && scope.ratingValue - index === 0.5){
+                            return halfFilledClass;
+                        } else {
+                            return emptyClass;
+                        }
+                    }
+
+                    scope.stars = [];
+                    function updateStars() {
                         scope.stars = [];
-                        function updateStars() {
-                            scope.stars = [];
-                            for (idx = 0; idx < max; idx++) {
-                                scope.stars.push({
-                                	filled: idx < scope.ratingValue,
-                                	cssClass: idx < scope.ratingValue ? filledClass : emptyClass
-                                });
-                            }
+                        for (idx = 0; idx < max; idx++) {
+                            scope.stars.push({
+                                cssClass: getStarCssClass(idx)
+                            });
+                        }
+                    }
+
+                    scope.$watch('ratingValue', function (oldVal, newVal) {
+                        if (newVal === 0 || newVal) {
+                            updateStars();
+                        }
+                    });
+
+                    scope.toggle = function (index) {
+                        if (!scope.editable) {
+                            return;
                         }
 
-                        scope.$watch('ratingValue', function (oldVal, newVal) {
-                            if (newVal === 0 || newVal) {
-                                updateStars();
-                            }
-                        });
-
-                        scope.toggle = function (index) {
-                            if (!scope.editable) {
-                                return;
-                            }
-
-                            scope.ratingValue = index + 1;
-                        };
-                    }
-                };
-            }])
+                        scope.ratingValue = index + 1;
+                    };
+                }
+            };
+        }])
     .run(['$templateCache', function ($templateCache) {
 
         'use strict';
 
         $templateCache.put(
             'template/rating.html',
-            '<div class="vn-rating">' +
-                '<p data-translate="VN-RATING-TITLE">Rating</p>' +
-                '<ul class="rating">' +
-                    '<li data-ng-repeat="star in stars" class="tick {{ star.cssClass }}" data-ng-click="toggle($index)">' +
-                    '</li>' +
-                '</ul>' +
-            '</div>'
+                '<div class="vn-rating">' +
+                    '<p class="vn-rating-title" data-ng-bind="title"></p>' +
+                    '<ul class="rating">' +
+                        '<li data-ng-repeat="star in stars" data-ng-click="toggle($index)">' +
+                            '<i class=" {{ star.cssClass }} " />' +
+                        '</li>' +
+                    '</ul>' +
+                '</div>'
         );
     }]);
 
@@ -3043,7 +3057,7 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "<label data-vn-block=vn-labeled-radio data-vn-modifiers={{option.class}} data-ng-repeat=\"item in option.items\" data-ng-init=item>\n" +
     "\n" +
     "	<div data-vn-element=radio>\n" +
-    "		<input type=radio name={{option.id}} data-ng-value=itemKey data-ng-model=option.selected data-ng-click=\"onOptionChanged(option, item)\">\n" +
+    "		<input type=radio name={{option.id}} data-ng-value=item.key data-ng-model=option.selected data-ng-click=\"onOptionChanged(option, item)\">\n" +
     "	</div>\n" +
     "\n" +
     "	<div data-vn-element=content data-ng-include=\" 'vn-product-option/content.html' \"></div>\n" +
@@ -3057,10 +3071,10 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "		<span class=caret></span>\n" +
     "	</button>\n" +
     "	<ul class=dropdown-menu role=menu aria-labelledby=\"dropdownMenuOption{{ option.id }}\">\n" +
-    "		<li role=presentation data-ng-repeat=\"itemKey in option.items\">\n" +
-    "			<a role=menuitem tabindex=-1 href data-ng-click=\"onOptionChanged(option, product.optionItems[itemKey])\">\n" +
+    "		<li role=presentation data-ng-repeat=\"item in option.items\">\n" +
+    "			<a role=menuitem tabindex=-1 href data-ng-click=\"onOptionChanged(option, item)\">\n" +
     "\n" +
-    "				{{ product.optionItems[itemKey].text }}\n" +
+    "				{{ item.text }}\n" +
     "			</a>\n" +
     "		</li>\n" +
     "	</ul>\n" +

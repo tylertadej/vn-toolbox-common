@@ -10,13 +10,13 @@ var customMatchers = {
                     expected = '';
                 }
 
-                var classToMatch = cssClass || 'filled';
+                var classToMatch = cssClass || 'fa-star';
                 var idx,
                     selected = 0,
                     result = {};
 
                 for (idx = 0; idx < actual.length; idx++) {
-                    if (angular.element(actual[idx]).hasClass(classToMatch)) {
+                    if (angular.element(actual[idx]).find('i').eq(0).hasClass(classToMatch)) {
                         selected++;
                     }
                 }
@@ -71,9 +71,11 @@ describe('Directive: vnRating', function () {
         scope = $rootScope.$new();
     }));
 
-    it('should have container element w/ specific class name', function () {
+    it('should have container element w/ specific class name and default title', function () {
         compile({ rating: 2 }, []);
         expect(element.attr('class')).toContain('vn-rating');
+        var titleElem = element.find('p');
+        expect(titleElem.eq(0).text()).toBe('Rating');
     });
 
     it('should have list', function () {
@@ -83,23 +85,15 @@ describe('Directive: vnRating', function () {
         expect(list.length).toBe(1);
     });
 
-    it('should have 5 list items', function () {
+    it('should have a default of 5 maximum stars', function () {
         compile({ rating: 2 }, []);
         var list = element.find('ul');
 
         expect(list.eq(0).find('li').length).toEqual(5);
     });
 
-    it('should have 2 list items with class "filled"', function () {
+    it('should have 2 stars filled when rating value is 2"', function () {
         compile({ rating: 2 }, []);
-        var list = element.find('ul'),
-            items = list.eq(0).find('li');
-
-        expect(items).toBeRatedAs(scope.rating, 'filled');
-    });
-
-    it('should have 5 list items with class "filled"', function () {
-        compile({ rating: 5 }, []);
         var list = element.find('ul'),
             items = list.eq(0).find('li');
 
@@ -152,5 +146,28 @@ describe('Directive: vnRating', function () {
 
         expect(items).toBeRatedAs(scope.rating, 'foo');
         expect(items).toBeRatedAs(scope.maximumStars - scope.rating, 'bar');
+    });
+
+    it('should be able to show half stars', function() {
+        var attributes = [
+            { key: "filled-class", value: "foo" },
+            { key: "half-filled-class", value: "bar" },
+            { key: "empty-class", value: "baz" }
+        ];
+        compile({ rating: 3.5 }, attributes);
+
+        var list = element.find('ul'),
+            items = list.eq(0).find('li');
+        expect(items).toBeRatedAs(3, 'foo');
+        expect(items).toBeRatedAs(1, 'bar');
+    });
+
+    it('should use the title passed in', function() {
+        var attributes = [
+            { key: "title", value: "foo" }
+        ];
+        compile({ rating: 3 }, attributes);
+        var titleElem = element.find('p');
+        expect(titleElem.text()).toBe('foo');
     });
 });
