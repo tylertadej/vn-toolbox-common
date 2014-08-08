@@ -1,11 +1,11 @@
 <label data-vn-block="vn-labeled-checkbox"
 	data-vn-modifiers="{{option.class}}"
-	data-ng-repeat="itemKey in option.items"
-	data-ng-init="item=product.optionItems[itemKey]">
+	data-ng-repeat="item in option.items"
+	data-ng-init="item">
 
 	<div data-vn-element="checkbox">
 		<input type="checkbox"
-			data-ng-click="onCheckboxClicked(option)">
+			data-ng-click="onCheckboxClicked(option, item)">
 	</div>
 
 	<div data-vn-element="content" data-ng-include=" 'vn-product-option/content.html' "></div>
