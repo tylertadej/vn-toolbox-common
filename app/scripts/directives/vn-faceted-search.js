@@ -22,15 +22,34 @@
  * TODO: Add html and javascript here to demo it in docs.
  */
 angular.module('Volusion.toolboxCommon')
-	.directive('vnFacetedSearch', ['$location', 'vnProductParams',
-		function ($location, vnProductParams) {
+	.directive('vnFacetedSearch', ['$window', '$location', 'vnProductParams',
+		function ($window, $location, vnProductParams) {
 
 			'use strict';
 
 			return {
 				templateUrl: 'vn-faceted-search/vn-faceted-search.html',
 				restrict   : 'EA',
-				link       : function postLink(scope) {
+				link       : function postLink(scope, element) {
+
+					var window = angular.element($window);
+					window.bind('click', function(evt){
+						console.log(element, evt.target);
+//						if (evt.target === element[0]){
+//							console.log('directive click detection.', evt);
+////							scope.directiveToggler = false;
+////							scope.$apply();
+//
+//						} else {
+//							console.log('not directive click detection.', evt);
+////							scope.directiveToggler = true;
+////							scope.$apply();
+//						}
+					});
+
+					element.bind('click', function (evt) {
+						console.log('facet click here yo', evt);
+					});
 
 					scope.showCategorySearch = false;
 					scope.showFacetSearch = true;

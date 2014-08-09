@@ -64,7 +64,7 @@ angular.module('Volusion.toolboxCommon')
 					}
 
 					/**
-					 * Utility function used in depermining which strategy to apply to this set of category response data
+					 * Utility function used in determining which strategy to apply to this set of category response data
 					 */
 					function checkSubCategoriesForSlugMatch(slug, categoryObject) {
 

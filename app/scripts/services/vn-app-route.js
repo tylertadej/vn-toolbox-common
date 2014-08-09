@@ -92,8 +92,6 @@ angular.module('Volusion.toolboxCommon')
 				// Handle facets
 
 				if ('' !== vnProductParams.getCategoryString()) {
-					// getActiveCategory is set with slug by vn-category-search directive when customer uses one of the
-					// category response links.
 					if (vnProductParams.getActiveCategory()) {
 						$location.path('/c/' + vnProductParams.getActiveCategory());
 					}
