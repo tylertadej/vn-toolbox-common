@@ -30,7 +30,7 @@ angular.module('Volusion.toolboxCommon')
 			return {
 				templateUrl: 'vn-faceted-search/vn-faceted-search.html',
 				restrict   : 'EA',
-				link       : function postLink(scope, element) {
+				link       : function postLink(scope) {
 
 					scope.showCategorySearch = false;
 					scope.showFacetSearch = true;
