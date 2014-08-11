@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.14 (2014-08-05) */
+/*! vn-toolbox-common - ver.0.0.15 (2014-08-11) */
 
 
 .panel-body { padding: 0 !important; }
@@ -37,6 +37,8 @@
 .mobile-filters { align: center; text-align: center; margin-top: 10px; }
 
 .vn-category-product-tiles.isMobileAndHidden { display: none; }
+
+.facet-properties { margin: 10px 0px; }
 
 .facet-property label { display: block; position: relative; }
 .facet-property label .count { position: absolute; top: 4px; right: 0; margin-left: 2px; padding: 0 5px; background-color: #999999; color: white; display: block; border-radius: 2px; }

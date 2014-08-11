@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.14 (2014-08-05) */
+/*! vn-toolbox-common - ver.0.0.15 (2014-08-11) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'Volusion.toolboxCommon.templates'])
@@ -2920,12 +2920,18 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "			<i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': defaultAccordianOpen, 'glyphicon-chevron-right': !defaultAccordianOpen}\"></i>\n" +
     "		</div>\n" +
     "	</div>\n" +
-    "	<label class=facet-property data-ng-repeat=\"property in facet.properties track by $index\" data-ng-class=\"{ '-last': $last }\">\n" +
+    "    <div data-ng-if=\"facet.displayType != 'swatches'\" class=facet-properties>\n" +
+    "        <label class=facet-property data-ng-repeat=\"property in facet.properties track by $index\" data-ng-class=\"{ '-last': $last }\">\n" +
     "\n" +
-    "		<input type=checkbox name=property.name data-ng-checked=selectProperty(property) data-ng-click=refineFacetSearch(property)>\n" +
-    "		<span class=name>{{ property.name }}</span>\n" +
-    "		<span class=count>{{ property.count }}</span>\n" +
-    "	</label>\n" +
+    "            <input type=checkbox name=property.name data-ng-checked=selectProperty(property) data-ng-click=refineFacetSearch(property)>\n" +
+    "            <span class=name>{{ property.name }}</span>\n" +
+    "            <span class=count>{{ property.count }}</span>\n" +
+    "        </label>\n" +
+    "    </div>\n" +
+    "    <div data-ng-if=\"facet.displayType == 'swatches'\" class=\"facet-properties clearfix\">\n" +
+    "        <div data-ng-repeat=\"property in facet.properties\" data-ng-style=\"{'backgroundColor': property.color }\" class=facet-property__swatch data-ng-click=refineFacetSearch(property)>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
     "</div>");
   $templateCache.put("vn-faceted-search/vn-faceted-search.html",
     "<div class=vn-faceted-search-header data-ng-show=showApplyButton>\n" +
@@ -3043,7 +3049,7 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "<label data-vn-block=vn-labeled-radio data-vn-modifiers={{option.class}} data-ng-repeat=\"item in option.items\" data-ng-init=item>\n" +
     "\n" +
     "	<div data-vn-element=radio>\n" +
-    "		<input type=radio name={{option.id}} data-ng-value=itemKey data-ng-model=option.selected data-ng-click=\"onOptionChanged(option, item)\">\n" +
+    "		<input type=radio name={{option.id}} data-ng-value=item.key data-ng-model=option.selected data-ng-click=\"onOptionChanged(option, item)\">\n" +
     "	</div>\n" +
     "\n" +
     "	<div data-vn-element=content data-ng-include=\" 'vn-product-option/content.html' \"></div>\n" +
@@ -3057,10 +3063,10 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "		<span class=caret></span>\n" +
     "	</button>\n" +
     "	<ul class=dropdown-menu role=menu aria-labelledby=\"dropdownMenuOption{{ option.id }}\">\n" +
-    "		<li role=presentation data-ng-repeat=\"itemKey in option.items\">\n" +
-    "			<a role=menuitem tabindex=-1 href data-ng-click=\"onOptionChanged(option, product.optionItems[itemKey])\">\n" +
+    "		<li role=presentation data-ng-repeat=\"item in option.items\">\n" +
+    "			<a role=menuitem tabindex=-1 href data-ng-click=\"onOptionChanged(option, item)\">\n" +
     "\n" +
-    "				{{ product.optionItems[itemKey].text }}\n" +
+    "				{{ item.text }}\n" +
     "			</a>\n" +
     "		</li>\n" +
     "	</ul>\n" +
