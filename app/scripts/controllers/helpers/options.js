@@ -12,28 +12,47 @@ angular.module('Volusion.toolboxCommon')
 
 			'use strict';
 
-			$scope.isItemAvailable = true;
+			// Initialize availability
+			$scope.isItemAvailable = false;
 			$scope.itemToken = $scope.option.key + ':' + $scope.item.key;
 
+			for (var idx = 0; idx < $scope.product.optionSelections.length; idx++) {
+				if ($scope.product.optionSelections[idx].key !== $scope.itemToken &&
+					$scope.product.optionSelections[idx].key.indexOf($scope.itemToken) > -1 &&
+					$scope.product.optionSelections[idx].available > 0) {
+
+					$scope.isItemAvailable = true;
+					break;
+				}
+			}
+
+			// Process item selected
 			$scope.$on('VN_PRODUCT_SELECTED', function (event, selection, currentSelections) {
 
-				var selections = currentSelections.split('|');
-
-				for (var idxSel = 0; idxSel < selections.length; idxSel++) {
-					console.log(selections[idxSel]);
+				var optionIdx = 0;
+				for (var idxOpt = 0; idxOpt < $scope.product.options.length; idxOpt++) {
+					if ($scope.product.options[idxOpt].key === $scope.option.key) {
+						optionIdx = idxOpt;
+						break;
+					}
 				}
 
-				for (var idx = 0; idx < selection.product.optionSelections.length; idx++) {
-					if (selection.key !== $scope.itemToken &&
-						$scope.product.optionSelections[idx].key.indexOf(selection.key) > -1 &&
-						$scope.product.optionSelections[idx].key.indexOf($scope.itemToken) > -1) {
+				// Replace selected item in current selections to filter optionSelections
+				// for currently selected item *************************************************************************
+				var selections = currentSelections.split('|');
+				selections[optionIdx] = $scope.itemToken;
+				var tempSelections = selections.join('|');
+				// *****************************************************************************************************
+
+				for (var idx = 0; idx < $scope.product.optionSelections.length; idx++) {
+
+					if (tempSelections !== $scope.itemToken &&
+						$scope.product.optionSelections[idx].key.indexOf(tempSelections) > -1) {
 
 						// TODO: What about the optionSelection's state?
 						// According to Kevin at this moment we do not care ...
 						$scope.isItemAvailable = ($scope.product.optionSelections[idx].available > 0);
 					}
 				}
-
 			});
-
 		}]);
