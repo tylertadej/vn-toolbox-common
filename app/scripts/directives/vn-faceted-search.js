@@ -32,25 +32,6 @@ angular.module('Volusion.toolboxCommon')
 				restrict   : 'EA',
 				link       : function postLink(scope, element) {
 
-					var window = angular.element($window);
-					window.bind('click', function(evt){
-						console.log(element, evt.target);
-//						if (evt.target === element[0]){
-//							console.log('directive click detection.', evt);
-////							scope.directiveToggler = false;
-////							scope.$apply();
-//
-//						} else {
-//							console.log('not directive click detection.', evt);
-////							scope.directiveToggler = true;
-////							scope.$apply();
-//						}
-					});
-
-					element.bind('click', function (evt) {
-						console.log('facet click here yo', evt);
-					});
-
 					scope.showCategorySearch = false;
 					scope.showFacetSearch = true;
 					scope.showApplyButton = false;
