@@ -55,7 +55,7 @@ angular.module('Volusion.toolboxCommon')
 					search  : 'search',
 					category: 'category'
 				},
-				activeStrategy = RouteStrategies.category;
+				activeStrategy = '';
 
 			/**
 			 * Detect changes in the route params and apply logic.
@@ -89,8 +89,6 @@ angular.module('Volusion.toolboxCommon')
 			}
 
 			function updateUrlForCategory() {
-				// Handle facets
-
 				if ('' !== vnProductParams.getCategoryString()) {
 					if (vnProductParams.getActiveCategory()) {
 						$location.path('/c/' + vnProductParams.getActiveCategory());
@@ -125,9 +123,12 @@ angular.module('Volusion.toolboxCommon')
 				console.log('search is not implemented yet.');
 			}
 
-//			function update(currentRoute, currentProductParams) {
 			function updateUrl() {
 				//Are we in a category or search session? Decide which strategy to apply
+				if ('' === activeStrategy) {
+					return;
+				}
+
 				switch (activeStrategy) {
 					case RouteStrategies.category:
 						updateUrlForCategory();
