@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.15 (2014-08-08) */
+/*! vn-toolbox-common - ver.0.0.15 (2014-08-11) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'Volusion.toolboxCommon.templates'])
@@ -43,30 +43,49 @@ angular.module('Volusion.toolboxCommon')
 
 			'use strict';
 
-			$scope.isItemAvailable = true;
+			// Initialize availability
+			$scope.isItemAvailable = false;
 			$scope.itemToken = $scope.option.key + ':' + $scope.item.key;
 
+			for (var idx = 0; idx < $scope.product.optionSelections.length; idx++) {
+				if ($scope.product.optionSelections[idx].key !== $scope.itemToken &&
+					$scope.product.optionSelections[idx].key.indexOf($scope.itemToken) > -1 &&
+					$scope.product.optionSelections[idx].available > 0) {
+
+					$scope.isItemAvailable = true;
+					break;
+				}
+			}
+
+			// Process item selected
 			$scope.$on('VN_PRODUCT_SELECTED', function (event, selection, currentSelections) {
 
-				var selections = currentSelections.split('|');
-
-				for (var idxSel = 0; idxSel < selections.length; idxSel++) {
-					console.log(selections[idxSel]);
+				var optionIdx = 0;
+				for (var idxOpt = 0; idxOpt < $scope.product.options.length; idxOpt++) {
+					if ($scope.product.options[idxOpt].key === $scope.option.key) {
+						optionIdx = idxOpt;
+						break;
+					}
 				}
 
-				for (var idx = 0; idx < selection.product.optionSelections.length; idx++) {
-					if (selection.key !== $scope.itemToken &&
-						$scope.product.optionSelections[idx].key.indexOf(selection.key) > -1 &&
-						$scope.product.optionSelections[idx].key.indexOf($scope.itemToken) > -1) {
+				// Replace selected item in current selections to filter optionSelections
+				// for currently selected item *************************************************************************
+				var selections = currentSelections.split('|');
+				selections[optionIdx] = $scope.itemToken;
+				var tempSelections = selections.join('|');
+				// *****************************************************************************************************
+
+				for (var idx = 0; idx < $scope.product.optionSelections.length; idx++) {
+
+					if (tempSelections !== $scope.itemToken &&
+						$scope.product.optionSelections[idx].key.indexOf(tempSelections) > -1) {
 
 						// TODO: What about the optionSelection's state?
 						// According to Kevin at this moment we do not care ...
 						$scope.isItemAvailable = ($scope.product.optionSelections[idx].available > 0);
 					}
 				}
-
 			});
-
 		}]);
 
 angular.module('Volusion.toolboxCommon')
@@ -166,6 +185,21 @@ angular.module('Volusion.toolboxCommon')
 				return true;
 			}
 
+			function buildAndBroadcast (option, item) {
+				var buildSel = buildSelection(),
+					currentSel = getCurrentSelections(),
+					verifySel = verifyRequiredOptionsAreSelected($scope.product.options);
+
+				$rootScope.$broadcast('VN_PRODUCT_SELECTED',
+					angular.extend({}, {
+						product: $scope.product,
+						option : option,
+						item   : item,
+						isValid: verifySel
+					}, buildSel),
+					currentSel);
+			}
+
 			$scope.onOptionChanged = function (option, item) {
 
 				$scope.currentSelectionText = item.text;
@@ -189,33 +223,24 @@ angular.module('Volusion.toolboxCommon')
 				}
 
 				preserveSubOptions();
-
-				var buildSel = buildSelection(),
-					currentSel = getCurrentSelections(),
-					verifySel = verifyRequiredOptionsAreSelected($scope.product.options);
-
-				$rootScope.$broadcast('VN_PRODUCT_SELECTED',
-					angular.extend({}, {
-						product: $scope.product,
-						option : option,
-						item   : item,
-						isValid: verifySel
-					}, buildSel),
-					currentSel);
+				buildAndBroadcast(option, item);
 			};
 
-			$scope.onCheckboxClicked = function(option, itemKey) {
-				var saveTo = $scope.saveTo;
-				var items = saveTo[option.key] = saveTo[option.key] || [];
-				var idx = items.indexOf(itemKey);
-				if (idx > -1) {
-					items.splice(idx, 1);
+			$scope.onCheckboxClicked = function(option, item) {
+				var optionKey = option.key,
+					haveThisOption = $scope.saveTo.filter(function (obj) {
+						return obj.id === item.id;
+					});
+
+				if (0 === haveThisOption.length) {
+					$scope.saveTo.push({ id: item.id, option: optionKey });
 				} else {
-					items.push(itemKey);
+					$scope.saveTo = $scope.saveTo.filter(function (obj) {
+						return obj.id !== item.id;
+					});
 				}
-				if (!items.length) {
-					delete saveTo[option.key];
-				}
+
+				buildAndBroadcast(option, item);
 			};
 		}]);
 
@@ -3022,10 +3047,10 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "	</ul>\n" +
     "</div>");
   $templateCache.put("vn-product-option/checkboxes.html",
-    "<label data-vn-block=vn-labeled-checkbox data-vn-modifiers={{option.class}} data-ng-repeat=\"itemKey in option.items\" data-ng-init=\"item=product.optionItems[itemKey]\">\n" +
+    "<label data-vn-block=vn-labeled-checkbox data-vn-modifiers={{option.class}} data-ng-repeat=\"item in option.items\" data-ng-init=item>\n" +
     "\n" +
     "	<div data-vn-element=checkbox>\n" +
-    "		<input type=checkbox data-ng-click=onCheckboxClicked(option)>\n" +
+    "		<input type=checkbox data-ng-click=\"onCheckboxClicked(option, item)\">\n" +
     "	</div>\n" +
     "\n" +
     "	<div data-vn-element=content data-ng-include=\" 'vn-product-option/content.html' \"></div>\n" +
@@ -3054,9 +3079,10 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "\n" +
     "</div>");
   $templateCache.put("vn-product-option/radios.html",
-    "<label data-vn-block=vn-labeled-radio data-vn-modifiers={{option.class}} data-ng-repeat=\"item in option.items\" data-ng-init=item>\n" +
+    "<label data-vn-block=vn-labeled-radio data-vn-modifiers={{option.class}} data-ng-repeat=\"item in option.items\" data-ng-init=item data-ng-controller=OptionsCtrl data-ng-class=\"{ '-disabled': !isItemAvailable }\">\n" +
     "\n" +
     "	<div data-vn-element=radio>\n" +
+    "\n" +
     "		<input type=radio name={{option.id}} data-ng-value=item.key data-ng-model=option.selected data-ng-click=\"onOptionChanged(option, item)\">\n" +
     "	</div>\n" +
     "\n" +
@@ -3072,7 +3098,7 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "	</button>\n" +
     "	<ul class=dropdown-menu role=menu aria-labelledby=\"dropdownMenuOption{{ option.id }}\">\n" +
     "		<li role=presentation data-ng-repeat=\"item in option.items\">\n" +
-    "			<a role=menuitem tabindex=-1 href data-ng-click=\"onOptionChanged(option, item)\">\n" +
+    "			<a role=menuitem tabindex=-1 href data-ng-click=\"onOptionChanged(option, item)\" data-ng-controller=OptionsCtrl data-ng-class=\"{ '-disabled': !isItemAvailable }\">\n" +
     "\n" +
     "				{{ item.text }}\n" +
     "			</a>\n" +

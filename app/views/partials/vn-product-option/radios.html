@@ -1,9 +1,12 @@
 <label data-vn-block="vn-labeled-radio"
 	data-vn-modifiers="{{option.class}}"
 	data-ng-repeat="item in option.items"
-	data-ng-init="item">
+	data-ng-init="item"
+	data-ng-controller="OptionsCtrl"
+	data-ng-class="{ '-disabled': !isItemAvailable }">
 
 	<div data-vn-element="radio">
+
 		<input type="radio" name="{{option.id}}"
 			data-ng-value="item.key"
 			data-ng-model="option.selected"
