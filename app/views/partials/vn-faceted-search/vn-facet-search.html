@@ -7,15 +7,21 @@
 			<i class="pull-right glyphicon" data-ng-class="{'glyphicon-chevron-down': defaultAccordianOpen, 'glyphicon-chevron-right': !defaultAccordianOpen}"></i>
 		</div>
 	</div>
-	<label class="facet-property"
-		   data-ng-repeat="property in facet.properties track by $index"
-		   data-ng-class="{ '-last': $last }">
+    <div data-ng-if="facet.displayType != 'swatches'" class="facet-properties">
+        <label class="facet-property"
+               data-ng-repeat="property in facet.properties track by $index"
+               data-ng-class="{ '-last': $last }">
 
-		<input type="checkbox"
-			   name="property.name"
-			   data-ng-checked="selectProperty(property)"
-			   data-ng-click="refineFacetSearch(property)"/>
-		<span class="name">{{ property.name }}</span>
-		<span class="count">{{ property.count }}</span>
-	</label>
+            <input type="checkbox"
+                   name="property.name"
+                   data-ng-checked="selectProperty(property)"
+                   data-ng-click="refineFacetSearch(property)"/>
+            <span class="name">{{ property.name }}</span>
+            <span class="count">{{ property.count }}</span>
+        </label>
+    </div>
+    <div data-ng-if="facet.displayType == 'swatches'" class="facet-properties clearfix">
+        <div data-ng-repeat="property in facet.properties" data-ng-style="{'backgroundColor': property.color }" class="facet-property__swatch" data-ng-click="refineFacetSearch(property)">
+        </div>
+    </div>
 </div>

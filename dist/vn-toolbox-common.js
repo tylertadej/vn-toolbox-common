@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.15 (2014-08-11) */
+/*! vn-toolbox-common - ver.0.0.15 (2014-08-12) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'Volusion.toolboxCommon.templates'])
@@ -2959,12 +2959,18 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "			<i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': defaultAccordianOpen, 'glyphicon-chevron-right': !defaultAccordianOpen}\"></i>\n" +
     "		</div>\n" +
     "	</div>\n" +
-    "	<label class=facet-property data-ng-repeat=\"property in facet.properties track by $index\" data-ng-class=\"{ '-last': $last }\">\n" +
+    "    <div data-ng-if=\"facet.displayType != 'swatches'\" class=facet-properties>\n" +
+    "        <label class=facet-property data-ng-repeat=\"property in facet.properties track by $index\" data-ng-class=\"{ '-last': $last }\">\n" +
     "\n" +
-    "		<input type=checkbox name=property.name data-ng-checked=selectProperty(property) data-ng-click=refineFacetSearch(property)>\n" +
-    "		<span class=name>{{ property.name }}</span>\n" +
-    "		<span class=count>{{ property.count }}</span>\n" +
-    "	</label>\n" +
+    "            <input type=checkbox name=property.name data-ng-checked=selectProperty(property) data-ng-click=refineFacetSearch(property)>\n" +
+    "            <span class=name>{{ property.name }}</span>\n" +
+    "            <span class=count>{{ property.count }}</span>\n" +
+    "        </label>\n" +
+    "    </div>\n" +
+    "    <div data-ng-if=\"facet.displayType == 'swatches'\" class=\"facet-properties clearfix\">\n" +
+    "        <div data-ng-repeat=\"property in facet.properties\" data-ng-style=\"{'backgroundColor': property.color }\" class=facet-property__swatch data-ng-click=refineFacetSearch(property)>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
     "</div>");
   $templateCache.put("vn-faceted-search/vn-faceted-search.html",
     "<div class=vn-faceted-search-header data-ng-show=showApplyButton>\n" +
