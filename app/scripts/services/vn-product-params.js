@@ -595,7 +595,6 @@ angular.module('Volusion.toolboxCommon')
 		 *
 		 */
 		function preloadData(routeParams) {
-			console.log('preloading the route params is any: ', routeParams);
 			if(routeParams.facetIds) {
 				var ids = routeParams.facetIds.split(',');
 				angular.forEach(ids, function(id) {

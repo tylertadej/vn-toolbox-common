@@ -45,16 +45,13 @@ angular.module('Volusion.toolboxCommon')
 					});
 
 					scope.selectProperty = function (facet) {
-
 						return vnProductParams.isFacetSelected(facet.id);
-
 					};
 
 					scope.refineFacetSearch = function (facet) {
 
 						// Adding / Removing facet to selectedFacets
 						if (!vnProductParams.isFacetSelected(facet.id)) {
-							console.log(typeof facet.id);
 							vnProductParams.addFacet(facet.id);
 						} else {
 							vnProductParams.removeFacet(facet.id);
