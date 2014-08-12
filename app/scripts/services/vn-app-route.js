@@ -50,12 +50,13 @@ angular.module('Volusion.toolboxCommon')
 	.factory('vnAppRoute', ['$rootScope', '$route', '$location', '$routeParams', 'vnProductParams',
 		function ($rootScope, $route, $location, $routeParams, vnProductParams) {
 
-
-			var RouteStrategies = {
-					search  : 'search',
-					category: 'category'
-				},
-				activeStrategy = '';
+			var activeRoute = '';
+//			var RouteStrategies = {
+//					search  : 'search',
+//					category: 'category'
+//				},
+//				activeStrategy = '',
+//				activeUrl = '';
 
 			/**
 			 * Detect changes in the route params and apply logic.
@@ -63,14 +64,6 @@ angular.module('Volusion.toolboxCommon')
 			 * The $watch callback function registered to listen to the get vnParamsObject will likely be called more than
 			 * once in the $digest cycle.
 			 */
-
-//			$rootScope.$watch(
-//				function () {
-//					return vnProductParams.getParamsObject();
-//				}, function watchForParamChange() {
-//					updateUrl();
-//				}, true  // Deep watch the params object.
-//			);
 //
 //			$rootScope.$watch(
 //				function () {
@@ -80,40 +73,93 @@ angular.module('Volusion.toolboxCommon')
 //				}, true  // Deep watch the params object.
 //			);
 
-			function setActiveStrategy(strategy) {
-				activeStrategy = strategy;
-			}
+//			function setActiveStrategy(strategy) {
+//				activeStrategy = strategy;
+//			}
+//
+//			function getActiveStrategy() {
+//				return activeStrategy;
+//			}
 
-			function getActiveStrategy() {
-				return activeStrategy;
-			}
+//			function updateUrlForCategory() {
+//				console.log('routeParams in updateUrlForCategory: ', $routeParams);
+//				if($routeParams.keepAlive) {
+//					// customer has clicked sub-cats in the faceted search category section
+//					// Reuse the existing product params
+//					console.log('keep alive heard in vn-app-route');
+//				} else if($routeParams.categoryIds || $routeParams.facetIds || $routeParams.minPrice || $routeParams.maxPrice) {
+//					// if any product route params - > consume them b/c direct navigation / shared link
+//					console.log('routeParams found here');
+//				} else {
+//					// Need to remember the category id (of current slug) that is put here. so we can put it back before next session
+////					vnProductParams.endActiveSession();
+//
+//					// Go get slug and catId from backend.
+//					// Add it in
+//					// and
+//				}
+//
+//				if ('' !== vnProductParams.getCategoryString()) {
+//					if (vnProductParams.getActiveCategory()) {
+//						$location.path('/c/' + vnProductParams.getActiveCategory());
+//					}
+//					$location.search('categoryIds', vnProductParams.getCategoryString());
+//				} else {
+//					$location.search('categoryIds', null);
+//				}
+//
+//				if ('' !== vnProductParams.getFacetString()) {
+//					$location.search('facetIds', vnProductParams.getFacetString());
+//				} else {
+//					$location.search('facetIds', null);
+//				}
+//
+//				//handle min price
+//				if ('' !== vnProductParams.getMinPrice()) {
+//					$location.search('minPrice', vnProductParams.getMinPrice());
+//				} else {
+//					$location.search('minPrice', null);
+//				}
+//
+//				//handle max price
+//				if ('' !== vnProductParams.getMaxPrice()) {
+//					$location.search('maxPrice', vnProductParams.getMaxPrice());
+//				} else {
+//					$location.search('maxPrice', null);
+//				}
+//			}
 
-			function updateUrlForCategory() {
-				console.log('routeParams in updateUrlForCategory: ', $routeParams);
-				if($routeParams.keepAlive) {
-					// customer has clicked sub-cats in the faceted search category section
-					// Reuse the existing product params
-					console.log('keep alive heard in vn-app-route');
-				} else if($routeParams.categoryIds || $routeParams.facetIds || $routeParams.minPrice || $routeParams.maxPrice) {
-					// if any product route params - > consume them b/c direct navigation / shared link
-					console.log('routeParams found here');
-				} else {
-					// Need to remember the category id (of current slug) that is put here. so we can put it back before next session
-//					vnProductParams.endActiveSession();
+//			function updateUrlForSearch() {
+//				console.log('search is not implemented yet.');
+//			}
 
-					// Go get slug and catId from backend.
-					// Add it in
-					// and
-				}
+//			function hasProductParams(params) {
+//				var hasParams = false;
+//
+//				if (params.categoryIds || params.facetIds || params.minPrice || params.maxPrice) {
+//					hasParams = true;
+//				}
+//
+//				return hasParams;
+//			}
 
-				if ('' !== vnProductParams.getCategoryString()) {
-					if (vnProductParams.getActiveCategory()) {
-						$location.path('/c/' + vnProductParams.getActiveCategory());
-					}
-					$location.search('categoryIds', vnProductParams.getCategoryString());
-				} else {
-					$location.search('categoryIds', null);
-				}
+			$rootScope.$watch(
+				function () {
+					return vnProductParams.getParamsObject();
+				}, function watchForParamChange() {
+					updateActiveRoute();
+				}, true  // Deep watch the params object.
+			);
+
+			function updateActiveRoute () {
+//				if ('' !== vnProductParams.getCategoryString()) {
+////					if (vnProductParams.getActiveCategory()) {
+////						$location.path('/c/' + vnProductParams.getActiveCategory());
+////					}
+//					$location.search('categoryIds', vnProductParams.getCategoryString());
+//				} else {
+//					$location.search('categoryIds', null);
+//				}
 
 				if ('' !== vnProductParams.getFacetString()) {
 					$location.search('facetIds', vnProductParams.getFacetString());
@@ -136,45 +182,38 @@ angular.module('Volusion.toolboxCommon')
 				}
 			}
 
-			function updateUrlForSearch() {
-				console.log('search is not implemented yet.');
+			function getActiveRoute() {
+				return activeRoute;
 			}
 
-			function hasProductParams(params) {
-				var hasParams = false;
-
-				if (params.categoryIds || params.facetIds || params.minPrice || params.maxPrice) {
-					hasParams = true;
-				}
-
-				return hasParams;
-			}
-
-			function updateUrl(params) {
+//			function updateUrl(params) {
+//				console.log(params);
+//				return '?test=123,321&foo=544,344';
 				//Are we in a category or search session? Decide which strategy to apply
-				if ('' === activeStrategy) {
-					return;
-				}
+//				if ('' === activeStrategy) {
+//					return;
+//				}
 
-				if(hasProductParams(params)) {
-					switch (activeStrategy) {
-						case RouteStrategies.category:
-							updateUrlForCategory(params);
-							break;
-						case RouteStrategies.search:
-							updateUrlForSearch(params);
-							break;
-						default:
-							break;
-					}
-				}
+//				if(hasProductParams(params)) {
+//					switch (activeStrategy) {
+//						case RouteStrategies.category:
+//							updateUrlForCategory(params);
+//							break;
+//						case RouteStrategies.search:
+//							updateUrlForSearch(params);
+//							break;
+//						default:
+//							break;
+//					}
+//				}
 
 
-			}
+//			}
 
 			return {
-				setActiveStrategy: setActiveStrategy,
-				getActiveStrategy: getActiveStrategy,
-				updateUrl        : updateUrl
+				getActiveRoute  : getActiveRoute//,
+//				setActiveStrategy: setActiveStrategy,
+//				getActiveStrategy: getActiveStrategy,
+//				updateUrl        : updateUrl
 			};
 		}]);

@@ -130,7 +130,7 @@ angular.module('Volusion.toolboxCommon')
 		 * Ends a product filtering session by setting getSessionState to true and resetting the paramsObject to defaults
 		 */
 		function endActiveSession() {
-			hasActiveSession = true;
+			hasActiveSession = false;
 			resetParamsObject();
 		}
 
@@ -584,8 +584,38 @@ angular.module('Volusion.toolboxCommon')
 			return paramsObject.pageSize;
 		}
 
+
+		/**
+		 * @ngdoc function
+		 * @name preloadData
+		 * @param {Object} routeParams as the $routeParams service provided by angular.
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 *
+		 */
+		function preloadData(routeParams) {
+			console.log('preloading the route params is any: ', routeParams);
+			if(routeParams.facetIds) {
+				var ids = routeParams.facetIds.split(',');
+				angular.forEach(ids, function(id) {
+					// vn-facet-search directive gets facet ids as numbers from product json data
+					addFacet(parseInt(id));
+				});
+			}
+
+			if(routeParams.minPrice) {
+				setMinPrice(routeParams.minPrice);
+			}
+
+			if(routeParams.maxPrice) {
+				setMaxPrice(routeParams.maxPrice);
+			}
+		}
+
 		// Public API here
 		return {
+			preloadData : preloadData,
 			addCategory        : addCategory,
 			endActiveSession   : endActiveSession,
 			addFacet           : addFacet,

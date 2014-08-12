@@ -13,7 +13,7 @@
  */
 
 angular.module('Volusion.toolboxCommon')
-	.directive('vnCategorySearch', ['$rootScope', '$routeParams', '$location', 'vnProductParams',
+	.directive('vnCategorySearch', ['$rootScope', '$routeParams', '$location', 'vnProductParams', 'vnAppRoute',
 		function ($rootScope, $routeParams, $location, vnProductParams) {
 
 			'use strict';
@@ -22,7 +22,7 @@ angular.module('Volusion.toolboxCommon')
 				templateUrl: 'vn-faceted-search/vn-category-search.html',
 				restrict   : 'AE',
 				scope      : {
-					categories: '=',
+					categories   : '=',
 					queryProducts: '&'
 				},
 				link       : function postLink(scope) {
@@ -53,10 +53,10 @@ angular.module('Volusion.toolboxCommon')
 					 */
 					function processThirdCategoryStrategy(cList) {
 
-						angular.forEach(cList, function(category) {
+						angular.forEach(cList, function (category) {
 							angular.extend(category, {displayStrategy: 'categoryDisplayThree'});
 							// Make sure that the sub cats will be links as well
-							angular.forEach(category.subCategories, function(subCat) {
+							angular.forEach(category.subCategories, function (subCat) {
 								angular.extend(subCat, { hideSubCatLink: true });
 							});
 						});
@@ -81,11 +81,56 @@ angular.module('Volusion.toolboxCommon')
 
 					}
 
+					function updateRoute() {
+						var newRoute = '',
+							facetString,
+							minString,
+							maxString;
+
+						// has facets
+						facetString = vnProductParams.getFacetString();
+						// has minPrice
+						minString = vnProductParams.getMinPrice();
+						// has maxPrice
+						maxString = vnProductParams.getMaxPrice();
+
+						// Do we even have a string right now?
+						if('' !== facetString || '' !== minString || '' !== maxString) {
+							newRoute += '?';
+						} else {
+							return;
+						}
+
+						if('' !== facetString) {
+							var facetParams = 'facetIds=' + facetString + '&';
+							newRoute += facetParams;
+						}
+
+						if('' !== minString) {
+							var minParam = 'minPrice='+ minString + '&';
+							newRoute += minParam;
+						}
+
+						if('' !== maxString) {
+							var maxParam = 'maxPrice' + maxString + '&';
+							newRoute += maxParam;
+						}
+
+						return newRoute;
+					}
+
 					scope.updateCategory = function (category) {
 						vnProductParams.addCategory(category.id);
-						vnProductParams.setActiveCategory(category.slug);
+//						vnProductParams.setActiveCategory(category.slug);
 						scope.queryProducts();
 					};
+
+					scope.$watch(
+						function() {
+							return $routeParams;
+						}, function watchForParamChange() {
+							scope.currentRoute = updateRoute();
+					}, true);
 
 					scope.$watch('categories', function (categories) {
 
