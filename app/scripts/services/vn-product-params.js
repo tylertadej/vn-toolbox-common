@@ -617,7 +617,6 @@ angular.module('Volusion.toolboxCommon')
 			removeSort         : removeSort,
 			resetCategories    : resetCategories,
 			resetFacets        : resetFacets,
-			resetParams        : resetParamsObject,
 			setAccessoriesOf   : setAccessoriesOf,
 			setActiveCategory  : setActiveCategory,
 			setMaxPrice        : setMaxPrice,

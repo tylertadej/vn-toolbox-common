@@ -89,6 +89,24 @@ angular.module('Volusion.toolboxCommon')
 			}
 
 			function updateUrlForCategory() {
+				console.log('routeParams in updateUrlForCategory: ', $routeParams);
+				if($routeParams.keepAlive) {
+					// customer has clicked sub-cats in the faceted search category section
+					// Reuse the existing product params
+					console.log('keep alive heard in vn-app-route');
+				} else if($routeParams.categoryIds || $routeParams.facetIds || $routeParams.minPrice || $routeParams.maxPrice) {
+					// if any product route params - > consume them b/c direct navigation / shared link
+					console.log('routeParams found here');
+				} else {
+					// Need to remember the category id (of current slug) that is put here. so we can put it back before next session
+//					vnProductParams.endActiveSession();
+
+					// Go get slug and catId from backend.
+					// Add it in
+					// and
+				}
+
+
 				if ('' !== vnProductParams.getCategoryString()) {
 					if (vnProductParams.getActiveCategory()) {
 						$location.path('/c/' + vnProductParams.getActiveCategory());
@@ -128,18 +146,6 @@ angular.module('Volusion.toolboxCommon')
 				if ('' === activeStrategy) {
 					return;
 				}
-				console.log('routeParams in updateUrl: ', $routeParams);
-//				if($routeParams.keepAlive) {
-//					// customer has clicked sub-cats in the faceted search category section
-//					// Reuse the existing product params
-//					console.log('keep alive heard in vn-app-route');
-//				} else if($routeParams.categoryIds || $routeParams.facetIds || $routeParams.minPrice || $routeParams.maxPrice) {
-//					// if any product route params - > consume them b/c direct navigation / shared link
-//					console.log('routeParams found here');
-//				} else {
-//					vnProductParams.resetParams();
-//					console.log('pessemistic reset here');
-//				}
 
 				switch (activeStrategy) {
 					case RouteStrategies.category:
