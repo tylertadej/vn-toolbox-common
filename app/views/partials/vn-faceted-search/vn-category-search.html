@@ -3,7 +3,7 @@
 	 data-ng-class="{ '-last': $last }">
 
 	<a data-ng-if="cat.displayStrategy == 'categoryDisplayTwo' || cat.displayStrategy == 'categoryDisplayThree' "
-	   data-ng-click="updateCategory(cat)"
+	   data-ng-href="{{ cat.url }}?categoryIds=123,321&facetIds=445,554"
 	   class="vn-category-search__category-items__category-title"
 	   data-ng-class="{ '-noborder': $last && cat.displayStrategy == 'categoryDisplayOne' }">
 
@@ -17,6 +17,6 @@
 
 		<span data-ng-if="subCat.hideSubCatLink">{{ subCat.name }}</span>
 		<a data-ng-if="!subCat.hideSubCatLink"
-		   data-ng-click="updateCategory(subCat)">{{ subCat.name }}</a>
+		   data-ng-href="{{ subCat.url }}?categoryIds=123,321&facetIds=445,554">{{ subCat.name }}</a>
 	</div>
 </div>

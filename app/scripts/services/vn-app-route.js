@@ -64,21 +64,21 @@ angular.module('Volusion.toolboxCommon')
 			 * once in the $digest cycle.
 			 */
 
-			$rootScope.$watch(
-				function () {
-					return vnProductParams.getParamsObject();
-				}, function watchForParamChange() {
-					updateUrl();
-				}, true  // Deep watch the params object.
-			);
-
-			$rootScope.$watch(
-				function () {
-					return vnProductParams.getActiveCategory();
-				}, function watchForCategoryChange() {
-					updateUrl();
-				}, true  // Deep watch the params object.
-			);
+//			$rootScope.$watch(
+//				function () {
+//					return vnProductParams.getParamsObject();
+//				}, function watchForParamChange() {
+//					updateUrl();
+//				}, true  // Deep watch the params object.
+//			);
+//
+//			$rootScope.$watch(
+//				function () {
+//					return vnProductParams.getActiveCategory();
+//				}, function watchForCategoryChange() {
+//					updateUrl();
+//				}, true  // Deep watch the params object.
+//			);
 
 			function setActiveStrategy(strategy) {
 				activeStrategy = strategy;
@@ -105,7 +105,6 @@ angular.module('Volusion.toolboxCommon')
 					// Add it in
 					// and
 				}
-
 
 				if ('' !== vnProductParams.getCategoryString()) {
 					if (vnProductParams.getActiveCategory()) {
@@ -141,41 +140,37 @@ angular.module('Volusion.toolboxCommon')
 				console.log('search is not implemented yet.');
 			}
 
-			function updateUrl() {
+			function hasProductParams(params) {
+				var hasParams = false;
+
+				if (params.categoryIds || params.facetIds || params.minPrice || params.maxPrice) {
+					hasParams = true;
+				}
+
+				return hasParams;
+			}
+
+			function updateUrl(params) {
 				//Are we in a category or search session? Decide which strategy to apply
 				if ('' === activeStrategy) {
 					return;
 				}
 
-				switch (activeStrategy) {
-					case RouteStrategies.category:
-						updateUrlForCategory();
-						break;
-					case RouteStrategies.search:
-						updateUrlForSearch();
-						break;
-					default:
-						break;
+				if(hasProductParams(params)) {
+					switch (activeStrategy) {
+						case RouteStrategies.category:
+							updateUrlForCategory(params);
+							break;
+						case RouteStrategies.search:
+							updateUrlForSearch(params);
+							break;
+						default:
+							break;
+					}
 				}
-			}
 
-//			function updateUrl() {
-//				//Are we in a category or search session? Decide which strategy to apply
-//				if ('' === activeStrategy) {
-//					return;
-//				}
-//
-//				switch (activeStrategy) {
-//					case RouteStrategies.category:
-//						updateUrlForCategory();
-//						break;
-//					case RouteStrategies.search:
-//						updateUrlForSearch();
-//						break;
-//					default:
-//						break;
-//				}
-//			}
+
+			}
 
 			return {
 				setActiveStrategy: setActiveStrategy,
