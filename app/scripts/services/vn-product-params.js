@@ -32,7 +32,7 @@ angular.module('Volusion.toolboxCommon')
 
 		/**
 		 * @ngdoc property
-		 * @name getSessionState
+		 * @name hasActiveSession
 		 * @property {Boolean} hasAActiveSession
 		 * @propertyOf Volusion.toolboxCommon.vnProductParams
 		 *
@@ -132,10 +132,6 @@ angular.module('Volusion.toolboxCommon')
 		function endActiveSession() {
 			hasActiveSession = true;
 			resetParamsObject();
-		}
-
-		function getSessionState() {
-			return hasActiveSession;
 		}
 
 		/**
