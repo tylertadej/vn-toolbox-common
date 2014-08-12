@@ -58,7 +58,7 @@ angular.module('Volusion.toolboxCommon')
 			function getCurrentSelections () {
 				var selections = [],
 					filter = function (option) {
-						return option.isComputedInSelection;
+						return option.derivesToSKU;
 					};
 
 				traverseSelectedOptions($scope.product.options, filter, function (option, item) {
@@ -73,16 +73,17 @@ angular.module('Volusion.toolboxCommon')
 
 			function buildSelection() {
 				var selections = getCurrentSelections(),
-					optionSelections = {},
-					optionTemplateSelection = $scope.product.optionSelections.filter(function (selection) {
-						return selection.key === 'template';
-					})[0];
+					optionSKUs = {};
+//					optionTemplateSelection = $scope.product.optionSKUs.filter(function (selection) {
+//						return selection.key === 'template';
+//					})[0];
 
-				optionSelections = $scope.product.optionSelections.filter(function (selection) {
+				optionSKUs = $scope.product.optionSKUs.filter(function (selection) {
 					return selection.key === selections;
 				})[0];
 
-				return angular.extend({}, optionTemplateSelection, optionSelections);
+//				return angular.extend({}, optionTemplateSelection, optionSKUs);
+				return optionSKUs;
 			}
 
 			function verifyRequiredOptionsAreSelected(options) {

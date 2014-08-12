@@ -16,10 +16,10 @@ angular.module('Volusion.toolboxCommon')
 			$scope.isItemAvailable = false;
 			$scope.itemToken = $scope.option.key + ':' + $scope.item.key;
 
-			for (var idx = 0; idx < $scope.product.optionSelections.length; idx++) {
-				if ($scope.product.optionSelections[idx].key !== $scope.itemToken &&
-					$scope.product.optionSelections[idx].key.indexOf($scope.itemToken) > -1 &&
-					$scope.product.optionSelections[idx].available > 0) {
+			for (var idx = 0; idx < $scope.product.optionSKUs.length; idx++) {
+				if ($scope.product.optionSKUs[idx].key !== $scope.itemToken &&
+					$scope.product.optionSKUs[idx].key.indexOf($scope.itemToken) > -1 &&
+					$scope.product.optionSKUs[idx].quantityInStock > 0) {
 
 					$scope.isItemAvailable = true;
 					break;
@@ -44,14 +44,14 @@ angular.module('Volusion.toolboxCommon')
 				var tempSelections = selections.join('|');
 				// *****************************************************************************************************
 
-				for (var idx = 0; idx < $scope.product.optionSelections.length; idx++) {
+				for (var idx = 0; idx < $scope.product.optionSKUs.length; idx++) {
 
 					if (tempSelections !== $scope.itemToken &&
-						$scope.product.optionSelections[idx].key.indexOf(tempSelections) > -1) {
+						$scope.product.optionSKUs[idx].key.indexOf(tempSelections) > -1) {
 
 						// TODO: What about the optionSelection's state?
 						// According to Kevin at this moment we do not care ...
-						$scope.isItemAvailable = ($scope.product.optionSelections[idx].available > 0);
+						$scope.isItemAvailable = ($scope.product.optionSKUs[idx].quantityInStock > 0);
 					}
 				}
 			});

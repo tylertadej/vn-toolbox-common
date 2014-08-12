@@ -22,7 +22,7 @@ describe('Controller: VnProductOptionCtrl', function() {
 					foo: { key: 'foo' },
 					bar: { key: 'bar' }
 				},
-				optionSelections: {
+				optionSKUs: {
 					template: {}
 				}
 			});
