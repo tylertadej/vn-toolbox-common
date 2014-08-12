@@ -128,6 +128,18 @@ angular.module('Volusion.toolboxCommon')
 				if ('' === activeStrategy) {
 					return;
 				}
+				console.log('routeParams in updateUrl: ', $routeParams);
+//				if($routeParams.keepAlive) {
+//					// customer has clicked sub-cats in the faceted search category section
+//					// Reuse the existing product params
+//					console.log('keep alive heard in vn-app-route');
+//				} else if($routeParams.categoryIds || $routeParams.facetIds || $routeParams.minPrice || $routeParams.maxPrice) {
+//					// if any product route params - > consume them b/c direct navigation / shared link
+//					console.log('routeParams found here');
+//				} else {
+//					vnProductParams.resetParams();
+//					console.log('pessemistic reset here');
+//				}
 
 				switch (activeStrategy) {
 					case RouteStrategies.category:
@@ -140,6 +152,24 @@ angular.module('Volusion.toolboxCommon')
 						break;
 				}
 			}
+
+//			function updateUrl() {
+//				//Are we in a category or search session? Decide which strategy to apply
+//				if ('' === activeStrategy) {
+//					return;
+//				}
+//
+//				switch (activeStrategy) {
+//					case RouteStrategies.category:
+//						updateUrlForCategory();
+//						break;
+//					case RouteStrategies.search:
+//						updateUrlForSearch();
+//						break;
+//					default:
+//						break;
+//				}
+//			}
 
 			return {
 				setActiveStrategy: setActiveStrategy,

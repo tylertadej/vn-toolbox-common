@@ -82,6 +82,7 @@ angular.module('Volusion.toolboxCommon')
 					}
 
 					scope.updateCategory = function (category) {
+						$location.search('keepAlive', true);
 						vnProductParams.addCategory(category.id);
 						vnProductParams.setActiveCategory(category.slug);
 						scope.queryProducts();
