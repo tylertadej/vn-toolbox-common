@@ -490,19 +490,19 @@ angular.module('Volusion.toolboxCommon')
 
 		/**
 		 * @ngdoc function
-		 * @name preloadData
+		 * @name preloadDataForCategory
 		 * @param {Object} routeParams as the $routeParams service provided by angular.
 		 * @methodOf Volusion.toolboxCommon.vnProductParams
 		 *
 		 * @description
 		 *
 		 */
-		function preloadData(routeParams) {
+		function preloadDataForCategory(routeParams) {
 			if (routeParams.facetIds) {
 				var ids = routeParams.facetIds.split(',');
 				angular.forEach(ids, function (id) {
 					// vn-facet-search directive gets facet ids as numbers from product json data
-					if( !isFacetSelected(parseInt(id)) ) {
+					if (!isFacetSelected(parseInt(id))) {
 						addFacet(parseInt(id));
 					}
 				});
@@ -518,41 +518,57 @@ angular.module('Volusion.toolboxCommon')
 			}
 		}
 
+		/**
+		 * @ngdoc function
+		 * @name preloadDataForSearch
+		 * @param {Object} routeParams as the $routeParams service provided by angular.
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 *
+		 */
+		function preloadDataForSearch(routeParams) {
+			if (routeParams.q) {
+				updateSearch(routeParams.q);
+			}
+		}
+
 		// Public API here
 		return {
-			preloadData        : preloadData,
-			addCategory        : addCategory,
-			addFacet           : addFacet,
-			getAccessoriesOf   : getAccessoriesOf,
-			getCategoryString  : getCategoryString,
-			getFacetString     : getFacetString,
-			getMinPrice        : getMinPrice,
-			getMaxPrice        : getMaxPrice,
-			getPage            : getPage,
-			getPageSize        : getPageSize,
-			getParamsObject    : getParamsObject,
-			getSort            : getSort,
-			isFacetSelected    : isFacetSelected,
-			nextPage           : nextPage,
-			previousPage       : previousPage,
-			removeSlug         : removeSlug,
-			removeSearch       : removeSearch,
-			removeMinPrice     : removeMinPrice,
-			removeMaxPrice     : removeMaxPrice,
-			removeAccessoriesOf: removeAccessoriesOf,
-			removeCategory     : removeCategory,
-			removeFacet        : removeFacet,
-			removeSort         : removeSort,
-			resetCategories    : resetCategories, // Todo: confimrm this is used
-			resetFacets        : resetFacets,     // Todo: confimrm this is used
-			resetParams        : resetParamsObject,
-			setAccessoriesOf   : setAccessoriesOf,
-			setMaxPrice        : setMaxPrice,
-			setMinPrice        : setMinPrice,
-			setPage            : setPage,
-			setPageSize        : setPageSize,
-			setSort            : setSort,
-			updateSearch       : updateSearch
+			preloadDataForCategory: preloadDataForCategory,
+			addCategory           : addCategory,
+			addFacet              : addFacet,
+			getAccessoriesOf      : getAccessoriesOf,
+			getCategoryString     : getCategoryString,
+			getFacetString        : getFacetString,
+			getMinPrice           : getMinPrice,
+			getMaxPrice           : getMaxPrice,
+			getPage               : getPage,
+			getPageSize           : getPageSize,
+			getParamsObject       : getParamsObject,
+			getSort               : getSort,
+			isFacetSelected       : isFacetSelected,
+			nextPage              : nextPage,
+			previousPage          : previousPage,
+			removeSlug            : removeSlug,
+			removeSearch          : removeSearch,
+			removeMinPrice        : removeMinPrice,
+			removeMaxPrice        : removeMaxPrice,
+			removeAccessoriesOf   : removeAccessoriesOf,
+			removeCategory        : removeCategory,
+			removeFacet           : removeFacet,
+			removeSort            : removeSort,
+			resetCategories       : resetCategories, // Todo: confimrm this is used
+			resetFacets           : resetFacets,     // Todo: confimrm this is used
+			resetParams           : resetParamsObject,
+			setAccessoriesOf      : setAccessoriesOf,
+			setMaxPrice           : setMaxPrice,
+			setMinPrice           : setMinPrice,
+			setPage               : setPage,
+			setPageSize           : setPageSize,
+			setSort               : setSort,
+			updateSearch          : updateSearch,
+			preloadDataForSearch  : preloadDataForSearch
 		};
 	});
 
