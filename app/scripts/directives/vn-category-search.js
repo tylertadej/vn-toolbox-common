@@ -14,7 +14,7 @@
 
 angular.module('Volusion.toolboxCommon')
 	.directive('vnCategorySearch', ['$rootScope', '$routeParams', '$location', 'vnProductParams', 'vnAppRoute',
-		function ($rootScope, $routeParams, $location, vnProductParams) {
+		function ($rootScope, $routeParams, $location, vnProductParams, vnAppRoute) {
 
 			'use strict';
 
@@ -81,11 +81,30 @@ angular.module('Volusion.toolboxCommon')
 
 					}
 
+
+					/**
+					 * @ngdoc function
+					 * @name updateRoute
+					 * @return {String} newRoute reprensets the current parameters used to get products from the api.
+					 * This function builds a string that can be used to update category links so that when navigating
+					 * betweeen categories the current facets, categoryIds and min/max prices are reflected.
+					 * @methodOf Volusion.toolboxCommon.vnCategorySearch
+					 *
+					 * @description
+					 *
+					 */
 					function updateRoute() {
 						var newRoute = '',
 							facetString,
 							minString,
-							maxString;
+							maxString,
+							categoryString;
+
+						function cleanUpRoute(dirtyRoute) {
+							var cleanRoute = dirtyRoute.replace(/&$/, '');
+							return cleanRoute;
+						}
+
 
 						// has facets
 						facetString = vnProductParams.getFacetString();
@@ -93,12 +112,19 @@ angular.module('Volusion.toolboxCommon')
 						minString = vnProductParams.getMinPrice();
 						// has maxPrice
 						maxString = vnProductParams.getMaxPrice();
+						//has categories
+						categoryString = vnProductParams.getCategoryString();
 
 						// Do we even have a string right now?
 						if('' !== facetString || '' !== minString || '' !== maxString) {
 							newRoute += '?';
 						} else {
-							return;
+							return '';
+						}
+
+						if( 'search' === vnAppRoute.getRouteStrategy() && '' !== categoryString) {
+							var categoryParams = 'categoryId=' + categoryString + '&';
+							newRoute += categoryParams;
 						}
 
 						if('' !== facetString) {
@@ -116,12 +142,26 @@ angular.module('Volusion.toolboxCommon')
 							newRoute += maxParam;
 						}
 
+						// Check string for ending & and clean it up.
+						newRoute = cleanUpRoute(newRoute);
+
 						return newRoute;
 					}
 
 					scope.updateCategory = function (category) {
 						vnProductParams.addCategory(category.id);
 						scope.queryProducts();
+					};
+
+					scope.buildAppUrl = function (category) {
+						// Which Strategy are we building for?
+						if('search' === vnAppRoute.getRouteStrategy()) {
+							var searchPath = '/search';// + scope.currentRoute;
+							$location.path(searchPath);
+						} else if ('category' === vnAppRoute.getRouteStrategy()) {
+							var categoryPath = category.url; // + scope.currentRoute;
+							$location.path(categoryPath);
+						}
 					};
 
 					scope.$watch(

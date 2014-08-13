@@ -37,10 +37,10 @@
  *     - The url will change to /search?q=chair
  *     - If the user selects one or more facets
  *         - Then they stay on the /search?q=chair
- *         - And, the url is updated to /search?q=chair&facets=123,321
+ *         - And, the url is updated to /search?q=chair&facets=123,321&categoryIds=123
  *     - If the user selects the home-decor or furniture categories in Narrow by
- *         - Then, they are taken to /c/home-decor?q=chair&facets=123,321
- *         - Then, they are taken to /c/furniture?q=chair&facets=123,321
+ *         - Then, they are taken to /c/home-decor?q=chair&facets=123,321&categoryIds=123
+ *         - Then, they are taken to /c/furniture?q=chair&facets=123,321&categoryIds=123
  * - Detect search when the $route has q parameter with a search term value.
  * - New search restarts the process and clears the url (and product params)
  *
@@ -50,7 +50,8 @@ angular.module('Volusion.toolboxCommon')
 	.factory('vnAppRoute', ['$rootScope', '$route', '$location', '$routeParams', 'vnProductParams',
 		function ($rootScope, $route, $location, $routeParams, vnProductParams) {
 
-			var activeRoute = '';
+			var activeRoute = '',
+				currentStrategy = '';
 
 			$rootScope.$watch(
 				function () {
@@ -60,7 +61,11 @@ angular.module('Volusion.toolboxCommon')
 				}, true  // Deep watch the params object.
 			);
 
-			function updateActiveRoute () {
+			function updateActiveRoute() {
+
+				if( 'search' === getRouteStrategy() && '' !== vnProductParams.getCategoryString() ) {
+					$location.search('categoryId', vnProductParams.getCategoryString());
+				}
 
 				if ('' !== vnProductParams.getFacetString()) {
 					$location.search('facetIds', vnProductParams.getFacetString());
@@ -83,11 +88,21 @@ angular.module('Volusion.toolboxCommon')
 				}
 			}
 
+			function setRouteStrategy(strategy) {
+				currentStrategy = strategy;
+			}
+
+			function getRouteStrategy() {
+				return currentStrategy;
+			}
+
 			function getActiveRoute() {
 				return activeRoute;
 			}
 
 			return {
-				getActiveRoute  : getActiveRoute
+				getActiveRoute  : getActiveRoute,
+				getRouteStrategy: getRouteStrategy,
+				setRouteStrategy: setRouteStrategy
 			};
 		}]);
