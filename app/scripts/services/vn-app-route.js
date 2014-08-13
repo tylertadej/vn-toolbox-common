@@ -67,6 +67,8 @@ angular.module('Volusion.toolboxCommon')
 				if( 'search' === getRouteStrategy() && '' !== vnProductParams.getCategoryString() ) {
 					console.log('search is looking at catString: ', vnProductParams.getCategoryString());
 					$location.search('categoryId', vnProductParams.getCategoryString());
+				} else {
+					$location.search('categoryId', null);
 				}
 
 				if ('' !== vnProductParams.getFacetString()) {
