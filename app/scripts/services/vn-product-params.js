@@ -284,10 +284,13 @@ angular.module('Volusion.toolboxCommon')
 		 * categoryIds array and update the paramsObject.categoryIds value.
 		 */
 		function addCategory(id) {
-			if (categoryIds.indexOf(id) < 0) {
-				categoryIds.push(id);
-				paramsObject.categoryIds = getCategoryString();
-			}
+			categoryIds.length = 0;
+			categoryIds.push(id);
+			paramsObject.categoryIds = getCategoryString();
+//			if (categoryIds.indexOf(id) < 0) {
+//				categoryIds.push(id);
+//				paramsObject.categoryIds = getCategoryString();
+//			}
 		}
 
 		/**

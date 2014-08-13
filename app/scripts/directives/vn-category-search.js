@@ -156,8 +156,10 @@ angular.module('Volusion.toolboxCommon')
 					scope.buildAppUrl = function (category) {
 						// Which Strategy are we building for?
 						if('search' === vnAppRoute.getRouteStrategy()) {
-							var searchPath = '/search';// + scope.currentRoute;
-							$location.path(searchPath);
+							console.log('nothing to do when its search page?');
+//							var searchPath = '/search';// + scope.currentRoute;
+
+//							$location.path(searchPath);
 						} else if ('category' === vnAppRoute.getRouteStrategy()) {
 							var categoryPath = category.url; // + scope.currentRoute;
 							$location.path(categoryPath);
