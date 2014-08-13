@@ -498,6 +498,7 @@ angular.module('Volusion.toolboxCommon')
 		 *
 		 */
 		function preloadData(routeParams) {
+			console.log('preloading data for routeParams: ', routeParams);
 			if (routeParams.facetIds) {
 				var ids = routeParams.facetIds.split(',');
 				angular.forEach(ids, function (id) {
@@ -513,6 +514,7 @@ angular.module('Volusion.toolboxCommon')
 			}
 
 			if (routeParams.maxPrice) {
+				console.log('setting max price to : ', routeParams.maxPrice);
 				setMaxPrice(routeParams.maxPrice);
 			}
 		}

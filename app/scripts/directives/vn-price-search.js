@@ -37,8 +37,8 @@ angular.module('Volusion.toolboxCommon')
 					function() {
 						return vnProductParams.getMaxPrice();
 					},
-					function(min) {
-						scope.maxPrice = min;
+					function(max) {
+						scope.maxPrice = max;
 					}
 				);
 
