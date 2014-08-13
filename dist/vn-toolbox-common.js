@@ -1630,7 +1630,6 @@ angular.module('Volusion.toolboxCommon')
 				function () {
 					return vnProductParams.getParamsObject();
 				}, function watchForParamChange() {
-					console.log('app route is changing for currStrategy: ', currentStrategy);
 					updateActiveRoute();
 				}, true  // Deep watch the params object.
 			);
@@ -1638,7 +1637,6 @@ angular.module('Volusion.toolboxCommon')
 			function updateActiveRoute() {
 
 				if( 'search' === getRouteStrategy() && '' !== vnProductParams.getCategoryString() ) {
-					console.log('search is looking at catString: ', vnProductParams.getCategoryString());
 					$location.search('categoryId', vnProductParams.getCategoryString());
 				} else {
 					$location.search('categoryId', null);
