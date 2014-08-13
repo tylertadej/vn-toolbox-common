@@ -21,28 +21,6 @@ angular.module('Volusion.toolboxCommon')
 
 		/**
 		 * @ngdoc property
-		 * @name activeCategory
-		 * @property {String} activeCategory
-		 * @propertyOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * A placeholder for the category slug to load
-		 */
-		var activeCategory = false;
-
-		/**
-		 * @ngdoc property
-		 * @name hasActiveSession
-		 * @property {Boolean} hasAActiveSession
-		 * @propertyOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * A flag that is active when customer has already started a new product filtering session.
-		 */
-		var hasActiveSession = false;
-
-		/**
-		 * @ngdoc property
 		 * @name categoryIds
 		 * @property {Array} categoryIds
 		 * @propertyOf Volusion.toolboxCommon.vnProductParams
@@ -83,68 +61,6 @@ angular.module('Volusion.toolboxCommon')
 			page         : '',
 			pageSize     : ''
 		};
-
-		/**
-		 * @ngdoc function
-		 * @name startActiveSession
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * Starts a product filtering session by setting getSessionState to true;
-		 */
-		function startActiveSession() {
-			hasActiveSession = true;
-		}
-
-		/**
-		 * @ngdoc function
-		 * @name getActiveCategory
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * Returns the current value for the activeCategory
-		 */
-		function getActiveCategory() {
-			return activeCategory;
-		}
-
-		/**
-		 * @ngdoc function
-		 * @name setActiveCategory
-		 * @param {String} slug is the identifier of the category
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * gets the current value for the activeCategory
-		 */
-		function setActiveCategory(slug) {
-			activeCategory = slug;
-		}
-
-		/**
-		 * @ngdoc function
-		 * @name endActiveSession
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * Ends a product filtering session by setting getSessionState to true and resetting the paramsObject to defaults
-		 */
-		function endActiveSession() {
-			hasActiveSession = false;
-			resetParamsObject();
-		}
-
-		/**
-		 * @ngdoc function
-		 * @name getSessionState
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * Use as a test to see if there is a product search
-		 */
-		function getSessionState() {
-			return hasActiveSession;
-		}
 
 		/**
 		 * @ngdoc function
@@ -344,19 +260,6 @@ angular.module('Volusion.toolboxCommon')
 		 */
 		function removeSearch() {
 			paramsObject.search = '';
-		}
-
-		/**
-		 * @ngdoc function
-		 * @name updateSearch
-		 * @param {String} newSlug is a string representing the slug value of a product.
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * No matter what, it updates the paramsObject.slug property.
-		 */
-		function updateSlug(newSlug) {
-			paramsObject.slug = newSlug;
 		}
 
 		/**
@@ -595,30 +498,30 @@ angular.module('Volusion.toolboxCommon')
 		 *
 		 */
 		function preloadData(routeParams) {
-			if(routeParams.facetIds) {
+			if (routeParams.facetIds) {
 				var ids = routeParams.facetIds.split(',');
-				angular.forEach(ids, function(id) {
+				angular.forEach(ids, function (id) {
 					// vn-facet-search directive gets facet ids as numbers from product json data
-					addFacet(parseInt(id));
+					if( !isFacetSelected(parseInt(id)) ) {
+						addFacet(parseInt(id));
+					}
 				});
 			}
 
-			if(routeParams.minPrice) {
+			if (routeParams.minPrice) {
 				setMinPrice(routeParams.minPrice);
 			}
 
-			if(routeParams.maxPrice) {
+			if (routeParams.maxPrice) {
 				setMaxPrice(routeParams.maxPrice);
 			}
 		}
 
 		// Public API here
 		return {
-			preloadData : preloadData,
+			preloadData        : preloadData,
 			addCategory        : addCategory,
-			endActiveSession   : endActiveSession,
 			addFacet           : addFacet,
-			getActiveCategory  : getActiveCategory,
 			getAccessoriesOf   : getAccessoriesOf,
 			getCategoryString  : getCategoryString,
 			getFacetString     : getFacetString,
@@ -627,7 +530,6 @@ angular.module('Volusion.toolboxCommon')
 			getPage            : getPage,
 			getPageSize        : getPageSize,
 			getParamsObject    : getParamsObject,
-			getSessionState    : getSessionState,
 			getSort            : getSort,
 			isFacetSelected    : isFacetSelected,
 			nextPage           : nextPage,
@@ -640,18 +542,16 @@ angular.module('Volusion.toolboxCommon')
 			removeCategory     : removeCategory,
 			removeFacet        : removeFacet,
 			removeSort         : removeSort,
-			resetCategories    : resetCategories,
-			resetFacets        : resetFacets,
+			resetCategories    : resetCategories, // Todo: confimrm this is used
+			resetFacets        : resetFacets,     // Todo: confimrm this is used
+			resetParams        : resetParamsObject,
 			setAccessoriesOf   : setAccessoriesOf,
-			setActiveCategory  : setActiveCategory,
 			setMaxPrice        : setMaxPrice,
 			setMinPrice        : setMinPrice,
 			setPage            : setPage,
 			setPageSize        : setPageSize,
 			setSort            : setSort,
-			startActiveSession : startActiveSession,
-			updateSearch       : updateSearch,
-			updateSlug         : updateSlug
+			updateSearch       : updateSearch
 		};
 	});
 
