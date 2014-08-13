@@ -48,10 +48,6 @@ angular.module('Volusion.toolboxCommon', [
                         templateUrl: 'views/main.html',
                         controller : 'MainCtrl'
                     })
-                    .when('/reset', {
-                      templateUrl: 'views/reset.html',
-                      controller: 'ResetCtrl'
-                    })
                     .otherwise({
                         redirectTo: '/'
                     });
