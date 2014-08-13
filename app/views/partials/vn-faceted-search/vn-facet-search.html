@@ -21,7 +21,13 @@
         </label>
     </div>
     <div data-ng-if="facet.displayType == 'swatches'" class="facet-properties clearfix">
-        <div data-ng-repeat="property in facet.properties" data-ng-style="{'backgroundColor': property.color }" class="facet-property__swatch" data-ng-click="refineFacetSearch(property)">
+        <div data-ng-repeat="property in facet.properties"
+			 class="facet-property__swatch"
+			 data-ng-click="refineFacetSearch(property)"
+			 data-ng-class="{'facet-property__swatch--selected': selectProperty(property)}">
+			<div class="facet-property__swatch--color"
+				 data-ng-style="{'backgroundColor': property.color }">
+			</div>
         </div>
     </div>
 </div>

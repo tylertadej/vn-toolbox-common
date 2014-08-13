@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.15 (2014-08-11) */
+/*! vn-toolbox-common - ver.0.0.15 (2014-08-13) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'Volusion.toolboxCommon.templates'])
@@ -2929,7 +2929,9 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "        </label>\n" +
     "    </div>\n" +
     "    <div data-ng-if=\"facet.displayType == 'swatches'\" class=\"facet-properties clearfix\">\n" +
-    "        <div data-ng-repeat=\"property in facet.properties\" data-ng-style=\"{'backgroundColor': property.color }\" class=facet-property__swatch data-ng-click=refineFacetSearch(property)>\n" +
+    "        <div data-ng-repeat=\"property in facet.properties\" class=facet-property__swatch data-ng-click=refineFacetSearch(property) data-ng-class=\"{'facet-property__swatch--selected': selectProperty(property)}\">\n" +
+    "			<div class=facet-property__swatch--color data-ng-style=\"{'backgroundColor': property.color }\">\n" +
+    "			</div>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>");
