@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.15 (2014-08-12) */
+/*! vn-toolbox-common - ver.0.0.15 (2014-08-13) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'Volusion.toolboxCommon.templates'])
@@ -43,49 +43,30 @@ angular.module('Volusion.toolboxCommon')
 
 			'use strict';
 
-			// Initialize availability
-			$scope.isItemAvailable = false;
+			$scope.isItemAvailable = true;
 			$scope.itemToken = $scope.option.key + ':' + $scope.item.key;
 
-			for (var idx = 0; idx < $scope.product.optionSelections.length; idx++) {
-				if ($scope.product.optionSelections[idx].key !== $scope.itemToken &&
-					$scope.product.optionSelections[idx].key.indexOf($scope.itemToken) > -1 &&
-					$scope.product.optionSelections[idx].available > 0) {
-
-					$scope.isItemAvailable = true;
-					break;
-				}
-			}
-
-			// Process item selected
 			$scope.$on('VN_PRODUCT_SELECTED', function (event, selection, currentSelections) {
 
-				var optionIdx = 0;
-				for (var idxOpt = 0; idxOpt < $scope.product.options.length; idxOpt++) {
-					if ($scope.product.options[idxOpt].key === $scope.option.key) {
-						optionIdx = idxOpt;
-						break;
-					}
+				var selections = currentSelections.split('|');
+
+				for (var idxSel = 0; idxSel < selections.length; idxSel++) {
+					console.log(selections[idxSel]);
 				}
 
-				// Replace selected item in current selections to filter optionSelections
-				// for currently selected item *************************************************************************
-				var selections = currentSelections.split('|');
-				selections[optionIdx] = $scope.itemToken;
-				var tempSelections = selections.join('|');
-				// *****************************************************************************************************
-
-				for (var idx = 0; idx < $scope.product.optionSelections.length; idx++) {
-
-					if (tempSelections !== $scope.itemToken &&
-						$scope.product.optionSelections[idx].key.indexOf(tempSelections) > -1) {
+				for (var idx = 0; idx < selection.product.optionSelections.length; idx++) {
+					if (selection.key !== $scope.itemToken &&
+						$scope.product.optionSelections[idx].key.indexOf(selection.key) > -1 &&
+						$scope.product.optionSelections[idx].key.indexOf($scope.itemToken) > -1) {
 
 						// TODO: What about the optionSelection's state?
 						// According to Kevin at this moment we do not care ...
 						$scope.isItemAvailable = ($scope.product.optionSelections[idx].available > 0);
 					}
 				}
+
 			});
+
 		}]);
 
 angular.module('Volusion.toolboxCommon')
@@ -185,21 +166,6 @@ angular.module('Volusion.toolboxCommon')
 				return true;
 			}
 
-			function buildAndBroadcast (option, item) {
-				var buildSel = buildSelection(),
-					currentSel = getCurrentSelections(),
-					verifySel = verifyRequiredOptionsAreSelected($scope.product.options);
-
-				$rootScope.$broadcast('VN_PRODUCT_SELECTED',
-					angular.extend({}, {
-						product: $scope.product,
-						option : option,
-						item   : item,
-						isValid: verifySel
-					}, buildSel),
-					currentSel);
-			}
-
 			$scope.onOptionChanged = function (option, item) {
 
 				$scope.currentSelectionText = item.text;
@@ -223,24 +189,33 @@ angular.module('Volusion.toolboxCommon')
 				}
 
 				preserveSubOptions();
-				buildAndBroadcast(option, item);
+
+				var buildSel = buildSelection(),
+					currentSel = getCurrentSelections(),
+					verifySel = verifyRequiredOptionsAreSelected($scope.product.options);
+
+				$rootScope.$broadcast('VN_PRODUCT_SELECTED',
+					angular.extend({}, {
+						product: $scope.product,
+						option : option,
+						item   : item,
+						isValid: verifySel
+					}, buildSel),
+					currentSel);
 			};
 
-			$scope.onCheckboxClicked = function(option, item) {
-				var optionKey = option.key,
-					haveThisOption = $scope.saveTo.filter(function (obj) {
-						return obj.id === item.id;
-					});
-
-				if (0 === haveThisOption.length) {
-					$scope.saveTo.push({ id: item.id, option: optionKey });
+			$scope.onCheckboxClicked = function(option, itemKey) {
+				var saveTo = $scope.saveTo;
+				var items = saveTo[option.key] = saveTo[option.key] || [];
+				var idx = items.indexOf(itemKey);
+				if (idx > -1) {
+					items.splice(idx, 1);
 				} else {
-					$scope.saveTo = $scope.saveTo.filter(function (obj) {
-						return obj.id !== item.id;
-					});
+					items.push(itemKey);
 				}
-
-				buildAndBroadcast(option, item);
+				if (!items.length) {
+					delete saveTo[option.key];
+				}
 			};
 		}]);
 
@@ -1027,112 +1002,98 @@ angular.module('Volusion.toolboxCommon')
 
 angular.module('Volusion.toolboxCommon')
     .directive('vnRating',
-    ['$rootScope',
-        function ($rootScope) {
-            'use strict';
+        ['$rootScope',
+            function ($rootScope) {
+                'use strict';
 
-            return {
-                templateUrl: 'template/rating.html',
-                restrict   : 'EA',
-                replace    : true,
-                scope      : {
-                    currMode   : '@currMode',
-                    editable   : '=',
-                    maximum    : '=',
-                    ratingValue: '='
-                },
+                return {
+                    templateUrl: 'template/rating.html',
+                    restrict   : 'EA',
+                    replace    : true,
+                    scope      : {
+                        currMode   : '@currMode',
+                        editable   : '=',
+                        maximum    : '=',
+                        ratingValue: '='
+                    },
                 link       : function postLink(scope, element, attrs) {
-                    var filledClass = attrs.filledClass || 'fa fa-star';
-                    var emptyClass = attrs.emptyClass || 'fa fa-star-o';
-                    var halfFilledClass = attrs.halfFilledClass || 'fa fa-star-half-o';
-                    scope.title = typeof attrs.title !== 'undefined' ? attrs.title : 'Rating';
+                    var filledClass = attrs.filledClass || 'filled';
+                    var emptyClass = attrs.emptyClass || '';
 
                     var idx,
                         max = scope.maximum || 5;
 
                     if (scope.currMode === undefined) {
-                        scope.currMode = 'on';
-                    }
+                            scope.currMode = 'on';
+                        }
 
                     if (scope.ratingValue === undefined || scope.ratingValue === '') {
-                        scope.ratingValue = 0;
-                    }
+                            scope.ratingValue = 0;
+                        }
 
                     // Component constants *****************
-                    scope.componentId = '100004';
+                        scope.componentId = '100004';
 
-                    scope.componentName = 'rating';
+                        scope.componentName = 'rating';
 
-                    // *************************************
+                        // *************************************
 
-                    // Component is not selected by default
-                    scope.selected = false;
+                        // Component is not selected by default
+                        scope.selected = false;
 
-                    scope.$on('currentComponent.change', function (event, component) {
-                        if (component && component.id && scope.currMode === 'off') {
-                            scope.selected = (component.id === scope.componentId);
-                        }
-                    });
+                        scope.$on('currentComponent.change', function (event, component) {
+                            if (component && component.id && scope.currMode === 'off') {
+                                scope.selected = (component.id === scope.componentId);
+                            }
+                        });
                     element.on('click', function (event) {
-                        // if in EDIT mode
-                        if (scope.currMode === 'off') {
-                            event.preventDefault();
-                            $rootScope.$broadcast('currentComponent.change', {'id': scope.componentId, 'name': scope.componentName, 'action': 'set'});
-                        }
-                    });
+                            // if in EDIT mode
+                            if (scope.currMode === 'off') {
+                                event.preventDefault();
+                                $rootScope.$broadcast('currentComponent.change', {'id': scope.componentId, 'name': scope.componentName, 'action': 'set'});
+                            }
+                        });
 
-                    function getStarCssClass(index) {
-                        if (scope.ratingValue % 1 === 0 && index < scope.ratingValue) {
-                            return filledClass;
-                        } else if(scope.ratingValue % 1 === 0.5 && scope.ratingValue - index > 0.5) {
-                                return filledClass;
-                        } else  if (scope.ratingValue % 1 === 0.5 && scope.ratingValue - index === 0.5){
-                            return halfFilledClass;
-                        } else {
-                            return emptyClass;
-                        }
-                    }
-
-                    scope.stars = [];
-                    function updateStars() {
                         scope.stars = [];
-                        for (idx = 0; idx < max; idx++) {
-                            scope.stars.push({
-                                cssClass: getStarCssClass(idx)
-                            });
+                        function updateStars() {
+                            scope.stars = [];
+                            for (idx = 0; idx < max; idx++) {
+                                scope.stars.push({
+                                	filled: idx < scope.ratingValue,
+                                	cssClass: idx < scope.ratingValue ? filledClass : emptyClass
+                                });
+                            }
                         }
+
+                        scope.$watch('ratingValue', function (oldVal, newVal) {
+                            if (newVal === 0 || newVal) {
+                                updateStars();
+                            }
+                        });
+
+                        scope.toggle = function (index) {
+                            if (!scope.editable) {
+                                return;
+                            }
+
+                            scope.ratingValue = index + 1;
+                        };
                     }
-
-                    scope.$watch('ratingValue', function (oldVal, newVal) {
-                        if (newVal === 0 || newVal) {
-                            updateStars();
-                        }
-                    });
-
-                    scope.toggle = function (index) {
-                        if (!scope.editable) {
-                            return;
-                        }
-
-                        scope.ratingValue = index + 1;
-                    };
-                }
-            };
-        }])
+                };
+            }])
     .run(['$templateCache', function ($templateCache) {
 
         'use strict';
 
         $templateCache.put(
             'template/rating.html',
-                '<div class="vn-rating">' +
-                    '<p class="vn-rating-title" data-ng-bind="title"></p>' +
-                    '<ul class="rating">' +
-                        '<li data-ng-repeat="star in stars" data-ng-click="toggle($index)">' +
-                            '<i class=" {{ star.cssClass }} " />' +
-                        '</li>' +
-                    '</ul>' +
-                '</div>'
+            '<div class="vn-rating">' +
+                '<p data-translate="VN-RATING-TITLE">Rating</p>' +
+                '<ul class="rating">' +
+                    '<li data-ng-repeat="star in stars" class="tick {{ star.cssClass }}" data-ng-click="toggle($index)">' +
+                    '</li>' +
+                '</ul>' +
+            '</div>'
         );
     }]);
 
@@ -2968,7 +2929,9 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "        </label>\n" +
     "    </div>\n" +
     "    <div data-ng-if=\"facet.displayType == 'swatches'\" class=\"facet-properties clearfix\">\n" +
-    "        <div data-ng-repeat=\"property in facet.properties\" data-ng-style=\"{'backgroundColor': property.color }\" class=facet-property__swatch data-ng-click=refineFacetSearch(property)>\n" +
+    "        <div data-ng-repeat=\"property in facet.properties\" class=facet-property__swatch data-ng-click=refineFacetSearch(property) data-ng-class=\"{'facet-property__swatch--selected': selectProperty(property)}\">\n" +
+    "			<div class=facet-property__swatch--color data-ng-style=\"{'backgroundColor': property.color }\">\n" +
+    "			</div>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>");
@@ -3053,10 +3016,10 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "	</ul>\n" +
     "</div>");
   $templateCache.put("vn-product-option/checkboxes.html",
-    "<label data-vn-block=vn-labeled-checkbox data-vn-modifiers={{option.class}} data-ng-repeat=\"item in option.items\" data-ng-init=item>\n" +
+    "<label data-vn-block=vn-labeled-checkbox data-vn-modifiers={{option.class}} data-ng-repeat=\"itemKey in option.items\" data-ng-init=\"item=product.optionItems[itemKey]\">\n" +
     "\n" +
     "	<div data-vn-element=checkbox>\n" +
-    "		<input type=checkbox data-ng-click=\"onCheckboxClicked(option, item)\">\n" +
+    "		<input type=checkbox data-ng-click=onCheckboxClicked(option)>\n" +
     "	</div>\n" +
     "\n" +
     "	<div data-vn-element=content data-ng-include=\" 'vn-product-option/content.html' \"></div>\n" +
@@ -3085,10 +3048,9 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "\n" +
     "</div>");
   $templateCache.put("vn-product-option/radios.html",
-    "<label data-vn-block=vn-labeled-radio data-vn-modifiers={{option.class}} data-ng-repeat=\"item in option.items\" data-ng-init=item data-ng-controller=OptionsCtrl data-ng-class=\"{ '-disabled': !isItemAvailable }\">\n" +
+    "<label data-vn-block=vn-labeled-radio data-vn-modifiers={{option.class}} data-ng-repeat=\"item in option.items\" data-ng-init=item>\n" +
     "\n" +
     "	<div data-vn-element=radio>\n" +
-    "\n" +
     "		<input type=radio name={{option.id}} data-ng-value=item.key data-ng-model=option.selected data-ng-click=\"onOptionChanged(option, item)\">\n" +
     "	</div>\n" +
     "\n" +
@@ -3104,7 +3066,7 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "	</button>\n" +
     "	<ul class=dropdown-menu role=menu aria-labelledby=\"dropdownMenuOption{{ option.id }}\">\n" +
     "		<li role=presentation data-ng-repeat=\"item in option.items\">\n" +
-    "			<a role=menuitem tabindex=-1 href data-ng-click=\"onOptionChanged(option, item)\" data-ng-controller=OptionsCtrl data-ng-class=\"{ '-disabled': !isItemAvailable }\">\n" +
+    "			<a role=menuitem tabindex=-1 href data-ng-click=\"onOptionChanged(option, item)\">\n" +
     "\n" +
     "				{{ item.text }}\n" +
     "			</a>\n" +
