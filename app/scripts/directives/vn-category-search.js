@@ -101,8 +101,7 @@ angular.module('Volusion.toolboxCommon')
 							categoryString;
 
 						function cleanUpRoute(dirtyRoute) {
-							var cleanRoute = dirtyRoute.replace(/&$/, '');
-							return cleanRoute;
+							return dirtyRoute.replace(/&$/, '');
 						}
 
 
@@ -116,28 +115,28 @@ angular.module('Volusion.toolboxCommon')
 						categoryString = vnProductParams.getCategoryString();
 
 						// Do we even have a string right now?
-						if('' !== facetString || '' !== minString || '' !== maxString) {
+						if ('' !== categoryString || '' !== facetString || '' !== minString || '' !== maxString) {
 							newRoute += '?';
 						} else {
 							return '';
 						}
 
-						if( 'search' === vnAppRoute.getRouteStrategy() && '' !== categoryString) {
+						if ('search' === vnAppRoute.getRouteStrategy() && '' !== categoryString) {
 							var categoryParams = 'categoryId=' + categoryString + '&';
 							newRoute += categoryParams;
 						}
 
-						if('' !== facetString) {
+						if ('' !== facetString) {
 							var facetParams = 'facetIds=' + facetString + '&';
 							newRoute += facetParams;
 						}
 
-						if('' !== minString) {
-							var minParam = 'minPrice='+ minString + '&';
+						if ('' !== minString) {
+							var minParam = 'minPrice=' + minString + '&';
 							newRoute += minParam;
 						}
 
-						if('' !== maxString) {
+						if ('' !== maxString) {
 							var maxParam = 'maxPrice=' + maxString + '&';
 							newRoute += maxParam;
 						}
@@ -155,7 +154,7 @@ angular.module('Volusion.toolboxCommon')
 
 					scope.buildAppUrl = function (category) {
 						// Which Strategy are we building for?
-						if('search' === vnAppRoute.getRouteStrategy()) {
+						if ('search' === vnAppRoute.getRouteStrategy()) {
 							vnProductParams.addCategory(category.id);
 							scope.queryProducts();
 						} else if ('category' === vnAppRoute.getRouteStrategy()) {
@@ -164,12 +163,10 @@ angular.module('Volusion.toolboxCommon')
 						}
 					};
 
-					scope.$watch(
-						function() {
-							return $routeParams;
-						}, function watchForParamChange() {
+					scope.$watch($routeParams,
+						function watchForParamChange() {
 							scope.currentRoute = updateRoute();
-					}, true);
+						}, true);
 
 					scope.$watch('categories', function (categories) {
 
