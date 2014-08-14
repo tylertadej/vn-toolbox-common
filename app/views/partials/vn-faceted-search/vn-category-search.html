@@ -2,8 +2,9 @@
 	 data-ng-repeat="cat in categories"
 	 data-ng-class="{ '-last': $last }">
 
-	<a data-ng-if="cat.displayStrategy == 'categoryDisplayTwo' || cat.displayStrategy == 'categoryDisplayThree' "
-	   data-ng-href="{{ cat.url  }}"
+	<a href
+	   data-ng-if="cat.displayStrategy == 'categoryDisplayTwo' || cat.displayStrategy == 'categoryDisplayThree' "
+	   data-ng-click="buildAppUrl(cat)"
 	   class="vn-category-search__category-items__category-title"
 	   data-ng-class="{ '-noborder': $last && cat.displayStrategy == 'categoryDisplayOne' }">
 
@@ -16,7 +17,8 @@
 		 data-ng-class="{ '-noborder': $last }">
 
 		<span data-ng-if="subCat.hideSubCatLink">{{ subCat.name }}</span>
-		<a data-ng-if="!subCat.hideSubCatLink"
-		   data-ng-href="{{ subCat.url  }}">{{ subCat.name }}</a>
+		<a href
+		   data-ng-if="!subCat.hideSubCatLink"
+		   data-ng-click="buildAppUrl(subCat)">{{ subCat.name }}</a>
 	</div>
 </div>

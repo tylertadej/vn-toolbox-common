@@ -45,9 +45,7 @@ angular.module('Volusion.toolboxCommon')
 					});
 
 					scope.selectProperty = function (facet) {
-
 						return vnProductParams.isFacetSelected(facet.id);
-
 					};
 
 					scope.refineFacetSearch = function (facet) {

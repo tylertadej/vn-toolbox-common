@@ -24,29 +24,25 @@ angular.module('Volusion.toolboxCommon')
 			},
 			link       : function postLink(scope) {
 
+				scope.$watch(
+					function() {
+						return vnProductParams.getMinPrice();
+					},
+					function(min) {
+						scope.minPrice = min;
+					}
+				);
+
+				scope.$watch(
+					function() {
+						return vnProductParams.getMaxPrice();
+					},
+					function(max) {
+						scope.maxPrice = max;
+					}
+				);
+
 				scope.searchByPrice = function (event) {
-
-
-					vnProductParams.setMinPrice(scope.minPrice);
-					vnProductParams.setMaxPrice(scope.maxPrice);
-
-					scope.$watch(
-						function() {
-							return vnProductParams.getMinPrice();
-						},
-						function(min) {
-							scope.minPrice = min;
-						}
-					);
-
-					scope.$watch(
-						function() {
-							return vnProductParams.getMaxPrice();
-						},
-						function(min) {
-							scope.maxPrice = min;
-						}
-					);
 
 					vnProductParams.setMinPrice(scope.minPrice);
 					vnProductParams.setMaxPrice(scope.maxPrice);

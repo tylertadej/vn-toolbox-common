@@ -386,8 +386,8 @@ angular.module('Volusion.toolboxCommon')
 
 
 angular.module('Volusion.toolboxCommon')
-	.directive('vnCategorySearch', ['$rootScope', '$routeParams', '$location', 'vnProductParams',
-		function ($rootScope, $routeParams, $location, vnProductParams) {
+	.directive('vnCategorySearch', ['$rootScope', '$routeParams', '$location', 'vnProductParams', 'vnAppRoute',
+		function ($rootScope, $routeParams, $location, vnProductParams, vnAppRoute) {
 
 			'use strict';
 
@@ -395,7 +395,7 @@ angular.module('Volusion.toolboxCommon')
 				templateUrl: 'vn-faceted-search/vn-category-search.html',
 				restrict   : 'AE',
 				scope      : {
-					categories: '=',
+					categories   : '=',
 					queryProducts: '&'
 				},
 				link       : function postLink(scope) {
@@ -426,10 +426,10 @@ angular.module('Volusion.toolboxCommon')
 					 */
 					function processThirdCategoryStrategy(cList) {
 
-						angular.forEach(cList, function(category) {
+						angular.forEach(cList, function (category) {
 							angular.extend(category, {displayStrategy: 'categoryDisplayThree'});
 							// Make sure that the sub cats will be links as well
-							angular.forEach(category.subCategories, function(subCat) {
+							angular.forEach(category.subCategories, function (subCat) {
 								angular.extend(subCat, { hideSubCatLink: true });
 							});
 						});
@@ -437,7 +437,7 @@ angular.module('Volusion.toolboxCommon')
 					}
 
 					/**
-					 * Utility function used in depermining which strategy to apply to this set of category response data
+					 * Utility function used in determining which strategy to apply to this set of category response data
 					 */
 					function checkSubCategoriesForSlugMatch(slug, categoryObject) {
 
@@ -454,10 +454,95 @@ angular.module('Volusion.toolboxCommon')
 
 					}
 
+
+					/**
+					 * @ngdoc function
+					 * @name updateRoute
+					 * @return {String} newRoute reprensets the current parameters used to get products from the api.
+					 * This function builds a string that can be used to update category links so that when navigating
+					 * betweeen categories the current facets, categoryIds and min/max prices are reflected.
+					 * @methodOf Volusion.toolboxCommon.vnCategorySearch
+					 *
+					 * @description
+					 *
+					 */
+					function updateRoute() {
+						var newRoute = '',
+							facetString,
+							minString,
+							maxString,
+							categoryString;
+
+						function cleanUpRoute(dirtyRoute) {
+							var cleanRoute = dirtyRoute.replace(/&$/, '');
+							return cleanRoute;
+						}
+
+
+						// has facets
+						facetString = vnProductParams.getFacetString();
+						// has minPrice
+						minString = vnProductParams.getMinPrice();
+						// has maxPrice
+						maxString = vnProductParams.getMaxPrice();
+						//has categories
+						categoryString = vnProductParams.getCategoryString();
+
+						// Do we even have a string right now?
+						if('' !== facetString || '' !== minString || '' !== maxString) {
+							newRoute += '?';
+						} else {
+							return '';
+						}
+
+						if( 'search' === vnAppRoute.getRouteStrategy() && '' !== categoryString) {
+							var categoryParams = 'categoryId=' + categoryString + '&';
+							newRoute += categoryParams;
+						}
+
+						if('' !== facetString) {
+							var facetParams = 'facetIds=' + facetString + '&';
+							newRoute += facetParams;
+						}
+
+						if('' !== minString) {
+							var minParam = 'minPrice='+ minString + '&';
+							newRoute += minParam;
+						}
+
+						if('' !== maxString) {
+							var maxParam = 'maxPrice=' + maxString + '&';
+							newRoute += maxParam;
+						}
+
+						// Check string for ending & and clean it up.
+						newRoute = cleanUpRoute(newRoute);
+
+						return newRoute;
+					}
+
 					scope.updateCategory = function (category) {
 						vnProductParams.addCategory(category.id);
 						scope.queryProducts();
 					};
+
+					scope.buildAppUrl = function (category) {
+						// Which Strategy are we building for?
+						if('search' === vnAppRoute.getRouteStrategy()) {
+							vnProductParams.addCategory(category.id);
+							scope.queryProducts();
+						} else if ('category' === vnAppRoute.getRouteStrategy()) {
+							var categoryPath = category.url; // + scope.currentRoute;
+							$location.path(categoryPath);
+						}
+					};
+
+					scope.$watch(
+						function() {
+							return $routeParams;
+						}, function watchForParamChange() {
+							scope.currentRoute = updateRoute();
+					}, true);
 
 					scope.$watch('categories', function (categories) {
 
@@ -544,9 +629,7 @@ angular.module('Volusion.toolboxCommon')
 					});
 
 					scope.selectProperty = function (facet) {
-
 						return vnProductParams.isFacetSelected(facet.id);
-
 					};
 
 					scope.refineFacetSearch = function (facet) {
@@ -569,8 +652,8 @@ angular.module('Volusion.toolboxCommon')
 		}]);
 
 angular.module('Volusion.toolboxCommon')
-	.directive('vnFacetedSearch', ['$location', 'vnProductParams',
-		function ($location, vnProductParams) {
+	.directive('vnFacetedSearch', ['$window', '$location', 'vnProductParams',
+		function ($window, $location, vnProductParams) {
 
 			'use strict';
 
@@ -967,29 +1050,25 @@ angular.module('Volusion.toolboxCommon')
 			},
 			link       : function postLink(scope) {
 
+				scope.$watch(
+					function() {
+						return vnProductParams.getMinPrice();
+					},
+					function(min) {
+						scope.minPrice = min;
+					}
+				);
+
+				scope.$watch(
+					function() {
+						return vnProductParams.getMaxPrice();
+					},
+					function(max) {
+						scope.maxPrice = max;
+					}
+				);
+
 				scope.searchByPrice = function (event) {
-
-
-					vnProductParams.setMinPrice(scope.minPrice);
-					vnProductParams.setMaxPrice(scope.maxPrice);
-
-					scope.$watch(
-						function() {
-							return vnProductParams.getMinPrice();
-						},
-						function(min) {
-							scope.minPrice = min;
-						}
-					);
-
-					scope.$watch(
-						function() {
-							return vnProductParams.getMaxPrice();
-						},
-						function(min) {
-							scope.maxPrice = min;
-						}
-					);
 
 					vnProductParams.setMinPrice(scope.minPrice);
 					vnProductParams.setMaxPrice(scope.maxPrice);
@@ -1216,11 +1295,9 @@ angular.module('Volusion.toolboxCommon')
 			// Filter logic and gaurd code
 			var imagePath = '';
 
-			if (!imageCollections || imageCollections.length <= 0) {										// Guard for when not a valid image collection
-//				throw new Error('vnProductImageFilter needs an image collection.');
+			if (imageCollections && imageCollections.length <= 0) {					// Guard for when not a valid image collection, but passed
 				imagePath = '';
-			} else if (arguments.length === 1) {										// When only imageCollections arg is passed, do default
-				// do the default
+			} else if (arguments.length === 1) {									// When only imageCollections arg is passed, do default
 				imagePath = parseImage('default', 'medium');
 			} else if(arguments.length === 3) {										// Get non-default image url from one of imageCollections.
 				// return theme default
@@ -1493,6 +1570,117 @@ angular.module('Volusion.toolboxCommon')
                 ThemeSettings: ThemeSettings
             };
         }]);
+
+'use strict';
+
+/**
+ * @ngdoc service
+ * @name Volusion.toolboxCommon.vnAppRoute
+ * @requires vnProductParams
+ * @requires $location
+ *
+ * @description
+ * # vnAppRoute
+ * Factory in the Volusion.toolboxCommon module to implement the following business rules outlined below.
+ *
+ * # Category Navigation Rules - starts when customer lands on a category page via top level navigation.
+ * Update the url to reflect categories and facets added (or removed in the case of facets) so that hte link can be
+ * copied, pasted and shared. Intelligently figure out how to let customer click one of the categories and navigate to
+ * that category page while keeping the rest of the categories already clicked or added to product params.
+ *
+ * - Top level (traditial website) navigation elements in header always go to /c/slug and reset the url (and product params)
+ * - Detect navigation to here when $route params exist and there is a slug (slug not present when starting a search)
+ * - Given a user navigates with the top level application nav menus, they:
+ *     - Get a new category controller
+ *     - All Product Params are cleared
+ * - Given that a user is on a top level category page /c/:slug
+ *     - When they click 'Narrow by' categories
+ *     - Then, They are taken to that category page /c/:slug
+ *     - And, any selected facets are preserved
+ * - Category URLS should look like this:
+ *     - /c/apparel?facets=123,456&sort=relevance&page=2&pageSize=32
+ *     - /c/womens-apparel?facets=123,456&sort=relevance&page=2&pageSize=32
+ *     - /c/mens-apparel?facets=123,456&sort=relevance&page=2&pageSize=32/c/womens-activewear?facets=123,456&sort=relevance&page=2&pageSize=32
+ *
+ * # Search Navigation Rules - starts when a customer searches with the site provided search box.
+ * Intelligently decide when to take the customer to a category page while preserving hte search information. Update the
+ * url with consumable information so that the link can be copied, pasted and the same app state passed to a different customer.
+ *
+ * - Given a user searches for chair, then:
+ *     - The url will change to /search?q=chair
+ *     - If the user selects one or more facets
+ *         - Then they stay on the /search?q=chair
+ *         - And, the url is updated to /search?q=chair&facets=123,321&categoryIds=123
+ *     - If the user selects the home-decor or furniture categories in Narrow by
+ *         - Then, they are taken to /c/home-decor?q=chair&facets=123,321&categoryIds=123
+ *         - Then, they are taken to /c/furniture?q=chair&facets=123,321&categoryIds=123
+ * - Detect search when the $route has q parameter with a search term value.
+ * - New search restarts the process and clears the url (and product params)
+ *
+ */
+
+angular.module('Volusion.toolboxCommon')
+	.factory('vnAppRoute', ['$rootScope', '$route', '$location', '$routeParams', 'vnProductParams',
+		function ($rootScope, $route, $location, $routeParams, vnProductParams) {
+
+			var activeRoute = '',
+				currentStrategy = '';
+
+			$rootScope.$watch(
+				function () {
+					return vnProductParams.getParamsObject();
+				}, function watchForParamChange() {
+					updateActiveRoute();
+				}, true  // Deep watch the params object.
+			);
+
+			function updateActiveRoute() {
+
+				if( 'search' === getRouteStrategy() && '' !== vnProductParams.getCategoryString() ) {
+					$location.search('categoryId', vnProductParams.getCategoryString());
+				} else {
+					$location.search('categoryId', null);
+				}
+
+				if ('' !== vnProductParams.getFacetString()) {
+					$location.search('facetIds', vnProductParams.getFacetString());
+				} else {
+					$location.search('facetIds', null);
+				}
+
+				//handle min price
+				if ('' !== vnProductParams.getMinPrice()) {
+					$location.search('minPrice', vnProductParams.getMinPrice());
+				} else {
+					$location.search('minPrice', null);
+				}
+
+				//handle max price
+				if ('' !== vnProductParams.getMaxPrice()) {
+					$location.search('maxPrice', vnProductParams.getMaxPrice());
+				} else {
+					$location.search('maxPrice', null);
+				}
+			}
+
+			function setRouteStrategy(strategy) {
+				currentStrategy = strategy;
+			}
+
+			function getRouteStrategy() {
+				return currentStrategy;
+			}
+
+			function getActiveRoute() {
+				return activeRoute;
+			}
+
+			return {
+				getActiveRoute  : getActiveRoute,
+				getRouteStrategy: getRouteStrategy,
+				setRouteStrategy: setRouteStrategy
+			};
+		}]);
 
 'use strict';
 
@@ -2252,7 +2440,7 @@ angular.module('Volusion.toolboxCommon')
 
 		/**
 		 * @ngdoc property
-		 * @name accountData
+		 * @name categoryIds
 		 * @property {Array} categoryIds
 		 * @propertyOf Volusion.toolboxCommon.vnProductParams
 		 *
@@ -2292,7 +2480,6 @@ angular.module('Volusion.toolboxCommon')
 			page         : '',
 			pageSize     : ''
 		};
-
 
 		/**
 		 * @ngdoc function
@@ -2496,19 +2683,6 @@ angular.module('Volusion.toolboxCommon')
 
 		/**
 		 * @ngdoc function
-		 * @name updateSearch
-		 * @param {String} newSlug is a string representing the slug value of a product.
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * No matter what, it updates the paramsObject.slug property.
-		 */
-		function updateSlug(newSlug) {
-			paramsObject.slug = newSlug;
-		}
-
-		/**
-		 * @ngdoc function
 		 * @name removeSlug
 		 * @methodOf Volusion.toolboxCommon.vnProductParams
 		 *
@@ -2529,10 +2703,13 @@ angular.module('Volusion.toolboxCommon')
 		 * categoryIds array and update the paramsObject.categoryIds value.
 		 */
 		function addCategory(id) {
-			if (categoryIds.indexOf(id) < 0) {
-				categoryIds.push(id);
-				paramsObject.categoryIds = getCategoryString();
-			}
+			categoryIds.length = 0;
+			categoryIds.push(id);
+			paramsObject.categoryIds = getCategoryString();
+//			if (categoryIds.indexOf(id) < 0) {
+//				categoryIds.push(id);
+//				paramsObject.categoryIds = getCategoryString();
+//			}
 		}
 
 		/**
@@ -2732,40 +2909,88 @@ angular.module('Volusion.toolboxCommon')
 			return paramsObject.pageSize;
 		}
 
+
+		/**
+		 * @ngdoc function
+		 * @name preloadDataForCategory
+		 * @param {Object} routeParams as the $routeParams service provided by angular.
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 *
+		 */
+		function preloadDataForCategory(routeParams) {
+			if (routeParams.facetIds) {
+				var ids = routeParams.facetIds.split(',');
+				angular.forEach(ids, function (id) {
+					// vn-facet-search directive gets facet ids as numbers from product json data
+					if (!isFacetSelected(parseInt(id))) {
+						addFacet(parseInt(id));
+					}
+				});
+			}
+
+			if (routeParams.minPrice) {
+				setMinPrice(routeParams.minPrice);
+			}
+
+			if (routeParams.maxPrice) {
+				console.log('setting max price to : ', routeParams.maxPrice);
+				setMaxPrice(routeParams.maxPrice);
+			}
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name preloadDataForSearch
+		 * @param {Object} routeParams as the $routeParams service provided by angular.
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 *
+		 */
+		function preloadDataForSearch(routeParams) {
+			if (routeParams.q) {
+				updateSearch(routeParams.q);
+			}
+		}
+
 		// Public API here
 		return {
-			addCategory        : addCategory,
-			getAccessoriesOf   : getAccessoriesOf,
-			addFacet           : addFacet,
-			getFacetString     : getFacetString,
-			getMinPrice        : getMinPrice,
-			getMaxPrice        : getMaxPrice,
-			getPage            : getPage,
-			getPageSize        : getPageSize,
-			getParamsObject    : getParamsObject,
-			getSort            : getSort,
-			isFacetSelected    : isFacetSelected,
-			nextPage           : nextPage,
-			previousPage       : previousPage,
-			removeSlug         : removeSlug,
-			removeSearch       : removeSearch,
-			setMinPrice        : setMinPrice,
-			removeMinPrice     : removeMinPrice,
-			removeMaxPrice     : removeMaxPrice,
-			removeAccessoriesOf: removeAccessoriesOf,
-			removeCategory     : removeCategory,
-			removeFacet        : removeFacet,
-			removeSort         : removeSort,
-			resetCategories    : resetCategories,
-			resetFacets        : resetFacets,
-			resetParamsObject  : resetParamsObject,
-			setAccessoriesOf   : setAccessoriesOf,
-			setMaxPrice        : setMaxPrice,
-			setPage            : setPage,
-			setPageSize        : setPageSize,
-			setSort            : setSort,
-			updateSearch       : updateSearch,
-			updateSlug         : updateSlug
+			preloadDataForCategory: preloadDataForCategory,
+			addCategory           : addCategory,
+			addFacet              : addFacet,
+			getAccessoriesOf      : getAccessoriesOf,
+			getCategoryString     : getCategoryString,
+			getFacetString        : getFacetString,
+			getMinPrice           : getMinPrice,
+			getMaxPrice           : getMaxPrice,
+			getPage               : getPage,
+			getPageSize           : getPageSize,
+			getParamsObject       : getParamsObject,
+			getSort               : getSort,
+			isFacetSelected       : isFacetSelected,
+			nextPage              : nextPage,
+			previousPage          : previousPage,
+			removeSlug            : removeSlug,
+			removeSearch          : removeSearch,
+			removeMinPrice        : removeMinPrice,
+			removeMaxPrice        : removeMaxPrice,
+			removeAccessoriesOf   : removeAccessoriesOf,
+			removeCategory        : removeCategory,
+			removeFacet           : removeFacet,
+			removeSort            : removeSort,
+			resetCategories       : resetCategories, // Todo: confimrm this is used
+			resetFacets           : resetFacets,     // Todo: confimrm this is used
+			resetParams           : resetParamsObject,
+			setAccessoriesOf      : setAccessoriesOf,
+			setMaxPrice           : setMaxPrice,
+			setMinPrice           : setMinPrice,
+			setPage               : setPage,
+			setPageSize           : setPageSize,
+			setSort               : setSort,
+			updateSearch          : updateSearch,
+			preloadDataForSearch  : preloadDataForSearch
 		};
 	});
 
@@ -2940,7 +3165,7 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
   $templateCache.put("vn-faceted-search/vn-category-search.html",
     "<div class=vn-category-search__category-items data-ng-repeat=\"cat in categories\" data-ng-class=\"{ '-last': $last }\">\n" +
     "\n" +
-    "	<a data-ng-if=\"cat.displayStrategy == 'categoryDisplayTwo' || cat.displayStrategy == 'categoryDisplayThree' \" data-ng-href=\"{{ cat.url  }}\" class=vn-category-search__category-items__category-title data-ng-class=\"{ '-noborder': $last && cat.displayStrategy == 'categoryDisplayOne' }\">\n" +
+    "	<a href data-ng-if=\"cat.displayStrategy == 'categoryDisplayTwo' || cat.displayStrategy == 'categoryDisplayThree' \" data-ng-click=buildAppUrl(cat) class=vn-category-search__category-items__category-title data-ng-class=\"{ '-noborder': $last && cat.displayStrategy == 'categoryDisplayOne' }\">\n" +
     "\n" +
     "		<span data-ng-if=\"cat.displayStrategy == 'categoryDisplayTwo' \" class=\"glyphicon glyphicon-chevron-left\"></span>\n" +
     "		{{ cat.name }}\n" +
@@ -2949,7 +3174,7 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "	<div class=vn-category-search__category-items__category-item data-ng-repeat=\"subCat in cat.subCategories\" data-ng-class=\"{ '-noborder': $last }\">\n" +
     "\n" +
     "		<span data-ng-if=subCat.hideSubCatLink>{{ subCat.name }}</span>\n" +
-    "		<a data-ng-if=!subCat.hideSubCatLink data-ng-href=\"{{ subCat.url  }}\">{{ subCat.name }}</a>\n" +
+    "		<a href data-ng-if=!subCat.hideSubCatLink data-ng-click=buildAppUrl(subCat)>{{ subCat.name }}</a>\n" +
     "	</div>\n" +
     "</div>");
   $templateCache.put("vn-faceted-search/vn-facet-search.html",
@@ -3016,7 +3241,7 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "		</div>\n" +
     "\n" +
     "		\n" +
-    "		<div class=vn-faceted-search-footer data-ng-show=\"!showApplyButton && facets.length > 0\">\n" +
+    "		<div class=vn-faceted-search-footer data-ng-show=!showApplyButton>\n" +
     "			<button class=\"btn __clear-action\" href data-ng-click=clearAllFilters()>Clear\n" +
     "			</button>\n" +
     "			\n" +
@@ -3108,7 +3333,6 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "	<ul class=dropdown-menu role=menu aria-labelledby=\"dropdownMenuOption{{ option.id }}\">\n" +
     "		<li role=presentation data-ng-repeat=\"item in option.items\">\n" +
     "			<a role=menuitem tabindex=-1 href data-ng-click=\"onOptionChanged(option, item)\" data-ng-controller=OptionsCtrl data-ng-class=\"{ '-disabled': !isItemAvailable }\">\n" +
-    "\n" +
     "				{{ item.text }}\n" +
     "			</a>\n" +
     "		</li>\n" +

@@ -21,7 +21,7 @@ angular.module('Volusion.toolboxCommon')
 
 		/**
 		 * @ngdoc property
-		 * @name accountData
+		 * @name categoryIds
 		 * @property {Array} categoryIds
 		 * @propertyOf Volusion.toolboxCommon.vnProductParams
 		 *
@@ -61,7 +61,6 @@ angular.module('Volusion.toolboxCommon')
 			page         : '',
 			pageSize     : ''
 		};
-
 
 		/**
 		 * @ngdoc function
@@ -265,19 +264,6 @@ angular.module('Volusion.toolboxCommon')
 
 		/**
 		 * @ngdoc function
-		 * @name updateSearch
-		 * @param {String} newSlug is a string representing the slug value of a product.
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * No matter what, it updates the paramsObject.slug property.
-		 */
-		function updateSlug(newSlug) {
-			paramsObject.slug = newSlug;
-		}
-
-		/**
-		 * @ngdoc function
 		 * @name removeSlug
 		 * @methodOf Volusion.toolboxCommon.vnProductParams
 		 *
@@ -298,10 +284,11 @@ angular.module('Volusion.toolboxCommon')
 		 * categoryIds array and update the paramsObject.categoryIds value.
 		 */
 		function addCategory(id) {
-			if (categoryIds.indexOf(id) < 0) {
-				categoryIds.push(id);
-				paramsObject.categoryIds = getCategoryString();
-			}
+
+			//Todo: refactor params object and change category related methods from [] to String
+			categoryIds.length = 0;
+			categoryIds.push(id);
+			paramsObject.categoryIds = getCategoryString();
 		}
 
 		/**
@@ -501,40 +488,88 @@ angular.module('Volusion.toolboxCommon')
 			return paramsObject.pageSize;
 		}
 
+
+		/**
+		 * @ngdoc function
+		 * @name preloadDataForCategory
+		 * @param {Object} routeParams as the $routeParams service provided by angular.
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 *
+		 */
+		function preloadDataForCategory(routeParams) {
+			if (routeParams.facetIds) {
+				var ids = routeParams.facetIds.split(',');
+				angular.forEach(ids, function (id) {
+					// vn-facet-search directive gets facet ids as numbers from product json data
+					if (!isFacetSelected(parseInt(id))) {
+						addFacet(parseInt(id));
+					}
+				});
+			}
+
+			if (routeParams.minPrice) {
+				setMinPrice(routeParams.minPrice);
+			}
+
+			if (routeParams.maxPrice) {
+				console.log('setting max price to : ', routeParams.maxPrice);
+				setMaxPrice(routeParams.maxPrice);
+			}
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name preloadDataForSearch
+		 * @param {Object} routeParams as the $routeParams service provided by angular.
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 *
+		 */
+		function preloadDataForSearch(routeParams) {
+			if (routeParams.q) {
+				updateSearch(routeParams.q);
+			}
+		}
+
 		// Public API here
 		return {
-			addCategory        : addCategory,
-			getAccessoriesOf   : getAccessoriesOf,
-			addFacet           : addFacet,
-			getFacetString     : getFacetString,
-			getMinPrice        : getMinPrice,
-			getMaxPrice        : getMaxPrice,
-			getPage            : getPage,
-			getPageSize        : getPageSize,
-			getParamsObject    : getParamsObject,
-			getSort            : getSort,
-			isFacetSelected    : isFacetSelected,
-			nextPage           : nextPage,
-			previousPage       : previousPage,
-			removeSlug         : removeSlug,
-			removeSearch       : removeSearch,
-			setMinPrice        : setMinPrice,
-			removeMinPrice     : removeMinPrice,
-			removeMaxPrice     : removeMaxPrice,
-			removeAccessoriesOf: removeAccessoriesOf,
-			removeCategory     : removeCategory,
-			removeFacet        : removeFacet,
-			removeSort         : removeSort,
-			resetCategories    : resetCategories,
-			resetFacets        : resetFacets,
-			resetParamsObject  : resetParamsObject,
-			setAccessoriesOf   : setAccessoriesOf,
-			setMaxPrice        : setMaxPrice,
-			setPage            : setPage,
-			setPageSize        : setPageSize,
-			setSort            : setSort,
-			updateSearch       : updateSearch,
-			updateSlug         : updateSlug
+			preloadDataForCategory: preloadDataForCategory,
+			addCategory           : addCategory,
+			addFacet              : addFacet,
+			getAccessoriesOf      : getAccessoriesOf,
+			getCategoryString     : getCategoryString,
+			getFacetString        : getFacetString,
+			getMinPrice           : getMinPrice,
+			getMaxPrice           : getMaxPrice,
+			getPage               : getPage,
+			getPageSize           : getPageSize,
+			getParamsObject       : getParamsObject,
+			getSort               : getSort,
+			isFacetSelected       : isFacetSelected,
+			nextPage              : nextPage,
+			previousPage          : previousPage,
+			removeSlug            : removeSlug,
+			removeSearch          : removeSearch,
+			removeMinPrice        : removeMinPrice,
+			removeMaxPrice        : removeMaxPrice,
+			removeAccessoriesOf   : removeAccessoriesOf,
+			removeCategory        : removeCategory,
+			removeFacet           : removeFacet,
+			removeSort            : removeSort,
+			resetCategories       : resetCategories, // Todo: confimrm this is used
+			resetFacets           : resetFacets,     // Todo: confimrm this is used
+			resetParams           : resetParamsObject,
+			setAccessoriesOf      : setAccessoriesOf,
+			setMaxPrice           : setMaxPrice,
+			setMinPrice           : setMinPrice,
+			setPage               : setPage,
+			setPageSize           : setPageSize,
+			setSort               : setSort,
+			updateSearch          : updateSearch,
+			preloadDataForSearch  : preloadDataForSearch
 		};
 	});
 

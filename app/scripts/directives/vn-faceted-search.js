@@ -22,8 +22,8 @@
  * TODO: Add html and javascript here to demo it in docs.
  */
 angular.module('Volusion.toolboxCommon')
-	.directive('vnFacetedSearch', ['$location', 'vnProductParams',
-		function ($location, vnProductParams) {
+	.directive('vnFacetedSearch', ['$window', '$location', 'vnProductParams',
+		function ($window, $location, vnProductParams) {
 
 			'use strict';
 

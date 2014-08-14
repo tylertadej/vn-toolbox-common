@@ -13,8 +13,8 @@
  */
 
 angular.module('Volusion.toolboxCommon')
-	.directive('vnCategorySearch', ['$rootScope', '$routeParams', '$location', 'vnProductParams',
-		function ($rootScope, $routeParams, $location, vnProductParams) {
+	.directive('vnCategorySearch', ['$rootScope', '$routeParams', '$location', 'vnProductParams', 'vnAppRoute',
+		function ($rootScope, $routeParams, $location, vnProductParams, vnAppRoute) {
 
 			'use strict';
 
@@ -22,7 +22,7 @@ angular.module('Volusion.toolboxCommon')
 				templateUrl: 'vn-faceted-search/vn-category-search.html',
 				restrict   : 'AE',
 				scope      : {
-					categories: '=',
+					categories   : '=',
 					queryProducts: '&'
 				},
 				link       : function postLink(scope) {
@@ -53,10 +53,10 @@ angular.module('Volusion.toolboxCommon')
 					 */
 					function processThirdCategoryStrategy(cList) {
 
-						angular.forEach(cList, function(category) {
+						angular.forEach(cList, function (category) {
 							angular.extend(category, {displayStrategy: 'categoryDisplayThree'});
 							// Make sure that the sub cats will be links as well
-							angular.forEach(category.subCategories, function(subCat) {
+							angular.forEach(category.subCategories, function (subCat) {
 								angular.extend(subCat, { hideSubCatLink: true });
 							});
 						});
@@ -64,7 +64,7 @@ angular.module('Volusion.toolboxCommon')
 					}
 
 					/**
-					 * Utility function used in depermining which strategy to apply to this set of category response data
+					 * Utility function used in determining which strategy to apply to this set of category response data
 					 */
 					function checkSubCategoriesForSlugMatch(slug, categoryObject) {
 
@@ -81,10 +81,92 @@ angular.module('Volusion.toolboxCommon')
 
 					}
 
+
+					/**
+					 * @ngdoc function
+					 * @name updateRoute
+					 * @return {String} newRoute reprensets the current parameters used to get products from the api.
+					 * This function builds a string that can be used to update category links so that when navigating
+					 * betweeen categories the current facets, categoryIds and min/max prices are reflected.
+					 * @methodOf Volusion.toolboxCommon.vnCategorySearch
+					 *
+					 * @description
+					 *
+					 */
+					function updateRoute() {
+						var newRoute = '',
+							facetString,
+							minString,
+							maxString,
+							categoryString;
+
+						function cleanUpRoute(dirtyRoute) {
+							return dirtyRoute.replace(/&$/, '');
+						}
+
+
+						// has facets
+						facetString = vnProductParams.getFacetString();
+						// has minPrice
+						minString = vnProductParams.getMinPrice();
+						// has maxPrice
+						maxString = vnProductParams.getMaxPrice();
+						//has categories
+						categoryString = vnProductParams.getCategoryString();
+
+						// Do we even have a string right now?
+						if ('' !== categoryString || '' !== facetString || '' !== minString || '' !== maxString) {
+							newRoute += '?';
+						} else {
+							return '';
+						}
+
+						if ('search' === vnAppRoute.getRouteStrategy() && '' !== categoryString) {
+							var categoryParams = 'categoryId=' + categoryString + '&';
+							newRoute += categoryParams;
+						}
+
+						if ('' !== facetString) {
+							var facetParams = 'facetIds=' + facetString + '&';
+							newRoute += facetParams;
+						}
+
+						if ('' !== minString) {
+							var minParam = 'minPrice=' + minString + '&';
+							newRoute += minParam;
+						}
+
+						if ('' !== maxString) {
+							var maxParam = 'maxPrice=' + maxString + '&';
+							newRoute += maxParam;
+						}
+
+						// Check string for ending & and clean it up.
+						newRoute = cleanUpRoute(newRoute);
+
+						return newRoute;
+					}
+
 					scope.updateCategory = function (category) {
 						vnProductParams.addCategory(category.id);
 						scope.queryProducts();
 					};
+
+					scope.buildAppUrl = function (category) {
+						// Which Strategy are we building for?
+						if ('search' === vnAppRoute.getRouteStrategy()) {
+							vnProductParams.addCategory(category.id);
+							scope.queryProducts();
+						} else if ('category' === vnAppRoute.getRouteStrategy()) {
+							var categoryPath = category.url; // + scope.currentRoute;
+							$location.path(categoryPath);
+						}
+					};
+
+					scope.$watch($routeParams,
+						function watchForParamChange() {
+							scope.currentRoute = updateRoute();
+						}, true);
 
 					scope.$watch('categories', function (categories) {
 
