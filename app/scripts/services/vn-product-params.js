@@ -528,55 +528,9 @@ angular.module('Volusion.toolboxCommon')
 			}
 		}
 
-		/**
-		 * @ngdoc function
-		 * @name preloadDataForCategory
-		 * @param {Object} routeParams as the $routeParams service provided by angular.
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 *
-		 */
-//		function preloadDataForCategory(routeParams) {
-//			if (routeParams.facetIds) {
-//				var ids = routeParams.facetIds.split(',');
-//				angular.forEach(ids, function (id) {
-//					// vn-facet-search directive gets facet ids as numbers from product json data
-//					if (!isFacetSelected(parseInt(id))) {
-//						addFacet(parseInt(id));
-//					}
-//				});
-//			}
-//
-//			if (routeParams.minPrice) {
-//				setMinPrice(routeParams.minPrice);
-//			}
-//
-//			if (routeParams.maxPrice) {
-//				console.log('setting max price to : ', routeParams.maxPrice);
-//				setMaxPrice(routeParams.maxPrice);
-//			}
-//		}
-
-		/**
-		 * @ngdoc function
-		 * @name preloadDataForSearch
-		 * @param {Object} routeParams as the $routeParams service provided by angular.
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 *
-		 */
-//		function preloadDataForSearch(routeParams) {
-//			if (routeParams.q) {
-//				updateSearch(routeParams.q);
-//			}
-//		}
-
 		// Public API here
 		return {
 			preLoadData : preLoadData,
-//			preloadDataForCategory: preloadDataForCategory,
 			addCategory           : addCategory,
 			addFacet              : addFacet,
 			getAccessoriesOf      : getAccessoriesOf,
@@ -608,8 +562,7 @@ angular.module('Volusion.toolboxCommon')
 			setPage               : setPage,
 			setPageSize           : setPageSize,
 			setSort               : setSort,
-			updateSearch          : updateSearch,
-//			preloadDataForSearch  : preloadDataForSearch
+			updateSearch          : updateSearch
 		};
 	});
 
