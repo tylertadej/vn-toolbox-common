@@ -489,6 +489,46 @@ angular.module('Volusion.toolboxCommon')
 		}
 
 
+
+		/**
+		 * @ngdoc function
+		 * @name preloadData
+		 * @param {Object} routeParams as the $routeParams service provided by angular.
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 *
+		 */
+		function preLoadData(searchParams) {
+			if(searchParams.categoryId) {
+				addCategory(parseInt(searchParams.categoryId));
+			}
+
+			if (searchParams.facetIds) {
+				var ids = searchParams.facetIds.split(',');
+				angular.forEach(ids, function (id) {
+					// vn-facet-search directive gets facet ids as numbers from product json data
+					if (!isFacetSelected(parseInt(id))) {
+						addFacet(parseInt(id));
+					}
+				});
+			}
+
+			if (searchParams.minPrice) {
+				setMinPrice(searchParams.minPrice);
+			}
+
+			if (searchParams.maxPrice) {
+				console.log('setting max price to : ', searchParams.maxPrice);
+				setMaxPrice(searchParams.maxPrice);
+			}
+
+			if (searchParams.q) {
+				updateSearch(routeParams.q);
+			}
+			console.log('preLoadData: ', paramsObject);
+		}
+
 		/**
 		 * @ngdoc function
 		 * @name preloadDataForCategory
@@ -498,26 +538,26 @@ angular.module('Volusion.toolboxCommon')
 		 * @description
 		 *
 		 */
-		function preloadDataForCategory(routeParams) {
-			if (routeParams.facetIds) {
-				var ids = routeParams.facetIds.split(',');
-				angular.forEach(ids, function (id) {
-					// vn-facet-search directive gets facet ids as numbers from product json data
-					if (!isFacetSelected(parseInt(id))) {
-						addFacet(parseInt(id));
-					}
-				});
-			}
-
-			if (routeParams.minPrice) {
-				setMinPrice(routeParams.minPrice);
-			}
-
-			if (routeParams.maxPrice) {
-				console.log('setting max price to : ', routeParams.maxPrice);
-				setMaxPrice(routeParams.maxPrice);
-			}
-		}
+//		function preloadDataForCategory(routeParams) {
+//			if (routeParams.facetIds) {
+//				var ids = routeParams.facetIds.split(',');
+//				angular.forEach(ids, function (id) {
+//					// vn-facet-search directive gets facet ids as numbers from product json data
+//					if (!isFacetSelected(parseInt(id))) {
+//						addFacet(parseInt(id));
+//					}
+//				});
+//			}
+//
+//			if (routeParams.minPrice) {
+//				setMinPrice(routeParams.minPrice);
+//			}
+//
+//			if (routeParams.maxPrice) {
+//				console.log('setting max price to : ', routeParams.maxPrice);
+//				setMaxPrice(routeParams.maxPrice);
+//			}
+//		}
 
 		/**
 		 * @ngdoc function
@@ -528,14 +568,15 @@ angular.module('Volusion.toolboxCommon')
 		 * @description
 		 *
 		 */
-		function preloadDataForSearch(routeParams) {
-			if (routeParams.q) {
-				updateSearch(routeParams.q);
-			}
-		}
+//		function preloadDataForSearch(routeParams) {
+//			if (routeParams.q) {
+//				updateSearch(routeParams.q);
+//			}
+//		}
 
 		// Public API here
 		return {
+			preLoadData : preLoadData,
 			preloadDataForCategory: preloadDataForCategory,
 			addCategory           : addCategory,
 			addFacet              : addFacet,

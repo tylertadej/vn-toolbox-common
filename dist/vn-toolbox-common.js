@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.19 (2014-08-15) */
+/*! vn-toolbox-common - ver.0.0.20 (2014-08-15) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'Volusion.toolboxCommon.templates'])
@@ -1627,38 +1627,71 @@ angular.module('Volusion.toolboxCommon')
 				function () {
 					return vnProductParams.getParamsObject();
 				}, function watchForParamChange() {
-					updateActiveRoute($location);
+					updateActiveRoute($location.search());
 				}, true  // Deep watch the params object.
 			);
+
+			function updateCategory(searchParams) {
+				console.log('updating categoryParams with: ', searchParams);
+				// Guard code
+				if(!searchParams.categoryId) {
+					return;
+				}
+
+				if ('search' === getRouteStrategy() && '' !== vnProductParams.getCategoryString()) {
+					$location.search('categoryId', vnProductParams.getCategoryString());
+				} else {
+					$location.search('categoryId', null);
+				}
+			}
+
+			function updateFacets(searchParams) {
+				// Guard code
+				if(!searchParams.facetIds) {
+					return;
+				}
+
+				if ('' !== vnProductParams.getFacetString()) {
+					$location.search('facetIds', vnProductParams.getFacetString());
+				} else {
+					$location.search('facetIds', null);
+				}
+			}
+
+			function updateMinPrice(searchParams) {
+				// Guard code
+				if(!searchParams.minPrice) {
+					return;
+				}
+
+				if ('' !== vnProductParams.getMinPrice()) {
+					$location.search('minPrice', vnProductParams.getMinPrice());
+				} else {
+					$location.search('minPrice', null);
+				}
+			}
+
+			function updateMaxPrice(searchParams) {
+				// Guard code
+				if(!searchParams.maxPrice) {
+					return;
+				}
+
+				if ('' !== vnProductParams.getMaxPrice()) {
+					$location.search('maxPrice', vnProductParams.getMaxPrice());
+				} else {
+					$location.search('maxPrice', null);
+				}
+			}
 
 			function updateActiveRoute(locations) {
 				console.log('updatingActiveRoute()', locations);
 
-//				if ('search' === getRouteStrategy() && '' !== vnProductParams.getCategoryString()) {
-//					locations.search('categoryId', vnProductParams.getCategoryString());
-//				} else {
-//					locations.search('categoryId', null);
-//				}
-//
-//				if ('' !== vnProductParams.getFacetString()) {
-//					locations.search('facetIds', vnProductParams.getFacetString());
-//				} else {
-//					locations.search('facetIds', null);
-//				}
-//
-//				//handle min price
-//				if ('' !== vnProductParams.getMinPrice()) {
-//					locations.search('minPrice', vnProductParams.getMinPrice());
-//				} else {
-//					locations.search('minPrice', null);
-//				}
-//
-//				//handle max price
-//				if ('' !== vnProductParams.getMaxPrice()) {
-//					locations.search('maxPrice', vnProductParams.getMaxPrice());
-//				} else {
-//					locations.search('maxPrice', null);
-//				}
+				updateCategory(locations);
+				updateFacets(locations);
+				updateMinPrice(locations);
+				updateMaxPrice(locations);
+
 			}
 
 			function setRouteStrategy(strategy) {
@@ -1677,36 +1710,18 @@ angular.module('Volusion.toolboxCommon')
 				/**
 				 @function
 				 @name resolveParameters
-				 @description set the vnPramaterObject up with current URL information if its there.
+				 @description set the vnParmeterObject up with current URL information if its there.
 				 @param {Object} location
 				 @param {Object} params
 				 @return promise
 				 */
 				var deferred = $q.defer();
 
-				console.log('searchParams: ', locations);
-				updateActiveRoute(locations);
+//				updateActiveRoute(locations);
+				vnProductParams.preLoadData(locations);
 				deferred.resolve(true);
 
 				return deferred.promise;
-
-
-//				updateActiveRoute(location);
-//				var deferred = $.defer();
-//				updateActiveRoute(location);
-//				return deferred.resolve(true);
-
-//				return function() {
-//					console.log('from resolveParams return', locations);
-//					$q.when(console.log('q when retunrn: ', locations)
-////					return $q.when(console.log('q when retunrn: ', locations));
-//				};
-//				return $q.when(console.log('resolving searchParams: ', locations));
-
-//				return $q.when(updateActiveRoute(location));
-
-//				console.log('resolvePrams: ', params);
-
 
 			}
 
@@ -2944,6 +2959,42 @@ angular.module('Volusion.toolboxCommon')
 		}
 
 
+
+		/**
+		 * @ngdoc function
+		 * @name preloadData
+		 * @param {Object} routeParams as the $routeParams service provided by angular.
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 *
+		 */
+		function preLoadData(searchParams) {
+			if(searchParams.categoryId) {
+				addCategory(parseInt(searchParams.categoryId));
+			}
+
+			if (searchParams.facetIds) {
+				var ids = searchParams.facetIds.split(',');
+				angular.forEach(ids, function (id) {
+					// vn-facet-search directive gets facet ids as numbers from product json data
+					if (!isFacetSelected(parseInt(id))) {
+						addFacet(parseInt(id));
+					}
+				});
+			}
+
+			if (searchParams.minPrice) {
+				setMinPrice(searchParams.minPrice);
+			}
+
+			if (searchParams.maxPrice) {
+				console.log('setting max price to : ', searchParams.maxPrice);
+				setMaxPrice(searchParams.maxPrice);
+			}
+			console.log('preLoadData: ', paramsObject);
+		}
+
 		/**
 		 * @ngdoc function
 		 * @name preloadDataForCategory
@@ -2991,6 +3042,7 @@ angular.module('Volusion.toolboxCommon')
 
 		// Public API here
 		return {
+			preLoadData : preLoadData,
 			preloadDataForCategory: preloadDataForCategory,
 			addCategory           : addCategory,
 			addFacet              : addFacet,
