@@ -524,9 +524,8 @@ angular.module('Volusion.toolboxCommon')
 			}
 
 			if (searchParams.q) {
-				updateSearch(routeParams.q);
+				updateSearch(searchParams.q);
 			}
-			console.log('preLoadData: ', paramsObject);
 		}
 
 		/**
@@ -577,7 +576,7 @@ angular.module('Volusion.toolboxCommon')
 		// Public API here
 		return {
 			preLoadData : preLoadData,
-			preloadDataForCategory: preloadDataForCategory,
+//			preloadDataForCategory: preloadDataForCategory,
 			addCategory           : addCategory,
 			addFacet              : addFacet,
 			getAccessoriesOf      : getAccessoriesOf,
@@ -610,7 +609,7 @@ angular.module('Volusion.toolboxCommon')
 			setPageSize           : setPageSize,
 			setSort               : setSort,
 			updateSearch          : updateSearch,
-			preloadDataForSearch  : preloadDataForSearch
+//			preloadDataForSearch  : preloadDataForSearch
 		};
 	});
 

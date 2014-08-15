@@ -1620,23 +1620,22 @@ angular.module('Volusion.toolboxCommon')
 	.factory('vnAppRoute', ['$q', '$rootScope', '$route', '$location', '$routeParams', 'vnProductParams',
 		function ($q, $rootScope, $route, $location, $routeParams, vnProductParams) {
 
-			var activeRoute = '',
-				currentStrategy = '';
+			var currentStrategy = '';
 
 			$rootScope.$watch(
 				function () {
 					return vnProductParams.getParamsObject();
-				}, function watchForParamChange() {
-					updateActiveRoute($location.search());
+				}, function () {
+					updateActiveRoute(vnProductParams.getParamsObject());
 				}, true  // Deep watch the params object.
 			);
 
-			function updateCategory(searchParams) {
-				console.log('updating categoryParams with: ', searchParams);
-				// Guard code
-				if(!searchParams.categoryId) {
-					return;
-				}
+			function updateCategory() {
+				console.log('updating route search params');
+//				// Guard code
+//				if(!paramsObject.categoryId) {
+//					return;
+//				}
 
 				if ('search' === getRouteStrategy() && '' !== vnProductParams.getCategoryString()) {
 					$location.search('categoryId', vnProductParams.getCategoryString());
@@ -1645,11 +1644,11 @@ angular.module('Volusion.toolboxCommon')
 				}
 			}
 
-			function updateFacets(searchParams) {
-				// Guard code
-				if(!searchParams.facetIds) {
-					return;
-				}
+			function updateFacets() {
+//				// Guard code
+//				if(!paramsObject.facetIds) {
+//					return;
+//				}
 
 				if ('' !== vnProductParams.getFacetString()) {
 					$location.search('facetIds', vnProductParams.getFacetString());
@@ -1658,11 +1657,11 @@ angular.module('Volusion.toolboxCommon')
 				}
 			}
 
-			function updateMinPrice(searchParams) {
-				// Guard code
-				if(!searchParams.minPrice) {
-					return;
-				}
+			function updateMinPrice() {
+//				// Guard code
+//				if(!paramsObject.minPrice) {
+//					return;
+//				}
 
 				if ('' !== vnProductParams.getMinPrice()) {
 					$location.search('minPrice', vnProductParams.getMinPrice());
@@ -1671,11 +1670,11 @@ angular.module('Volusion.toolboxCommon')
 				}
 			}
 
-			function updateMaxPrice(searchParams) {
-				// Guard code
-				if(!searchParams.maxPrice) {
-					return;
-				}
+			function updateMaxPrice() {
+//				// Guard code
+//				if(!paramsObject.maxPrice) {
+//					return;
+//				}
 
 				if ('' !== vnProductParams.getMaxPrice()) {
 					$location.search('maxPrice', vnProductParams.getMaxPrice());
@@ -1684,13 +1683,17 @@ angular.module('Volusion.toolboxCommon')
 				}
 			}
 
-			function updateActiveRoute(locations) {
-				console.log('updatingActiveRoute()', locations);
+			function updateActiveRoute(paramsObject) {
+				console.log('updatingActiveRoute() for params object', paramsObject);
 
-				updateCategory(locations);
-				updateFacets(locations);
-				updateMinPrice(locations);
-				updateMaxPrice(locations);
+				if(!paramsObject) {
+					return;
+				}
+
+				updateCategory();
+				updateFacets();
+				updateMinPrice();
+				updateMaxPrice();
 
 			}
 
@@ -1702,11 +1705,8 @@ angular.module('Volusion.toolboxCommon')
 				return currentStrategy;
 			}
 
-			function getActiveRoute() {
-				return activeRoute;
-			}
-
-			function resolveParams(locations) { //jshint ignore:line
+			// Resolve direct navigation searchParams.
+			function resolveParams(locations) {
 				/**
 				 @function
 				 @name resolveParameters
@@ -1717,7 +1717,6 @@ angular.module('Volusion.toolboxCommon')
 				 */
 				var deferred = $q.defer();
 
-//				updateActiveRoute(locations);
 				vnProductParams.preLoadData(locations);
 				deferred.resolve(true);
 
@@ -1726,7 +1725,6 @@ angular.module('Volusion.toolboxCommon')
 			}
 
 			return {
-				getActiveRoute  : getActiveRoute,
 				getRouteStrategy: getRouteStrategy,
 				setRouteStrategy: setRouteStrategy,
 				resolveParams   : resolveParams
@@ -2992,7 +2990,10 @@ angular.module('Volusion.toolboxCommon')
 				console.log('setting max price to : ', searchParams.maxPrice);
 				setMaxPrice(searchParams.maxPrice);
 			}
-			console.log('preLoadData: ', paramsObject);
+
+			if (searchParams.q) {
+				updateSearch(searchParams.q);
+			}
 		}
 
 		/**
@@ -3004,26 +3005,26 @@ angular.module('Volusion.toolboxCommon')
 		 * @description
 		 *
 		 */
-		function preloadDataForCategory(routeParams) {
-			if (routeParams.facetIds) {
-				var ids = routeParams.facetIds.split(',');
-				angular.forEach(ids, function (id) {
-					// vn-facet-search directive gets facet ids as numbers from product json data
-					if (!isFacetSelected(parseInt(id))) {
-						addFacet(parseInt(id));
-					}
-				});
-			}
-
-			if (routeParams.minPrice) {
-				setMinPrice(routeParams.minPrice);
-			}
-
-			if (routeParams.maxPrice) {
-				console.log('setting max price to : ', routeParams.maxPrice);
-				setMaxPrice(routeParams.maxPrice);
-			}
-		}
+//		function preloadDataForCategory(routeParams) {
+//			if (routeParams.facetIds) {
+//				var ids = routeParams.facetIds.split(',');
+//				angular.forEach(ids, function (id) {
+//					// vn-facet-search directive gets facet ids as numbers from product json data
+//					if (!isFacetSelected(parseInt(id))) {
+//						addFacet(parseInt(id));
+//					}
+//				});
+//			}
+//
+//			if (routeParams.minPrice) {
+//				setMinPrice(routeParams.minPrice);
+//			}
+//
+//			if (routeParams.maxPrice) {
+//				console.log('setting max price to : ', routeParams.maxPrice);
+//				setMaxPrice(routeParams.maxPrice);
+//			}
+//		}
 
 		/**
 		 * @ngdoc function
@@ -3034,16 +3035,16 @@ angular.module('Volusion.toolboxCommon')
 		 * @description
 		 *
 		 */
-		function preloadDataForSearch(routeParams) {
-			if (routeParams.q) {
-				updateSearch(routeParams.q);
-			}
-		}
+//		function preloadDataForSearch(routeParams) {
+//			if (routeParams.q) {
+//				updateSearch(routeParams.q);
+//			}
+//		}
 
 		// Public API here
 		return {
 			preLoadData : preLoadData,
-			preloadDataForCategory: preloadDataForCategory,
+//			preloadDataForCategory: preloadDataForCategory,
 			addCategory           : addCategory,
 			addFacet              : addFacet,
 			getAccessoriesOf      : getAccessoriesOf,
@@ -3076,7 +3077,7 @@ angular.module('Volusion.toolboxCommon')
 			setPageSize           : setPageSize,
 			setSort               : setSort,
 			updateSearch          : updateSearch,
-			preloadDataForSearch  : preloadDataForSearch
+//			preloadDataForSearch  : preloadDataForSearch
 		};
 	});
 
