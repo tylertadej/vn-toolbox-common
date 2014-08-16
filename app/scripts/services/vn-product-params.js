@@ -500,6 +500,7 @@ angular.module('Volusion.toolboxCommon')
 		 *
 		 */
 		function preLoadData(searchParams) {
+			console.log('preloading params: ', searchParams);
 			if(searchParams.categoryId) {
 				addCategory(parseInt(searchParams.categoryId));
 			}
@@ -526,6 +527,7 @@ angular.module('Volusion.toolboxCommon')
 			if (searchParams.q) {
 				updateSearch(searchParams.q);
 			}
+			console.log('preloaded paramsObject: ', paramsObject);
 		}
 
 		// Public API here

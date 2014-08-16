@@ -93,6 +93,7 @@ angular.module('Volusion.toolboxCommon')
 			}
 
 			function updateActiveRoute(paramsObject) {
+				console.log('updating active Route: ', paramsObject);
 				if(!paramsObject) {
 					return;
 				}
@@ -122,6 +123,8 @@ angular.module('Volusion.toolboxCommon')
 				 @return promise
 				 */
 				var deferred = $q.defer();
+
+				console.log('resolving params for route: ', locations);
 
 				vnProductParams.preLoadData(locations);
 				deferred.resolve(true);

@@ -43,18 +43,52 @@ angular.module('Volusion.toolboxCommon')
 
 			'use strict';
 
+			function findOptionsAndOptionSKU(options) {
+				var optionsToSKU = [];
+
+				if (!options) {
+					return optionsToSKU;
+				}
+
+				for (var i = 0; i < options.length; i++) {
+					var option = options[i];
+
+					if (option.isRequired && option.derivesToSKU) {
+						optionsToSKU.push(option.label);
+					}
+				}
+
+				return optionsToSKU;
+			}
+
 			// Initialize availability
 			$scope.isItemAvailable = false;
 			$scope.itemToken = $scope.option.key + ':' + $scope.item.key;
 
-			for (var idx = 0; idx < $scope.product.optionSKUs.length; idx++) {
-				if ($scope.product.optionSKUs[idx].key !== $scope.itemToken &&
-					$scope.product.optionSKUs[idx].key.indexOf($scope.itemToken) > -1 &&
-					$scope.product.optionSKUs[idx].quantityInStock > 0) {
+			var optionsAnsSKU = findOptionsAndOptionSKU($scope.product.options).length;
 
-					$scope.isItemAvailable = true;
-					break;
+			if ($scope.product.optionSKUs.length > 0) {
+
+				for (var idx = 0; idx < $scope.product.optionSKUs.length; idx++) {
+
+					// find if there is more than one option to derive SKU
+					// if there are more than one option - do not check self options in  optionSKUs (i.e 'color:blue')
+					var takeOptionInConsideration = (optionsAnsSKU === 1 ||
+						$scope.product.optionSKUs[idx].key !== $scope.itemToken);
+
+					if (takeOptionInConsideration) {
+						if ($scope.product.optionSKUs[idx].key.indexOf($scope.itemToken) > -1 &&
+							$scope.product.optionSKUs[idx].quantityInStock > 0) {
+
+							$scope.isItemAvailable = true;
+							break;
+						}
+					}
 				}
+			} else {
+				$scope.isItemAvailable = ($scope.product.availability.allowBackOrders ||
+					$scope.product.availability.quantityInStock === null ||
+					$scope.product.availability.quantityInStock > 0);
 			}
 
 			// Process item selected
@@ -1663,6 +1697,7 @@ angular.module('Volusion.toolboxCommon')
 			}
 
 			function updateActiveRoute(paramsObject) {
+				console.log('updating active Route: ', paramsObject);
 				if(!paramsObject) {
 					return;
 				}
@@ -1692,6 +1727,8 @@ angular.module('Volusion.toolboxCommon')
 				 @return promise
 				 */
 				var deferred = $q.defer();
+
+				console.log('resolving params for route: ', locations);
 
 				vnProductParams.preLoadData(locations);
 				deferred.resolve(true);
@@ -2944,6 +2981,7 @@ angular.module('Volusion.toolboxCommon')
 		 *
 		 */
 		function preLoadData(searchParams) {
+			console.log('preloading params: ', searchParams);
 			if(searchParams.categoryId) {
 				addCategory(parseInt(searchParams.categoryId));
 			}
@@ -2970,6 +3008,7 @@ angular.module('Volusion.toolboxCommon')
 			if (searchParams.q) {
 				updateSearch(searchParams.q);
 			}
+			console.log('preloaded paramsObject: ', paramsObject);
 		}
 
 		// Public API here
