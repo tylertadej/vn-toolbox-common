@@ -284,6 +284,14 @@ angular.module('Volusion.toolboxCommon')
 			if (searchParams.q) {
 				updateSearch(searchParams.q);
 			}
+
+			if (searchParams.sort) {
+				setSort(searchParams.sort);
+			}
+
+			if (searchParams.page) {
+				setPage(searchParams.page);
+			}
 //			console.log('preloaded paramsObject: ', paramsObject);
 		}
 
@@ -524,6 +532,7 @@ angular.module('Volusion.toolboxCommon')
 		 * Setter for the paramsObject sort property.
 		 */
 		function setSort(sortString) {
+
 			paramsObject.sort = sortString;
 		}
 
@@ -537,7 +546,7 @@ angular.module('Volusion.toolboxCommon')
 		 * No matter what, it updates the paramsObject.search property.
 		 */
 		function updateSearch(searchString) {
-			paramsObject.search = searchString;
+			paramsObject.search = decodeURIComponent(searchString);
 		}
 
 		// Public API here

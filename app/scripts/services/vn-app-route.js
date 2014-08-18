@@ -60,6 +60,19 @@ angular.module('Volusion.toolboxCommon')
 				}, true  // Deep watch the params object.
 			);
 
+			function updateActiveRoute(paramsObject) {
+				if(!paramsObject) {
+					return;
+				}
+
+				updateCategory();
+				updateFacets();
+				updateMinPrice();
+				updateMaxPrice();
+				updatePage();
+				updateSort();
+			}
+
 			function updateCategory() {
 				if ('search' === getRouteStrategy() && '' !== vnProductParams.getCategoryString()) {
 					$location.search('categoryId', vnProductParams.getCategoryString());
@@ -76,14 +89,6 @@ angular.module('Volusion.toolboxCommon')
 				}
 			}
 
-			function updateMinPrice() {
-				if ('' !== vnProductParams.getMinPrice()) {
-					$location.search('minPrice', vnProductParams.getMinPrice());
-				} else {
-					$location.search('minPrice', null);
-				}
-			}
-
 			function updateMaxPrice() {
 				if ('' !== vnProductParams.getMaxPrice()) {
 					$location.search('maxPrice', vnProductParams.getMaxPrice());
@@ -92,15 +97,28 @@ angular.module('Volusion.toolboxCommon')
 				}
 			}
 
-			function updateActiveRoute(paramsObject) {
-				if(!paramsObject) {
-					return;
+			function updateMinPrice() {
+				if ('' !== vnProductParams.getMinPrice()) {
+					$location.search('minPrice', vnProductParams.getMinPrice());
+				} else {
+					$location.search('minPrice', null);
 				}
+			}
 
-				updateCategory();
-				updateFacets();
-				updateMinPrice();
-				updateMaxPrice();
+			function updatePage() {
+				if('' !== vnProductParams.getPage()) {
+					$location.search('page', vnProductParams.getPage());
+				} else {
+					$location.search('page', null);
+				}
+			}
+
+			function updateSort() {
+				if('' !== vnProductParams.getSort()) {
+					$location.search('sort', vnProductParams.getSort());
+				} else {
+					$location.search('sort', null);
+				}
 			}
 
 			function setRouteStrategy(strategy) {

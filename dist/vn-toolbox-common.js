@@ -1259,7 +1259,10 @@ angular.module('Volusion.toolboxCommon')
 				queryProducts: '&'
 			},
 			link       : function postLink(scope) {
-				vnProductParams.setSort('relevance'); // Default to this
+				// THe implication here is that nothing was parsed from the url so lets use this as default
+				if ('' === vnProductParams.getSort()) {
+					vnProductParams.setSort('relevance'); // Default to this
+				}
 
 				scope.sortBy = function (strategy) {
 					vnProductParams.setSort(strategy);
@@ -1664,6 +1667,19 @@ angular.module('Volusion.toolboxCommon')
 				}, true  // Deep watch the params object.
 			);
 
+			function updateActiveRoute(paramsObject) {
+				if(!paramsObject) {
+					return;
+				}
+
+				updateCategory();
+				updateFacets();
+				updateMinPrice();
+				updateMaxPrice();
+				updatePage();
+				updateSort();
+			}
+
 			function updateCategory() {
 				if ('search' === getRouteStrategy() && '' !== vnProductParams.getCategoryString()) {
 					$location.search('categoryId', vnProductParams.getCategoryString());
@@ -1680,14 +1696,6 @@ angular.module('Volusion.toolboxCommon')
 				}
 			}
 
-			function updateMinPrice() {
-				if ('' !== vnProductParams.getMinPrice()) {
-					$location.search('minPrice', vnProductParams.getMinPrice());
-				} else {
-					$location.search('minPrice', null);
-				}
-			}
-
 			function updateMaxPrice() {
 				if ('' !== vnProductParams.getMaxPrice()) {
 					$location.search('maxPrice', vnProductParams.getMaxPrice());
@@ -1696,15 +1704,28 @@ angular.module('Volusion.toolboxCommon')
 				}
 			}
 
-			function updateActiveRoute(paramsObject) {
-				if(!paramsObject) {
-					return;
+			function updateMinPrice() {
+				if ('' !== vnProductParams.getMinPrice()) {
+					$location.search('minPrice', vnProductParams.getMinPrice());
+				} else {
+					$location.search('minPrice', null);
 				}
+			}
 
-				updateCategory();
-				updateFacets();
-				updateMinPrice();
-				updateMaxPrice();
+			function updatePage() {
+				if('' !== vnProductParams.getPage()) {
+					$location.search('page', vnProductParams.getPage());
+				} else {
+					$location.search('page', null);
+				}
+			}
+
+			function updateSort() {
+				if('' !== vnProductParams.getSort()) {
+					$location.search('sort', vnProductParams.getSort());
+				} else {
+					$location.search('sort', null);
+				}
 			}
 
 			function setRouteStrategy(strategy) {
@@ -2764,6 +2785,14 @@ angular.module('Volusion.toolboxCommon')
 			if (searchParams.q) {
 				updateSearch(searchParams.q);
 			}
+
+			if (searchParams.sort) {
+				setSort(searchParams.sort);
+			}
+
+			if (searchParams.page) {
+				setPage(searchParams.page);
+			}
 //			console.log('preloaded paramsObject: ', paramsObject);
 		}
 
@@ -3004,6 +3033,7 @@ angular.module('Volusion.toolboxCommon')
 		 * Setter for the paramsObject sort property.
 		 */
 		function setSort(sortString) {
+
 			paramsObject.sort = sortString;
 		}
 
@@ -3017,7 +3047,7 @@ angular.module('Volusion.toolboxCommon')
 		 * No matter what, it updates the paramsObject.search property.
 		 */
 		function updateSearch(searchString) {
-			paramsObject.search = searchString;
+			paramsObject.search = decodeURIComponent(searchString);
 		}
 
 		// Public API here
