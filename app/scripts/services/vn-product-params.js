@@ -250,6 +250,10 @@ angular.module('Volusion.toolboxCommon')
 			paramsObject.search = searchString;
 		}
 
+		function getSearchText() {
+			return paramsObject.search;
+		}
+
 		/**
 		 * @ngdoc function
 		 * @name removeSearch
@@ -488,8 +492,6 @@ angular.module('Volusion.toolboxCommon')
 			return paramsObject.pageSize;
 		}
 
-
-
 		/**
 		 * @ngdoc function
 		 * @name preloadData
@@ -500,8 +502,8 @@ angular.module('Volusion.toolboxCommon')
 		 *
 		 */
 		function preLoadData(searchParams) {
-			console.log('preloading params: ', searchParams);
-			if(searchParams.categoryId) {
+//			console.log('preloading params: ', searchParams);
+			if (searchParams.categoryId) {
 				addCategory(parseInt(searchParams.categoryId));
 			}
 
@@ -527,44 +529,45 @@ angular.module('Volusion.toolboxCommon')
 			if (searchParams.q) {
 				updateSearch(searchParams.q);
 			}
-			console.log('preloaded paramsObject: ', paramsObject);
+//			console.log('preloaded paramsObject: ', paramsObject);
 		}
 
 		// Public API here
 		return {
-			preLoadData : preLoadData,
-			addCategory           : addCategory,
-			addFacet              : addFacet,
-			getAccessoriesOf      : getAccessoriesOf,
-			getCategoryString     : getCategoryString,
-			getFacetString        : getFacetString,
-			getMinPrice           : getMinPrice,
-			getMaxPrice           : getMaxPrice,
-			getPage               : getPage,
-			getPageSize           : getPageSize,
-			getParamsObject       : getParamsObject,
-			getSort               : getSort,
-			isFacetSelected       : isFacetSelected,
-			nextPage              : nextPage,
-			previousPage          : previousPage,
-			removeSlug            : removeSlug,
-			removeSearch          : removeSearch,
-			removeMinPrice        : removeMinPrice,
-			removeMaxPrice        : removeMaxPrice,
-			removeAccessoriesOf   : removeAccessoriesOf,
-			removeCategory        : removeCategory,
-			removeFacet           : removeFacet,
-			removeSort            : removeSort,
-			resetCategories       : resetCategories, // Todo: confimrm this is used
-			resetFacets           : resetFacets,     // Todo: confimrm this is used
-			resetParams           : resetParamsObject,
-			setAccessoriesOf      : setAccessoriesOf,
-			setMaxPrice           : setMaxPrice,
-			setMinPrice           : setMinPrice,
-			setPage               : setPage,
-			setPageSize           : setPageSize,
-			setSort               : setSort,
-			updateSearch          : updateSearch
+			getSearchText      : getSearchText,
+			preLoadData        : preLoadData,
+			addCategory        : addCategory,
+			addFacet           : addFacet,
+			getAccessoriesOf   : getAccessoriesOf,
+			getCategoryString  : getCategoryString,
+			getFacetString     : getFacetString,
+			getMinPrice        : getMinPrice,
+			getMaxPrice        : getMaxPrice,
+			getPage            : getPage,
+			getPageSize        : getPageSize,
+			getParamsObject    : getParamsObject,
+			getSort            : getSort,
+			isFacetSelected    : isFacetSelected,
+			nextPage           : nextPage,
+			previousPage       : previousPage,
+			removeSlug         : removeSlug,
+			removeSearch       : removeSearch,
+			removeMinPrice     : removeMinPrice,
+			removeMaxPrice     : removeMaxPrice,
+			removeAccessoriesOf: removeAccessoriesOf,
+			removeCategory     : removeCategory,
+			removeFacet        : removeFacet,
+			removeSort         : removeSort,
+			resetCategories    : resetCategories, // Todo: confimrm this is used
+			resetFacets        : resetFacets,     // Todo: confimrm this is used
+			resetParams        : resetParamsObject,
+			setAccessoriesOf   : setAccessoriesOf,
+			setMaxPrice        : setMaxPrice,
+			setMinPrice        : setMinPrice,
+			setPage            : setPage,
+			setPageSize        : setPageSize,
+			setSort            : setSort,
+			updateSearch       : updateSearch
 		};
 	});
 

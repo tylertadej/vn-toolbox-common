@@ -93,7 +93,6 @@ angular.module('Volusion.toolboxCommon')
 			}
 
 			function updateActiveRoute(paramsObject) {
-				console.log('updating active Route: ', paramsObject);
 				if(!paramsObject) {
 					return;
 				}
