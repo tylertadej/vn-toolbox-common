@@ -103,6 +103,7 @@ angular.module('Volusion.toolboxCommon')
 				updateMaxPrice();
 				updatePage();
 				updateSort();
+				updateSearch();
 			}
 
 			/**
@@ -187,6 +188,16 @@ angular.module('Volusion.toolboxCommon')
 					$location.search('page', vnProductParams.getPage());
 				} else {
 					$location.search('page', null);
+				}
+			}
+
+			function updateSearch() {
+				if('/search' !== $location.path()) {
+					return;
+				} else if ('/search' === $location.path() && '' === vnProductParams.getSearchText()) {
+					$location.search('q', '');
+				} else {
+					$location.search('q', vnProductParams.getSearchText());
 				}
 			}
 
