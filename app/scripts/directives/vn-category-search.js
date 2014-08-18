@@ -88,7 +88,6 @@ angular.module('Volusion.toolboxCommon')
 					 * @return {String} newRoute reprensets the current parameters used to get products from the api.
 					 * This function builds a string that can be used to update category links so that when navigating
 					 * betweeen categories the current facets, categoryIds and min/max prices are reflected.
-					 * @methodOf Volusion.toolboxCommon.vnCategorySearch
 					 *
 					 * @description
 					 *

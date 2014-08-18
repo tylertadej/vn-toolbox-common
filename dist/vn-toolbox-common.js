@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.19 (2014-08-15) */
+/*! vn-toolbox-common - ver.0.0.20 (2014-08-18) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'Volusion.toolboxCommon.templates'])
@@ -43,18 +43,52 @@ angular.module('Volusion.toolboxCommon')
 
 			'use strict';
 
+			function findOptionsAndOptionSKU(options) {
+				var optionsToSKU = [];
+
+				if (!options) {
+					return optionsToSKU;
+				}
+
+				for (var i = 0; i < options.length; i++) {
+					var option = options[i];
+
+					if (option.isRequired && option.derivesToSKU) {
+						optionsToSKU.push(option.label);
+					}
+				}
+
+				return optionsToSKU;
+			}
+
 			// Initialize availability
 			$scope.isItemAvailable = false;
 			$scope.itemToken = $scope.option.key + ':' + $scope.item.key;
 
-			for (var idx = 0; idx < $scope.product.optionSKUs.length; idx++) {
-				if ($scope.product.optionSKUs[idx].key !== $scope.itemToken &&
-					$scope.product.optionSKUs[idx].key.indexOf($scope.itemToken) > -1 &&
-					$scope.product.optionSKUs[idx].quantityInStock > 0) {
+			var optionsAnsSKU = findOptionsAndOptionSKU($scope.product.options).length;
 
-					$scope.isItemAvailable = true;
-					break;
+			if ($scope.product.optionSKUs.length > 0) {
+
+				for (var idx = 0; idx < $scope.product.optionSKUs.length; idx++) {
+
+					// find if there is more than one option to derive SKU
+					// if there are more than one option - do not check self options in  optionSKUs (i.e 'color:blue')
+					var takeOptionInConsideration = (optionsAnsSKU === 1 ||
+						$scope.product.optionSKUs[idx].key !== $scope.itemToken);
+
+					if (takeOptionInConsideration) {
+						if ($scope.product.optionSKUs[idx].key.indexOf($scope.itemToken) > -1 &&
+							$scope.product.optionSKUs[idx].quantityInStock > 0) {
+
+							$scope.isItemAvailable = true;
+							break;
+						}
+					}
 				}
+			} else {
+				$scope.isItemAvailable = ($scope.product.availability.allowBackOrders ||
+					$scope.product.availability.quantityInStock === null ||
+					$scope.product.availability.quantityInStock > 0);
 			}
 
 			// Process item selected
@@ -1225,7 +1259,10 @@ angular.module('Volusion.toolboxCommon')
 				queryProducts: '&'
 			},
 			link       : function postLink(scope) {
-				vnProductParams.setSort('relevance'); // Default to this
+				// THe implication here is that nothing was parsed from the url so lets use this as default
+				if ('' === vnProductParams.getSort()) {
+					vnProductParams.setSort('relevance'); // Default to this
+				}
 
 				scope.sortBy = function (strategy) {
 					vnProductParams.setSort(strategy);
@@ -1617,46 +1654,77 @@ angular.module('Volusion.toolboxCommon')
  */
 
 angular.module('Volusion.toolboxCommon')
-	.factory('vnAppRoute', ['$rootScope', '$route', '$location', '$routeParams', 'vnProductParams',
-		function ($rootScope, $route, $location, $routeParams, vnProductParams) {
+	.factory('vnAppRoute', ['$q', '$rootScope', '$route', '$location', '$routeParams', 'vnProductParams',
+		function ($q, $rootScope, $route, $location, $routeParams, vnProductParams) {
 
-			var activeRoute = '',
-				currentStrategy = '';
+			var currentStrategy = '';
 
 			$rootScope.$watch(
 				function () {
 					return vnProductParams.getParamsObject();
-				}, function watchForParamChange() {
-					updateActiveRoute();
+				}, function () {
+					updateActiveRoute(vnProductParams.getParamsObject());
 				}, true  // Deep watch the params object.
 			);
 
-			function updateActiveRoute() {
+			function updateActiveRoute(paramsObject) {
+				if(!paramsObject) {
+					return;
+				}
 
-				if( 'search' === getRouteStrategy() && '' !== vnProductParams.getCategoryString() ) {
+				updateCategory();
+				updateFacets();
+				updateMinPrice();
+				updateMaxPrice();
+				updatePage();
+				updateSort();
+			}
+
+			function updateCategory() {
+				if ('search' === getRouteStrategy() && '' !== vnProductParams.getCategoryString()) {
 					$location.search('categoryId', vnProductParams.getCategoryString());
 				} else {
 					$location.search('categoryId', null);
 				}
+			}
 
+			function updateFacets() {
 				if ('' !== vnProductParams.getFacetString()) {
 					$location.search('facetIds', vnProductParams.getFacetString());
 				} else {
 					$location.search('facetIds', null);
 				}
+			}
 
-				//handle min price
+			function updateMaxPrice() {
+				if ('' !== vnProductParams.getMaxPrice()) {
+					$location.search('maxPrice', vnProductParams.getMaxPrice());
+				} else {
+					$location.search('maxPrice', null);
+				}
+			}
+
+			function updateMinPrice() {
 				if ('' !== vnProductParams.getMinPrice()) {
 					$location.search('minPrice', vnProductParams.getMinPrice());
 				} else {
 					$location.search('minPrice', null);
 				}
+			}
 
-				//handle max price
-				if ('' !== vnProductParams.getMaxPrice()) {
-					$location.search('maxPrice', vnProductParams.getMaxPrice());
+			function updatePage() {
+				if('' !== vnProductParams.getPage()) {
+					$location.search('page', vnProductParams.getPage());
 				} else {
-					$location.search('maxPrice', null);
+					$location.search('page', null);
+				}
+			}
+
+			function updateSort() {
+				if('' !== vnProductParams.getSort()) {
+					$location.search('sort', vnProductParams.getSort());
+				} else {
+					$location.search('sort', null);
 				}
 			}
 
@@ -1668,14 +1736,31 @@ angular.module('Volusion.toolboxCommon')
 				return currentStrategy;
 			}
 
-			function getActiveRoute() {
-				return activeRoute;
+			// Resolve direct navigation searchParams.
+			function resolveParams(locations) {
+				/**
+				 @function
+				 @name resolveParameters
+				 @description set the vnParmeterObject up with current URL information if its there.
+				 @param {Object} location
+				 @param {Object} params
+				 @return promise
+				 */
+				var deferred = $q.defer();
+
+				console.log('resolving params for route: ', locations);
+
+				vnProductParams.preLoadData(locations);
+				deferred.resolve(true);
+
+				return deferred.promise;
+
 			}
 
 			return {
-				getActiveRoute  : getActiveRoute,
 				getRouteStrategy: getRouteStrategy,
-				setRouteStrategy: setRouteStrategy
+				setRouteStrategy: setRouteStrategy,
+				resolveParams   : resolveParams
 			};
 		}]);
 
@@ -2480,218 +2565,6 @@ angular.module('Volusion.toolboxCommon')
 
 		/**
 		 * @ngdoc function
-		 * @name nextPage
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * Sets the paramsObject page property to the next page.
-		 */
-		function nextPage() {
-			paramsObject.page++;
-		}
-
-		/**
-		 * @ngdoc function
-		 * @name previousPage
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * Sets the paramsObject page property to the previous page.
-		 */
-		function previousPage() {
-			paramsObject.page--;
-		}
-
-		/**
-		 * @ngdoc function
-		 * @name setSort
-		 * @param {String} sortString is a string that can be passed to api to modify the sorting of the results
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * Setter for the paramsObject sort property.
-		 */
-		function setSort(sortString) {
-			paramsObject.sort = sortString;
-		}
-
-		/**
-		 * @ngdoc function
-		 * @name getSort
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * Getter for the paramsObject sort property.
-		 */
-		function getSort() {
-			return paramsObject.sort;
-		}
-
-		/**
-		 * @ngdoc function
-		 * @name removeSort
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * reset the paramsObject.sort property.
-		 */
-		function removeSort() {
-			paramsObject.sort = '';
-		}
-
-		/**
-		 * @ngdoc function
-		 * @name setAccessories
-		 * @param {String} productCode is a string that will cause the api to return accessories of the product code.
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * Setter for the paramsObject accessoriesOf property.
-		 */
-		function setAccessoriesOf(productCode) {
-			paramsObject.accessoriesOf = productCode;
-		}
-
-		/**
-		 * @ngdoc function
-		 * @name getAccessoriesOf
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * Getter for the paramsObject accessoriesOf property.
-		 */
-		function getAccessoriesOf() {
-			return paramsObject.accessoriesOf;
-		}
-
-		/**
-		 * @ngdoc function
-		 * @name removeAccessoriesOf
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * reset the paramsObject.accessoriesOf property.
-		 */
-		function removeAccessoriesOf() {
-			paramsObject.accessoriesOf = '';
-		}
-
-		/**
-		 * Price Management
-		 */
-		/**
-		 * @ngdoc function
-		 * @name setMaxPrice
-		 * @param {String} numString is a string representing the max prioce to query product by.
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * Setter for the paramsObject.maxPrice  property.
-		 */
-		function setMaxPrice(numString) {
-			paramsObject.maxPrice = numString;
-		}
-
-		/**
-		 * @ngdoc function
-		 * @name getMaxPrice
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * Getter for the paramsObject.maxPrice property.
-		 */
-		function getMaxPrice() {
-			return paramsObject.maxPrice;
-		}
-
-		/**
-		 * @ngdoc function
-		 * @name removeMaxPrice
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * reset the paramsObject.maxPrice property.
-		 */
-		function removeMaxPrice() {
-			paramsObject.maxPrice = '';
-		}
-
-		/**
-		 * @ngdoc function
-		 * @name setMinPrice
-		 * @param {String} numString is a string representing the min price to query product by.
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * Setter for the paramsObject.minPrice  property.
-		 */
-		function setMinPrice(numString) {
-			paramsObject.minPrice = numString;
-		}
-
-		/**
-		 * @ngdoc function
-		 * @name getMinPrice
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * Getter for the paramsObject.minPrice property.
-		 */
-		function getMinPrice() {
-			return paramsObject.minPrice;
-		}
-
-		/**
-		 * @ngdoc function
-		 * @name removeMinPrice
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * Reset the paramsObject.minPrice property to ''.
-		 */
-		function removeMinPrice() {
-			paramsObject.minPrice = '';
-		}
-
-		/**
-		 * @ngdoc function
-		 * @name updateSearch
-		 * @param {String} searchString is a string representing a string types by customer to search on products.
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * No matter what, it updates the paramsObject.search property.
-		 */
-		function updateSearch(searchString) {
-			paramsObject.search = searchString;
-		}
-
-		/**
-		 * @ngdoc function
-		 * @name removeSearch
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * Reset the paramsObject.search property to ''.
-		 */
-		function removeSearch() {
-			paramsObject.search = '';
-		}
-
-		/**
-		 * @ngdoc function
-		 * @name removeSlug
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * Reset the paramsObject.slug property to ''.
-		 */
-		function removeSlug() {
-			paramsObject.slug = '';
-		}
-
-		/**
-		 * @ngdoc function
 		 * @name addCategory
 		 * @methodOf Volusion.toolboxCommon.vnProductParams
 		 *
@@ -2709,6 +2582,37 @@ angular.module('Volusion.toolboxCommon')
 
 		/**
 		 * @ngdoc function
+		 * @name addFacet
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Add the given id to the facets array and update the paramsObject.facets value.
+		 *
+		 * ## Dev note:
+		 *
+		 * - this doesn't have a guard for adding duplicates. as I rely on the way I call it in the directive to check
+		 * if isFacetSelected
+		 */
+		function addFacet(id) {
+			facets.push(id);
+			paramsObject.facets = getFacetString();
+		}
+
+
+		/**
+		 * @ngdoc function
+		 * @name getAccessoriesOf
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Getter for the paramsObject accessoriesOf property.
+		 */
+		function getAccessoriesOf() {
+			return paramsObject.accessoriesOf;
+		}
+
+		/**
+		 * @ngdoc function
 		 * @name getCategoryString
 		 * @methodOf Volusion.toolboxCommon.vnProductParams
 		 *
@@ -2717,6 +2621,251 @@ angular.module('Volusion.toolboxCommon')
 		 */
 		function getCategoryString() {
 			return categoryIds.join(',');
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name getFacetString
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Return the items in the facets array as a  string joined with commas.
+		 * if isFacetSelected
+		 */
+		function getFacetString() {
+			// stringify the facets array and return it.
+			return facets.join(',');
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name getMaxPrice
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Getter for the paramsObject.maxPrice property.
+		 */
+		function getMaxPrice() {
+			return paramsObject.maxPrice;
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name getMinPrice
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Getter for the paramsObject.minPrice property.
+		 */
+		function getMinPrice() {
+			return paramsObject.minPrice;
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name getPage
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Getter for the paramsObject page property.
+		 */
+		function getPage() {
+			return paramsObject.page;
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name getPageSize
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Getter for the paramsObject pageSize property.
+		 */
+		function getPageSize() {
+			return paramsObject.pageSize;
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name getParamsObject
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Return the paramsObject in its current state.
+		 */
+		function getParamsObject() {
+			return paramsObject;
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name getSearchText
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 * @return {String} productParams.search property that holds the current value of the search string.
+		 *
+		 * @description
+		 * Return the paramsObject.search value in its current state. First implemented to watch in the search
+		 * controller of the method theme.
+		 */
+		function getSearchText() {
+			return paramsObject.search;
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name getSort
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Getter for the paramsObject sort property.
+		 */
+		function getSort() {
+			return paramsObject.sort;
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name isFacetSelected
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Return true if the id is already in the facets array.
+		 * Return false if the id is not already in the facets array.
+		 */
+		function isFacetSelected(id) {
+			return (facets.indexOf(id) > -1);
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name nextPage
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Sets the paramsObject page property to the next page.
+		 */
+		function nextPage() {
+			paramsObject.page++;
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name preloadData
+		 * @param {Object} routeParams as the $routeParams service provided by angular.
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 *
+		 */
+		function preLoadData(searchParams) {
+//			console.log('preloading params: ', searchParams);
+			if (searchParams.categoryId) {
+				addCategory(parseInt(searchParams.categoryId));
+			}
+
+			if (searchParams.facetIds) {
+				var ids = searchParams.facetIds.split(',');
+				angular.forEach(ids, function (id) {
+					// vn-facet-search directive gets facet ids as numbers from product json data
+					if (!isFacetSelected(parseInt(id))) {
+						addFacet(parseInt(id));
+					}
+				});
+			}
+
+			if (searchParams.minPrice) {
+				setMinPrice(searchParams.minPrice);
+			}
+
+			if (searchParams.maxPrice) {
+				console.log('setting max price to : ', searchParams.maxPrice);
+				setMaxPrice(searchParams.maxPrice);
+			}
+
+			if (searchParams.q) {
+				updateSearch(searchParams.q);
+			}
+
+			if (searchParams.sort) {
+				setSort(searchParams.sort);
+			}
+
+			if (searchParams.page) {
+				setPage(searchParams.page);
+			}
+//			console.log('preloaded paramsObject: ', paramsObject);
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name previousPage
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Sets the paramsObject page property to the previous page.
+		 */
+		function previousPage() {
+			paramsObject.page--;
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name removeSlug
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Reset the paramsObject.slug property to ''.
+		 */
+		function removeSlug() {
+			paramsObject.slug = '';
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name removeSearch
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Reset the paramsObject.search property to ''.
+		 */
+		function removeSearch() {
+			paramsObject.search = '';
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name removeMinPrice
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * Reset the paramsObject.minPrice property to ''.
+		 */
+		function removeMinPrice() {
+			paramsObject.minPrice = '';
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name removeMaxPrice
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * reset the paramsObject.maxPrice property.
+		 */
+		function removeMaxPrice() {
+			paramsObject.maxPrice = '';
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name removeAccessoriesOf
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * reset the paramsObject.accessoriesOf property.
+		 */
+		function removeAccessoriesOf() {
+			paramsObject.accessoriesOf = '';
 		}
 
 		/**
@@ -2735,14 +2884,28 @@ angular.module('Volusion.toolboxCommon')
 
 		/**
 		 * @ngdoc function
-		 * @name getParamsObject
+		 * @name removeFacet
 		 * @methodOf Volusion.toolboxCommon.vnProductParams
 		 *
 		 * @description
-		 * Return the paramsObject in its current state.
+		 * Given an id, remove it from the facets array and update the paramsObject.facets value.
 		 */
-		function getParamsObject() {
-			return paramsObject;
+		function removeFacet(id) {
+			var index = facets.indexOf(id);
+			facets.splice(index, 1);
+			paramsObject.facets = getFacetString();
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name removeSort
+		 * @methodOf Volusion.toolboxCommon.vnProductParams
+		 *
+		 * @description
+		 * reset the paramsObject.sort property.
+		 */
+		function removeSort() {
+			paramsObject.sort = '';
 		}
 
 		/**
@@ -2797,61 +2960,41 @@ angular.module('Volusion.toolboxCommon')
 
 		/**
 		 * @ngdoc function
-		 * @name addFacet
+		 * @name setAccessories
+		 * @param {String} productCode is a string that will cause the api to return accessories of the product code.
 		 * @methodOf Volusion.toolboxCommon.vnProductParams
 		 *
 		 * @description
-		 * Add the given id to the facets array and update the paramsObject.facets value.
-		 *
-		 * ## Dev note:
-		 *
-		 * - this doesn't have a guard for adding duplicates. as I rely on the way I call it in the directive to check
-		 * if isFacetSelected
+		 * Setter for the paramsObject accessoriesOf property.
 		 */
-		function addFacet(id) {
-			facets.push(id);
-			paramsObject.facets = getFacetString();
+		function setAccessoriesOf(productCode) {
+			paramsObject.accessoriesOf = productCode;
 		}
 
 		/**
 		 * @ngdoc function
-		 * @name getFacetString
+		 * @name setMaxPrice
+		 * @param {String} numString is a string representing the max prioce to query product by.
 		 * @methodOf Volusion.toolboxCommon.vnProductParams
 		 *
 		 * @description
-		 * Return the items in the facets array as a  string joined with commas.
-		 * if isFacetSelected
+		 * Setter for the paramsObject.maxPrice  property.
 		 */
-		function getFacetString() {
-			// stringify the facets array and return it.
-			return facets.join(',');
+		function setMaxPrice(numString) {
+			paramsObject.maxPrice = numString;
 		}
 
 		/**
 		 * @ngdoc function
-		 * @name isFacetSelected
+		 * @name setMinPrice
+		 * @param {String} numString is a string representing the min price to query product by.
 		 * @methodOf Volusion.toolboxCommon.vnProductParams
 		 *
 		 * @description
-		 * Return true if the id is already in the facets array.
-		 * Return false if the id is not already in the facets array.
+		 * Setter for the paramsObject.minPrice  property.
 		 */
-		function isFacetSelected(id) {
-			return (facets.indexOf(id) > -1);
-		}
-
-		/**
-		 * @ngdoc function
-		 * @name removeFacet
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * Given an id, remove it from the facets array and update the paramsObject.facets value.
-		 */
-		function removeFacet(id) {
-			var index = facets.indexOf(id);
-			facets.splice(index, 1);
-			paramsObject.facets = getFacetString();
+		function setMinPrice(numString) {
+			paramsObject.minPrice = numString;
 		}
 
 		/**
@@ -2869,18 +3012,6 @@ angular.module('Volusion.toolboxCommon')
 
 		/**
 		 * @ngdoc function
-		 * @name getPage
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 * Getter for the paramsObject page property.
-		 */
-		function getPage() {
-			return paramsObject.page;
-		}
-
-		/**
-		 * @ngdoc function
 		 * @name setPageSize
 		 * @param {String} setPageSize is a string that can be passed to api to modify the page to ask backend for
 		 * @methodOf Volusion.toolboxCommon.vnProductParams
@@ -2894,98 +3025,67 @@ angular.module('Volusion.toolboxCommon')
 
 		/**
 		 * @ngdoc function
-		 * @name getPageSize
+		 * @name setSort
+		 * @param {String} sortString is a string that can be passed to api to modify the sorting of the results
 		 * @methodOf Volusion.toolboxCommon.vnProductParams
 		 *
 		 * @description
-		 * Getter for the paramsObject pageSize property.
+		 * Setter for the paramsObject sort property.
 		 */
-		function getPageSize() {
-			return paramsObject.pageSize;
-		}
+		function setSort(sortString) {
 
-
-		/**
-		 * @ngdoc function
-		 * @name preloadDataForCategory
-		 * @param {Object} routeParams as the $routeParams service provided by angular.
-		 * @methodOf Volusion.toolboxCommon.vnProductParams
-		 *
-		 * @description
-		 *
-		 */
-		function preloadDataForCategory(routeParams) {
-			if (routeParams.facetIds) {
-				var ids = routeParams.facetIds.split(',');
-				angular.forEach(ids, function (id) {
-					// vn-facet-search directive gets facet ids as numbers from product json data
-					if (!isFacetSelected(parseInt(id))) {
-						addFacet(parseInt(id));
-					}
-				});
-			}
-
-			if (routeParams.minPrice) {
-				setMinPrice(routeParams.minPrice);
-			}
-
-			if (routeParams.maxPrice) {
-				console.log('setting max price to : ', routeParams.maxPrice);
-				setMaxPrice(routeParams.maxPrice);
-			}
+			paramsObject.sort = sortString;
 		}
 
 		/**
 		 * @ngdoc function
-		 * @name preloadDataForSearch
-		 * @param {Object} routeParams as the $routeParams service provided by angular.
+		 * @name updateSearch
+		 * @param {String} searchString is a string representing a string types by customer to search on products.
 		 * @methodOf Volusion.toolboxCommon.vnProductParams
 		 *
 		 * @description
-		 *
+		 * No matter what, it updates the paramsObject.search property.
 		 */
-		function preloadDataForSearch(routeParams) {
-			if (routeParams.q) {
-				updateSearch(routeParams.q);
-			}
+		function updateSearch(searchString) {
+			paramsObject.search = decodeURIComponent(searchString);
 		}
 
 		// Public API here
 		return {
-			preloadDataForCategory: preloadDataForCategory,
-			addCategory           : addCategory,
-			addFacet              : addFacet,
-			getAccessoriesOf      : getAccessoriesOf,
-			getCategoryString     : getCategoryString,
-			getFacetString        : getFacetString,
-			getMinPrice           : getMinPrice,
-			getMaxPrice           : getMaxPrice,
-			getPage               : getPage,
-			getPageSize           : getPageSize,
-			getParamsObject       : getParamsObject,
-			getSort               : getSort,
-			isFacetSelected       : isFacetSelected,
-			nextPage              : nextPage,
-			previousPage          : previousPage,
-			removeSlug            : removeSlug,
-			removeSearch          : removeSearch,
-			removeMinPrice        : removeMinPrice,
-			removeMaxPrice        : removeMaxPrice,
-			removeAccessoriesOf   : removeAccessoriesOf,
-			removeCategory        : removeCategory,
-			removeFacet           : removeFacet,
-			removeSort            : removeSort,
-			resetCategories       : resetCategories, // Todo: confimrm this is used
-			resetFacets           : resetFacets,     // Todo: confimrm this is used
-			resetParams           : resetParamsObject,
-			setAccessoriesOf      : setAccessoriesOf,
-			setMaxPrice           : setMaxPrice,
-			setMinPrice           : setMinPrice,
-			setPage               : setPage,
-			setPageSize           : setPageSize,
-			setSort               : setSort,
-			updateSearch          : updateSearch,
-			preloadDataForSearch  : preloadDataForSearch
+			addCategory        : addCategory,
+			addFacet           : addFacet,
+			getAccessoriesOf   : getAccessoriesOf,
+			getCategoryString  : getCategoryString,
+			getFacetString     : getFacetString,
+			getMaxPrice        : getMaxPrice,
+			getMinPrice        : getMinPrice,
+			getPage            : getPage,
+			getPageSize        : getPageSize,
+			getParamsObject    : getParamsObject,
+			getSearchText      : getSearchText,
+			getSort            : getSort,
+			isFacetSelected    : isFacetSelected,
+			nextPage           : nextPage,
+			preLoadData        : preLoadData,
+			previousPage       : previousPage,
+			removeSlug         : removeSlug,
+			removeSearch       : removeSearch,
+			removeMinPrice     : removeMinPrice,
+			removeMaxPrice     : removeMaxPrice,
+			removeAccessoriesOf: removeAccessoriesOf,
+			removeCategory     : removeCategory,
+			removeFacet        : removeFacet,
+			removeSort         : removeSort,
+			resetCategories    : resetCategories, // Todo: confimrm this is used
+			resetFacets        : resetFacets,     // Todo: confimrm this is used
+			resetParams        : resetParamsObject,
+			setAccessoriesOf   : setAccessoriesOf,
+			setMaxPrice        : setMaxPrice,
+			setMinPrice        : setMinPrice,
+			setPage            : setPage,
+			setPageSize        : setPageSize,
+			setSort            : setSort,
+			updateSearch       : updateSearch
 		};
 	});
 

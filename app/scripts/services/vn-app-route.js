@@ -47,42 +47,108 @@
  */
 
 angular.module('Volusion.toolboxCommon')
-	.factory('vnAppRoute', ['$rootScope', '$route', '$location', '$routeParams', 'vnProductParams',
-		function ($rootScope, $route, $location, $routeParams, vnProductParams) {
+	.factory('vnAppRoute', ['$q', '$rootScope', '$route', '$location', '$routeParams', 'vnProductParams',
+		function ($q, $rootScope, $route, $location, $routeParams, vnProductParams) {
 
-			var activeRoute = '',
-				currentStrategy = '';
+			var currentStrategy = '';
 
+
+			/**
+			 * @ngdoc function
+			 * @name watchParams
+			 * @methodOf Volusion.toolboxCommon.vnAppRoute
+			 *
+			 * @description
+			 * NOTE: In code this is unnamed but it uses the $rootScope.$watch(fn1, fn2) form.
+			 * Sets up a deep watch on the vnProductParams object. When changes are detected it updates the app route.
+			 */
 			$rootScope.$watch(
 				function () {
 					return vnProductParams.getParamsObject();
-				}, function watchForParamChange() {
-					updateActiveRoute();
+				}, function () {
+					updateActiveRoute(vnProductParams.getParamsObject());
 				}, true  // Deep watch the params object.
 			);
 
-			function updateActiveRoute() {
 
-				if( 'search' === getRouteStrategy() && '' !== vnProductParams.getCategoryString() ) {
+			/**
+			 * @ngdoc function
+			 * @name updateActiveRoute
+			 * @param {Object} paramsObject should be returned from the vnProductParams.getParamsObject() and passed in
+			 * here.
+			 *
+			 * @methodOf Volusion.toolboxCommon.vnAppRoute
+			 *
+			 * @description
+			 * Runs the functions needed to update an apps url with consumable info. This is called from the theme:
+			 * - when category or search routes are resolved (shared link / direct navigation
+			 * - when intra category navigation is detected as customer changes the category used to narrow products.
+			 *
+			 * We currently update routes for the following:
+			 * - categoryId
+			 * - facetIds
+			 * - minPrice
+			 * - maxPrice
+			 * - page (as in the current page retrieved from api)
+			 * - sort (strategy for sorting)
+			 */
+			function updateActiveRoute(paramsObject) {
+				if(!paramsObject) {
+					return;
+				}
+
+				updateCategory();
+				updateFacets();
+				updateMinPrice();
+				updateMaxPrice();
+				updatePage();
+				updateSort();
+			}
+
+			/**
+			 * @ngdoc function
+			 * @name updateCategory
+			 * @methodOf Volusion.toolboxCommon.vnAppRoute
+			 *
+			 * @description
+			 * Check the product params for a category and update the route is there is one. If there is not one,
+			 * remove the **categoryId** query string from the route.
+			 */
+			function updateCategory() {
+				if ('search' === getRouteStrategy() && '' !== vnProductParams.getCategoryString()) {
 					$location.search('categoryId', vnProductParams.getCategoryString());
 				} else {
 					$location.search('categoryId', null);
 				}
+			}
 
+			/**
+			 * @ngdoc function
+			 * @name updateFacets
+			 * @methodOf Volusion.toolboxCommon.vnAppRoute
+			 *
+			 * @description
+			 * Check the product params for facets and update the route is there is one. If there is not one,
+			 * remove the **facetIds** query string from the route.
+			 */
+			function updateFacets() {
 				if ('' !== vnProductParams.getFacetString()) {
 					$location.search('facetIds', vnProductParams.getFacetString());
 				} else {
 					$location.search('facetIds', null);
 				}
+			}
 
-				//handle min price
-				if ('' !== vnProductParams.getMinPrice()) {
-					$location.search('minPrice', vnProductParams.getMinPrice());
-				} else {
-					$location.search('minPrice', null);
-				}
-
-				//handle max price
+			/**
+			 * @ngdoc function
+			 * @name updateMaxPrice
+			 * @methodOf Volusion.toolboxCommon.vnAppRoute
+			 *
+			 * @description
+			 * Check the product params for maxPrice and update the route is there is one. If there is not one,
+			 * remove the **maxPrice** query string from the route.
+			 */
+			function updateMaxPrice() {
 				if ('' !== vnProductParams.getMaxPrice()) {
 					$location.search('maxPrice', vnProductParams.getMaxPrice());
 				} else {
@@ -90,21 +156,118 @@ angular.module('Volusion.toolboxCommon')
 				}
 			}
 
+			/**
+			 * @ngdoc function
+			 * @name updateMinPrice
+			 * @methodOf Volusion.toolboxCommon.vnAppRoute
+			 *
+			 * @description
+			 * Check the product params for minPrice and update the route is there is one. If there is not one,
+			 * remove the **minPrice** query string from the route.
+			 */
+			function updateMinPrice() {
+				if ('' !== vnProductParams.getMinPrice()) {
+					$location.search('minPrice', vnProductParams.getMinPrice());
+				} else {
+					$location.search('minPrice', null);
+				}
+			}
+
+			/**
+			 * @ngdoc function
+			 * @name updatePage
+			 * @methodOf Volusion.toolboxCommon.vnAppRoute
+			 *
+			 * @description
+			 * Check the product params for facets and update the route is there is one. If there is not one,
+			 * remove the **page** query string from the route.
+			 */
+			function updatePage() {
+				if('' !== vnProductParams.getPage()) {
+					$location.search('page', vnProductParams.getPage());
+				} else {
+					$location.search('page', null);
+				}
+			}
+
+			/**
+			 * @ngdoc function
+			 * @name updateSort
+			 * @methodOf Volusion.toolboxCommon.vnAppRoute
+			 *
+			 * @description
+			 * Check the product params for sort strategy and update the route is there is one. If there is not one,
+			 * remove the **sort** query string from the route.
+			 */
+			function updateSort() {
+				if('' !== vnProductParams.getSort()) {
+					$location.search('sort', vnProductParams.getSort());
+				} else {
+					$location.search('sort', null);
+				}
+			}
+
+			/**
+			 * @ngdoc function
+			 * @name setRouteStrategy
+			 * @methodOf Volusion.toolboxCommon.vnAppRoute
+			 *
+			 * @description
+			 * Set the current routing strategy. It is the responsability of the calling theme controller to set this
+			 * to either 'search' or 'category' to enable smarter management of the categoryId queryParam.
+			 */
 			function setRouteStrategy(strategy) {
 				currentStrategy = strategy;
 			}
 
+			/**
+			 * @ngdoc function
+			 * @name getRouteStrategy
+			 * @methodOf Volusion.toolboxCommon.vnAppRoute
+			 * @return {String} currentStrategy
+			 *
+			 * @description
+			 * Is the result of this if you need to know what routing strategy the service is currently useing.
+			 */
 			function getRouteStrategy() {
 				return currentStrategy;
 			}
 
-			function getActiveRoute() {
-				return activeRoute;
+			/**
+			 * @ngdoc function
+			 * @name resolveParams
+			 * @methodOf Volusion.toolboxCommon.vnAppRoute
+			 * @return {Object} deferred.promise is a $q.promise object that can and should be resolved immediately with
+			 * boolean true.
+			 *
+			 * @description
+			 * Is the result of this if you need to know what routing strategy the service is currently using.
+			 * This is used in Method in two places:
+			 * 1. When the app is configured it is put into the resolve section for the /c/:slug & /search routes.
+			 * 2. When the method theme category controller is used for app navigation between categories or sub-categories
+			 * the query params are consumed in the $viewContentLoaded event.
+			 */
+			function resolveParams(locations) {
+				/**
+				 @function
+				 @name resolveParameters
+				 @description set the vnParmeterObject up with current URL information if its there.
+				 @param {Object} location
+				 @param {Object} params
+				 @return promise
+				 */
+				var deferred = $q.defer();
+
+				vnProductParams.preLoadData(locations);
+				deferred.resolve(true);
+
+				return deferred.promise;
+
 			}
 
 			return {
-				getActiveRoute  : getActiveRoute,
 				getRouteStrategy: getRouteStrategy,
-				setRouteStrategy: setRouteStrategy
+				setRouteStrategy: setRouteStrategy,
+				resolveParams   : resolveParams
 			};
 		}]);

@@ -25,7 +25,10 @@ angular.module('Volusion.toolboxCommon')
 				queryProducts: '&'
 			},
 			link       : function postLink(scope) {
-				vnProductParams.setSort('relevance'); // Default to this
+				// THe implication here is that nothing was parsed from the url so lets use this as default
+				if ('' === vnProductParams.getSort()) {
+					vnProductParams.setSort('relevance'); // Default to this
+				}
 
 				scope.sortBy = function (strategy) {
 					vnProductParams.setSort(strategy);
