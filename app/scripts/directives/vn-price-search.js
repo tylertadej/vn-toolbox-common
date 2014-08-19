@@ -47,7 +47,7 @@ angular.module('Volusion.toolboxCommon')
 					vnProductParams.setMinPrice(scope.minPrice);
 					vnProductParams.setMaxPrice(scope.maxPrice);
 
-					if (event.which === 13) {
+					if (event.which === 13 || 'click' === event.type) {
 						scope.queryProducts();
 					}
 
