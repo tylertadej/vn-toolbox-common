@@ -1,11 +1,14 @@
 // Default Toolbox Responsive Optimizations
 // Overwrite Bootstrap auto generated elements ***********
-.panel-body {
-	padding : 0 !important;
-}
+.-faceted-search {
 
-.panel-group .panel {
-	border-bottom : none;
+  .panel-body {
+	padding: 0 !important;
+  }
+
+  .panel-group .panel {
+	border-bottom: none;
+  }
 }
 
 // *******************************************************
