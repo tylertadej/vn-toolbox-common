@@ -2,9 +2,8 @@
 /*! vn-toolbox-common - ver.0.0.20 (2014-08-19) */
 
 
-.panel-body { padding: 0 !important; }
-
-.panel-group .panel { border-bottom: none; }
+.-faceted-search .panel-body { padding: 0 !important; }
+.-faceted-search .panel-group .panel { border-bottom: none; }
 
 .vn-category-search { padding: 5px 0; border-top: 1px solid #E6E6E6; border-bottom: 1px solid #E6E6E6; }
 .vn-category-search__category-title, .vn-category-search__category-items { text-align: left; }
@@ -17,9 +16,8 @@
 
 .facet-item__by-category { border-bottom: none !important; }
 
-.panel-body { padding: 0 !important; }
-
-.panel-group .panel { border-bottom: none; }
+.-faceted-search .panel-body { padding: 0 !important; }
+.-faceted-search .panel-group .panel { border-bottom: none; }
 
 .vn-faceted-search-header { text-align: center; }
 .vn-faceted-search-header .__cancel-action, .vn-faceted-search-header .__clear-action { width: 96%; margin: 15px auto; display: inline-block; }
