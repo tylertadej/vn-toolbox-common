@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.20 (2014-08-18) */
+/*! vn-toolbox-common - ver.0.0.20 (2014-08-19) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'Volusion.toolboxCommon.templates'])
@@ -1798,7 +1798,6 @@ angular.module('Volusion.toolboxCommon')
 			}
 
 			function updateSearch() {
-				console.log( 'searchText: ', vnProductParams.getSearchText() );
 				if('/search' !== $location.path()) {
 					return;
 				} else if ('/search' === $location.path() && '' === vnProductParams.getSearchText()) {
