@@ -3641,7 +3641,7 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "\n" +
     "		\n" +
     "		<div class=vn-faceted-search-footer data-ng-show=!showApplyButton>\n" +
-    "			<button class=\"btn __clear-action\" href data-ng-click=clearAllFilters()>Clear\n" +
+    "			<button class=\"btn __clear-action\" href data-ng-click=clearAllFilters()>Reset Filters\n" +
     "			</button>\n" +
     "			\n" +
     "		</div>\n" +
@@ -3649,10 +3649,11 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "	</div>\n" +
     "</div>");
   $templateCache.put("vn-faceted-search/vn-price-search.html",
-    "<input data-ng-model=minPrice data-ng-keypress=searchByPrice($event)>\n" +
-    "to\n" +
-    "<input data-ng-model=maxPrice data-ng-keypress=searchByPrice($event)>\n" +
-    "<button class=\"btn btn-default\" type=button ng-click=searchByPrice($event)>Go</button>");
+    "<input data-ng-model=minPrice data-ng-keypress=searchByPrice($event) placeholder=$>\n" +
+    "&thinsp;to&thinsp;\n" +
+    "<input data-ng-model=maxPrice data-ng-keypress=searchByPrice($event) placeholder=$$>\n" +
+    "<button class=\"btn btn-default facet-item__by-price__button\" type=button ng-click=searchByPrice($event)>Go\n" +
+    "</button>");
   $templateCache.put("vn-faceted-search/vn-sort-search.html",
     "<div class=dropdown>\n" +
     "	<button class=\"btn btn-default dropdown-toggle\" type=button id=dropdownMenu1 data-toggle=dropdown>\n" +
