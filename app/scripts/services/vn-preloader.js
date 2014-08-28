@@ -18,7 +18,14 @@ angular.module('Volusion.toolboxCommon')
 
 			'use strict';
 
-			// I manage the preloading of image objects. Accepts an array of image URLs.
+			/**
+			 * @ngdoc function
+			 * @name VnPreloader
+			 * @methodOf Volusion.toolboxCommon.vnPreloader
+			 *
+			 * @description
+			 * Manage the preloading of image objects. Accepts an array of image URLs.
+			 **/
 			function VnPreloader( imageLocations ) {
 
 				// I am the image SRC values to preload.
@@ -51,8 +58,15 @@ angular.module('Volusion.toolboxCommon')
 			// STATIC METHODS.
 			// ---
 
-			// I reload the given images [Array] and return a promise. The promise
-			// will be resolved with the array of image locations.
+			/**
+			 * @ngdoc function
+			 * @name preloadImages
+			 * @methodOf Volusion.toolboxCommon.vnPreloader
+			 *
+			 * @description
+			 * reload the given images [Array] and return a promise. The promise
+			 * will be resolved with the array of image locations.
+			 **/
 			VnPreloader.preloadImages = function( imageLocations ) {
 
 				var preloader = new VnPreloader( imageLocations );
@@ -68,21 +82,52 @@ angular.module('Volusion.toolboxCommon')
 
 				// PUBLIC METHODS.
 
-				// I determine if the preloader has started loading images yet.
+				/**
+				 * @ngdoc function
+				 * @name preloadImages
+				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 *
+				 * @description
+				 * Determine if the preloader has started loading images yet.
+				 **/
 				isInitiated: function isInitiated() {
 					return( this.state !== this.states.PENDING );
 				},
 
+				/**
+				 * @ngdoc function
+				 * @name preloadImages
+				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 *
+				 * @description
+				 * Determine if the preloader has started loading images yet.
+				 **/
 				// I determine if the preloader has failed to load all of the images.
 				isRejected: function isRejected() {
 					return( this.state === this.states.REJECTED );
 				},
 
+				/**
+				 * @ngdoc function
+				 * @name preloadImages
+				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 *
+				 * @description
+				 * Determine if the preloader has started loading images yet.
+				 **/
 				// I determine if the preloader has successfully loaded all of the images.
 				isResolved: function isResolved() {
 					return( this.state === this.states.RESOLVED );
 				},
 
+				/**
+				 * @ngdoc function
+				 * @name preloadImages
+				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 *
+				 * @description
+				 * Determine if the preloader has started loading images yet.
+				 **/
 				// I initiate the preload of the images. Returns a promise.
 				load: function load() {
 					// If the images are already loading, return the existing promise.
@@ -102,6 +147,14 @@ angular.module('Volusion.toolboxCommon')
 
 				// PRIVATE METHODS.
 
+				/**
+				 * @ngdoc function
+				 * @name preloadImages
+				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 *
+				 * @description
+				 * Determine if the preloader has started loading images yet.
+				 **/
 				// I handle the load-failure of the given image location.
 				handleImageError: function handleImageError( imageLocation ) {
 					this.errorCount++;
@@ -116,6 +169,14 @@ angular.module('Volusion.toolboxCommon')
 					this.deferred.reject( imageLocation );
 				},
 
+				/**
+				 * @ngdoc function
+				 * @name preloadImages
+				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 *
+				 * @description
+				 * Determine if the preloader has started loading images yet.
+				 **/
 				// I handle the load-success of the given image location.
 				handleImageLoad: function handleImageLoad( imageLocation ) {
 					this.loadCount++;
@@ -141,6 +202,14 @@ angular.module('Volusion.toolboxCommon')
 					}
 				},
 
+				/**
+				 * @ngdoc function
+				 * @name preloadImages
+				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 *
+				 * @description
+				 * Determine if the preloader has started loading images yet.
+				 **/
 				// I load the given image location and then wire the load / error
 				// events back into the preloader instance.
 				// --
