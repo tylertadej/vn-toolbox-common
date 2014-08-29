@@ -1,6 +1,6 @@
 {
   "name": "vn-toolbox-common",
-  "version": "0.0.20",
+  "version": "0.0.24",
   "private": true,
   "devDependencies": {
     "chai-jquery": "^1.2.3",
