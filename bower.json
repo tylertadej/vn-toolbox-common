@@ -1,6 +1,6 @@
 {
   "name": "vn-toolbox-common",
-  "version": "0.0.20",
+  "version": "0.0.23",
   "main": [
     "dist/vn-toolbox-common.js",
     "dist/vn-toolbox-common-styles.css"
