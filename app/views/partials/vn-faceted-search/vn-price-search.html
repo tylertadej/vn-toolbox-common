@@ -1,10 +1,13 @@
 <input type="text"
-	   data-ng-model="minPrice"
-	   data-ng-keypress="searchByPrice($event)"/>
-to
+			 data-ng-model="minPrice"
+			 data-ng-keypress="searchByPrice($event)"
+			 placeholder="$"/>
+&thinsp;to&thinsp;
 <input type="text"
-	   data-ng-model="maxPrice"
-	   data-ng-keypress="searchByPrice($event)"/>
-<button class="btn btn-default"
-		type="button"
-		ng-click="searchByPrice($event)">Go</button>
+			 data-ng-model="maxPrice"
+			 data-ng-keypress="searchByPrice($event)"
+			 placeholder="$$"/>
+<button class="btn btn-default facet-item__by-price__button"
+				type="button"
+				ng-click="searchByPrice($event)">Go
+</button>
