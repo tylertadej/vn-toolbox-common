@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.20 (2014-08-29) */
+/*! vn-toolbox-common - ver.0.0.24 (2014-09-02) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'Volusion.toolboxCommon.templates'])
@@ -36,6 +36,104 @@ angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'Volusion.to
                     .preferredLanguage('en');
             }]
     );
+
+'use strict';
+/**
+ * @ngdoc controller
+ * @name Volusion.toolboxCommon.controller:vnAppMessageCtrl
+ *
+ * @description
+ * The `vnAppMessageCtrl` is associated with the `vnAppMessageDirective` and
+ * interacts with the `vnAppMessageService` to get the list of messages and to
+ * handle the user click to remove the message.
+ *
+ * @requires vnAppMessageService
+ * */
+
+
+angular.module('Volusion.toolboxCommon')
+    .controller('vnAppMessageCtrl', ['vnAppMessageService', function(vnAppMessageService){
+        var self = this;
+
+        self.alerts = vnAppMessageService.getMessages();
+
+        /**
+         * closes the alert and removes it from the list of alerts.
+         * @param messageId
+         */
+        self.closeAlert = function (messageId) {
+            vnAppMessageService.removeMessage(messageId);
+        };
+}]);
+
+'use strict';
+/**
+ * @ngdoc directive
+ * @name Volusion.toolboxCommon.directive:vnAppMessage
+ *
+ * @description
+ * The vnAppMessage directive displays the list of messages
+ * that will be displayed to the user.
+ *
+ * @restrict A
+ * */
+
+
+angular.module('Volusion.toolboxCommon')
+    .directive('vnAppMessage', function () {
+    return {
+        restrict: 'EA',
+        controller: 'vnAppMessageCtrl',
+        controllerAs: 'appMessagesCtrl',
+        templateUrl: 'appmessages/vnAppMessage.tpl.html'
+    };
+});
+
+'use strict';
+/**
+ * @ngdoc service
+ * @name Volusion.toolboxCommon.vnAppMessageService
+ *
+ * @description
+ * # vnAppMessageService
+ * The vnAppMessageService service is used to add messages that
+ * need to displayed. It sets up a timeout based on the timeout value
+ * passed in the message object by the caller or a default of 4000ms
+ *
+ * @requires $timeout
+ */
+
+angular.module('Volusion.toolboxCommon')
+    .service('vnAppMessageService', ['$timeout', function($timeout) {
+        var self = {},
+            messages = [];
+
+        self.addMessage = function (message) {
+            var msg = {
+                id: Date.now(),
+                type: message.type || 'warning',
+                text: message.text
+            };
+            messages.push(msg);
+            $timeout(function() {
+                self.removeMessage(msg.id);
+            }, message.timeout || 4000);
+        };
+
+        self.getMessages = function() {
+            return messages;
+        };
+
+        self.removeMessage = function(id) {
+            angular.forEach(messages, function(msg, messageIndex) {
+                if (msg && msg.id === id) {
+                    messages.splice(messageIndex, 1);
+                }
+            });
+        };
+
+        return self;
+    }]);
 
 angular.module('Volusion.toolboxCommon')
 	.controller('OptionsCtrl', ['$rootScope','$scope',
@@ -3816,4 +3914,6 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "<div data-ng-if=\"!inputType.rows || inputType.rows < 2\">\n" +
     "	<input data-vn-element=text data-vn-modifiers={{option.class}} data-ng-focus=\"saveTo=saveTo||{}\" data-ng-model=saveTo[option.id] data-ng-maxlength={{inputType.maxlength}} placeholder={{inputType.placeholder}}>\n" +
     "</div>");
+  $templateCache.put("appmessages/vnAppMessage.tpl.html",
+    "<alert ng-repeat=\"alert in appMessagesCtrl.alerts track by alert.id\" type=\"{{ alert.type }}\" close=appMessagesCtrl.closeAlert(alert.id)>{{alert.text}}</alert>");
 }]);

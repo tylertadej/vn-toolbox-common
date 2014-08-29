@@ -255,7 +255,7 @@ module.exports = function(grunt) {
 				singleModule: true,
 				module: 'Volusion.toolboxCommon.templates',
 				rename: function(moduleName) {
-					return moduleName.replace('../app/views/partials/', '');
+                    return moduleName.replace(/\.\.\/app\/scripts\/|\.\.\/app\/views\/partials\//, '');
 				},
 				htmlmin: {
 					collapseBooleanAttributes: true,
@@ -269,7 +269,7 @@ module.exports = function(grunt) {
 				}
 			},
 			partials: {
-				src: ['<%= yeoman.app %>/views/partials/{,*/}*.html'],
+				src: ['<%= yeoman.app %>/views/partials/{,*/}*.html', '<%= yeoman.app %>/scripts/{,*/}*.tpl.html'],
 				dest: '.tmp/partial-views.js'
 			}
 		},
