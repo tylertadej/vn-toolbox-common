@@ -1,0 +1,2 @@
+<alert ng-repeat="alert in appMessagesCtrl.alerts track by alert.id" type="{{ alert.type }}"
+       close="appMessagesCtrl.closeAlert(alert.id)">{{alert.text}}</alert>

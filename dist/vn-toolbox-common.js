@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.20 (2014-08-27) */
+/*! vn-toolbox-common - ver.0.0.24 (2014-09-03) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'Volusion.toolboxCommon.templates'])
@@ -36,6 +36,104 @@ angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'Volusion.to
                     .preferredLanguage('en');
             }]
     );
+
+'use strict';
+/**
+ * @ngdoc controller
+ * @name Volusion.toolboxCommon.controller:vnAppMessageCtrl
+ *
+ * @description
+ * The `vnAppMessageCtrl` is associated with the `vnAppMessageDirective` and
+ * interacts with the `vnAppMessageService` to get the list of messages and to
+ * handle the user click to remove the message.
+ *
+ * @requires vnAppMessageService
+ * */
+
+
+angular.module('Volusion.toolboxCommon')
+    .controller('vnAppMessageCtrl', ['vnAppMessageService', function(vnAppMessageService){
+        var self = this;
+
+        self.alerts = vnAppMessageService.getMessages();
+
+        /**
+         * closes the alert and removes it from the list of alerts.
+         * @param messageId
+         */
+        self.closeAlert = function (messageId) {
+            vnAppMessageService.removeMessage(messageId);
+        };
+}]);
+
+'use strict';
+/**
+ * @ngdoc directive
+ * @name Volusion.toolboxCommon.directive:vnAppMessage
+ *
+ * @description
+ * The vnAppMessage directive displays the list of messages
+ * that will be displayed to the user.
+ *
+ * @restrict A
+ * */
+
+
+angular.module('Volusion.toolboxCommon')
+    .directive('vnAppMessage', function () {
+    return {
+        restrict: 'EA',
+        controller: 'vnAppMessageCtrl',
+        controllerAs: 'appMessagesCtrl',
+        templateUrl: 'appmessages/vnAppMessage.tpl.html'
+    };
+});
+
+'use strict';
+/**
+ * @ngdoc service
+ * @name Volusion.toolboxCommon.vnAppMessageService
+ *
+ * @description
+ * # vnAppMessageService
+ * The vnAppMessageService service is used to add messages that
+ * need to displayed. It sets up a timeout based on the timeout value
+ * passed in the message object by the caller or a default of 4000ms
+ *
+ * @requires $timeout
+ */
+
+angular.module('Volusion.toolboxCommon')
+    .service('vnAppMessageService', ['$timeout', function($timeout) {
+        var self = {},
+            messages = [];
+
+        self.addMessage = function (message) {
+            var msg = {
+                id: Date.now(),
+                type: message.type || 'warning',
+                text: message.text
+            };
+            messages.push(msg);
+            $timeout(function() {
+                self.removeMessage(msg.id);
+            }, message.timeout || 4000);
+        };
+
+        self.getMessages = function() {
+            return messages;
+        };
+
+        self.removeMessage = function(id) {
+            angular.forEach(messages, function(msg, messageIndex) {
+                if (msg && msg.id === id) {
+                    messages.splice(messageIndex, 1);
+                }
+            });
+        };
+
+        return self;
+    }]);
 
 angular.module('Volusion.toolboxCommon')
 	.controller('OptionsCtrl', ['$rootScope','$scope',
@@ -2646,7 +2744,14 @@ angular.module('Volusion.toolboxCommon')
 
 			'use strict';
 
-			// I manage the preloading of image objects. Accepts an array of image URLs.
+			/**
+			 * @ngdoc function
+			 * @name VnPreloader
+			 * @methodOf Volusion.toolboxCommon.vnPreloader
+			 *
+			 * @description
+			 * Manage the preloading of image objects. Accepts an array of image URLs.
+			 **/
 			function VnPreloader( imageLocations ) {
 
 				// I am the image SRC values to preload.
@@ -2679,8 +2784,15 @@ angular.module('Volusion.toolboxCommon')
 			// STATIC METHODS.
 			// ---
 
-			// I reload the given images [Array] and return a promise. The promise
-			// will be resolved with the array of image locations.
+			/**
+			 * @ngdoc function
+			 * @name preloadImages
+			 * @methodOf Volusion.toolboxCommon.vnPreloader
+			 *
+			 * @description
+			 * reload the given images [Array] and return a promise. The promise
+			 * will be resolved with the array of image locations.
+			 **/
 			VnPreloader.preloadImages = function( imageLocations ) {
 
 				var preloader = new VnPreloader( imageLocations );
@@ -2696,21 +2808,52 @@ angular.module('Volusion.toolboxCommon')
 
 				// PUBLIC METHODS.
 
-				// I determine if the preloader has started loading images yet.
+				/**
+				 * @ngdoc function
+				 * @name preloadImages
+				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 *
+				 * @description
+				 * Determine if the preloader has started loading images yet.
+				 **/
 				isInitiated: function isInitiated() {
 					return( this.state !== this.states.PENDING );
 				},
 
+				/**
+				 * @ngdoc function
+				 * @name preloadImages
+				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 *
+				 * @description
+				 * Determine if the preloader has started loading images yet.
+				 **/
 				// I determine if the preloader has failed to load all of the images.
 				isRejected: function isRejected() {
 					return( this.state === this.states.REJECTED );
 				},
 
+				/**
+				 * @ngdoc function
+				 * @name preloadImages
+				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 *
+				 * @description
+				 * Determine if the preloader has started loading images yet.
+				 **/
 				// I determine if the preloader has successfully loaded all of the images.
 				isResolved: function isResolved() {
 					return( this.state === this.states.RESOLVED );
 				},
 
+				/**
+				 * @ngdoc function
+				 * @name preloadImages
+				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 *
+				 * @description
+				 * Determine if the preloader has started loading images yet.
+				 **/
 				// I initiate the preload of the images. Returns a promise.
 				load: function load() {
 					// If the images are already loading, return the existing promise.
@@ -2730,6 +2873,14 @@ angular.module('Volusion.toolboxCommon')
 
 				// PRIVATE METHODS.
 
+				/**
+				 * @ngdoc function
+				 * @name preloadImages
+				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 *
+				 * @description
+				 * Determine if the preloader has started loading images yet.
+				 **/
 				// I handle the load-failure of the given image location.
 				handleImageError: function handleImageError( imageLocation ) {
 					this.errorCount++;
@@ -2744,6 +2895,14 @@ angular.module('Volusion.toolboxCommon')
 					this.deferred.reject( imageLocation );
 				},
 
+				/**
+				 * @ngdoc function
+				 * @name preloadImages
+				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 *
+				 * @description
+				 * Determine if the preloader has started loading images yet.
+				 **/
 				// I handle the load-success of the given image location.
 				handleImageLoad: function handleImageLoad( imageLocation ) {
 					this.loadCount++;
@@ -2769,6 +2928,14 @@ angular.module('Volusion.toolboxCommon')
 					}
 				},
 
+				/**
+				 * @ngdoc function
+				 * @name preloadImages
+				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 *
+				 * @description
+				 * Determine if the preloader has started loading images yet.
+				 **/
 				// I load the given image location and then wire the load / error
 				// events back into the preloader instance.
 				// --
@@ -3747,4 +3914,6 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "<div data-ng-if=\"!inputType.rows || inputType.rows < 2\">\n" +
     "	<input data-vn-element=text data-vn-modifiers={{option.class}} data-ng-focus=\"saveTo=saveTo||{}\" data-ng-model=saveTo[option.id] data-ng-maxlength={{inputType.maxlength}} placeholder={{inputType.placeholder}}>\n" +
     "</div>");
+  $templateCache.put("appmessages/vnAppMessage.tpl.html",
+    "<alert ng-repeat=\"alert in appMessagesCtrl.alerts track by alert.id\" type=\"{{ alert.type }}\" close=appMessagesCtrl.closeAlert(alert.id)>{{alert.text}}</alert>");
 }]);

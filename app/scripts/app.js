@@ -41,8 +41,6 @@ angular.module('Volusion.toolboxCommon', [
 //                    'http://www.samplestore.io/api/v1/**'
 //                ]);
 
-                $locationProvider.html5Mode(true);
-
                 $routeProvider
                     .when('/', {
                         templateUrl: 'views/main.html',

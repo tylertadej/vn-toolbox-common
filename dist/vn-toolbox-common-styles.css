@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.20 (2014-08-27) */
+/*! vn-toolbox-common - ver.0.0.24 (2014-09-03) */
 
 
 .-faceted-search .panel-body { padding: 0 !important; }
@@ -67,9 +67,9 @@
 /*!***************************************************************************/
 /*!***************************************************************************/
 
-.vn-option-select button { min-width: 100px; }
-.vn-option-select button span { margin-left: 5px !important; }
-.vn-option-select ul { min-width: 100px; left: 65px; text-align: center; }
+.vn-product-option__select button { min-width: 100px; }
+.vn-product-option__select button span { margin-left: 5px !important; }
+.vn-product-option__select ul { min-width: 100px; left: 71px; text-align: center; }
 
 @charset "UTF-8";
 /* */
