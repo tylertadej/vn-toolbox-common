@@ -30,7 +30,7 @@ module.exports = function(config) {
 			//'app/bower_components/jquery/dist/jquery.js',
 			'app/scripts/*.js',
 			'app/scripts/**/*.js',
-			//'test/mock/**/*.js',
+			'test/mock/**/*.js',
 			'test/spec/**/*.js',
 
 			// templates

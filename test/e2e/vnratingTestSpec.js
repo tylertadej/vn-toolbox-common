@@ -45,7 +45,7 @@ describe('Volusion.Toolbox Ratings component', function () {
         var webElem = rating.getWebElement();
 
         webElem.getOuterHtml().then(function (text) {
-            console.log('result: ', text);
+//            console.log('result: ', text);
         });
 
         expect(ratings.count()).toBe(5);
@@ -54,13 +54,13 @@ describe('Volusion.Toolbox Ratings component', function () {
 
         ratings.each(function (element) {
             element.getText().then(function () {
-                console.log;
+//                console.log;
             });
         });
 
         element.all(by.repeater('star in stars')).each(function (element) {
             element.getText().then(function () {
-                console.log('more test');
+//                console.log('more test');
             });
         });
     });

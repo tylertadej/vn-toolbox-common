@@ -15,7 +15,7 @@ describe('Directive: vnFacetSearch', function () {
 
 //    it('should make hidden element visible', inject(function ($compile) {
     it('should make hidden element visible', inject(function () {
-        console.log('vnFacetSearch Testing stub. Do you have a corner case that SHould go here?');
+//        console.log('vnFacetSearch Testing stub. Do you have a corner case that SHould go here?');
         expect(true).toBe(true);
     }));
 });
