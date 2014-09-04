@@ -1,10 +1,12 @@
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'Volusion.toolboxCommon.templates'])
     .config(
-        ['$translateProvider',
-            function ($translateProvider) {
+        [ '$httpProvider', '$translateProvider',
+            function ( $httpProvider, $translateProvider) {
 
                 'use strict';
+
+                $httpProvider.interceptors.push('vnHttpResponseInterceptor');
 
                 var translationsEn = {
                         // Carousel
