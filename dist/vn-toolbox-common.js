@@ -1,13 +1,15 @@
 
-/*! vn-toolbox-common - ver.0.0.24 (2014-09-03) */
+/*! vn-toolbox-common - ver.0.0.24 (2014-09-04) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'Volusion.toolboxCommon.templates'])
     .config(
-        ['$translateProvider',
-            function ($translateProvider) {
+        [ '$httpProvider', '$translateProvider',
+            function ( $httpProvider, $translateProvider) {
 
                 'use strict';
+
+                $httpProvider.interceptors.push('vnHttpResponseInterceptor');
 
                 var translationsEn = {
                         // Carousel
@@ -1462,9 +1464,11 @@ angular.module('Volusion.toolboxCommon')
 
 // Todo: figure out which $resources need all the access types. Remove the unused queries: put, remove delete etc ...
 angular.module('Volusion.toolboxCommon')
-    .factory('vnApi', ['$resource', 'vnDataEndpoint',
-        function ($resource, vnDataEndpoint) {
+    .factory('vnApi', ['$resource', 'vnDataEndpoint', 'vnResourceTypes',
+        function ($resource, vnDataEndpoint, vnResourceTypes) {
             'use strict';
+
+            var headers = {'resource': ''};
 
             /**
              * @ngdoc method
@@ -1481,15 +1485,16 @@ angular.module('Volusion.toolboxCommon')
              * - vnApi.Artiucl().get( {slug: about-us} ); -> Returns the article for About Us
              */
             function Article() {
+                headers.resource = vnResourceTypes.article;
 
                 return $resource(vnDataEndpoint.getApiUrl() + '/articles/:id',
                     { id : '@id' },
                     {
-                        'get'   : { method: 'GET'},
-                        'save'  : { method: 'POST' },
-                        'query' : { method: 'GET', isArray: false },
-                        'remove': { method: 'DELETE' },
-                        'delete': { method: 'DELETE' }
+                        'get'   : { method: 'GET', headers: headers },
+                        'save'  : { method: 'POST', headers: headers },
+                        'query' : { method: 'GET', isArray: false, headers: headers },
+                        'remove': { method: 'DELETE', headers: headers },
+                        'delete': { method: 'DELETE', headers: headers }
                     });
 
             }
@@ -1509,15 +1514,16 @@ angular.module('Volusion.toolboxCommon')
              *
              */
             function Category() {
+                headers.resource = vnResourceTypes.category;
 
                 return $resource(vnDataEndpoint.getApiUrl() + '/categories/:id',
                     { id: '@id' },
                     {
-                        'get'   : { method: 'GET'},
-                        'save'  : { method: 'POST' },
-                        'query' : { method: 'GET', isArray: false },
-                        'remove': { method: 'DELETE' },
-                        'delete': { method: 'DELETE' }
+                        'get'   : { method: 'GET', headers: headers},
+                        'save'  : { method: 'POST', headers: headers },
+                        'query' : { method: 'GET', isArray: false, headers: headers },
+                        'remove': { method: 'DELETE', headers: headers },
+                        'delete': { method: 'DELETE', headers: headers }
                     });
 
             }
@@ -1536,15 +1542,17 @@ angular.module('Volusion.toolboxCommon')
              * - vnApi.Cart().post(???? FIX THIS ?????); -> Returns ???
              */
             function Cart() {
+                headers.resource = vnResourceTypes.cart;
+
                 return $resource(vnDataEndpoint.getApiUrl() + '/carts',
                     {},
                     {
-                        'get'   : { method: 'GET', withCredentials: true },
-                        'save'  : { method: 'POST', headers: { 'vMethod': 'POST'}, withCredentials: true },
-                        'update': { method: 'POST', headers: { 'vMethod': 'PUT'}, withCredentials: true },
-                        'query' : { method: 'GET', isArray: false },
-                        'remove': { method: 'DELETE' },
-                        'delete': { method: 'DELETE' }
+                        'get'   : { method: 'GET', withCredentials: true, headers: headers },
+                        'save'  : { method: 'POST', withCredentials: true, headers: headers },
+                        'update': { method: 'PUT', ithCredentials: true, headers: headers },
+                        'query' : { method: 'GET', isArray: false, headers: headers },
+                        'remove': { method: 'DELETE', headers: headers },
+                        'delete': { method: 'DELETE', headers: headers }
                     });
             }
 
@@ -1561,7 +1569,8 @@ angular.module('Volusion.toolboxCommon')
              * - vnApi.Configuration().query() -> returns a the site configuration data.
              */
             function Configuration() {
-                return $resource(vnDataEndpoint.getApiUrl() + '/config');
+                headers.resource = vnResourceTypes.config;
+                return $resource(vnDataEndpoint.getApiUrl() + '/config', {}, { headers: headers });
             }
 
             /**
@@ -1576,7 +1585,8 @@ angular.module('Volusion.toolboxCommon')
              * - vnApi.Country().query() -> returns a list of all countries
              */
             function Country() {
-                return $resource(vnDataEndpoint.getApiUrl() + '/countries');
+                headers.resource = 'countries';
+                return $resource(vnDataEndpoint.getApiUrl() + '/countries', {}, { headers: headers });
             }
 
             /**
@@ -1592,14 +1602,15 @@ angular.module('Volusion.toolboxCommon')
              * - vnApi.Nav().get( {navId: 1} ); -> Returns the navigation for id = 1
              */
             function Nav() {
+                headers.resource = vnResourceTypes.nav;
                 return $resource(vnDataEndpoint.getApiUrl() + '/navs/:navId',
                     {navId: '@navId'},
                     {
-                        'get'   : { method: 'GET'},
-                        'save'  : { method: 'POST' },
-                        'query' : { method: 'GET', isArray: false },
-                        'remove': { method: 'DELETE' },
-                        'delete': { method: 'DELETE' }
+                        'get'   : { method: 'GET', headers: headers },
+                        'save'  : { method: 'POST', headers: headers },
+                        'query' : { method: 'GET', isArray: false, headers: headers },
+                        'remove': { method: 'DELETE', headers: headers },
+                        'delete': { method: 'DELETE', headers: headers }
                     });
             }
 
@@ -1632,17 +1643,18 @@ angular.module('Volusion.toolboxCommon')
              *
              */
             function Product() {
+                headers.resource = vnResourceTypes.product;
                 //Todo: put the possilbe query params into the description for documentation
                 return $resource(vnDataEndpoint.getApiUrl() + '/products/:code',
                     {
                         code: '@code'
                     },
                     {
-                        'get'   : { method: 'GET'},
-                        'save'  : { method: 'POST' },
-                        'query' : { method: 'GET', isArray: false },
-                        'remove': { method: 'DELETE' },
-                        'delete': { method: 'DELETE' }
+                        'get'   : { method: 'GET', headers: headers},
+                        'save'  : { method: 'POST', headers: headers },
+                        'query' : { method: 'GET', isArray: false, headers: headers },
+                        'remove': { method: 'DELETE', headers: headers },
+                        'delete': { method: 'DELETE', headers: headers }
                     });
             }
 
@@ -1660,16 +1672,17 @@ angular.module('Volusion.toolboxCommon')
              */
 
             function Review() {
+                headers.resource = vnResourceTypes.reviews;
                 return $resource(vnDataEndpoint.getApiUrl() + '/products/:code/reviews',
                     {
                         code: '@code'
                     },
                     {
-                        'get'   : { method: 'GET'},
-                        'save'  : { method: 'POST' },
-                        'query' : { method: 'GET', isArray: false },
-                        'remove': { method: 'DELETE' },
-                        'delete': { method: 'DELETE' }
+                        'get'   : { method: 'GET', headers: headers },
+                        'save'  : { method: 'POST', headers: headers },
+                        'query' : { method: 'GET', isArray: false, headers: headers },
+                        'remove': { method: 'DELETE', headers: headers },
+                        'delete': { method: 'DELETE', headers: headers }
                     });
             }
 
@@ -1686,7 +1699,8 @@ angular.module('Volusion.toolboxCommon')
              */
 
             function ThemeSettings() {
-                return $resource('/settings/themeSettings.json');
+                headers.resource = vnResourceTypes.themesettings;
+                return $resource('/settings/themeSettings.json', {}, { headers: headers });
             }
 
             return {
@@ -2794,6 +2808,27 @@ angular.module('Volusion.toolboxCommon')
             };
         }]);
 
+'use strict';
+
+angular.module('Volusion.toolboxCommon')
+    .factory('vnHttpResponseInterceptor', ['$q', '$rootScope', function($q, $rootScope) {
+
+        return {
+            response: function(response) {
+                // response.status === 200
+                return response || $q.when(response);
+            },
+            responseError: function(rejection) {
+
+                if(rejection.status === 500) {
+                    $rootScope.$emit('VN_HTTP_500_ERROR', { status: rejection.status, message: rejection.data, resource: rejection.headers('resource') || '' });
+                }
+
+                return $q.reject(rejection);
+            }
+        };
+
+    }]);
 angular.module('Volusion.toolboxCommon')
 	.factory('vnImagePreloader', ['$q', '$rootScope',
 		function( $q, $rootScope ) {
@@ -3617,6 +3652,20 @@ angular.module('Volusion.toolboxCommon')
 	});
 
 
+
+angular.module('Volusion.toolboxCommon')
+    .constant('vnResourceTypes', {
+        article: 'article',
+        cart: 'cart',
+        category: 'category',
+        config: 'config',
+        countries: 'countries',
+        nav: 'nav',
+        product: 'product',
+        reviews: 'reviews',
+        themesettings: 'themesettings'
+
+    });
 
 angular.module('Volusion.toolboxCommon')
     .factory('vnSession', ['$rootScope', 'vnApi', 'vnFirebase',
