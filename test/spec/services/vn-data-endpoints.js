@@ -16,7 +16,7 @@ describe('Service: vnDataEndpoint', function () {
 
     xit('should have a valid firebase endpoint', function () {
         expect(vnDataEndpoint.getFirebaseUrl()).toBeTruthy();
-		console.log(vnDataEndpoint.getFirebaseUrl());
+//		console.log(vnDataEndpoint.getFirebaseUrl());
         expect(vnDataEndpoint.getFirebaseUrl()).toEqual('https://brilliant-fire-5600.firebaseio.com');
     });
 

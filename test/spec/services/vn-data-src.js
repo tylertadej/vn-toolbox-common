@@ -2,7 +2,7 @@
 
 describe('Service: vnDataSrc', function () {
 
-    console.log('Don\'t forget to test the vnDataSrc!!');
+//    console.log('Don\'t forget to test the vnDataSrc!!');
 
 //    // load the service's module
 //    beforeEach(module('Volusion.toolboxCommon'));
