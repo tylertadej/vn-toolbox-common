@@ -34,6 +34,10 @@ angular.module('Volusion.toolboxCommon')
 					});
 			}
 
+			function reset() {
+				cart = {};
+			}
+
 			function saveCart(cartItem) {
 				return vnApi.Cart().save({cartId: cart.id}, cartItem).$promise
 					.then(function (response) {
@@ -57,6 +61,7 @@ angular.module('Volusion.toolboxCommon')
 				getCart          : getCart,
 				getCartItemsCount: getCartItemsCount,
 				init             : init,
+				reset            : reset,
 				saveCart         : saveCart
 			};
 		}]);

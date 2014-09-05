@@ -277,7 +277,7 @@ angular.module('Volusion.toolboxCommon')
 			}
 
 			if (searchParams.maxPrice) {
-				console.log('setting max price to : ', searchParams.maxPrice);
+//				console.log('setting max price to : ', searchParams.maxPrice);
 				setMaxPrice(searchParams.maxPrice);
 			}
 

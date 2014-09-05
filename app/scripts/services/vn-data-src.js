@@ -80,7 +80,7 @@ angular.module('Volusion.toolboxCommon')
                                 var aid = r.id;
                                 vnApiArticles[aid] = r;
                             });
-                            console.log('vds apiprods: ', vnApiArticles);
+//                            console.log('vds apiprods: ', vnApiArticles);
                         });
                     return vnApiArticles;
                 }
