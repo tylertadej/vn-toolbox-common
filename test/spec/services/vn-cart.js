@@ -6,11 +6,11 @@ describe('Service: vnCart', function () {
 	beforeEach(module('Volusion.toolboxCommon'));
 
 	// instantiate service
-	var vnCart, $httpBackend, $rootScope, $q;//, response;
+	var vnCart, vnApiEndpoint, $httpBackend, $rootScope, $q;//, response;
 
-	beforeEach(inject(function (_vnCart_, $injector) {
-		vnCart = _vnCart_;
-//		var cart = vnCart.getCart();
+	beforeEach(inject(function ($injector) {
+		vnCart = $injector.get('vnCart');
+		vnApiEndpoint = $injector.get('vnDataEndpoint');
 		$httpBackend = $injector.get('$httpBackend');
 		$q = $injector.get('$q');
 		$rootScope = $injector.get('$rootScope');
@@ -31,7 +31,7 @@ describe('Service: vnCart', function () {
 	it('should handle initialization', function() {
 
 		// Response to the init GET request
-		$httpBackend.when('GET', 'http://www.samplestore.io/api/v1/carts')
+		$httpBackend.when('GET', vnApiEndpoint.getApiUrl() + '/carts')
 			.respond(200, VnApiMockLibrary.initialCartResponse());
 
 		vnCart.init();
@@ -53,7 +53,7 @@ describe('Service: vnCart', function () {
 			promise = deferred.promise;
 
 		// Respond to the saveCart POST
-		$httpBackend.when('POST', 'http://www.samplestore.io/api/v1/carts')
+		$httpBackend.when('POST', vnApiEndpoint.getApiUrl() + '/carts')
 			.respond(200, VnApiMockLibrary.saveCartResponse({success: true}));
 
 		promise.then(function (response) {
@@ -83,7 +83,7 @@ describe('Service: vnCart', function () {
 			promise = deferred.promise;
 
 		// Respond to the saveCart POST
-		$httpBackend.when('POST', 'http://www.samplestore.io/api/v1/carts')
+		$httpBackend.when('POST', vnApiEndpoint.getApiUrl() + '/carts')
 			.respond(500, VnApiMockLibrary.saveCartResponse({success: false}));
 
 		promise.then(function (response) {
@@ -113,7 +113,7 @@ describe('Service: vnCart', function () {
 			promise = deferred.promise;
 
 		// Respond to the saveCart POST
-		$httpBackend.when('POST', 'http://www.samplestore.io/api/v1/carts')
+		$httpBackend.when('POST', vnApiEndpoint.getApiUrl() + '/carts')
 			.respond(500, VnApiMockLibrary.saveCartResponse({success: false}));
 
 		promise.then(function (response) {
