@@ -1390,6 +1390,85 @@ angular.module('Volusion.toolboxCommon')
 	}]);
 
 'use strict';
+
+/**
+ * @ngdoc directive
+ * @name Volusion.toolboxCommon.directive:vnEasyZoom
+ * @restrict A
+ * @scope
+ *
+ *
+ * @description
+ * Directive to show the zoomed in image when hovering
+ * over an image. It wraps the easyzoom.js library
+ * (http://i-like-robots.github.io/EasyZoom/)
+ *
+ * @usage
+ * <img easy-zoom
+ *     ng-src="product.image.medium"
+ *     ez-zoom-src="product.image.large"
+ *     ez-adjacent="isInDesktopMode"
+ *     ez-overlay="!isInDesktopMode"
+ *     alt="{{product.name}}">
+ *
+ *
+ * @example
+ */
+
+angular.module('Volusion.toolboxCommon')
+	.directive('vnEasyZoom', function() {
+
+
+		var imageHash = {};
+
+		function swapImages(zoomApi) {
+			if (imageHash.standardSrc && imageHash.zoomSrc) {
+				zoomApi.swap(imageHash.standardSrc, imageHash.zoomSrc);
+				imageHash = {};
+			}
+		}
+
+		return {
+			restrict: 'A',
+			replace: true,
+			templateUrl: 'easyzoom/vnEasyZoom.tpl.html',
+			scope: {
+				ngSrc: '=',
+				ezAdjacent: '=',
+				ezOverlay: '=',
+				ezZoomSrc: '=',
+				alt: '@'
+			},
+			link: function(scope, element) {
+				var easyzoom = element.easyZoom(),
+					api = easyzoom.data('easyZoom');
+
+				scope.$watch('ngSrc', function(newValue) {
+					if (newValue === undefined) {
+						return;
+					}
+
+					imageHash.standardSrc = newValue;
+					swapImages(api);
+				});
+
+				scope.$watch('ezZoomSrc', function(newValue) {
+					if (newValue === undefined) {
+						return;
+					}
+
+					imageHash.zoomSrc = newValue;
+					swapImages(api);
+				});
+
+				scope.$on('$destroy', function() {
+					api.teardown();
+				});
+			}
+		};
+	});
+
+'use strict';
 /**
  * @ngdoc service
  * @name Volusion.toolboxCommon.vnErrorModalService
@@ -4075,6 +4154,13 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "</div>");
   $templateCache.put("appmessages/vnAppMessage.tpl.html",
     "<alert ng-repeat=\"alert in appMessagesCtrl.alerts track by alert.id\" type=\"{{ alert.type }}\" close=appMessagesCtrl.closeAlert(alert.id)>{{alert.text}}</alert>");
+  $templateCache.put("easyzoom/vnEasyZoom.tpl.html",
+    "<div class=easyzoom data-ng-class=\"{ 'easyzoom--adjacent': ezAdjacent, 'easyzoom--overlay': ezOverlay }\">\n" +
+    "    <a data-ng-href={{ezZoomSrc}}>\n" +
+    "        <img class=img-responsive data-ng-src={{ngSrc}} alt={{alt}}>\n" +
+    "        <div class=th-product-view__zoom></div>\n" +
+    "    </a>\n" +
+    "</div>");
   $templateCache.put("errormodal/vnErrorModal.tpl.html",
     "<div class=\"th-error-wrap clearfix\">\n" +
     "    <div class=th-error-details>\n" +
