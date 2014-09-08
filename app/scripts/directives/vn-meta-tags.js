@@ -32,7 +32,10 @@ angular.module('Volusion.toolboxCommon')
                 description: '=',
                 keywords   : '=',
                 toAppend   : '=',
-                robots     : '='
+                robots     : '=',
+				socialPageTitle : '=',
+				socialPageUrl : '=',
+				socialImageUrl : '='
             },
             link    : function (scope, elem) {
 
@@ -52,26 +55,41 @@ angular.module('Volusion.toolboxCommon')
                     }
                 };
 
-                var setMetaTag = function (metaTagName, metaTagContent) {
-                    var metaTag = elem.find('meta[name=' + metaTagName + ']');
+                var setMetaTag = function (metaTagName, metaTagContent, attributeName) {
+                    var metaTag = elem.find('meta[' + attributeName + '="' + metaTagName + '"]');
 
                     if (metaTag.length > 0) {
                         metaTag.remove();
                     }
                     if (metaTagContent) {
-                        elem.append(angular.element('<meta/>').attr('name', metaTagName).
+                        elem.append(angular.element('<meta/>').attr(attributeName, metaTagName).
                             attr('content', metaTagContent));
                     }
                 };
 
                 var setDescription = function (description) {
-                    setMetaTag('description', description);
+                    setMetaTag('description', description, 'name');
                 };
 
                 var setKeywords = function (keywords) {
-                    setMetaTag('keywords', keywords);
+                    setMetaTag('keywords', keywords, 'name');
                 };
 
+				var setFacebookOpenGraphPageTitle = function (pageTitle) {
+					setMetaTag('og:title', pageTitle, 'property');
+				};
+
+				var setFacebookOpenGraphPageUrl = function (pageUrl) {
+					setMetaTag('og:url', pageUrl, 'property');
+				};
+
+				var setFacebookOpenGraphImageUrl = function (imageUrl) {
+					setMetaTag('og:image', imageUrl, 'property');
+				};
+
+				scope.$watch('socialPageTitle', setFacebookOpenGraphPageTitle);
+				scope.$watch('socialPageUrl', setFacebookOpenGraphPageUrl);
+				scope.$watch('socialImageUrl', setFacebookOpenGraphImageUrl);
                 scope.$watch('title', setTitleTag);
                 scope.$watch('description', setDescription);
                 scope.$watch('keywords', setKeywords);
@@ -79,8 +97,8 @@ angular.module('Volusion.toolboxCommon')
                 scope.$watch('robots', function (newValue) {
                     if (typeof newValue !== 'undefined' &&
                         JSON.parse(newValue) === true) {
-                        setMetaTag('robots', 'index,follow');
-                        setMetaTag('GOOGLEBOT', 'INDEX,FOLLOW');
+                        setMetaTag('robots', 'index,follow', 'name');
+                        setMetaTag('GOOGLEBOT', 'INDEX,FOLLOW', 'name');
                     }
                 });
             }
