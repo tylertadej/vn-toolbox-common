@@ -26,6 +26,7 @@ angular.module('Volusion.toolboxCommon', [
     'ngRoute',
     'pascalprecht.translate',
     'firebase',
+    'ui.bootstrap',
     'Volusion.toolboxCommon.templates'
 ])
     .config(
