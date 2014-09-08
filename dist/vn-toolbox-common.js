@@ -1347,7 +1347,7 @@ angular.module('Volusion.toolboxCommon')
     }]);
 
 angular.module('Volusion.toolboxCommon')
-	.directive('vnSortSearch', ['vnProductParams', function (vnProductParams) {
+	.directive('vnSortSearch', ['vnProductParams', 'vnSortDefault', function (vnProductParams, vnSortDefault) {
 
 		'use strict';
 
@@ -1360,7 +1360,7 @@ angular.module('Volusion.toolboxCommon')
 			link       : function postLink(scope) {
 				// THe implication here is that nothing was parsed from the url so lets use this as default
 				if ('' === vnProductParams.getSort()) {
-					vnProductParams.setSort('relevance'); // Default to this
+					vnProductParams.setSort(vnSortDefault);
 				}
 
 				scope.sortBy = function (strategy) {
@@ -3696,6 +3696,20 @@ angular.module('Volusion.toolboxCommon')
 
     });
 
+'use strict';
+
+/**
+ * @ngdoc service
+ * @name Volusion.toolboxCommon.vnSortDefault
+ * @description
+ * # vnSortDefault
+ * Constant in the Volusion.toolboxCommon to set up the sorting directive.
+ * Will be ideal to have it in a constant so that vnAppRoute service can use it to
+ * implement logic rules that relate to how urls should behave / look.
+ */
+angular.module('Volusion.toolboxCommon')
+  .constant('vnSortDefault', 'relevance');
+
 angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', function($templateCache) {
   $templateCache.put("vn-faceted-search/vn-category-search.html",
     "<div class=vn-category-search__category-items data-ng-repeat=\"cat in categories\" data-ng-class=\"{ '-last': $last }\">\n" +
@@ -3723,7 +3737,7 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "    <div data-ng-if=\"facet.displayType != 'swatches'\" class=facet-properties>\n" +
     "        <label class=facet-property data-ng-repeat=\"property in facet.properties track by $index\" data-ng-class=\"{ '-last': $last }\">\n" +
     "\n" +
-    "            <input type=checkbox name=property.name data-ng-checked=selectProperty(property) data-ng-click=refineFacetSearch(property)>\n" +
+    "            <input type=checkbox name=property.name data-ng-checked=selectProperty(property) data-ng-click=\"refineFacetSearch(property)\">\n" +
     "            <span class=name>{{ property.name }}</span>\n" +
     "            <span class=count>{{ property.count }}</span>\n" +
     "        </label>\n" +
@@ -3785,9 +3799,9 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "	</div>\n" +
     "</div>");
   $templateCache.put("vn-faceted-search/vn-price-search.html",
-    "<input data-ng-model=minPrice data-ng-keypress=searchByPrice($event) placeholder=$>\n" +
+    "<input data-ng-model=minPrice data-ng-keypress=searchByPrice($event) placeholder=\"$\">\n" +
     "&thinsp;to&thinsp;\n" +
-    "<input data-ng-model=maxPrice data-ng-keypress=searchByPrice($event) placeholder=$$>\n" +
+    "<input data-ng-model=maxPrice data-ng-keypress=searchByPrice($event) placeholder=\"$$\">\n" +
     "<button class=\"btn btn-default facet-item__by-price__button\" type=button ng-click=searchByPrice($event)>Go\n" +
     "</button>");
   $templateCache.put("vn-faceted-search/vn-sort-search.html",
