@@ -115,7 +115,7 @@ angular.module('Volusion.toolboxCommon')
 				'<div id="vnCarousel" class="carousel slide" data-ride="carousel">' +
 				'<!-- Indicators -->' +
 				'<ol class="carousel-indicators">' +
-				'<lidata-ng-repeat="image in imageList" data-target="#vnCarousel" data-slide-to="{{ $index }}"></li>' +
+				'<li data-ng-repeat="image in imageList" data-target="#vnCarousel" data-slide-to="{{ $index }}"></li>' +
 				'</ol>' +
 				'<div data-ng-repeat="image in imageList" class="carousel-inner">' +
 				'<div class="item active">' +
