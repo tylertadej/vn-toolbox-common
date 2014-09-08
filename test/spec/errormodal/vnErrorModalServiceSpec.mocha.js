@@ -1,14 +1,14 @@
 /**
  * @module test.Volusion.toolboxCommon
- * @name ErrorModalService
+ * @name vnErrorModalService
  * @description
- * Tests for ErrorModalService under volusion.toolboxCommon
+ * Tests for vnErrorModalService under volusion.toolboxCommon
  * to ensure that it opens the modal window with the
  * default template url or the template url passed in.
  * */
 
 
-describe('Service: Volusion.toolboxCommon.ErrorModalService', function () {
+describe('Service: Volusion.toolboxCommon.vnErrorModalService', function () {
 
     // load the service's module
     beforeEach(module('Volusion.toolboxCommon'));
@@ -17,8 +17,8 @@ describe('Service: Volusion.toolboxCommon.ErrorModalService', function () {
     var service, $modal, modalOpenSpy;
 
     //update the injection
-    beforeEach(inject(function (ErrorModalService, _$modal_) {
-        service = ErrorModalService;
+    beforeEach(inject(function (vnErrorModalService, _$modal_) {
+        service = vnErrorModalService;
         $modal = _$modal_;
 
         modalOpenSpy = sinon.spy($modal, 'open');
