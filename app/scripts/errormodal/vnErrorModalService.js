@@ -11,7 +11,7 @@
 
 
 angular.module('Volusion.toolboxCommon')
-    .factory('ErrorModalService', ['$modal', function($modal){
+    .factory('vnErrorModalService', ['$modal', function($modal){
 
     return {
         showError: function(errorViewTemplateUrl) {
