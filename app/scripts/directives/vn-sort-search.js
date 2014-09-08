@@ -14,7 +14,7 @@
  * TODO: Add html and javascript here to demo it in docs.
  */
 angular.module('Volusion.toolboxCommon')
-	.directive('vnSortSearch', ['vnProductParams', function (vnProductParams) {
+	.directive('vnSortSearch', ['vnProductParams', 'vnSortDefault', function (vnProductParams, vnSortDefault) {
 
 		'use strict';
 
@@ -27,7 +27,7 @@ angular.module('Volusion.toolboxCommon')
 			link       : function postLink(scope) {
 				// THe implication here is that nothing was parsed from the url so lets use this as default
 				if ('' === vnProductParams.getSort()) {
-					vnProductParams.setSort('relevance'); // Default to this
+					vnProductParams.setSort(vnSortDefault);
 				}
 
 				scope.sortBy = function (strategy) {
