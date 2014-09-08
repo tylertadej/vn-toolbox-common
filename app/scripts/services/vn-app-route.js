@@ -47,8 +47,8 @@
  */
 
 angular.module('Volusion.toolboxCommon')
-	.factory('vnAppRoute', ['$q', '$rootScope', '$route', '$location', '$routeParams', 'vnProductParams',
-		function ($q, $rootScope, $route, $location, $routeParams, vnProductParams) {
+	.factory('vnAppRoute', ['$q', '$rootScope', '$route', '$location', '$routeParams', 'vnProductParams', 'vnSortDefault',
+		function ($q, $rootScope, $route, $location, $routeParams, vnProductParams, vnSortDefault) {
 
 			var currentStrategy = '';
 
@@ -207,11 +207,13 @@ angular.module('Volusion.toolboxCommon')
 			 * @methodOf Volusion.toolboxCommon.vnAppRoute
 			 *
 			 * @description
-			 * Check the product params for sort strategy and update the route is there is one. If there is not one,
-			 * remove the **sort** query string from the route.
+			 * Check the product params for sort strategy
+			 * - If the sort strategy is the default leave it out of the url
+			 * - If it's there and not default update the url
+			 * - If there is no sort strategy, remove the **sort** query string from the route
 			 */
 			function updateSort() {
-				if('' !== vnProductParams.getSort()) {
+				if('' !== vnProductParams.getSort() && vnSortDefault !== vnProductParams.getSort()) {
 					$location.search('sort', vnProductParams.getSort());
 				} else {
 					$location.search('sort', null);
