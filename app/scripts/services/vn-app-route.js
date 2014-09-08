@@ -51,6 +51,9 @@ angular.module('Volusion.toolboxCommon')
 		function ($q, $rootScope, $route, $location, $routeParams, vnProductParams, vnSortDefault) {
 
 			var currentStrategy = '';
+//			var currentUpdate = {
+//
+//			}
 
 
 			/**
@@ -104,6 +107,8 @@ angular.module('Volusion.toolboxCommon')
 				updatePage();
 				updateSort();
 				updateSearch();
+
+//				applyUpdates();
 			}
 
 			/**
@@ -184,7 +189,7 @@ angular.module('Volusion.toolboxCommon')
 			 * remove the **page** query string from the route.
 			 */
 			function updatePage() {
-				if('' !== vnProductParams.getPage()) {
+				if('' !== vnProductParams.getPage() && '1' !== vnProductParams.getPage() ) {
 					$location.search('page', vnProductParams.getPage());
 				} else {
 					$location.search('page', null);

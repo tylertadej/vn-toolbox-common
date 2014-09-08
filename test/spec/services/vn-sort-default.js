@@ -13,6 +13,6 @@ describe('Service: vnSortDefault', function () {
 
 	it('should default to "relevence"', function () {
 		expect(!!vnSortDefault).toBe(true);
-		expect(vnSortDefault).toBe('relevance');
+		expect(vnSortDefault).toBe('relevence');
 	});
 });
