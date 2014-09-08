@@ -102,7 +102,7 @@ angular.module('Volusion.toolboxCommon')
                     {
                         'get'   : { method: 'GET', withCredentials: true, headers: headers },
                         'save'  : { method: 'POST', withCredentials: true, headers: headers },
-                        'update': { method: 'PUT', ithCredentials: true, headers: headers },
+                        'update': { method: 'PUT', withCredentials: true, headers: headers },
                         'query' : { method: 'GET', isArray: false, headers: headers },
                         'remove': { method: 'DELETE', headers: headers },
                         'delete': { method: 'DELETE', headers: headers }
