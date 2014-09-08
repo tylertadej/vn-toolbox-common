@@ -1960,11 +1960,6 @@ angular.module('Volusion.toolboxCommon')
 			 * - If there is no sort strategy, remove the **sort** query string from the route
 			 */
 			function updateSort() {
-				console.log('vnProducParams.getSort() is: ', vnProductParams.getSort());
-				console.log('is it equal to vnSortDefault? : ', (vnSortDefault === vnProductParams.getSort()) );
-				console.log('vnSortDefault: ', vnSortDefault );
-				console.log('vnProductParams: ', vnProductParams.getSort());
-
 				if('' !== vnProductParams.getSort() && vnSortDefault !== vnProductParams.getSort()) {
 					$location.search('sort', vnProductParams.getSort());
 				} else {
