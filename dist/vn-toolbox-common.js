@@ -562,7 +562,7 @@ angular.module('Volusion.toolboxCommon')
 				'<div id="vnCarousel" class="carousel slide" data-ride="carousel">' +
 				'<!-- Indicators -->' +
 				'<ol class="carousel-indicators">' +
-				'<lidata-ng-repeat="image in imageList" data-target="#vnCarousel" data-slide-to="{{ $index }}"></li>' +
+				'<li data-ng-repeat="image in imageList" data-target="#vnCarousel" data-slide-to="{{ $index }}"></li>' +
 				'</ol>' +
 				'<div data-ng-repeat="image in imageList" class="carousel-inner">' +
 				'<div class="item active">' +
@@ -1088,58 +1088,58 @@ angular.module('Volusion.toolboxCommon')
     }]);
 
 angular.module('Volusion.toolboxCommon')
-    .directive('vnMetaTags', function () {
-        'use strict';
+	.directive('vnMetaTags', function () {
+		'use strict';
 
-        return {
-            restrict: 'EA',
-            scope   : {
-                title      : '=',
-                description: '=',
-                keywords   : '=',
-                toAppend   : '=',
-                robots     : '=',
+		return {
+			restrict: 'EA',
+			scope   : {
+				title      : '=',
+				description: '=',
+				keywords   : '=',
+				toAppend   : '=',
+				robots     : '=',
 				socialPageTitle : '=',
 				socialPageUrl : '=',
 				socialImageUrl : '='
-            },
-            link    : function (scope, elem) {
+			},
+			link    : function (scope, elem) {
 
-                var appendElement = function (elementToAppend) {
-                    if (typeof elementToAppend !== 'undefined') {
-                        elem.append(elementToAppend);
-                    }
-                };
+				var appendElement = function (elementToAppend) {
+					if (typeof elementToAppend !== 'undefined') {
+						elem.append(elementToAppend);
+					}
+				};
 
-                var setTitleTag = function (titleText) {
-                    var titleTag = elem.find('title');
-                    if (titleTag.length > 0) {
-                        titleTag.remove();
-                    }
-                    if (titleText) {
-                        elem.append(angular.element('<title/>').text(titleText));
-                    }
-                };
+				var setTitleTag = function (titleText) {
+					var titleTag = elem.find('title');
+					if (titleTag.length > 0) {
+						titleTag.remove();
+					}
+					if (titleText) {
+						elem.append(angular.element('<title/>').text(titleText));
+					}
+				};
 
-                var setMetaTag = function (metaTagName, metaTagContent, attributeName) {
-                    var metaTag = elem.find('meta[' + attributeName + '="' + metaTagName + '"]');
+				var setMetaTag = function (metaTagName, metaTagContent, attributeName) {
+					var metaTag = elem.find('meta[' + attributeName + '="' + metaTagName + '"]');
 
-                    if (metaTag.length > 0) {
-                        metaTag.remove();
-                    }
-                    if (metaTagContent) {
-                        elem.append(angular.element('<meta/>').attr(attributeName, metaTagName).
-                            attr('content', metaTagContent));
-                    }
-                };
+					if (metaTag.length > 0) {
+						metaTag.remove();
+					}
+					if (metaTagContent) {
+						elem.append(angular.element('<meta/>').attr(attributeName, metaTagName).
+							attr('content', metaTagContent));
+					}
+				};
 
-                var setDescription = function (description) {
-                    setMetaTag('description', description, 'name');
-                };
+				var setDescription = function (description) {
+					setMetaTag('description', description, 'name');
+				};
 
-                var setKeywords = function (keywords) {
-                    setMetaTag('keywords', keywords, 'name');
-                };
+				var setKeywords = function (keywords) {
+					setMetaTag('keywords', keywords, 'name');
+				};
 
 				var setFacebookOpenGraphPageTitle = function (pageTitle) {
 					setMetaTag('og:title', pageTitle, 'property');
@@ -1156,20 +1156,20 @@ angular.module('Volusion.toolboxCommon')
 				scope.$watch('socialPageTitle', setFacebookOpenGraphPageTitle);
 				scope.$watch('socialPageUrl', setFacebookOpenGraphPageUrl);
 				scope.$watch('socialImageUrl', setFacebookOpenGraphImageUrl);
-                scope.$watch('title', setTitleTag);
-                scope.$watch('description', setDescription);
-                scope.$watch('keywords', setKeywords);
-                scope.$watch('toAppend', appendElement);
-                scope.$watch('robots', function (newValue) {
-                    if (typeof newValue !== 'undefined' &&
-                        JSON.parse(newValue) === true) {
-                        setMetaTag('robots', 'index,follow', 'name');
-                        setMetaTag('GOOGLEBOT', 'INDEX,FOLLOW', 'name');
-                    }
-                });
-            }
-        };
-    });
+				scope.$watch('title', setTitleTag);
+				scope.$watch('description', setDescription);
+				scope.$watch('keywords', setKeywords);
+				scope.$watch('toAppend', appendElement);
+				scope.$watch('robots', function (newValue) {
+					if (typeof newValue !== 'undefined' &&
+						JSON.parse(newValue) === true) {
+						setMetaTag('robots', 'index,follow', 'name');
+						setMetaTag('GOOGLEBOT', 'INDEX,FOLLOW', 'name');
+					}
+				});
+			}
+		};
+	});
 
 angular.module('Volusion.toolboxCommon')
     .directive('vnNav',
@@ -1699,6 +1699,73 @@ angular.module('Volusion.toolboxCommon')
 				return $div.html();
 			};
 		});
+
+'use strict';
+/**
+ * @ngdoc directive
+ * @name Volusion.toolboxCommon.directive:vnPaginator
+ *
+ * @description
+ * The `vnPaginator` directive displays pagination controls with
+ * methods on the scope to allow moving to the next and previous
+ * page.
+ *
+ * @restrict A
+ *
+ * @requires
+ * vnProductParams
+ * themeSettings
+ *
+ * @scope
+ *
+ * @usage
+ * <div vn-paginator cursor="cursor" current-page="currentPage" query-fn="queryProducts()"></div>
+ *
+ * */
+
+
+angular.module('Volusion.toolboxCommon')
+	.directive('vnPaginator', ['vnProductParams', 'themeSettings', function (vnProductParams, themeSettings) {
+
+		return {
+			templateUrl: 'pagination/vnPaginator.tpl.html',
+
+            restrict   : 'A',
+
+            scope      : {
+				cursor : '=',
+				queryFn: '&'
+			},
+			link: function postLink(scope, elem, attrs) {
+
+				vnProductParams.setPageSize(themeSettings.getPageSize());
+
+				scope.nextPage = function () {
+					if (scope.cursor.currentPage < scope.cursor.totalPages) {
+						vnProductParams.nextPage();
+						scope.queryFn();
+					}
+				};
+
+				scope.prevPage = function () {
+					if (scope.cursor.currentPage > 1) {
+						vnProductParams.previousPage();
+						scope.queryFn();
+					}
+				};
+
+				scope.$watch(attrs.cursor, function (value) {
+
+					if (value === undefined) {
+						return;
+					}
+
+					scope.currentPage = value.currentPage.toString();
+					vnProductParams.setPage(scope.currentPage);
+				}, true);
+			}
+		};
+	}]);
 
 'use strict';
 
@@ -3993,170 +4060,84 @@ angular.module('Volusion.toolboxCommon')
 
     });
 
+'use strict';
+
+/**
+ * @ngdoc service
+ * @name Volusion.toolboxCommon.vnSortDefault
+ * @description
+ * # vnSortDefault
+ * Constant in the Volusion.toolboxCommon to set up the sorting directive.
+ * Will be ideal to have it in a constant so that vnAppRoute service can use it to
+ * implement logic rules that relate to how urls should behave / look.
+ */
 angular.module('Volusion.toolboxCommon')
-    .factory('vnSession', ['$rootScope', 'vnApi', 'vnFirebase',
-        function ($rootScope, vnApi, vnFirebase) {
-            'use strict';
+  .constant('vnSortDefault', 'relevence');
 
-            /**
-             * @ngdoc property
-             * @name accountData
-             * @property {Object} accountData
-             * @propertyOf Volusion.toolboxCommon.vnSession
-             *
-             * @description
-             * A key/value object matching the expected response api/backend authentication
-             * service.
-             */
-            var accountData = {};
+'use strict';
+/**
+ * @ngdoc service
+ * @name Volusion.toolboxCommon.themeSettings
+ *
+ * @description
+ * # themeSettings
+ * The themeSettings service is used to fetch the theme settings
+ * using the vnApi, so that it can be used within the theme.
+ *
+ * @requires $q, vnApi
+ */
 
-            /**
-             * @ngdoc function
-             * @name setFirebaseData
-             * @param {String} path Is the <ITEM> path for the resource in our Firebase schema.
-             * @param {$resource} resource Is a $resource for the vnApi Item Model
-             * @methodOf Volusion.toolboxCommon.vnSession
-             *
-             * @description
-             * Given the results of a $resource.get().$promise reset the data for the
-             * Firebase path associated with its corresponding api items.
-             *
-             * 1. Execute the given promise
-             * 2. Then, pass the path and promise params to the vnFirebase.resetDataForPath
-             *
-             * <br/>
-             * It does not return anything as the promises are async and network latency plays
-             * role in how long a response will take. We just set the data xfer process in motion
-             * here and return control to the caller. THIS HAD ISSUES IN PORTING REMOVE THIS WHEN
-             * THEN PART OF PROMISE WORKS AGAIN!!!
-             *
-             */
-            function setFirebaseData(path, resource) {
-//
-                console.log(path + ' / ' + resource);
-//                console.log('Porting issue with the prromise and data ... to fix with data-ng-stub');
-//                resource.get().$promise.then(function (result) {
-//                    vnFirebase.resetDataForPath(path, result.data);
-//                });
+angular.module('Volusion.toolboxCommon')
+	.service('themeSettings', ['$q', 'vnApi',
+		function ($q, vnApi) {
 
-            }
+			var themeSettings = {};
 
-            /**
-             * @ngdoc function
-             * @name bootstrapSessionData
-             * @methodOf Volusion.toolboxCommon.vnSession
-             *
-             * @description
-             * The Dev purpose for calling this function is to define the apiEndpoints where
-             * we will be getting data from. Here is the flow:
-             *
-             * 1. It should be called after configuration is set for SiteBuilder
-             * 2. It resets the Firebase account data to a blank slate
-             * 3. It uses the date for the vnApi endpoints to get data
-             * 4. it calls setFirebaseData with each endpoint promise.
-             *
-             * <br/>
-             * It does not return anything as the promises are async and network latency plays
-             * role in how long a response will take. We just set the data xfer process in motion
-             * here and return control to the caller.
-             *
-             */
-            function bootstrapSessionData() {
+			function hasEmptySettings(obj) {
+				for (var key in obj) {
+					if (obj.hasOwnProperty(key)) {
+						return false;
+					}
+				}
+				return true;
+			}
 
-                // The places interesting data sets live ...
-                var apiEndpoints = {
-                        articles  : vnApi.Article(),
-                        categories: vnApi.Category(),
-                        carts     : vnApi.Cart(),
-                        config    : vnApi.Configuration(),
-                        countries : vnApi.Country(),
-                        navs      : vnApi.Nav(),
-                        products  : vnApi.Product()
-                    },
-                    keys = Object.keys(apiEndpoints);
+			function init() {
+				if (hasEmptySettings(themeSettings)) {
+					vnApi.ThemeSettings().get().$promise
+						.then(function (response) {
+							// Remember themeSettings is a $resource!
+							themeSettings = response;
+						});
+				}
+			}
 
-                // proof-of-concept.
-                vnFirebase.resetSiteBuilder(); // i.e. called with no session state persistence considered.
+			function getPageSize() {
+				return themeSettings.itemsPerPage || 8;
+			}
 
-                // Grab the keys for api endpoints so we know what goes where in firebase
-                // NOTE: The key depends on accuracy of the firebase schema as it is used as a string elsewhere
-                //       for firebase url generation.
-                angular.forEach(keys, function (k) {
-                    setFirebaseData(k, apiEndpoints[k]);
-                });
-            }
+			function getThemeSettings() {
+				var deferred = $q.defer();
 
-            /**
-             * @ngdoc function
-             * @name getAccountData
-             * @methodOf Volusion.toolboxCommon.vnSession
-             * @return {object} accountData is the factory property that holds the accountData
-             * given to us from the api/backend auth services.
-             *
-             * @description
-             * Getter for the factory property accountData.
-             */
-            function getAccountData() {
-                return accountData;
-            }
+				if (hasEmptySettings(themeSettings)) {
+					vnApi.ThemeSettings().get().$promise
+						.then(function (response) {
+							deferred.resolve(response);
+							themeSettings = response;
+						});
+				} else {
+					deferred.resolve(themeSettings);
+				}
 
-            /**
-             * @ngdoc function
-             * @name init
-             * @methodOf Volusion.toolboxCommon.vnSession
-             * @return {Boolean} true or throw a new Error if there are issues.
-             *
-             * @description
-             * Use this to call basic initialization. set up the vnConfig object with its environment
-             * and any other stuff that site-dna needs to use when GETting data from the Volusion API.
-             */
-            function init() {
-                // Pre authentication set up stuff goes here.
-                return true;
-            }
+				return deferred.promise;
+			}
 
-            /**
-             * @ngdoc function
-             * @name initSession
-             * @methodOf Volusion.toolboxCommon.vnSession
-             * @param {Object} response The login response from the api/backend authentication
-             * services used for eleveated data access perminssions. (SiteBuilder & WorkSpace)
-             * @return {Boolean} true or throw a new Error if there are issues.
-             *
-             * @description
-             * Use this to call basic initialization. set up the vnConfig object with its environment
-             * and any other stuff that site-dna needs to use when GETting data from the Volusion API.
-             */
-            function initSession(response) {
-
-//                we only init once per session but have not set this yet? 5-28.2014 -matth
-                accountData = response;
-                bootstrapSessionData();
-
-            }
-
-            /**
-             * @ngdoc event
-             * @name vnSession.init
-             * @eventOf Volusion.toolboxCommon.vnSession
-             * @param {Object} event is the event passed when vnSession.init is broadcast
-             * @param {Object} args are the values to be passed in here
-             *
-             * @description
-             * Hears the vnSession.init event when it is broadcast and Passes the args to
-             * the private init function.
-             */
-            $rootScope.$on('vnSession.init', function (event, args) {
-                initSession(args);
-
-            });
-
-            return {
-                init          : init,
-                initSession   : initSession,
-                getAccountData: getAccountData
-            };
-        }]);
+			return {
+				init            : init,
+				getThemeSettings: getThemeSettings,
+				getPageSize     : getPageSize
+			};
+		}]);
 
 angular.module('Volusion.toolboxCommon')
 	.filter('html', [
@@ -4407,4 +4388,15 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "        </div>\n" +
     "    </div>\n" +
     "</div>");
+  $templateCache.put("pagination/vnPaginator.tpl.html",
+    "<ul class=pager data-ng-if=\"cursor.totalPages > 1\">\n" +
+    "	<li data-ng-class=\"{disabled: cursor.currentPage == 1}\">\n" +
+    "		<a href data-ng-click=prevPage()><span class=\"glyphicon glyphicon-chevron-left\"></span></a></li>\n" +
+    "	<li data-ng-class=\"{disabled: cursor.currentPage == cursor.totalPages}\">\n" +
+    "		<a href data-ng-click=nextPage()><span class=\"glyphicon glyphicon-chevron-right\"></span></a></li>\n" +
+    "</ul>\n" +
+    "\n" +
+    "	<div class=pager>\n" +
+    "		Page {{ cursor.currentPage }} of {{ cursor.totalPages }}\n" +
+    "	</div>");
 }]);
