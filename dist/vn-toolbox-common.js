@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.24 (2014-09-08) */
+/*! vn-toolbox-common - ver.0.0.26 (2014-09-09) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'ui.bootstrap', 'Volusion.toolboxCommon.templates'])
@@ -1564,6 +1564,79 @@ angular.module('Volusion.toolboxCommon')
 		};
 	});
 
+'use strict';
+
+/**
+ * @ngdoc directive
+ * @name Volusion.toolboxCommon:vnLegacyLink
+ * @restrict AE
+ *
+ *
+ * @description
+ * The `vnLegacyLink` directive is used to link to URLs
+ * which are not part of the Single Page Application.
+ *
+ * @usage
+ * <a data-vn-legacy-link="/reviewnew.asp?productcode={{product.code}}">
+ *     Write a Review
+ * </a>
+ *
+ *
+ * @example
+ */
+
+angular.module('Volusion.toolboxCommon')
+	.directive('vnLegacyLink', [
+		'$window',
+		function ($window) {
+
+			return {
+				restrict: 'AE',
+				link    : function (scope, element, attrs) {
+
+					attrs.$observe('vnLegacyLink', function (newValue) {
+						element.attr('href', newValue);
+					});
+
+					element.on('click', function (e) {
+						e.preventDefault();
+						$window.location.assign(this.href);
+					});
+				}
+			};
+		}
+	]);
+
+'use strict';
+
+/**
+ * @ngdoc filter
+ * @name Volusion.toolboxCommon:vnLegacyLinkify
+ *
+ * @description
+ * The `vnLegacyLinkify` filter sets the `target` attribute of `<a>` elements
+ * within the HTML string passed in.
+ *
+ * @usage
+ * <h1 data-vn-element="title" data-ng-bind-html="article.title | vnLegacyLinkify | html"></h1>
+ *
+ * @example
+ */
+
+angular.module('Volusion.toolboxCommon')
+	.filter('vnLegacyLinkify',
+		function() {
+
+			return function(html) {
+				var $div = angular.element('<div/>').html(html);
+				angular.forEach($div.find('a'), function(a) {
+					var $a = angular.element(a);
+					$a.attr('target', $a.attr('target') || '_self');
+				});
+				return $div.html();
+			};
+		});
+
 angular.module('Volusion.toolboxCommon')
     .value('vnApiConfigurations', {});
 
@@ -1670,7 +1743,7 @@ angular.module('Volusion.toolboxCommon')
                     {
                         'get'   : { method: 'GET', withCredentials: true, headers: headers },
                         'save'  : { method: 'POST', withCredentials: true, headers: headers },
-                        'update': { method: 'PUT', ithCredentials: true, headers: headers },
+                        'update': { method: 'PUT', withCredentials: true, headers: headers },
                         'query' : { method: 'GET', isArray: false, headers: headers },
                         'remove': { method: 'DELETE', headers: headers },
                         'delete': { method: 'DELETE', headers: headers }
@@ -2234,13 +2307,32 @@ angular.module('Volusion.toolboxCommon')
 						// on success
 						cart = response.data;
 						cart.serviceErrors = [];
-						cart.warnings = response.data.warnings || [];
+						cart.warnings = response.warnings || response.data.warnings || [];
 					},
 					function (response) {
 						// on error
 						cart = response.data.data;
-						cart.serviceErrors = response.data.serviceErrors || [];
-						cart.warnings = response.data.warnings || [];
+						cart.serviceErrors = response.serviceErrors || response.data.serviceErrors || [];
+						cart.warnings = response.warnings || response.data.warnings || [];
+					})
+					.then(function () {
+						return cart;
+					});
+			}
+
+			function updateCart() {
+				return vnApi.Cart().update({cartId: cart.id}, cart).$promise
+					.then(function (response) {
+						// on success
+						cart = response.data;
+						cart.serviceErrors = [];
+						cart.warnings = response.warnings || response.data.warnings || [];
+					},
+					function (response) {
+						// on error
+						cart = response.data.data;
+						cart.serviceErrors = response.serviceErrors || response.data.serviceErrors || [];
+						cart.warnings = response.warnings || response.data.warnings || [];
 					})
 					.then(function () {
 						return cart;
@@ -2252,7 +2344,8 @@ angular.module('Volusion.toolboxCommon')
 				getCartItemsCount: getCartItemsCount,
 				init             : init,
 				reset            : reset,
-				saveCart         : saveCart
+				saveCart         : saveCart,
+				updateCart		 : updateCart
 			};
 		}]);
 
@@ -3992,7 +4085,7 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "    <div data-ng-if=\"facet.displayType != 'swatches'\" class=facet-properties>\n" +
     "        <label class=facet-property data-ng-repeat=\"property in facet.properties track by $index\" data-ng-class=\"{ '-last': $last }\">\n" +
     "\n" +
-    "            <input type=checkbox name=property.name data-ng-checked=selectProperty(property) data-ng-click=\"refineFacetSearch(property)\">\n" +
+    "            <input type=checkbox name=property.name data-ng-checked=selectProperty(property) data-ng-click=refineFacetSearch(property)>\n" +
     "            <span class=name>{{ property.name }}</span>\n" +
     "            <span class=count>{{ property.count }}</span>\n" +
     "        </label>\n" +
@@ -4054,9 +4147,9 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "	</div>\n" +
     "</div>");
   $templateCache.put("vn-faceted-search/vn-price-search.html",
-    "<input data-ng-model=minPrice data-ng-keypress=searchByPrice($event) placeholder=\"$\">\n" +
+    "<input data-ng-model=minPrice data-ng-keypress=searchByPrice($event) placeholder=$>\n" +
     "&thinsp;to&thinsp;\n" +
-    "<input data-ng-model=maxPrice data-ng-keypress=searchByPrice($event) placeholder=\"$$\">\n" +
+    "<input data-ng-model=maxPrice data-ng-keypress=searchByPrice($event) placeholder=$$>\n" +
     "<button class=\"btn btn-default facet-item__by-price__button\" type=button ng-click=searchByPrice($event)>Go\n" +
     "</button>");
   $templateCache.put("vn-faceted-search/vn-sort-search.html",
