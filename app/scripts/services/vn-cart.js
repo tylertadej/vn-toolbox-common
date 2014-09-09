@@ -44,13 +44,32 @@ angular.module('Volusion.toolboxCommon')
 						// on success
 						cart = response.data;
 						cart.serviceErrors = [];
-						cart.warnings = response.data.warnings || [];
+						cart.warnings = response.warnings || response.data.warnings || [];
 					},
 					function (response) {
 						// on error
 						cart = response.data.data;
-						cart.serviceErrors = response.data.serviceErrors || [];
-						cart.warnings = response.data.warnings || [];
+						cart.serviceErrors = response.serviceErrors || response.data.serviceErrors || [];
+						cart.warnings = response.warnings || response.data.warnings || [];
+					})
+					.then(function () {
+						return cart;
+					});
+			}
+
+			function updateCart() {
+				return vnApi.Cart().update({cartId: cart.id}, cart).$promise
+					.then(function (response) {
+						// on success
+						cart = response.data;
+						cart.serviceErrors = [];
+						cart.warnings = response.warnings || response.data.warnings || [];
+					},
+					function (response) {
+						// on error
+						cart = response.data.data;
+						cart.serviceErrors = response.serviceErrors || response.data.serviceErrors || [];
+						cart.warnings = response.warnings || response.data.warnings || [];
 					})
 					.then(function () {
 						return cart;
@@ -62,6 +81,7 @@ angular.module('Volusion.toolboxCommon')
 				getCartItemsCount: getCartItemsCount,
 				init             : init,
 				reset            : reset,
-				saveCart         : saveCart
+				saveCart         : saveCart,
+				updateCart		 : updateCart
 			};
 		}]);
