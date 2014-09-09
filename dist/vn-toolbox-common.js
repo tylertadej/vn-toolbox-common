@@ -2,7 +2,7 @@
 /*! vn-toolbox-common - ver.0.0.26 (2014-09-09) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
-angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'ui.bootstrap', 'Volusion.toolboxCommon.templates'])
+angular.module('Volusion.toolboxCommon', ['ngSanitize', 'pascalprecht.translate', 'ui.bootstrap', 'Volusion.toolboxCommon.templates'])
     .config(
         [ '$httpProvider', '$translateProvider',
             function ( $httpProvider, $translateProvider) {
@@ -4157,6 +4157,40 @@ angular.module('Volusion.toolboxCommon')
                 getAccountData: getAccountData
             };
         }]);
+
+angular.module('Volusion.toolboxCommon')
+	.filter('html', [
+		'$sce',
+		function ($sce) {
+
+			'use strict';
+
+			return function (content) {
+				return $sce.trustAsHtml(content);
+			};
+		}
+	]);
+
+angular.module('Volusion.toolboxCommon')
+	.filter('reverse', function() {
+
+		'use strict';
+
+		return function(items) {
+			return (items === undefined) ? null : items.slice().reverse();
+		};
+	});
+
+angular.module('Volusion.toolboxCommon')
+	.filter('seoFriendly', function seoFriendly() {
+
+		'use strict';
+
+		return function (input) {
+			var words = input.match(/[0-9a-z]+/gi);
+			return words ? words.join('-') : '';
+		};
+	});
 
 angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', function($templateCache) {
   $templateCache.put("vn-faceted-search/vn-category-search.html",
