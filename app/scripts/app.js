@@ -24,6 +24,7 @@ angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', [
     'ngResource',
     'ngRoute',
+    'ngSanitize',
     'pascalprecht.translate',
     'firebase',
     'ui.bootstrap',
