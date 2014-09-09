@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.26 (2014-09-08) */
+/*! vn-toolbox-common - ver.0.0.24 (2014-09-08) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'ui.bootstrap', 'Volusion.toolboxCommon.templates'])
@@ -1035,7 +1035,10 @@ angular.module('Volusion.toolboxCommon')
                 description: '=',
                 keywords   : '=',
                 toAppend   : '=',
-                robots     : '='
+                robots     : '=',
+				socialPageTitle : '=',
+				socialPageUrl : '=',
+				socialImageUrl : '='
             },
             link    : function (scope, elem) {
 
@@ -1055,26 +1058,41 @@ angular.module('Volusion.toolboxCommon')
                     }
                 };
 
-                var setMetaTag = function (metaTagName, metaTagContent) {
-                    var metaTag = elem.find('meta[name=' + metaTagName + ']');
+                var setMetaTag = function (metaTagName, metaTagContent, attributeName) {
+                    var metaTag = elem.find('meta[' + attributeName + '="' + metaTagName + '"]');
 
                     if (metaTag.length > 0) {
                         metaTag.remove();
                     }
                     if (metaTagContent) {
-                        elem.append(angular.element('<meta/>').attr('name', metaTagName).
+                        elem.append(angular.element('<meta/>').attr(attributeName, metaTagName).
                             attr('content', metaTagContent));
                     }
                 };
 
                 var setDescription = function (description) {
-                    setMetaTag('description', description);
+                    setMetaTag('description', description, 'name');
                 };
 
                 var setKeywords = function (keywords) {
-                    setMetaTag('keywords', keywords);
+                    setMetaTag('keywords', keywords, 'name');
                 };
 
+				var setFacebookOpenGraphPageTitle = function (pageTitle) {
+					setMetaTag('og:title', pageTitle, 'property');
+				};
+
+				var setFacebookOpenGraphPageUrl = function (pageUrl) {
+					setMetaTag('og:url', pageUrl, 'property');
+				};
+
+				var setFacebookOpenGraphImageUrl = function (imageUrl) {
+					setMetaTag('og:image', imageUrl, 'property');
+				};
+
+				scope.$watch('socialPageTitle', setFacebookOpenGraphPageTitle);
+				scope.$watch('socialPageUrl', setFacebookOpenGraphPageUrl);
+				scope.$watch('socialImageUrl', setFacebookOpenGraphImageUrl);
                 scope.$watch('title', setTitleTag);
                 scope.$watch('description', setDescription);
                 scope.$watch('keywords', setKeywords);
@@ -1082,8 +1100,8 @@ angular.module('Volusion.toolboxCommon')
                 scope.$watch('robots', function (newValue) {
                     if (typeof newValue !== 'undefined' &&
                         JSON.parse(newValue) === true) {
-                        setMetaTag('robots', 'index,follow');
-                        setMetaTag('GOOGLEBOT', 'INDEX,FOLLOW');
+                        setMetaTag('robots', 'index,follow', 'name');
+                        setMetaTag('GOOGLEBOT', 'INDEX,FOLLOW', 'name');
                     }
                 });
             }
@@ -3703,19 +3721,170 @@ angular.module('Volusion.toolboxCommon')
 
     });
 
-'use strict';
-
-/**
- * @ngdoc service
- * @name Volusion.toolboxCommon.vnSortDefault
- * @description
- * # vnSortDefault
- * Constant in the Volusion.toolboxCommon to set up the sorting directive.
- * Will be ideal to have it in a constant so that vnAppRoute service can use it to
- * implement logic rules that relate to how urls should behave / look.
- */
 angular.module('Volusion.toolboxCommon')
-  .constant('vnSortDefault', 'relevence');
+    .factory('vnSession', ['$rootScope', 'vnApi', 'vnFirebase',
+        function ($rootScope, vnApi, vnFirebase) {
+            'use strict';
+
+            /**
+             * @ngdoc property
+             * @name accountData
+             * @property {Object} accountData
+             * @propertyOf Volusion.toolboxCommon.vnSession
+             *
+             * @description
+             * A key/value object matching the expected response api/backend authentication
+             * service.
+             */
+            var accountData = {};
+
+            /**
+             * @ngdoc function
+             * @name setFirebaseData
+             * @param {String} path Is the <ITEM> path for the resource in our Firebase schema.
+             * @param {$resource} resource Is a $resource for the vnApi Item Model
+             * @methodOf Volusion.toolboxCommon.vnSession
+             *
+             * @description
+             * Given the results of a $resource.get().$promise reset the data for the
+             * Firebase path associated with its corresponding api items.
+             *
+             * 1. Execute the given promise
+             * 2. Then, pass the path and promise params to the vnFirebase.resetDataForPath
+             *
+             * <br/>
+             * It does not return anything as the promises are async and network latency plays
+             * role in how long a response will take. We just set the data xfer process in motion
+             * here and return control to the caller. THIS HAD ISSUES IN PORTING REMOVE THIS WHEN
+             * THEN PART OF PROMISE WORKS AGAIN!!!
+             *
+             */
+            function setFirebaseData(path, resource) {
+//
+                console.log(path + ' / ' + resource);
+//                console.log('Porting issue with the prromise and data ... to fix with data-ng-stub');
+//                resource.get().$promise.then(function (result) {
+//                    vnFirebase.resetDataForPath(path, result.data);
+//                });
+
+            }
+
+            /**
+             * @ngdoc function
+             * @name bootstrapSessionData
+             * @methodOf Volusion.toolboxCommon.vnSession
+             *
+             * @description
+             * The Dev purpose for calling this function is to define the apiEndpoints where
+             * we will be getting data from. Here is the flow:
+             *
+             * 1. It should be called after configuration is set for SiteBuilder
+             * 2. It resets the Firebase account data to a blank slate
+             * 3. It uses the date for the vnApi endpoints to get data
+             * 4. it calls setFirebaseData with each endpoint promise.
+             *
+             * <br/>
+             * It does not return anything as the promises are async and network latency plays
+             * role in how long a response will take. We just set the data xfer process in motion
+             * here and return control to the caller.
+             *
+             */
+            function bootstrapSessionData() {
+
+                // The places interesting data sets live ...
+                var apiEndpoints = {
+                        articles  : vnApi.Article(),
+                        categories: vnApi.Category(),
+                        carts     : vnApi.Cart(),
+                        config    : vnApi.Configuration(),
+                        countries : vnApi.Country(),
+                        navs      : vnApi.Nav(),
+                        products  : vnApi.Product()
+                    },
+                    keys = Object.keys(apiEndpoints);
+
+                // proof-of-concept.
+                vnFirebase.resetSiteBuilder(); // i.e. called with no session state persistence considered.
+
+                // Grab the keys for api endpoints so we know what goes where in firebase
+                // NOTE: The key depends on accuracy of the firebase schema as it is used as a string elsewhere
+                //       for firebase url generation.
+                angular.forEach(keys, function (k) {
+                    setFirebaseData(k, apiEndpoints[k]);
+                });
+            }
+
+            /**
+             * @ngdoc function
+             * @name getAccountData
+             * @methodOf Volusion.toolboxCommon.vnSession
+             * @return {object} accountData is the factory property that holds the accountData
+             * given to us from the api/backend auth services.
+             *
+             * @description
+             * Getter for the factory property accountData.
+             */
+            function getAccountData() {
+                return accountData;
+            }
+
+            /**
+             * @ngdoc function
+             * @name init
+             * @methodOf Volusion.toolboxCommon.vnSession
+             * @return {Boolean} true or throw a new Error if there are issues.
+             *
+             * @description
+             * Use this to call basic initialization. set up the vnConfig object with its environment
+             * and any other stuff that site-dna needs to use when GETting data from the Volusion API.
+             */
+            function init() {
+                // Pre authentication set up stuff goes here.
+                return true;
+            }
+
+            /**
+             * @ngdoc function
+             * @name initSession
+             * @methodOf Volusion.toolboxCommon.vnSession
+             * @param {Object} response The login response from the api/backend authentication
+             * services used for eleveated data access perminssions. (SiteBuilder & WorkSpace)
+             * @return {Boolean} true or throw a new Error if there are issues.
+             *
+             * @description
+             * Use this to call basic initialization. set up the vnConfig object with its environment
+             * and any other stuff that site-dna needs to use when GETting data from the Volusion API.
+             */
+            function initSession(response) {
+
+//                we only init once per session but have not set this yet? 5-28.2014 -matth
+                accountData = response;
+                bootstrapSessionData();
+
+            }
+
+            /**
+             * @ngdoc event
+             * @name vnSession.init
+             * @eventOf Volusion.toolboxCommon.vnSession
+             * @param {Object} event is the event passed when vnSession.init is broadcast
+             * @param {Object} args are the values to be passed in here
+             *
+             * @description
+             * Hears the vnSession.init event when it is broadcast and Passes the args to
+             * the private init function.
+             */
+            $rootScope.$on('vnSession.init', function (event, args) {
+                initSession(args);
+
+            });
+
+            return {
+                init          : init,
+                initSession   : initSession,
+                getAccountData: getAccountData
+            };
+        }]);
 
 angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', function($templateCache) {
   $templateCache.put("vn-faceted-search/vn-category-search.html",
