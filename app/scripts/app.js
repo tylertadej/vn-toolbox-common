@@ -22,6 +22,7 @@
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', [
+    'ngCookies',
     'ngResource',
     'ngRoute',
     'ngSanitize',

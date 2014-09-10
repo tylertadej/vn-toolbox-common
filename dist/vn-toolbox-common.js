@@ -2,7 +2,7 @@
 /*! vn-toolbox-common - ver.0.0.26 (2014-09-10) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
-angular.module('Volusion.toolboxCommon', ['ngSanitize', 'pascalprecht.translate', 'ui.bootstrap', 'Volusion.toolboxCommon.templates'])
+angular.module('Volusion.toolboxCommon', ['ngCookies', 'ngSanitize', 'pascalprecht.translate', 'ui.bootstrap', 'Volusion.toolboxCommon.templates'])
     .config(
         [ '$httpProvider', '$translateProvider',
             function ( $httpProvider, $translateProvider) {
@@ -4417,6 +4417,150 @@ angular.module('Volusion.toolboxCommon')
 				getPageSize     : getPageSize
 			};
 		}]);
+
+'use strict';
+
+angular.module('Volusion.toolboxCommon')
+	.factory('storage', [
+		'$window', '$cookieStore',
+		function($window, $cookieStore) {
+
+			function createLocalStorageAdapter() {
+				return {
+					get: function(key) {
+						var value = $window.localStorage.getItem(key);
+						if (value === null) {
+							return resolveCookieValue(key);
+						}
+						return value;
+					},
+					set: function(key, value) {
+						return $window.localStorage.setItem(key, value);
+					},
+					remove: function(key) {
+						return $window.localStorage.removeItem(key);
+					}
+				};
+			}
+
+			function resolveCookieValue(key) {
+				var value = $cookieStore.get(key);
+				return (typeof value === 'undefined') ? null : value;
+			}
+
+			function createCookieStorageFacade() {
+				return {
+					get: function(key) {
+						return resolveCookieValue(key);
+					},
+					set: function(key, value) {
+						return $cookieStore.put(key, value);
+					},
+					remove: function(key) {
+						return $cookieStore.remove(key);
+					}
+				};
+			}
+
+			if ('localStorage' in $window && $window.localStorage !== null) {
+				return createLocalStorageAdapter();
+			} else {
+				return createCookieStorageFacade();
+			}
+
+		}
+	]);
+
+'use strict';
+
+var storageKey = 'VN_TRANSLATE';
+
+// ReSharper disable once InconsistentNaming
+function Translate($translate, $translatePartialLoader, storage, options, disableTranslations) {
+	this.$translate = $translate;
+	this.$translatePartialLoader = $translatePartialLoader;
+	this.storage = storage;
+	this.disableTranslations = disableTranslations;
+	this.configure(angular.extend(options, this.getConfig()));
+	this.addPart = $translatePartialLoader.addPart;
+}
+
+Translate.prototype.getConfig = function() {
+	var storage = this.storage;
+	var config = JSON.parse(storage.get(storageKey)) || {};
+	var lang = storage.get('NG_TRANSLATE_LANG_KEY');
+	if (!this.disableTranslations && lang && lang !== 'undefined') {
+		config.lang = lang;
+	}
+	return config;
+};
+
+Translate.prototype.configure = function(config) {
+	config = angular.extend(this.getConfig(), config);
+	this.storage.set(storageKey, JSON.stringify(config));
+	this.$translate.use(config.lang);
+};
+
+Translate.prototype.addParts = function() {
+	if (this.disableTranslations) {
+		return true;
+	}
+
+	var loader = this.$translatePartialLoader;
+
+	angular.forEach(arguments, function(part) {
+		loader.addPart(part);
+	});
+
+	return this.$translate.refresh();
+};
+
+
+function TranslateProvider($translateProvider) {
+	this.$translateProvider = $translateProvider;
+	this.setPreferredLanguage = $translateProvider.preferredLanguage;
+}
+
+TranslateProvider.prototype.$get = [
+	'$translate', '$translatePartialLoader', 'storage',
+	function($translate, $translatePartialLoader, storage) {
+		var options = this.options;
+
+		return new Translate($translate, $translatePartialLoader, storage, {
+			region: options.region,
+			lang: options.lang,
+			country: options.country
+		}, options.disableTranslations);
+	}
+];
+
+TranslateProvider.prototype.configure = function(options) {
+	options = angular.extend({ region: 'us', lang: 'en', country: 'us' }, options);
+
+	if (options.lang) {
+		this.setPreferredLanguage(options.lang);
+	}
+	this.options = options;
+
+	if (!options.disableTranslations) {
+		this.initTranslateProvider(options.lang);
+	}
+};
+
+TranslateProvider.prototype.initTranslateProvider = function(lang) {
+	var $translateProvider = this.$translateProvider;
+	$translateProvider.useLoader('$translatePartialLoader', {
+		urlTemplate: '/translations/{part}/{lang}.json'
+	});
+	if (lang === 'en') {
+		$translateProvider.useMessageFormatInterpolation();
+	}
+	$translateProvider.useMissingTranslationHandlerLog();
+	$translateProvider.useLocalStorage();
+};
+
+angular.module('Volusion.toolboxCommon')
+	.provider('translate', ['$translateProvider', TranslateProvider]);
 
 angular.module('Volusion.toolboxCommon')
 	.filter('html', [
