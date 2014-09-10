@@ -1,5 +1,5 @@
 angular.module('Volusion.toolboxCommon.templates', []);
-angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'ui.bootstrap', 'Volusion.toolboxCommon.templates'])
+angular.module('Volusion.toolboxCommon', ['ngCookies', 'ngSanitize', 'pascalprecht.translate', 'ui.bootstrap', 'Volusion.toolboxCommon.templates'])
     .config(
         [ '$httpProvider', '$translateProvider',
             function ( $httpProvider, $translateProvider) {

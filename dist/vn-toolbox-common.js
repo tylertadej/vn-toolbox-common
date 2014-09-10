@@ -1,8 +1,8 @@
 
-/*! vn-toolbox-common - ver.0.0.24 (2014-09-08) */
+/*! vn-toolbox-common - ver.0.0.26 (2014-09-10) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
-angular.module('Volusion.toolboxCommon', ['pascalprecht.translate', 'ui.bootstrap', 'Volusion.toolboxCommon.templates'])
+angular.module('Volusion.toolboxCommon', ['ngCookies', 'ngSanitize', 'pascalprecht.translate', 'ui.bootstrap', 'Volusion.toolboxCommon.templates'])
     .config(
         [ '$httpProvider', '$translateProvider',
             function ( $httpProvider, $translateProvider) {
@@ -136,6 +136,201 @@ angular.module('Volusion.toolboxCommon')
 
         return self;
     }]);
+
+'use strict';
+
+/**
+ * @ngdoc filter
+ * @name Volusion.toolboxCommon:vnCacheBust
+ *
+ * @description
+ * The `vnCacheBust` filter adds a cache busting token to the end of the
+ * URL string passed in.
+ *
+ * @requires
+ * vnTokenGenerator
+ *
+ * @usage
+ * <a ng-href="foo.someUrl | vnCacheBust">Bar</a>
+ *
+ * @example
+ */
+
+angular.module('Volusion.toolboxCommon').filter('vnCacheBust', [
+    'vnTokenGenerator',
+    function (vnTokenGenerator) {
+
+
+        function appendTokenToUrl(url) {
+            if (!url || !url.trim()) {
+                return url;
+            }
+
+            var separator = (url.indexOf('?') > -1) ? '&' : '?';
+            return url + separator + '_=' + vnTokenGenerator.getCacheBustingToken();
+        }
+
+        return function (url) {
+            return appendTokenToUrl(url);
+        };
+    }
+]);
+
+'use strict';
+/**
+ * @ngdoc service
+ * @name Volusion.toolboxCommon:vnTokenGenerator
+ *
+ * @description
+ * # vnTokenGenerator
+ * The vnTokenGenerator service is used to generate a unique
+ * token which can be used for cache busting
+ *
+ */
+
+angular.module('Volusion.toolboxCommon')
+	.factory('vnTokenGenerator', function () {
+
+		function getCacheBustingToken() {
+			return (new Date()).valueOf();
+		}
+
+		return {
+			getCacheBustingToken: getCacheBustingToken
+		};
+	});
+
+'use strict';
+
+/**
+ * @ngdoc provider
+ *
+ * @name Volusion.toolboxCommon:vnAppConfig
+ *
+ * @description
+ * # vnAppConfig
+ * Application configuration provider with methods to
+ * set and get the application wide configuration
+ * variables.
+ *
+ */
+
+angular.module('Volusion.toolboxCommon')
+	.provider('vnAppConfig', [function () {
+
+		var apiHost,
+			apiUrl,
+			country = 'us',
+			disableTranslations = false,
+			lang = 'en',
+			region = 'us',
+			urlPrefix = '';
+
+
+		// Private constructor
+		function AppConfig() {
+			this.AppConfig = function () {
+				return this;
+			};
+
+			this.getApiHost = function () {
+				return apiHost;
+			};
+
+		}
+
+        this.setApiPath = function(host, endpoint) {
+            apiHost = host;
+            apiUrl = host + endpoint;
+        };
+
+		this.getApiPath = function () {
+			return apiUrl;
+		};
+
+		this.getCountry = function () {
+			return country;
+		};
+
+		this.getIsLocalEnv = function () {
+			return (apiHost !== '');
+		};
+
+		this.getLang = function () {
+			return lang;
+		};
+
+		this.getPrefix = function () {
+			return urlPrefix;
+		};
+
+		this.getRegion = function () {
+			return region;
+		};
+
+		this.getTranslations = function () {
+			return disableTranslations;
+		};
+
+
+		this.setCountry = function (stringCountry) {
+			country = stringCountry;
+		};
+
+
+		this.setLang = function (stringLang) {
+			lang = stringLang;
+		};
+
+		this.setPrefix = function (stringPath) {
+			urlPrefix = stringPath;
+		};
+
+		this.setRegion = function (stringRegion) {
+			region = stringRegion;
+		};
+
+		this.setTranslations = function (bool) {
+			disableTranslations = bool;
+		};
+
+		// Method for instantiating
+		this.$get = function () {
+			return new AppConfig();
+		};
+	}]);
+
+'use strict';
+
+/**
+ * @ngdoc service
+ *
+ * @name Volusion.toolboxCommon:vnSiteConfig
+ *
+ * @description
+ * # vnSiteConfig
+ * Site configuration service which gets the server side
+ * configurations from the config API.
+ *
+ */
+
+angular.module('Volusion.toolboxCommon')
+	.service('vnSiteConfig', ['vnApi', '$q',
+		function (vnApi, $q) {
+
+			var siteConfig = {};
+
+			siteConfig.getConfig = function () {
+				var deferred = $q.defer();
+				vnApi.Configuration().get().$promise
+					.then(function (response) {
+						deferred.resolve(response);
+					});
+				return deferred.promise;
+			};
+
+			return siteConfig;
+		}]);
 
 angular.module('Volusion.toolboxCommon')
 	.controller('OptionsCtrl', ['$rootScope','$scope',
@@ -499,7 +694,7 @@ angular.module('Volusion.toolboxCommon')
 				'<div id="vnCarousel" class="carousel slide" data-ride="carousel">' +
 				'<!-- Indicators -->' +
 				'<ol class="carousel-indicators">' +
-				'<lidata-ng-repeat="image in imageList" data-target="#vnCarousel" data-slide-to="{{ $index }}"></li>' +
+				'<li data-ng-repeat="image in imageList" data-target="#vnCarousel" data-slide-to="{{ $index }}"></li>' +
 				'</ol>' +
 				'<div data-ng-repeat="image in imageList" class="carousel-inner">' +
 				'<div class="item active">' +
@@ -1025,58 +1220,58 @@ angular.module('Volusion.toolboxCommon')
     }]);
 
 angular.module('Volusion.toolboxCommon')
-    .directive('vnMetaTags', function () {
-        'use strict';
+	.directive('vnMetaTags', function () {
+		'use strict';
 
-        return {
-            restrict: 'EA',
-            scope   : {
-                title      : '=',
-                description: '=',
-                keywords   : '=',
-                toAppend   : '=',
-                robots     : '=',
+		return {
+			restrict: 'EA',
+			scope   : {
+				title      : '=',
+				description: '=',
+				keywords   : '=',
+				toAppend   : '=',
+				robots     : '=',
 				socialPageTitle : '=',
 				socialPageUrl : '=',
 				socialImageUrl : '='
-            },
-            link    : function (scope, elem) {
+			},
+			link    : function (scope, elem) {
 
-                var appendElement = function (elementToAppend) {
-                    if (typeof elementToAppend !== 'undefined') {
-                        elem.append(elementToAppend);
-                    }
-                };
+				var appendElement = function (elementToAppend) {
+					if (typeof elementToAppend !== 'undefined') {
+						elem.append(elementToAppend);
+					}
+				};
 
-                var setTitleTag = function (titleText) {
-                    var titleTag = elem.find('title');
-                    if (titleTag.length > 0) {
-                        titleTag.remove();
-                    }
-                    if (titleText) {
-                        elem.append(angular.element('<title/>').text(titleText));
-                    }
-                };
+				var setTitleTag = function (titleText) {
+					var titleTag = elem.find('title');
+					if (titleTag.length > 0) {
+						titleTag.remove();
+					}
+					if (titleText) {
+						elem.append(angular.element('<title/>').text(titleText));
+					}
+				};
 
-                var setMetaTag = function (metaTagName, metaTagContent, attributeName) {
-                    var metaTag = elem.find('meta[' + attributeName + '="' + metaTagName + '"]');
+				var setMetaTag = function (metaTagName, metaTagContent, attributeName) {
+					var metaTag = elem.find('meta[' + attributeName + '="' + metaTagName + '"]');
 
-                    if (metaTag.length > 0) {
-                        metaTag.remove();
-                    }
-                    if (metaTagContent) {
-                        elem.append(angular.element('<meta/>').attr(attributeName, metaTagName).
-                            attr('content', metaTagContent));
-                    }
-                };
+					if (metaTag.length > 0) {
+						metaTag.remove();
+					}
+					if (metaTagContent) {
+						elem.append(angular.element('<meta/>').attr(attributeName, metaTagName).
+							attr('content', metaTagContent));
+					}
+				};
 
-                var setDescription = function (description) {
-                    setMetaTag('description', description, 'name');
-                };
+				var setDescription = function (description) {
+					setMetaTag('description', description, 'name');
+				};
 
-                var setKeywords = function (keywords) {
-                    setMetaTag('keywords', keywords, 'name');
-                };
+				var setKeywords = function (keywords) {
+					setMetaTag('keywords', keywords, 'name');
+				};
 
 				var setFacebookOpenGraphPageTitle = function (pageTitle) {
 					setMetaTag('og:title', pageTitle, 'property');
@@ -1093,20 +1288,20 @@ angular.module('Volusion.toolboxCommon')
 				scope.$watch('socialPageTitle', setFacebookOpenGraphPageTitle);
 				scope.$watch('socialPageUrl', setFacebookOpenGraphPageUrl);
 				scope.$watch('socialImageUrl', setFacebookOpenGraphImageUrl);
-                scope.$watch('title', setTitleTag);
-                scope.$watch('description', setDescription);
-                scope.$watch('keywords', setKeywords);
-                scope.$watch('toAppend', appendElement);
-                scope.$watch('robots', function (newValue) {
-                    if (typeof newValue !== 'undefined' &&
-                        JSON.parse(newValue) === true) {
-                        setMetaTag('robots', 'index,follow', 'name');
-                        setMetaTag('GOOGLEBOT', 'INDEX,FOLLOW', 'name');
-                    }
-                });
-            }
-        };
-    });
+				scope.$watch('title', setTitleTag);
+				scope.$watch('description', setDescription);
+				scope.$watch('keywords', setKeywords);
+				scope.$watch('toAppend', appendElement);
+				scope.$watch('robots', function (newValue) {
+					if (typeof newValue !== 'undefined' &&
+						JSON.parse(newValue) === true) {
+						setMetaTag('robots', 'index,follow', 'name');
+						setMetaTag('GOOGLEBOT', 'INDEX,FOLLOW', 'name');
+					}
+				});
+			}
+		};
+	});
 
 angular.module('Volusion.toolboxCommon')
     .directive('vnNav',
@@ -1391,6 +1586,155 @@ angular.module('Volusion.toolboxCommon')
 
 'use strict';
 /**
+ * @ngdoc directive
+ * @name Volusion.toolboxCommon.directive:vnShowOnDropdownHover
+ *
+ * @description
+ * The `vnShowOnDropdownHover` enables a bootstrap dropdown menu
+ * to be displayed when user hovers over the element.
+ *
+ * @restrict A
+ *
+ * @requires
+ * $timeout
+ *
+ * @scope
+ *
+ * @usage
+ *  <ul vn-show-on-dropdown-hover class="dropdown-menu" data-ng-if="category.subCategories.length">
+ *      <li data-ng-repeat="subCategory in category.subCategories">
+ *          <a data-ng-href="{{ subCategory.url }}">{{subCategory.name}}</a>
+ *      </li>
+ *  </ul>
+ *
+ * */
+
+angular.module('Volusion.toolboxCommon')
+	.directive('vnShowOnDropdownHover', ['$timeout',
+		function ($timeout) {
+
+			return {
+				restrict: 'A',
+				link    : function postLink(scope, element) {
+
+					var timerHide,
+						triggerHover = angular.element(element.parent().find('a')[0]);
+
+					element.bind('mouseenter', function () {
+						element.show();
+						$timeout.cancel(timerHide);
+					})
+						.bind('mouseleave', function () {
+							timerHide = $timeout(function () {
+								element.hide();
+							}, 100);
+						});
+
+					triggerHover.bind('mouseenter', function () {
+						element.show();
+						$timeout.cancel(timerHide);
+					})
+						.bind('mouseleave', function () {
+							timerHide = $timeout(function () {
+								element.hide();
+							}, 100);
+						})
+						.bind('click', function () {
+							element.show();
+						});
+
+					/* jshint unused:false */
+					scope.$on('$destroy',
+						function (event) {
+							$timeout.cancel(timerHide);
+						}
+					);
+					/* jshint unused:true */
+				}
+			};
+		}]);
+
+'use strict';
+
+/**
+ * @ngdoc directive
+ * @name Volusion.toolboxCommon.directive:vnEasyZoom
+ * @restrict A
+ * @scope
+ *
+ *
+ * @description
+ * Directive to show the zoomed in image when hovering
+ * over an image. It wraps the easyzoom.js library
+ * (http://i-like-robots.github.io/EasyZoom/)
+ *
+ * @usage
+ * <img easy-zoom
+ *     ng-src="product.image.medium"
+ *     ez-zoom-src="product.image.large"
+ *     ez-adjacent="isInDesktopMode"
+ *     ez-overlay="!isInDesktopMode"
+ *     alt="{{product.name}}">
+ *
+ *
+ * @example
+ */
+
+angular.module('Volusion.toolboxCommon')
+	.directive('vnEasyZoom', function() {
+
+
+		var imageHash = {};
+
+		function swapImages(zoomApi) {
+			if (imageHash.standardSrc && imageHash.zoomSrc) {
+				zoomApi.swap(imageHash.standardSrc, imageHash.zoomSrc);
+				imageHash = {};
+			}
+		}
+
+		return {
+			restrict: 'A',
+			replace: true,
+			templateUrl: 'easyzoom/vnEasyZoom.tpl.html',
+			scope: {
+				ngSrc: '=',
+				ezAdjacent: '=',
+				ezOverlay: '=',
+				ezZoomSrc: '=',
+				alt: '@'
+			},
+			link: function(scope, element) {
+				var easyzoom = element.easyZoom(),
+					api = easyzoom.data('easyZoom');
+
+				scope.$watch('ngSrc', function(newValue) {
+					if (newValue === undefined) {
+						return;
+					}
+
+					imageHash.standardSrc = newValue;
+					swapImages(api);
+				});
+
+				scope.$watch('ezZoomSrc', function(newValue) {
+					if (newValue === undefined) {
+						return;
+					}
+
+					imageHash.zoomSrc = newValue;
+					swapImages(api);
+				});
+
+				scope.$on('$destroy', function() {
+					api.teardown();
+				});
+			}
+		};
+	});
+
+'use strict';
+/**
  * @ngdoc service
  * @name Volusion.toolboxCommon.vnErrorModalService
  * @description
@@ -1484,6 +1828,260 @@ angular.module('Volusion.toolboxCommon')
 			return imagePath;
 		};
 	});
+
+'use strict';
+
+/**
+ * @ngdoc directive
+ * @name Volusion.toolboxCommon:vnLegacyLink
+ * @restrict AE
+ *
+ *
+ * @description
+ * The `vnLegacyLink` directive is used to link to URLs
+ * which are not part of the Single Page Application.
+ *
+ * @usage
+ * <a data-vn-legacy-link="/reviewnew.asp?productcode={{product.code}}">
+ *     Write a Review
+ * </a>
+ *
+ *
+ * @example
+ */
+
+angular.module('Volusion.toolboxCommon')
+	.directive('vnLegacyLink', [
+		'$window',
+		function ($window) {
+
+			return {
+				restrict: 'AE',
+				link    : function (scope, element, attrs) {
+
+					attrs.$observe('vnLegacyLink', function (newValue) {
+						element.attr('href', newValue);
+					});
+
+					element.on('click', function (e) {
+						e.preventDefault();
+						$window.location.assign(this.href);
+					});
+				}
+			};
+		}
+	]);
+
+'use strict';
+
+/**
+ * @ngdoc filter
+ * @name Volusion.toolboxCommon:vnLegacyLinkify
+ *
+ * @description
+ * The `vnLegacyLinkify` filter sets the `target` attribute of `<a>` elements
+ * within the HTML string passed in.
+ *
+ * @usage
+ * <h1 data-vn-element="title" data-ng-bind-html="article.title | vnLegacyLinkify | html"></h1>
+ *
+ * @example
+ */
+
+angular.module('Volusion.toolboxCommon')
+	.filter('vnLegacyLinkify',
+		function() {
+
+			return function(html) {
+				var $div = angular.element('<div/>').html(html);
+				angular.forEach($div.find('a'), function(a) {
+					var $a = angular.element(a);
+					$a.attr('target', $a.attr('target') || '_self');
+				});
+				return $div.html();
+			};
+		});
+
+'use strict';
+/**
+ * @ngdoc directive
+ * @name Volusion.toolboxCommon.directive:vnPaginator
+ *
+ * @description
+ * The `vnPaginator` directive displays pagination controls with
+ * methods on the scope to allow moving to the next and previous
+ * page.
+ *
+ * @restrict A
+ *
+ * @requires
+ * vnProductParams
+ * themeSettings
+ *
+ * @scope
+ *
+ * @usage
+ * <div vn-paginator cursor="cursor" current-page="currentPage" query-fn="queryProducts()"></div>
+ *
+ * */
+
+
+angular.module('Volusion.toolboxCommon')
+	.directive('vnPaginator', ['vnProductParams', 'themeSettings', function (vnProductParams, themeSettings) {
+
+		return {
+			templateUrl: 'pagination/vnPaginator.tpl.html',
+
+            restrict   : 'A',
+
+            scope      : {
+				cursor : '=',
+				queryFn: '&'
+			},
+			link: function postLink(scope, elem, attrs) {
+
+				vnProductParams.setPageSize(themeSettings.getPageSize());
+
+				scope.nextPage = function () {
+					if (scope.cursor.currentPage < scope.cursor.totalPages) {
+						vnProductParams.nextPage();
+						scope.queryFn();
+					}
+				};
+
+				scope.prevPage = function () {
+					if (scope.cursor.currentPage > 1) {
+						vnProductParams.previousPage();
+						scope.queryFn();
+					}
+				};
+
+				scope.$watch(attrs.cursor, function (value) {
+
+					if (value === undefined) {
+						return;
+					}
+
+					scope.currentPage = value.currentPage.toString();
+					vnProductParams.setPage(scope.currentPage);
+				}, true);
+			}
+		};
+	}]);
+
+'use strict';
+/**
+ * @ngdoc directive
+ * @name Volusion.toolboxCommon.directive:vnSearchForm
+ *
+ * @description
+ * The `vnSearchForm` directive displays the search box and the
+ * search toggle menu displayed in the mobile screen size.
+ *
+ * @restrict AE
+ *
+ * @scope
+ *
+ * @usage
+ * <div vn-search-form></div>
+ *
+ * */
+
+
+angular.module('Volusion.toolboxCommon')
+	.directive('vnSearchForm', ['vnSearchManager', function (vnSearchManager) {
+
+		return {
+			templateUrl: 'productsearch/vnSearchForm.tpl.html',
+			restrict   : 'AE',
+			replace    : true,
+            scope       : {
+                searchTerm : '=',
+                showSearch : '='
+            },
+			link       : function postLink(scope, element, attrs) {
+				element.bind('click', function () {
+					element.find('input').focus();
+				});
+
+                scope.searchTerm = scope.searchTerm || vnSearchManager.getSearchText();
+                scope.allowCollapse = attrs.allowCollapse && !!(JSON.parse(attrs.allowCollapse));
+
+                scope.doSearch = function () {
+                    vnSearchManager.updateSearch(scope.searchTerm);
+                };
+			}
+		};
+	}]);
+
+'use strict';
+
+/**
+ * @ngdoc service
+ * @name volusionMethodThemeApp.searchManager
+ * @description
+ * # searchManager
+ * Factory in the volusionMethodThemeApp.
+ */
+angular.module('Volusion.toolboxCommon')
+	.factory('vnSearchManager', ['$route', '$location', 'vnProductParams', function ($route, $location, vnProductParams) {
+
+        function getSearchText() {
+            return vnProductParams.getSearchText();
+        }
+
+		function updateSearch(terms) {
+			vnProductParams.updateSearch(terms);
+			$location.search('q', terms);
+			if ('/search' !== $location.path()) {
+				$location.path('/search');
+			}
+			$route.reload();
+		}
+
+
+		return {
+            getSearchText: getSearchText,
+			updateSearch: updateSearch
+		};
+	}]);
+
+'use strict';
+
+/**
+ * @ngdoc directive
+ * @name Volusion.toolboxCommon.directive:vnScrollToAnchor
+ * @restrict A
+ * @scope
+ *
+ *
+ * @description
+ * Directive to automatically scroll to the `hash` location in
+ * the page.
+ *
+ * @usage
+ *
+ * @example
+ */
+
+angular.module('Volusion.toolboxCommon')
+	.directive('vnScrollToAnchor', ['$location', '$anchorScroll',
+		function ($location, $anchorScroll) {
+
+			return {
+				restrict: 'AC',
+				compile : function () {
+
+					return function (scope, element, attr) {
+						element.bind('click', function (event) {
+							event.preventDefault();
+							$location.hash(attr.vnScrollToAnchor);
+							$anchorScroll();
+						});
+					};
+				}
+			};
+		}]);
 
 angular.module('Volusion.toolboxCommon')
     .value('vnApiConfigurations', {});
@@ -1591,7 +2189,7 @@ angular.module('Volusion.toolboxCommon')
                     {
                         'get'   : { method: 'GET', withCredentials: true, headers: headers },
                         'save'  : { method: 'POST', withCredentials: true, headers: headers },
-                        'update': { method: 'PUT', ithCredentials: true, headers: headers },
+                        'update': { method: 'PUT', withCredentials: true, headers: headers },
                         'query' : { method: 'GET', isArray: false, headers: headers },
                         'remove': { method: 'DELETE', headers: headers },
                         'delete': { method: 'DELETE', headers: headers }
@@ -2155,13 +2753,32 @@ angular.module('Volusion.toolboxCommon')
 						// on success
 						cart = response.data;
 						cart.serviceErrors = [];
-						cart.warnings = response.data.warnings || [];
+						cart.warnings = response.warnings || response.data.warnings || [];
 					},
 					function (response) {
 						// on error
 						cart = response.data.data;
-						cart.serviceErrors = response.data.serviceErrors || [];
-						cart.warnings = response.data.warnings || [];
+						cart.serviceErrors = response.serviceErrors || response.data.serviceErrors || [];
+						cart.warnings = response.warnings || response.data.warnings || [];
+					})
+					.then(function () {
+						return cart;
+					});
+			}
+
+			function updateCart() {
+				return vnApi.Cart().update({cartId: cart.id}, cart).$promise
+					.then(function (response) {
+						// on success
+						cart = response.data;
+						cart.serviceErrors = [];
+						cart.warnings = response.warnings || response.data.warnings || [];
+					},
+					function (response) {
+						// on error
+						cart = response.data.data;
+						cart.serviceErrors = response.serviceErrors || response.data.serviceErrors || [];
+						cart.warnings = response.warnings || response.data.warnings || [];
 					})
 					.then(function () {
 						return cart;
@@ -2173,7 +2790,8 @@ angular.module('Volusion.toolboxCommon')
 				getCartItemsCount: getCartItemsCount,
 				init             : init,
 				reset            : reset,
-				saveCart         : saveCart
+				saveCart         : saveCart,
+				updateCart		 : updateCart
 			};
 		}]);
 
@@ -3721,170 +4339,262 @@ angular.module('Volusion.toolboxCommon')
 
     });
 
+'use strict';
+
+/**
+ * @ngdoc service
+ * @name Volusion.toolboxCommon.vnSortDefault
+ * @description
+ * # vnSortDefault
+ * Constant in the Volusion.toolboxCommon to set up the sorting directive.
+ * Will be ideal to have it in a constant so that vnAppRoute service can use it to
+ * implement logic rules that relate to how urls should behave / look.
+ */
 angular.module('Volusion.toolboxCommon')
-    .factory('vnSession', ['$rootScope', 'vnApi', 'vnFirebase',
-        function ($rootScope, vnApi, vnFirebase) {
-            'use strict';
+  .constant('vnSortDefault', 'relevence');
 
-            /**
-             * @ngdoc property
-             * @name accountData
-             * @property {Object} accountData
-             * @propertyOf Volusion.toolboxCommon.vnSession
-             *
-             * @description
-             * A key/value object matching the expected response api/backend authentication
-             * service.
-             */
-            var accountData = {};
+'use strict';
+/**
+ * @ngdoc service
+ * @name Volusion.toolboxCommon.themeSettings
+ *
+ * @description
+ * # themeSettings
+ * The themeSettings service is used to fetch the theme settings
+ * using the vnApi, so that it can be used within the theme.
+ *
+ * @requires $q, vnApi
+ */
 
-            /**
-             * @ngdoc function
-             * @name setFirebaseData
-             * @param {String} path Is the <ITEM> path for the resource in our Firebase schema.
-             * @param {$resource} resource Is a $resource for the vnApi Item Model
-             * @methodOf Volusion.toolboxCommon.vnSession
-             *
-             * @description
-             * Given the results of a $resource.get().$promise reset the data for the
-             * Firebase path associated with its corresponding api items.
-             *
-             * 1. Execute the given promise
-             * 2. Then, pass the path and promise params to the vnFirebase.resetDataForPath
-             *
-             * <br/>
-             * It does not return anything as the promises are async and network latency plays
-             * role in how long a response will take. We just set the data xfer process in motion
-             * here and return control to the caller. THIS HAD ISSUES IN PORTING REMOVE THIS WHEN
-             * THEN PART OF PROMISE WORKS AGAIN!!!
-             *
-             */
-            function setFirebaseData(path, resource) {
-//
-                console.log(path + ' / ' + resource);
-//                console.log('Porting issue with the prromise and data ... to fix with data-ng-stub');
-//                resource.get().$promise.then(function (result) {
-//                    vnFirebase.resetDataForPath(path, result.data);
-//                });
+angular.module('Volusion.toolboxCommon')
+	.service('themeSettings', ['$q', 'vnApi',
+		function ($q, vnApi) {
 
-            }
+			var themeSettings = {};
 
-            /**
-             * @ngdoc function
-             * @name bootstrapSessionData
-             * @methodOf Volusion.toolboxCommon.vnSession
-             *
-             * @description
-             * The Dev purpose for calling this function is to define the apiEndpoints where
-             * we will be getting data from. Here is the flow:
-             *
-             * 1. It should be called after configuration is set for SiteBuilder
-             * 2. It resets the Firebase account data to a blank slate
-             * 3. It uses the date for the vnApi endpoints to get data
-             * 4. it calls setFirebaseData with each endpoint promise.
-             *
-             * <br/>
-             * It does not return anything as the promises are async and network latency plays
-             * role in how long a response will take. We just set the data xfer process in motion
-             * here and return control to the caller.
-             *
-             */
-            function bootstrapSessionData() {
+			function hasEmptySettings(obj) {
+				for (var key in obj) {
+					if (obj.hasOwnProperty(key)) {
+						return false;
+					}
+				}
+				return true;
+			}
 
-                // The places interesting data sets live ...
-                var apiEndpoints = {
-                        articles  : vnApi.Article(),
-                        categories: vnApi.Category(),
-                        carts     : vnApi.Cart(),
-                        config    : vnApi.Configuration(),
-                        countries : vnApi.Country(),
-                        navs      : vnApi.Nav(),
-                        products  : vnApi.Product()
-                    },
-                    keys = Object.keys(apiEndpoints);
+			function init() {
+				if (hasEmptySettings(themeSettings)) {
+					vnApi.ThemeSettings().get().$promise
+						.then(function (response) {
+							// Remember themeSettings is a $resource!
+							themeSettings = response;
+						});
+				}
+			}
 
-                // proof-of-concept.
-                vnFirebase.resetSiteBuilder(); // i.e. called with no session state persistence considered.
+			function getPageSize() {
+				return themeSettings.itemsPerPage || 8;
+			}
 
-                // Grab the keys for api endpoints so we know what goes where in firebase
-                // NOTE: The key depends on accuracy of the firebase schema as it is used as a string elsewhere
-                //       for firebase url generation.
-                angular.forEach(keys, function (k) {
-                    setFirebaseData(k, apiEndpoints[k]);
-                });
-            }
+			function getThemeSettings() {
+				var deferred = $q.defer();
 
-            /**
-             * @ngdoc function
-             * @name getAccountData
-             * @methodOf Volusion.toolboxCommon.vnSession
-             * @return {object} accountData is the factory property that holds the accountData
-             * given to us from the api/backend auth services.
-             *
-             * @description
-             * Getter for the factory property accountData.
-             */
-            function getAccountData() {
-                return accountData;
-            }
+				if (hasEmptySettings(themeSettings)) {
+					vnApi.ThemeSettings().get().$promise
+						.then(function (response) {
+							deferred.resolve(response);
+							themeSettings = response;
+						});
+				} else {
+					deferred.resolve(themeSettings);
+				}
 
-            /**
-             * @ngdoc function
-             * @name init
-             * @methodOf Volusion.toolboxCommon.vnSession
-             * @return {Boolean} true or throw a new Error if there are issues.
-             *
-             * @description
-             * Use this to call basic initialization. set up the vnConfig object with its environment
-             * and any other stuff that site-dna needs to use when GETting data from the Volusion API.
-             */
-            function init() {
-                // Pre authentication set up stuff goes here.
-                return true;
-            }
+				return deferred.promise;
+			}
 
-            /**
-             * @ngdoc function
-             * @name initSession
-             * @methodOf Volusion.toolboxCommon.vnSession
-             * @param {Object} response The login response from the api/backend authentication
-             * services used for eleveated data access perminssions. (SiteBuilder & WorkSpace)
-             * @return {Boolean} true or throw a new Error if there are issues.
-             *
-             * @description
-             * Use this to call basic initialization. set up the vnConfig object with its environment
-             * and any other stuff that site-dna needs to use when GETting data from the Volusion API.
-             */
-            function initSession(response) {
+			return {
+				init            : init,
+				getThemeSettings: getThemeSettings,
+				getPageSize     : getPageSize
+			};
+		}]);
 
-//                we only init once per session but have not set this yet? 5-28.2014 -matth
-                accountData = response;
-                bootstrapSessionData();
+'use strict';
 
-            }
+angular.module('Volusion.toolboxCommon')
+	.factory('storage', [
+		'$window', '$cookieStore',
+		function($window, $cookieStore) {
 
-            /**
-             * @ngdoc event
-             * @name vnSession.init
-             * @eventOf Volusion.toolboxCommon.vnSession
-             * @param {Object} event is the event passed when vnSession.init is broadcast
-             * @param {Object} args are the values to be passed in here
-             *
-             * @description
-             * Hears the vnSession.init event when it is broadcast and Passes the args to
-             * the private init function.
-             */
-            $rootScope.$on('vnSession.init', function (event, args) {
-                initSession(args);
+			function createLocalStorageAdapter() {
+				return {
+					get: function(key) {
+						var value = $window.localStorage.getItem(key);
+						if (value === null) {
+							return resolveCookieValue(key);
+						}
+						return value;
+					},
+					set: function(key, value) {
+						return $window.localStorage.setItem(key, value);
+					},
+					remove: function(key) {
+						return $window.localStorage.removeItem(key);
+					}
+				};
+			}
 
-            });
+			function resolveCookieValue(key) {
+				var value = $cookieStore.get(key);
+				return (typeof value === 'undefined') ? null : value;
+			}
 
-            return {
-                init          : init,
-                initSession   : initSession,
-                getAccountData: getAccountData
-            };
-        }]);
+			function createCookieStorageFacade() {
+				return {
+					get: function(key) {
+						return resolveCookieValue(key);
+					},
+					set: function(key, value) {
+						return $cookieStore.put(key, value);
+					},
+					remove: function(key) {
+						return $cookieStore.remove(key);
+					}
+				};
+			}
+
+			if ('localStorage' in $window && $window.localStorage !== null) {
+				return createLocalStorageAdapter();
+			} else {
+				return createCookieStorageFacade();
+			}
+
+		}
+	]);
+
+'use strict';
+
+var storageKey = 'VN_TRANSLATE';
+
+// ReSharper disable once InconsistentNaming
+function Translate($translate, $translatePartialLoader, storage, options, disableTranslations) {
+	this.$translate = $translate;
+	this.$translatePartialLoader = $translatePartialLoader;
+	this.storage = storage;
+	this.disableTranslations = disableTranslations;
+	this.configure(angular.extend(options, this.getConfig()));
+	this.addPart = $translatePartialLoader.addPart;
+}
+
+Translate.prototype.getConfig = function() {
+	var storage = this.storage;
+	var config = JSON.parse(storage.get(storageKey)) || {};
+	var lang = storage.get('NG_TRANSLATE_LANG_KEY');
+	if (!this.disableTranslations && lang && lang !== 'undefined') {
+		config.lang = lang;
+	}
+	return config;
+};
+
+Translate.prototype.configure = function(config) {
+	config = angular.extend(this.getConfig(), config);
+	this.storage.set(storageKey, JSON.stringify(config));
+	this.$translate.use(config.lang);
+};
+
+Translate.prototype.addParts = function() {
+	if (this.disableTranslations) {
+		return true;
+	}
+
+	var loader = this.$translatePartialLoader;
+
+	angular.forEach(arguments, function(part) {
+		loader.addPart(part);
+	});
+
+	return this.$translate.refresh();
+};
+
+
+function TranslateProvider($translateProvider) {
+	this.$translateProvider = $translateProvider;
+	this.setPreferredLanguage = $translateProvider.preferredLanguage;
+}
+
+TranslateProvider.prototype.$get = [
+	'$translate', '$translatePartialLoader', 'storage',
+	function($translate, $translatePartialLoader, storage) {
+		var options = this.options;
+
+		return new Translate($translate, $translatePartialLoader, storage, {
+			region: options.region,
+			lang: options.lang,
+			country: options.country
+		}, options.disableTranslations);
+	}
+];
+
+TranslateProvider.prototype.configure = function(options) {
+	options = angular.extend({ region: 'us', lang: 'en', country: 'us' }, options);
+
+	if (options.lang) {
+		this.setPreferredLanguage(options.lang);
+	}
+	this.options = options;
+
+	if (!options.disableTranslations) {
+		this.initTranslateProvider(options.lang);
+	}
+};
+
+TranslateProvider.prototype.initTranslateProvider = function(lang) {
+	var $translateProvider = this.$translateProvider;
+	$translateProvider.useLoader('$translatePartialLoader', {
+		urlTemplate: '/translations/{part}/{lang}.json'
+	});
+	if (lang === 'en') {
+		$translateProvider.useMessageFormatInterpolation();
+	}
+	$translateProvider.useMissingTranslationHandlerLog();
+	$translateProvider.useLocalStorage();
+};
+
+angular.module('Volusion.toolboxCommon')
+	.provider('translate', ['$translateProvider', TranslateProvider]);
+
+angular.module('Volusion.toolboxCommon')
+	.filter('html', [
+		'$sce',
+		function ($sce) {
+
+			'use strict';
+
+			return function (content) {
+				return $sce.trustAsHtml(content);
+			};
+		}
+	]);
+
+angular.module('Volusion.toolboxCommon')
+	.filter('reverse', function() {
+
+		'use strict';
+
+		return function(items) {
+			return (items === undefined) ? null : items.slice().reverse();
+		};
+	});
+
+angular.module('Volusion.toolboxCommon')
+	.filter('seoFriendly', function seoFriendly() {
+
+		'use strict';
+
+		return function (input) {
+			var words = input.match(/[0-9a-z]+/gi);
+			return words ? words.join('-') : '';
+		};
+	});
 
 angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', function($templateCache) {
   $templateCache.put("vn-faceted-search/vn-category-search.html",
@@ -3913,7 +4623,7 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "    <div data-ng-if=\"facet.displayType != 'swatches'\" class=facet-properties>\n" +
     "        <label class=facet-property data-ng-repeat=\"property in facet.properties track by $index\" data-ng-class=\"{ '-last': $last }\">\n" +
     "\n" +
-    "            <input type=checkbox name=property.name data-ng-checked=selectProperty(property) data-ng-click=\"refineFacetSearch(property)\">\n" +
+    "            <input type=checkbox name=property.name data-ng-checked=selectProperty(property) data-ng-click=refineFacetSearch(property)>\n" +
     "            <span class=name>{{ property.name }}</span>\n" +
     "            <span class=count>{{ property.count }}</span>\n" +
     "        </label>\n" +
@@ -3975,9 +4685,9 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "	</div>\n" +
     "</div>");
   $templateCache.put("vn-faceted-search/vn-price-search.html",
-    "<input data-ng-model=minPrice data-ng-keypress=searchByPrice($event) placeholder=\"$\">\n" +
+    "<input data-ng-model=minPrice data-ng-keypress=searchByPrice($event) placeholder=$>\n" +
     "&thinsp;to&thinsp;\n" +
-    "<input data-ng-model=maxPrice data-ng-keypress=searchByPrice($event) placeholder=\"$$\">\n" +
+    "<input data-ng-model=maxPrice data-ng-keypress=searchByPrice($event) placeholder=$$>\n" +
     "<button class=\"btn btn-default facet-item__by-price__button\" type=button ng-click=searchByPrice($event)>Go\n" +
     "</button>");
   $templateCache.put("vn-faceted-search/vn-sort-search.html",
@@ -4075,6 +4785,13 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "</div>");
   $templateCache.put("appmessages/vnAppMessage.tpl.html",
     "<alert ng-repeat=\"alert in appMessagesCtrl.alerts track by alert.id\" type=\"{{ alert.type }}\" close=appMessagesCtrl.closeAlert(alert.id)>{{alert.text}}</alert>");
+  $templateCache.put("easyzoom/vnEasyZoom.tpl.html",
+    "<div class=easyzoom data-ng-class=\"{ 'easyzoom--adjacent': ezAdjacent, 'easyzoom--overlay': ezOverlay }\">\n" +
+    "    <a data-ng-href={{ezZoomSrc}}>\n" +
+    "        <img class=img-responsive data-ng-src={{ngSrc}} alt={{alt}}>\n" +
+    "        <div class=th-product-view__zoom></div>\n" +
+    "    </a>\n" +
+    "</div>");
   $templateCache.put("errormodal/vnErrorModal.tpl.html",
     "<div class=\"th-error-wrap clearfix\">\n" +
     "    <div class=th-error-details>\n" +
@@ -4093,5 +4810,32 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
+    "</div>");
+  $templateCache.put("pagination/vnPaginator.tpl.html",
+    "<ul class=pager data-ng-if=\"cursor.totalPages > 1\">\n" +
+    "	<li data-ng-class=\"{disabled: cursor.currentPage == 1}\">\n" +
+    "		<a href data-ng-click=prevPage()><span class=\"glyphicon glyphicon-chevron-left\"></span></a></li>\n" +
+    "	<li data-ng-class=\"{disabled: cursor.currentPage == cursor.totalPages}\">\n" +
+    "		<a href data-ng-click=nextPage()><span class=\"glyphicon glyphicon-chevron-right\"></span></a></li>\n" +
+    "</ul>\n" +
+    "\n" +
+    "	<div class=pager>\n" +
+    "		Page {{ cursor.currentPage }} of {{ cursor.totalPages }}\n" +
+    "	</div>");
+  $templateCache.put("productsearch/vnSearchForm.tpl.html",
+    "<div role=search>\n" +
+    "	<a id=search-toggle ng-show=allowCollapse type=button class=th-search-popout__trigger data-ng-class=\"{ '-position' : !showSearch }\" data-ng-click=\"showSearch = !showSearch\">\n" +
+    "		<span class=\"glyphicon glyphicon-search\"></span>\n" +
+    "	</a>\n" +
+    "\n" +
+    "	<div data-ng-show=showSearch class=pull-left>\n" +
+    "		<form class=form-inline role=search name=frmSearch data-ng-submit=doSearch() novalidate>\n" +
+    "			<div class=form-group>\n" +
+    "				<input data-ng-model=searchTerm class=th-search-popout__input placeholder=Search...>\n" +
+    "				<button type=button data-ng-click=doSearch() class=\"btn btn-xs btn-primary th-search-popout__submit\">Go!\n" +
+    "				</button>\n" +
+    "			</div>\n" +
+    "		</form>\n" +
+    "	</div>\n" +
     "</div>");
 }]);
