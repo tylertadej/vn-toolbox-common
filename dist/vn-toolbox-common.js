@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.26 (2014-09-09) */
+/*! vn-toolbox-common - ver.0.0.26 (2014-09-10) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['ngSanitize', 'pascalprecht.translate', 'ui.bootstrap', 'Volusion.toolboxCommon.templates'])
@@ -1834,6 +1834,83 @@ angular.module('Volusion.toolboxCommon')
 					vnProductParams.setPage(scope.currentPage);
 				}, true);
 			}
+		};
+	}]);
+
+'use strict';
+/**
+ * @ngdoc directive
+ * @name Volusion.toolboxCommon.directive:vnSearchForm
+ *
+ * @description
+ * The `vnSearchForm` directive displays the search box and the
+ * search toggle menu displayed in the mobile screen size.
+ *
+ * @restrict AE
+ *
+ * @scope
+ *
+ * @usage
+ * <div vn-search-form></div>
+ *
+ * */
+
+
+angular.module('Volusion.toolboxCommon')
+	.directive('vnSearchForm', ['vnSearchManager', function (vnSearchManager) {
+
+		return {
+			templateUrl: 'productsearch/vnSearchForm.tpl.html',
+			restrict   : 'AE',
+			replace    : true,
+            scope       : {
+                searchTerm : '=',
+                showSearch : '='
+            },
+			link       : function postLink(scope, element, attrs) {
+				element.bind('click', function () {
+					element.find('input').focus();
+				});
+
+                scope.searchTerm = scope.searchTerm || vnSearchManager.getSearchText();
+                scope.allowCollapse = attrs.allowCollapse && !!(JSON.parse(attrs.allowCollapse));
+
+                scope.doSearch = function () {
+                    vnSearchManager.updateSearch(scope.searchTerm);
+                };
+			}
+		};
+	}]);
+
+'use strict';
+
+/**
+ * @ngdoc service
+ * @name volusionMethodThemeApp.searchManager
+ * @description
+ * # searchManager
+ * Factory in the volusionMethodThemeApp.
+ */
+angular.module('Volusion.toolboxCommon')
+	.factory('vnSearchManager', ['$route', '$location', 'vnProductParams', function ($route, $location, vnProductParams) {
+
+        function getSearchText() {
+            return vnProductParams.getSearchText();
+        }
+
+		function updateSearch(terms) {
+			vnProductParams.updateSearch(terms);
+			$location.search('q', terms);
+			if ('/search' !== $location.path()) {
+				$location.path('/search');
+			}
+			$route.reload();
+		}
+
+
+		return {
+            getSearchText: getSearchText,
+			updateSearch: updateSearch
 		};
 	}]);
 
@@ -4469,4 +4546,20 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "	<div class=pager>\n" +
     "		Page {{ cursor.currentPage }} of {{ cursor.totalPages }}\n" +
     "	</div>");
+  $templateCache.put("productsearch/vnSearchForm.tpl.html",
+    "<div role=search>\n" +
+    "	<a id=search-toggle ng-show=allowCollapse type=button class=th-search-popout__trigger data-ng-class=\"{ '-position' : !showSearch }\" data-ng-click=\"showSearch = !showSearch\">\n" +
+    "		<span class=\"glyphicon glyphicon-search\"></span>\n" +
+    "	</a>\n" +
+    "\n" +
+    "	<div data-ng-show=showSearch class=pull-left>\n" +
+    "		<form class=form-inline role=search name=frmSearch data-ng-submit=doSearch() novalidate>\n" +
+    "			<div class=form-group>\n" +
+    "				<input data-ng-model=searchTerm class=th-search-popout__input placeholder=Search...>\n" +
+    "				<button type=button data-ng-click=doSearch() class=\"btn btn-xs btn-primary th-search-popout__submit\">Go!\n" +
+    "				</button>\n" +
+    "			</div>\n" +
+    "		</form>\n" +
+    "	</div>\n" +
+    "</div>");
 }]);
