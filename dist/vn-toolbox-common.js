@@ -200,6 +200,138 @@ angular.module('Volusion.toolboxCommon')
 		};
 	});
 
+'use strict';
+
+/**
+ * @ngdoc provider
+ *
+ * @name Volusion.toolboxCommon:vnAppConfig
+ *
+ * @description
+ * # vnAppConfig
+ * Application configuration provider with methods to
+ * set and get the application wide configuration
+ * variables.
+ *
+ */
+
+angular.module('Volusion.toolboxCommon')
+	.provider('vnAppConfig', [function () {
+
+		var apiHost,
+			apiUrl,
+			country = 'us',
+			disableTranslations = false,
+			lang = 'en',
+			region = 'us',
+			urlPrefix = '';
+
+
+		// Private constructor
+		function AppConfig() {
+			this.AppConfig = function () {
+				return this;
+			};
+
+			this.getApiHost = function () {
+				return apiHost;
+			};
+
+		}
+
+        this.setApiPath = function(host, endpoint) {
+            apiHost = host;
+            apiUrl = host + endpoint;
+        };
+
+		this.getApiPath = function () {
+			return apiUrl;
+		};
+
+		this.getCountry = function () {
+			return country;
+		};
+
+		this.getIsLocalEnv = function () {
+			return (apiHost !== '');
+		};
+
+		this.getLang = function () {
+			return lang;
+		};
+
+		this.getPrefix = function () {
+			return urlPrefix;
+		};
+
+		this.getRegion = function () {
+			return region;
+		};
+
+		this.getTranslations = function () {
+			return disableTranslations;
+		};
+
+
+		this.setCountry = function (stringCountry) {
+			country = stringCountry;
+		};
+
+
+		this.setLang = function (stringLang) {
+			lang = stringLang;
+		};
+
+		this.setPrefix = function (stringPath) {
+			urlPrefix = stringPath;
+		};
+
+		this.setRegion = function (stringRegion) {
+			region = stringRegion;
+		};
+
+		this.setTranslations = function (bool) {
+			disableTranslations = bool;
+		};
+
+		// Method for instantiating
+		this.$get = function () {
+			return new AppConfig();
+		};
+	}]);
+
+'use strict';
+
+/**
+ * @ngdoc service
+ *
+ * @name Volusion.toolboxCommon:vnSiteConfig
+ *
+ * @description
+ * # vnSiteConfig
+ * Site configuration service which gets the server side
+ * configurations from the config API.
+ *
+ */
+
+angular.module('Volusion.toolboxCommon')
+	.service('vnSiteConfig', ['vnApi', '$q',
+		function (vnApi, $q) {
+
+			var siteConfig = {};
+
+			siteConfig.getConfig = function () {
+				var deferred = $q.defer();
+				vnApi.Configuration().get().$promise
+					.then(function (response) {
+						deferred.resolve(response);
+					});
+				return deferred.promise;
+			};
+
+			return siteConfig;
+		}]);
+
 angular.module('Volusion.toolboxCommon')
 	.controller('OptionsCtrl', ['$rootScope','$scope',
 		function($rootScope, $scope) {
