@@ -14,6 +14,7 @@ module.exports = function(config) {
 
 		// list of files / patterns to load in the browser
 		files: [
+            'app/bower_components/jQuery/dist/jquery.js',
 			'app/bower_components/angular/angular.js',
             'app/bower_components/angular-ui-bootstrap-bower/ui-bootstrap.js',
 			'app/bower_components/angular-mocks/angular-mocks.js',
@@ -25,7 +26,6 @@ module.exports = function(config) {
 			'app/bower_components/angular-translate-loader-partial/angular-translate-loader-partial.js',
 			'app/bower_components/angular-touch/angular-touch.js',
 			'app/bower_components/angular-carousel/dist/angular-carousel.js',
-            'app/bower_components/jQuery/dist/jquery.js',
             'app/bower_components/easyzoom/dist/easyzoom.js',
 			'app/bower_components/firebase/firebase.js',
 			'app/bower_components/angularfire/angularfire.js',
