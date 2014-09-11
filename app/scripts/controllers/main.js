@@ -1,30 +1,9 @@
 
 angular.module('Volusion.toolboxCommon')
 	.controller('MainCtrl', ['$scope', '$translate', 'vnApi',
-		function ($scope, $translate, vnApi) {
+		function ($scope, $translate) {
 
 			'use strict';
-
-//            console.log(vnApi.Category().get( {slug: 'men'} ));
-//            console.log(vnApi.Category().query());
-
-//            console.log(vnApi.Product().query());
-//            var prodParams = {
-//                categoryIds  : 1477,
-//                search       : '',
-//                facets       : '',
-//                minPrice     : '',
-//                maxPrice     : '',
-//                accessoriesOf: '',
-//                sort         : '',
-//                pageNumber   : '',
-//                pageSize     : ''
-//            };
-//            console.log(vnApi.Product().get(prodParams));
-
-//            console.log('navs', vnApi.Nav().get({navId: 1}));
-
-            console.log(vnApi.Configuration().get());
 
 			$scope.toggleLang = function () {
 				if ('en' === $translate.use()) {

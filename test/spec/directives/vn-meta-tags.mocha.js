@@ -24,6 +24,12 @@ describe('Directive: vnMetaTags', function () {
             metatagKeywords: 'baz'
         }, extensions);
 
+		scope.social = {
+			pageTitle : 'product 1',
+			pageUrl : 'http://store.com/product-1',
+			imageUrl : 'http://store.com/images/product-1.jpg'
+		};
+
         return scope;
     }
 
@@ -50,10 +56,10 @@ describe('Directive: vnMetaTags', function () {
                     attr('data-description', 'seo.metatagDescription').
                     attr('data-keywords', 'seo.metatagKeywords');
             });
-        expect(component.find('title').text()).toBe('foo');
+        expect(component.find('title').text()).to.eq('foo');
 
-        expect(component.find('meta').eq(0).attr('content')).toBe('bar');
-        expect(component.find('meta').eq(1).attr('content')).toBe('baz');
+        expect(component.find('meta[name="description"]').attr('content')).to.eq('bar');
+        expect(component.find('meta[name="keywords"]').attr('content')).to.eq('baz');
     });
 
     it('updates the title and metatags when scope changes', inject(function ($compile) {
@@ -62,17 +68,23 @@ describe('Directive: vnMetaTags', function () {
                 attr('data-vn-meta-tags', '').
                 attr('data-title', 'seo.metatagTitle').
                 attr('data-description', 'seo.metatagDescription').
-                attr('data-keywords', 'seo.metatagKeywords'))(scope),
+                attr('data-keywords', 'seo.metatagKeywords').
+				attr('data-social-page-title', 'social.pageTitle').
+				attr('data-social-page-url', 'social.pageUrl').
+				attr('data-social-image-url', 'social.imageUrl'))(scope),
             metaTags;
 
         scope.$digest();
 
         metaTags = component.find('meta');
 
-        expect(component.find('title').text()).toBe('foo');
-        expect(metaTags.length).toBe(2);
-        expect(component.find('meta').eq(0).attr('content')).toBe('bar');
-        expect(component.find('meta').eq(1).attr('content')).toBe('baz');
+        expect(component.find('title').text()).to.eq('foo');
+        expect(metaTags.length).to.eq(5);
+        expect(component.find('meta[name="description"]').attr('content')).to.eq('bar');
+        expect(component.find('meta[name="keywords"]').attr('content')).to.eq('baz');
+        expect(component.find('meta[property="og:title"]').attr('content')).to.eq('product 1');
+        expect(component.find('meta[property="og:url"]').attr('content')).to.eq('http://store.com/product-1');
+        expect(component.find('meta[property="og:image"]').attr('content')).to.eq('http://store.com/images/product-1.jpg');
 
         scope.seo.metatagTitle = 'qux';
         scope.seo.metatagDescription = 'quux';
@@ -86,9 +98,9 @@ describe('Directive: vnMetaTags', function () {
 
         scope.$digest();
 
-        expect(component.find('title').text()).toBe('qux');
-        expect(component.find('meta').eq(0).attr('content')).toBe('quux');
-        expect(component.find('meta').eq(1).attr('content')).toBe('garply');
+        expect(component.find('title').text()).to.eq('qux');
+        expect(component.find('meta[name="description"]').attr('content')).to.eq('quux');
+        expect(component.find('meta[name="keywords"]').attr('content')).to.eq('garply');
     }));
 
     it('does not create title and metatags if nothing sent in', function () {
@@ -97,8 +109,8 @@ describe('Directive: vnMetaTags', function () {
             }),
             metaTags = component.find('meta');
 
-        expect(component.find('title').length).toBe(0);
-        expect(metaTags.length).toBe(0);
+        expect(component.find('title').length).to.eq(0);
+        expect(metaTags.length).to.eq(0);
     });
 
     it('appends meta tags sent in the toAppend property', function () {
@@ -109,9 +121,9 @@ describe('Directive: vnMetaTags', function () {
             }),
             metaTags = component.find('meta');
 
-        expect(component.find('title').text()).toBe('foo');
-        expect(metaTags.length).toBe(1);
-        expect(component.find('meta').eq(0).attr('content')).toBe('quux');
+        expect(component.find('title').text()).to.eq('foo');
+        expect(metaTags.length).to.eq(1);
+        expect(component.find('meta[name="qux"]').attr('content')).to.eq('quux');
     });
 
     it('appends robots meta tags if enableRobots is true', function () {
@@ -124,10 +136,10 @@ describe('Directive: vnMetaTags', function () {
             }),
             metaTags = component.find('meta');
 
-        expect(component.find('title').text()).toBe('foo');
-        expect(metaTags.length).toBe(4);
-        expect(component.find('meta').eq(2).attr('content')).toBe('index,follow');
-        expect(component.find('meta').eq(3).attr('content')).toBe('INDEX,FOLLOW');
+        expect(component.find('title').text()).to.eq('foo');
+        expect(metaTags.length).to.eq(4);
+        expect(component.find('meta[name="robots"]').attr('content')).to.eq('index,follow');
+        expect(component.find('meta[name="GOOGLEBOT"]').attr('content')).to.eq('INDEX,FOLLOW');
     });
 
 
@@ -141,9 +153,9 @@ describe('Directive: vnMetaTags', function () {
             }),
             metaTags = component.find('meta');
 
-        expect(component.find('title').text()).toBe('foo');
-        expect(metaTags.length).toBe(2);
-        expect(component.find('meta').eq(2).attr('content')).not.toBe('index,follow');
-        expect(component.find('meta').eq(3).attr('content')).not.toBe('INDEX,FOLLOW');
+        expect(component.find('title').text()).to.eq('foo');
+        expect(metaTags.length).to.eq(2);
+        expect(component.find('meta[name="robots"]').attr('content')).not.to.eq('index,follow');
+        expect(component.find('meta[name="GOOGLEBOT"]').attr('content')).not.to.eq('INDEX,FOLLOW');
     });
 });

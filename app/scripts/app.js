@@ -22,15 +22,18 @@
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', [
+    'ngCookies',
     'ngResource',
     'ngRoute',
+    'ngSanitize',
     'pascalprecht.translate',
     'firebase',
+    'ui.bootstrap',
     'Volusion.toolboxCommon.templates'
 ])
     .config(
-        ['$routeProvider', '$locationProvider', '$translateProvider', '$translatePartialLoaderProvider',
-            function ($routeProvider, $locationProvider, $translateProvider) {
+        ['$routeProvider', '$locationProvider', '$httpProvider', '$translateProvider',
+            function ($routeProvider, $locationProvider, $httpProvider, $translateProvider) {
 
                 'use strict';
 
@@ -40,8 +43,7 @@ angular.module('Volusion.toolboxCommon', [
 //                    'self',
 //                    'http://www.samplestore.io/api/v1/**'
 //                ]);
-
-                $locationProvider.html5Mode(true);
+                $httpProvider.interceptors.push('vnHttpResponseInterceptor');
 
                 $routeProvider
                     .when('/', {
