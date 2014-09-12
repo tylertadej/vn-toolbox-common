@@ -30,9 +30,9 @@ angular.module('Volusion.toolboxCommon')
 			restrict: 'A',
 			link    : function postLink(scope, element, attrs) {
 				scope.show = false;
-				scope.class = attrs.busyAnimationClass;
+				scope.class = attrs.vnBusyAnimationClass;
 
-				attrs.$observe('busyAnimationShow', function (value) {
+				attrs.$observe('vnBusyAnimationShow', function (value) {
 					scope.show = (value === 'true');
 				});
 			}
