@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.27 (2014-09-10) */
+/*! vn-toolbox-common - ver.0.0.27 (2014-09-12) */
 
 
 .-faceted-search .panel-body { padding: 0 !important; }
@@ -71,11 +71,9 @@
 .vn-product-option__select button span { margin-left: 5px !important; }
 .vn-product-option__select ul { min-width: 100px; left: 71px; text-align: center; }
 
-@charset "UTF-8";
-/* */
 /*! RATING */
 /*!***************************************************************************/
-.tick:before { content: "★"; }
+.tick:before { content: "\2605"; }
 
 .rating { margin: 0; padding: 0; }
 
