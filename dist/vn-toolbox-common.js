@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.27 (2014-09-15) */
+/*! vn-toolbox-common - ver.0.0.29 (2014-09-15) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['ngCookies', 'ngSanitize', 'pascalprecht.translate', 'ui.bootstrap', 'Volusion.toolboxCommon.templates'])
@@ -3494,7 +3494,7 @@ angular.module('Volusion.toolboxCommon')
             responseError: function(rejection) {
 
                 if(rejection.status === 500) {
-                    $rootScope.$emit('VN_HTTP_500_ERROR', {test: true, err :rejection} , { status: rejection.status, message: rejection.data, resource: rejection.headers('resource') || '' });
+                    $rootScope.$emit('VN_HTTP_500_ERROR', {err :rejection} , { status: rejection.status, message: rejection.data, resource: rejection.headers('resource') || '' });
                 }
 
                 return $q.reject(rejection);
