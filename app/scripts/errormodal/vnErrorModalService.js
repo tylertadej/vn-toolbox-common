@@ -14,10 +14,9 @@ angular.module('Volusion.toolboxCommon')
     .factory('vnErrorModalService', ['$modal', function($modal){
 
     return {
-        showError: function(errorViewTemplateUrl, errorScope) {
+        showError: function(errorViewTemplateUrl) {
             return $modal.open({
-                templateUrl: errorViewTemplateUrl || 'errormodal/vnErrorModal.tpl.html',
-				scope: errorScope
+                templateUrl: errorViewTemplateUrl || 'errormodal/vnErrorModal.tpl.html'
             });
         }
     };
