@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.27 (2014-09-10) */
+/*! vn-toolbox-common - ver.0.0.29 (2014-09-15) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['ngCookies', 'ngSanitize', 'pascalprecht.translate', 'ui.bootstrap', 'Volusion.toolboxCommon.templates'])
@@ -1749,9 +1749,10 @@ angular.module('Volusion.toolboxCommon')
     .factory('vnErrorModalService', ['$modal', function($modal){
 
     return {
-        showError: function(errorViewTemplateUrl) {
+        showError: function(errorViewTemplateUrl, errorScope) {
             return $modal.open({
-                templateUrl: errorViewTemplateUrl || 'errormodal/vnErrorModal.tpl.html'
+                templateUrl: errorViewTemplateUrl || 'errormodal/vnErrorModal.tpl.html',
+				scope: errorScope
             });
         }
     };
@@ -3493,7 +3494,7 @@ angular.module('Volusion.toolboxCommon')
             responseError: function(rejection) {
 
                 if(rejection.status === 500) {
-                    $rootScope.$emit('VN_HTTP_500_ERROR', { status: rejection.status, message: rejection.data, resource: rejection.headers('resource') || '' });
+                    $rootScope.$emit('VN_HTTP_500_ERROR', {err :rejection} , { status: rejection.status, message: rejection.data, resource: rejection.headers('resource') || '' });
                 }
 
                 return $q.reject(rejection);
@@ -3501,6 +3502,7 @@ angular.module('Volusion.toolboxCommon')
         };
 
     }]);
+
 angular.module('Volusion.toolboxCommon')
 	.factory('vnImagePreloader', ['$q', '$rootScope',
 		function( $q, $rootScope ) {
@@ -4623,7 +4625,7 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "    <div data-ng-if=\"facet.displayType != 'swatches'\" class=facet-properties>\n" +
     "        <label class=facet-property data-ng-repeat=\"property in facet.properties track by $index\" data-ng-class=\"{ '-last': $last }\">\n" +
     "\n" +
-    "            <input type=checkbox name=property.name data-ng-checked=selectProperty(property) data-ng-click=refineFacetSearch(property)>\n" +
+    "            <input type=checkbox name=property.name data-ng-checked=selectProperty(property) data-ng-click=\"refineFacetSearch(property)\">\n" +
     "            <span class=name>{{ property.name }}</span>\n" +
     "            <span class=count>{{ property.count }}</span>\n" +
     "        </label>\n" +
@@ -4685,9 +4687,9 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "	</div>\n" +
     "</div>");
   $templateCache.put("vn-faceted-search/vn-price-search.html",
-    "<input data-ng-model=minPrice data-ng-keypress=searchByPrice($event) placeholder=$>\n" +
+    "<input data-ng-model=minPrice data-ng-keypress=searchByPrice($event) placeholder=\"$\">\n" +
     "&thinsp;to&thinsp;\n" +
-    "<input data-ng-model=maxPrice data-ng-keypress=searchByPrice($event) placeholder=$$>\n" +
+    "<input data-ng-model=maxPrice data-ng-keypress=searchByPrice($event) placeholder=\"$$\">\n" +
     "<button class=\"btn btn-default facet-item__by-price__button\" type=button ng-click=searchByPrice($event)>Go\n" +
     "</button>");
   $templateCache.put("vn-faceted-search/vn-sort-search.html",
