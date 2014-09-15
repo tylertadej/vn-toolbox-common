@@ -33,7 +33,7 @@ angular.module('Volusion.toolboxCommon')
             responseError: function(rejection) {
 
                 if(rejection.status === 500) {
-                    $rootScope.$emit('VN_HTTP_500_ERROR', {err :rejection} , { status: rejection.status, message: rejection.data, resource: rejection.headers('resource') || '' });
+                    $rootScope.$emit('VN_HTTP_500_ERROR', { status: rejection.status, message: rejection.data, resource: rejection.headers('resource') || '' });
                 }
 
                 return $q.reject(rejection);
