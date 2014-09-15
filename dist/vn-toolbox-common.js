@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.27 (2014-09-12) */
+/*! vn-toolbox-common - ver.0.0.27 (2014-09-15) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['ngCookies', 'ngSanitize', 'pascalprecht.translate', 'ui.bootstrap', 'Volusion.toolboxCommon.templates'])
