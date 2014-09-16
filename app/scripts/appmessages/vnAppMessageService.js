@@ -14,8 +14,11 @@
 
 angular.module('Volusion.toolboxCommon')
     .service('vnAppMessageService', ['$timeout', function($timeout) {
-        var self = {},
-            messages = [];
+        var TIMEOUT_SUCCESS = 4000,
+			TIMEOUT_WARNING = 10000,
+			self = {},
+            messages = [],
+            delay = TIMEOUT_SUCCESS;
 
         self.addMessage = function (message) {
             var msg = {
@@ -23,10 +26,15 @@ angular.module('Volusion.toolboxCommon')
                 type: message.type || 'warning',
                 text: message.text
             };
+
+			if (message.type !== 'success') {
+				delay = TIMEOUT_WARNING;
+			}
+
             messages.push(msg);
             $timeout(function() {
                 self.removeMessage(msg.id);
-            }, message.timeout || 4000);
+            }, message.timeout || delay);
         };
 
         self.getMessages = function() {
