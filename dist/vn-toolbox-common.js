@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.0.29 (2014-09-16) */
+/*! vn-toolbox-common - ver.0.1.0 (2014-09-16) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['ngCookies', 'ngSanitize', 'pascalprecht.translate', 'ui.bootstrap', 'Volusion.toolboxCommon.templates'])
@@ -143,7 +143,7 @@ angular.module('Volusion.toolboxCommon')
 		'use strict';
 
 		return {
-			templateUrl: 'template/busy-animation.html',
+			templateUrl: 'busyanimation/vnBusyAnimation.tpl.html',
 			transclude : true,
 			restrict: 'A',
 			link    : function postLink(scope, element, attrs) {
@@ -155,34 +155,7 @@ angular.module('Volusion.toolboxCommon')
 				});
 			}
 		};
-	})
-	.run(['$templateCache', function ($templateCache) {
-
-		'use strict';
-
-		$templateCache.put(
-			'template/busy-animation.html',
-			'<ng-transclude></ng-transclude>' +
-			'<div class="{{ class }}" title="1" data-ng-if="show">' +
-				'<svg version="1.1" id="loader-1" ' +
-					'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ' +
-					'x="0px" y="0px" width="40px" height="40px" ' +
-					'viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">' +
-
-					'<path fill="#000" d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z">' +
-						'<animateTransform ' +
-							'attributeType="xml" ' +
-							'attributeName="transform" ' +
-							'type="rotate" ' +
-							'from="0 25 25" ' +
-							'to="360 25 25" ' +
-							'dur=".6s" ' +
-							'repeatCount="indefinite"/>' +
-					'</path>' +
-				'</svg>' +
-			'</div>'
-		);
-	}]);
+	});
 
 'use strict';
 
@@ -4840,6 +4813,16 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "</div>");
   $templateCache.put("appmessages/vnAppMessage.tpl.html",
     "<alert ng-repeat=\"alert in appMessagesCtrl.alerts track by alert.id\" type=\"{{ alert.type }}\" close=appMessagesCtrl.closeAlert(alert.id)>{{alert.text}}</alert>");
+  $templateCache.put("busyanimation/vnBusyAnimation.tpl.html",
+    "<ng-transclude></ng-transclude>\n" +
+    "<div class=\"{{ class }}\" title=1 data-ng-if=show>\n" +
+    "	<svg version=1.1 id=loader-1 xmlns=http://www.w3.org/2000/svg xmlns:xlink=http://www.w3.org/1999/xlink x=0px y=0px width=40px height=40px viewbox=\"0 0 50 50\" style=\"enable-background:new 0 0 50 50\" xml:space=preserve>\n" +
+    "\n" +
+    "		<path fill=#000 d=M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z>\n" +
+    "			<animatetransform attributetype=xml attributename=transform type=rotate from=\"0 25 25\" to=\"360 25 25\" dur=.6s repeatcount=\"indefinite\">\n" +
+    "		</path>\n" +
+    "	</svg>\n" +
+    "</div>");
   $templateCache.put("easyzoom/vnEasyZoom.tpl.html",
     "<div class=easyzoom data-ng-class=\"{ 'easyzoom--adjacent': ezAdjacent, 'easyzoom--overlay': ezOverlay }\">\n" +
     "    <a data-ng-href={{ezZoomSrc}}>\n" +
