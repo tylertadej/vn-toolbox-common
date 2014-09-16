@@ -8,7 +8,7 @@
  * */
 
 
-describe('Service: Volusion.toolboxCommon.vnErrorModalService', function () {
+describe('Service: Volusion.toolboxCommon.vnModalService', function () {
 
     // load the service's module
     beforeEach(module('Volusion.toolboxCommon'));
@@ -17,8 +17,8 @@ describe('Service: Volusion.toolboxCommon.vnErrorModalService', function () {
     var service, $modal, modalOpenSpy, $rootScope;
 
     //update the injection
-    beforeEach(inject(function (vnErrorModalService, _$modal_, _$rootScope_) {
-        service = vnErrorModalService;
+    beforeEach(inject(function (vnModalService, _$modal_, _$rootScope_) {
+        service = vnModalService;
         $modal = _$modal_;
 		$rootScope = _$rootScope_;
 
@@ -34,7 +34,7 @@ describe('Service: Volusion.toolboxCommon.vnErrorModalService', function () {
         expect(service).to.exist;
     });
 
-    it('calls opens modal dialog with passed in template', function() {
+    it('calls opens modal error dialog with passed in template', function() {
 
 		var messageScope = $rootScope.$new(true);
 		messageScope.exceptionCode = '500';
@@ -47,12 +47,34 @@ describe('Service: Volusion.toolboxCommon.vnErrorModalService', function () {
         });
     });
 
-    it('calls opens the modal dialog with default template if nothing is passed in', function() {
+    it('calls opens the modal error dialog with default template if nothing is passed in', function() {
 
         service.showError();
         expect(modalOpenSpy).to.have.been.calledWithExactly({
-            templateUrl: 'errormodal/vnErrorModal.tpl.html',
+            templateUrl: 'modal/vnErrorModal.tpl.html',
 			scope: undefined
         });
     });
+
+	it('calls opens modal message dialog with passed in template', function() {
+
+		var messageScope = $rootScope.$new(true);
+		messageScope.messageBool = true;
+		messageScope.messageString = 'String value goes here';
+
+		service.showMessage('foo/bar', messageScope);
+		expect(modalOpenSpy).to.have.been.calledWithExactly({
+			templateUrl: 'foo/bar',
+			scope: messageScope
+		});
+	});
+
+	it('calls opens the modal message dialog with default template if nothing is passed in', function() {
+
+		service.showMessage();
+		expect(modalOpenSpy).to.have.been.calledWithExactly({
+			templateUrl: 'modal/vnModalMessage.tpl.html',
+			scope: undefined
+		});
+	});
 });
