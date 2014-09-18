@@ -1,4 +1,14 @@
-toolbox-common
+# toolbox-common
+
+> A toolbox of components for developing Volusion e-commerce themes
+
+[![Build Status][]](https://travis-ci.org/volusion-angular/vn-toolbox-common)
+[![Dependency Status][]](https://gemnasium.com/volusion-angular/vn-toolbox-common)
+[![Views][]](https://sourcegraph.com/github.com/volusion-angular/vn-toolbox-common)
+[![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
+
+
+Installation
 ==============
 
 To install toolbox-common run:
