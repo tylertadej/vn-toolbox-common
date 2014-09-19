@@ -7,7 +7,7 @@ module.exports = function(config) {
 		basePath: '',
 
 		// testing framework to use (jasmine/mocha/qunit/...)
-		frameworks: ['mocha', 'chai-jquery', 'sinon-chai', 'jquery-2.1.0'],
+		frameworks: ['mocha', 'chai-jquery', 'sinon-chai', 'jquery-1.11.0'],
 
 		// list of files / patterns to load in the browser
 		files: [
@@ -25,10 +25,10 @@ module.exports = function(config) {
             'app/bower_components/angular-translate-loader-partial/angular-translate-loader-partial.js',
             'app/bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js',
             'app/bower_components/angular-translate-storage-local/angular-translate-storage-local.js',
-			'app/bower_components/angular-touch/angular-touch.js',
-			'app/bower_components/angular-carousel/dist/angular-carousel.js',
+			//'app/bower_components/angular-touch/angular-touch.js',
+			//'app/bower_components/angular-carousel/dist/angular-carousel.js',
 			'app/bower_components/firebase/firebase.js',
-			'app/bower_components/angularfire/angularfire.js',
+			'app/bower_components/angularfire/dist/angularfire.js',
 
 			'app/scripts/**/*.js',
 			'test/spec-helpers.js',
