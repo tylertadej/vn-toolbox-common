@@ -1,5 +1,5 @@
 /**
- * @ngdoc constant
+ * @ngdoc service
  * @name Volusion.toolboxCommon.vnResourceTypes
  * @description
  *

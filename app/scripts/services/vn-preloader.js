@@ -21,7 +21,7 @@ angular.module('Volusion.toolboxCommon')
 			/**
 			 * @ngdoc function
 			 * @name VnPreloader
-			 * @methodOf Volusion.toolboxCommon.vnPreloader
+			 * @methodOf Volusion.toolboxCommon.vnImagePreloader
 			 *
 			 * @description
 			 * Manage the preloading of image objects. Accepts an array of image URLs.
@@ -61,7 +61,7 @@ angular.module('Volusion.toolboxCommon')
 			/**
 			 * @ngdoc function
 			 * @name preloadImages
-			 * @methodOf Volusion.toolboxCommon.vnPreloader
+			 * @methodOf Volusion.toolboxCommon.vnImagePreloader
 			 *
 			 * @description
 			 * reload the given images [Array] and return a promise. The promise
@@ -85,7 +85,7 @@ angular.module('Volusion.toolboxCommon')
 				/**
 				 * @ngdoc function
 				 * @name preloadImages
-				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 * @methodOf Volusion.toolboxCommon.vnImagePreloader
 				 *
 				 * @description
 				 * Determine if the preloader has started loading images yet.
@@ -97,7 +97,7 @@ angular.module('Volusion.toolboxCommon')
 				/**
 				 * @ngdoc function
 				 * @name preloadImages
-				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 * @methodOf Volusion.toolboxCommon.vnImagePreloader
 				 *
 				 * @description
 				 * Determine if the preloader has started loading images yet.
@@ -110,7 +110,7 @@ angular.module('Volusion.toolboxCommon')
 				/**
 				 * @ngdoc function
 				 * @name preloadImages
-				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 * @methodOf Volusion.toolboxCommon.vnImagePreloader
 				 *
 				 * @description
 				 * Determine if the preloader has started loading images yet.
@@ -123,7 +123,7 @@ angular.module('Volusion.toolboxCommon')
 				/**
 				 * @ngdoc function
 				 * @name preloadImages
-				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 * @methodOf Volusion.toolboxCommon.vnImagePreloader
 				 *
 				 * @description
 				 * Determine if the preloader has started loading images yet.
@@ -150,7 +150,7 @@ angular.module('Volusion.toolboxCommon')
 				/**
 				 * @ngdoc function
 				 * @name preloadImages
-				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 * @methodOf Volusion.toolboxCommon.vnImagePreloader
 				 *
 				 * @description
 				 * Determine if the preloader has started loading images yet.
@@ -172,7 +172,7 @@ angular.module('Volusion.toolboxCommon')
 				/**
 				 * @ngdoc function
 				 * @name preloadImages
-				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 * @methodOf Volusion.toolboxCommon.vnImagePreloader
 				 *
 				 * @description
 				 * Determine if the preloader has started loading images yet.
@@ -205,7 +205,7 @@ angular.module('Volusion.toolboxCommon')
 				/**
 				 * @ngdoc function
 				 * @name preloadImages
-				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 * @methodOf Volusion.toolboxCommon.vnImagePreloader
 				 *
 				 * @description
 				 * Determine if the preloader has started loading images yet.

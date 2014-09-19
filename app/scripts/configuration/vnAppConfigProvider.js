@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @ngdoc provider
+ * @ngdoc service
  *
  * @name Volusion.toolboxCommon:vnAppConfig
  *
