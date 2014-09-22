@@ -271,6 +271,10 @@ module.exports = function(grunt) {
 			partials: {
 				src: ['<%= yeoman.app %>/views/partials/{,*/}*.html', '<%= yeoman.app %>/scripts/{,*/}*.tpl.html'],
 				dest: '.tmp/partial-views.js'
+			},
+			serve: {
+				src: ['<%= yeoman.app %>/views/partials/{,*/}*.html', '<%= yeoman.app %>/scripts/{,*/}*.tpl.html'],
+				dest: '<%= yeoman.app %>/scripts/partial-views.js'
 			}
 		},
 
@@ -390,12 +394,14 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('serve', function(target) {
 		if (target === 'dist') {
-			return grunt.task.run(['build', 'connect:dist:keepalive']);
+			return grunt.task.run(['connect:dist:keepalive']);
 		}
 
 		grunt.task.run([
 			'clean:server',
 			'wiredep',
+			// compile html templates so they will be available
+			'html2js:serve',
 			'compass:server',
 			'connect:livereload',
 			'watch'
