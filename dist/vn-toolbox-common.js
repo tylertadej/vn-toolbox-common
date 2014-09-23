@@ -228,100 +228,6 @@ angular.module('Volusion.toolboxCommon')
 		};
 	});
 
-angular.module('Volusion.toolboxCommon')
-	.directive('vnCarousel',
-	['$rootScope',
-		function ($rootScope) {
-
-			'use strict';
-
-			return {
-				templateUrl: 'template/carousel.html',
-				restrict   : 'EA',
-				replace    : true,
-				scope      : {
-					currMode       : '@currMode',
-					carouselObjects: '='
-				},
-				link       : function postLink(scope, element) {
-					if (scope.currMode === undefined) {
-						scope.currMode = 'on';
-					}
-
-					// Component constants *****************
-					scope.componentId = '100001';
-					scope.componentName = 'carousel';
-					// *************************************
-
-					// Component is not selected by default
-					scope.selected = false;
-
-					scope.$on('currentComponent.change', function (event, component) {
-						if (component && component.id && scope.currMode === 'off') {
-							scope.selected = (component.id === scope.componentId);
-						}
-					});
-
-					element.on('click', function (event) {
-						// if in EDIT mode
-						if (scope.currMode === 'off') {
-							event.preventDefault();
-							$rootScope.$broadcast('currentComponent.change', {'id': scope.componentId, 'name': scope.componentName, 'action': 'set'});
-						}
-					});
-
-//                        Initialize the slider
-//                        element.carousel({
-//                            interval: 5000,
-//                            pause: 'hover',
-//                            wrap: true
-//                        });
-					$('.carousel').carousel({
-						interval: 5000,
-						pause   : 'hover',
-						wrap    : true
-					});
-
-					scope.prev = function () {
-						$('.carousel').carousel('prev');
-//                            element.carousel('prev');
-					};
-
-					scope.next = function () {
-//                            element.carousel('next');
-						$('.carousel').carousel('next');
-					};
-				}
-			};
-		}])
-	.run(['$templateCache', function ($templateCache) {
-		'use strict';
-
-		$templateCache.put(
-			'template/carousel.html',
-				'<div id="vnCarousel" class="carousel slide" data-ride="carousel">' +
-				'<!-- Indicators -->' +
-				'<ol class="carousel-indicators">' +
-				'<li data-ng-repeat="image in imageList" data-target="#vnCarousel" data-slide-to="{{ $index }}"></li>' +
-				'</ol>' +
-				'<div data-ng-repeat="image in imageList" class="carousel-inner">' +
-				'<div class="item active">' +
-				'<img data-src="" alt="First slide" src="{{ image.src }}">' +
-				'<div class="container">' +
-				'<h1>Example headline.</h1>' +
-				'<p>Note: If you\'re viewing this page via a <code>file://</code> URL, the "next" and "previous"  might not load/display properly.</p>' +
-				'<p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>' +
-				'</div>' +
-				'</div>' +
-				'<a class="left carousel-control" href="#myCarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>' +
-				'<a class="right carousel-control" href="#myCarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>' +
-				'</div>' +
-				'</div>'
-		);
-	}]);
-
-
-
 'use strict';
 
 /**
@@ -2281,7 +2187,7 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "	</button>\n" +
     "	<ul class=dropdown-menu role=menu aria-labelledby=dropdownMenu1>\n" +
     "		<li role=presentation>\n" +
-    "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('relevence')\">Relevance</a>\n" +
+    "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('relevance')\">Relevance</a>\n" +
     "		</li>\n" +
     "		<li role=presentation>\n" +
     "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('highest price')\">Highest price</a>\n" +
@@ -2290,7 +2196,7 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('lowest price')\">Lowest price</a>\n" +
     "		</li>\n" +
     "		<li role=presentation>\n" +
-    "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('relevence')\">Popularity</a>\n" +
+    "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('relevance')\">Popularity</a>\n" +
     "		</li>\n" +
     "		<li role=presentation>\n" +
     "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('newest')\">Newest</a>\n" +
@@ -2377,31 +2283,6 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "			<animatetransform attributetype=xml attributename=transform type=rotate from=\"0 25 25\" to=\"360 25 25\" dur=.6s repeatcount=\"indefinite\">\n" +
     "		</path>\n" +
     "	</svg>\n" +
-    "</div>");
-  $templateCache.put("carousel/vnCarousel.tpl.html",
-    "<div id=vnCarousel class=\"carousel slide\" data-ride=carousel>\n" +
-    "	\n" +
-    "	<ol class=carousel-indicators>\n" +
-    "		<li data-ng-repeat=\"image in imageList\" data-target=#vnCarousel data-slide-to=\"{{ $index }}\"></li>\n" +
-    "	</ol>\n" +
-    "	<div data-ng-repeat=\"image in imageList\" class=carousel-inner>\n" +
-    "		<div class=\"item active\">\n" +
-    "			<img data-src=\"\" alt=\"First slide\" src=\"{{ image.src }}\">\n" +
-    "\n" +
-    "			<div class=carousel-caption>\n" +
-    "				<h1>Example headline.</h1>\n" +
-    "\n" +
-    "				<p>Note: If you\\'re viewing this page via a <code>file://</code> URL, the \"next\" and \"previous\" might\n" +
-    "					not load/display properly.</p>\n" +
-    "\n" +
-    "				<p><a class=\"btn btn-lg btn-primary\" href=# role=button>Sign up today</a></p>\n" +
-    "			</div>\n" +
-    "		</div>\n" +
-    "	</div>\n" +
-    "\n" +
-    "	\n" +
-    "	<a class=\"left carousel-control\" href=#myCarousel data-slide=prev><span class=\"glyphicon glyphicon-chevron-left\"></span></a>\n" +
-    "	<a class=\"right carousel-control\" href=#myCarousel data-slide=next><span class=\"glyphicon glyphicon-chevron-right\"></span></a>\n" +
     "</div>");
   $templateCache.put("easyzoom/vnEasyZoom.tpl.html",
     "<div class=easyzoom data-ng-class=\"{ 'easyzoom--adjacent': ezAdjacent, 'easyzoom--overlay': ezOverlay }\">\n" +
@@ -2542,6 +2423,15 @@ angular.module('Volusion.toolboxCommon')
                 scope.doSearch = function () {
                     vnSearchManager.updateSearch(scope.searchTerm);
                 };
+
+                scope.$watch(
+                    function() {
+                        return vnSearchManager.getSearchText();
+                    },
+                    function(searchText) {
+                        scope.searchTerm = searchText || '';
+                    }, true
+                );
 			}
 		};
 	}]);
@@ -4884,7 +4774,7 @@ angular.module('Volusion.toolboxCommon')
  * implement logic rules that relate to how urls should behave / look.
  */
 angular.module('Volusion.toolboxCommon')
-  .constant('vnSortDefault', 'relevence');
+  .constant('vnSortDefault', 'relevance');
 
 'use strict';
 /**
@@ -5255,7 +5145,7 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "	</button>\n" +
     "	<ul class=dropdown-menu role=menu aria-labelledby=dropdownMenu1>\n" +
     "		<li role=presentation>\n" +
-    "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('relevence')\">Relevance</a>\n" +
+    "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('relevance')\">Relevance</a>\n" +
     "		</li>\n" +
     "		<li role=presentation>\n" +
     "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('highest price')\">Highest price</a>\n" +
@@ -5264,7 +5154,7 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('lowest price')\">Lowest price</a>\n" +
     "		</li>\n" +
     "		<li role=presentation>\n" +
-    "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('relevence')\">Popularity</a>\n" +
+    "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('relevance')\">Popularity</a>\n" +
     "		</li>\n" +
     "		<li role=presentation>\n" +
     "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('newest')\">Newest</a>\n" +
@@ -5351,31 +5241,6 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "			<animatetransform attributetype=xml attributename=transform type=rotate from=\"0 25 25\" to=\"360 25 25\" dur=.6s repeatcount=\"indefinite\">\n" +
     "		</path>\n" +
     "	</svg>\n" +
-    "</div>");
-  $templateCache.put("carousel/vnCarousel.tpl.html",
-    "<div id=vnCarousel class=\"carousel slide\" data-ride=carousel>\n" +
-    "	\n" +
-    "	<ol class=carousel-indicators>\n" +
-    "		<li data-ng-repeat=\"image in imageList\" data-target=#vnCarousel data-slide-to=\"{{ $index }}\"></li>\n" +
-    "	</ol>\n" +
-    "	<div data-ng-repeat=\"image in imageList\" class=carousel-inner>\n" +
-    "		<div class=\"item active\">\n" +
-    "			<img data-src=\"\" alt=\"First slide\" src=\"{{ image.src }}\">\n" +
-    "\n" +
-    "			<div class=carousel-caption>\n" +
-    "				<h1>Example headline.</h1>\n" +
-    "\n" +
-    "				<p>Note: If you\\'re viewing this page via a <code>file://</code> URL, the \"next\" and \"previous\" might\n" +
-    "					not load/display properly.</p>\n" +
-    "\n" +
-    "				<p><a class=\"btn btn-lg btn-primary\" href=# role=button>Sign up today</a></p>\n" +
-    "			</div>\n" +
-    "		</div>\n" +
-    "	</div>\n" +
-    "\n" +
-    "	\n" +
-    "	<a class=\"left carousel-control\" href=#myCarousel data-slide=prev><span class=\"glyphicon glyphicon-chevron-left\"></span></a>\n" +
-    "	<a class=\"right carousel-control\" href=#myCarousel data-slide=next><span class=\"glyphicon glyphicon-chevron-right\"></span></a>\n" +
     "</div>");
   $templateCache.put("easyzoom/vnEasyZoom.tpl.html",
     "<div class=easyzoom data-ng-class=\"{ 'easyzoom--adjacent': ezAdjacent, 'easyzoom--overlay': ezOverlay }\">\n" +

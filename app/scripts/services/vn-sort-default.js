@@ -10,4 +10,4 @@
  * implement logic rules that relate to how urls should behave / look.
  */
 angular.module('Volusion.toolboxCommon')
-  .constant('vnSortDefault', 'relevence');
+  .constant('vnSortDefault', 'relevance');

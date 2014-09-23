@@ -11,8 +11,8 @@ describe('Service: vnSortDefault', function () {
 		vnSortDefault = _vnSortDefault_;
 	}));
 
-	it('should default to "relevence"', function () {
+	it('should default to "relevance"', function () {
 		expect(!!vnSortDefault).toBe(true);
-		expect(vnSortDefault).toBe('relevence');
+		expect(vnSortDefault).toBe('relevance');
 	});
 });
