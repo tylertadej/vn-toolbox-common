@@ -39,6 +39,15 @@ angular.module('Volusion.toolboxCommon')
                 scope.doSearch = function () {
                     vnSearchManager.updateSearch(scope.searchTerm);
                 };
+
+                scope.$watch(
+                    function() {
+                        return vnSearchManager.getSearchText();
+                    },
+                    function(searchText) {
+                        scope.searchTerm = searchText || '';
+                    }, true
+                );
 			}
 		};
 	}]);
