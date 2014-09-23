@@ -1,5 +1,5 @@
 
-/*! vn-toolbox-common - ver.0.1.0 (2014-09-16) */
+/*! vn-toolbox-common - ver.0.1.0 (2014-09-23) */
 
 angular.module('Volusion.toolboxCommon.templates', []);
 angular.module('Volusion.toolboxCommon', ['ngCookies', 'ngSanitize', 'pascalprecht.translate', 'ui.bootstrap', 'Volusion.toolboxCommon.templates'])
@@ -107,8 +107,11 @@ angular.module('Volusion.toolboxCommon')
 
 angular.module('Volusion.toolboxCommon')
     .service('vnAppMessageService', ['$timeout', function($timeout) {
-        var self = {},
-            messages = [];
+        var TIMEOUT_SUCCESS = 4000,
+			TIMEOUT_WARNING = 10000,
+			self = {},
+            messages = [],
+            delay = TIMEOUT_SUCCESS;
 
         self.addMessage = function (message) {
             var msg = {
@@ -116,10 +119,15 @@ angular.module('Volusion.toolboxCommon')
                 type: message.type || 'warning',
                 text: message.text
             };
+
+			if (message.type !== 'success') {
+				delay = TIMEOUT_WARNING;
+			}
+
             messages.push(msg);
             $timeout(function() {
                 self.removeMessage(msg.id);
-            }, message.timeout || 4000);
+            }, message.timeout || delay);
         };
 
         self.getMessages = function() {
@@ -220,10 +228,104 @@ angular.module('Volusion.toolboxCommon')
 		};
 	});
 
+angular.module('Volusion.toolboxCommon')
+	.directive('vnCarousel',
+	['$rootScope',
+		function ($rootScope) {
+
+			'use strict';
+
+			return {
+				templateUrl: 'template/carousel.html',
+				restrict   : 'EA',
+				replace    : true,
+				scope      : {
+					currMode       : '@currMode',
+					carouselObjects: '='
+				},
+				link       : function postLink(scope, element) {
+					if (scope.currMode === undefined) {
+						scope.currMode = 'on';
+					}
+
+					// Component constants *****************
+					scope.componentId = '100001';
+					scope.componentName = 'carousel';
+					// *************************************
+
+					// Component is not selected by default
+					scope.selected = false;
+
+					scope.$on('currentComponent.change', function (event, component) {
+						if (component && component.id && scope.currMode === 'off') {
+							scope.selected = (component.id === scope.componentId);
+						}
+					});
+
+					element.on('click', function (event) {
+						// if in EDIT mode
+						if (scope.currMode === 'off') {
+							event.preventDefault();
+							$rootScope.$broadcast('currentComponent.change', {'id': scope.componentId, 'name': scope.componentName, 'action': 'set'});
+						}
+					});
+
+//                        Initialize the slider
+//                        element.carousel({
+//                            interval: 5000,
+//                            pause: 'hover',
+//                            wrap: true
+//                        });
+					$('.carousel').carousel({
+						interval: 5000,
+						pause   : 'hover',
+						wrap    : true
+					});
+
+					scope.prev = function () {
+						$('.carousel').carousel('prev');
+//                            element.carousel('prev');
+					};
+
+					scope.next = function () {
+//                            element.carousel('next');
+						$('.carousel').carousel('next');
+					};
+				}
+			};
+		}])
+	.run(['$templateCache', function ($templateCache) {
+		'use strict';
+
+		$templateCache.put(
+			'template/carousel.html',
+				'<div id="vnCarousel" class="carousel slide" data-ride="carousel">' +
+				'<!-- Indicators -->' +
+				'<ol class="carousel-indicators">' +
+				'<li data-ng-repeat="image in imageList" data-target="#vnCarousel" data-slide-to="{{ $index }}"></li>' +
+				'</ol>' +
+				'<div data-ng-repeat="image in imageList" class="carousel-inner">' +
+				'<div class="item active">' +
+				'<img data-src="" alt="First slide" src="{{ image.src }}">' +
+				'<div class="container">' +
+				'<h1>Example headline.</h1>' +
+				'<p>Note: If you\'re viewing this page via a <code>file://</code> URL, the "next" and "previous"  might not load/display properly.</p>' +
+				'<p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>' +
+				'</div>' +
+				'</div>' +
+				'<a class="left carousel-control" href="#myCarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>' +
+				'<a class="right carousel-control" href="#myCarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>' +
+				'</div>' +
+				'</div>'
+		);
+	}]);
+
+
+
 'use strict';
 
 /**
- * @ngdoc provider
+ * @ngdoc service
  *
  * @name Volusion.toolboxCommon:vnAppConfig
  *
@@ -1323,70 +1425,6 @@ angular.module('Volusion.toolboxCommon')
 		};
 	});
 
-angular.module('Volusion.toolboxCommon')
-    .directive('vnNav',
-        ['$rootScope',
-            function ($rootScope) {
-
-                'use strict';
-
-                return {
-                    templateUrl: 'template/navbar.html',
-                    restrict   : 'EA',
-                    replace    : true,
-                    scope      : {
-                        currMode     : '@currMode',
-                        categoryList : '='
-                    },
-                    link       : function postLink(scope, element) {
-                        if (scope.currMode === undefined) {
-                            scope.currMode = 'on';
-                        }
-
-                        // Component constants *****************
-                        scope.componentId = '100005';
-                        scope.componentName = 'navbar';
-                        // *************************************
-
-                        // Component is not selected by default
-                        scope.selected = false;
-
-                        scope.$on('currentComponent.change', function (event, component) {
-                            if (component && component.id && scope.currMode === 'off') {
-                                scope.selected = (component.id === scope.componentId);
-                            }
-                        });
-
-                        element.on('click', function (event) {
-                            // if in EDIT mode
-                            if (scope.currMode === 'off') {
-                                event.preventDefault();
-                                $rootScope.$broadcast('currentComponent.change', {'id': scope.componentId, 'name': scope.componentName, 'action': 'set'});
-                            }
-                        });
-                    }
-                };
-            }])
-    .run(['$templateCache', function ($templateCache) {
-        'use strict';
-
-        $templateCache.put(
-            'template/navbar.html',
-            '<div class="collapse navbar-collapse " id="th-main-menu" data-ng-class="!navCollapsed && \'in\'" data-ng-click="navCollapsed=true">' +
-                '<ul class="nav navbar-nav">' +
-                    '<li class="dropdown" data-ng-repeat="category in categoryList">' +
-                        '<a href class="dropdown-toggle th-dropdown-toggle" data-toggle="dropdown">{{category.name}}</a>' +
-                        '<ul class="dropdown-menu" data-ng-if="category.subCategories.length">' +
-                            '<li data-ng-repeat="subCategory in category.subCategories">' +
-                                '<a data-ng-href="#/category/{{ subCategory.id }}">{{subCategory.name}}</a>' +
-                            '</li>' +
-                        '</ul>' +
-                    '</li>' +
-                '</ul>' +
-            '</div>'
-        );
-    }]);
-
 'use strict';
 
 /**
@@ -1929,6 +1967,151 @@ angular.module('Volusion.toolboxCommon')
     };
 }]);
 
+angular.module('Volusion.toolboxCommon')
+    .directive('vnNav', ['$rootScope', '$window', '$timeout', 'vnApi', function ($rootScope, $window, $timeout, vnApi) {
+
+		'use strict';
+
+		return {
+			templateUrl: 'nav-menu/vn-nav.tpl.html',
+			restrict   : 'EA',
+			replace    : true,
+			scope      : {
+				currMode     : '@',
+				categoryList : '=',
+				useSmartNav  : '@'
+			},
+			link       : function postLink(scope, element) {
+				if (scope.currMode === undefined) {
+					scope.currMode = 'on';
+				}
+
+				scope.useSmartNavigation = (scope.useSmartNav === undefined) ? 'true' : scope.useSmartNav;
+
+				// Component constants *****************
+				scope.componentId = '100005';
+				scope.componentName = 'navbar';
+				// *************************************
+
+				// Component is not selected by default
+				scope.selected = false;
+				scope.displaySmartNavMoreMenuItem = false;
+
+				scope.$on('currentComponent.change', function (event, component) {
+					if (component && component.id && scope.currMode === 'off') {
+						scope.selected = (component.id === scope.componentId);
+					}
+				});
+
+				element.on('click', function (event) {
+					// if in EDIT mode
+					if (scope.currMode === 'off') {
+						event.preventDefault();
+						$rootScope.$broadcast('currentComponent.change', {'id': scope.componentId, 'name': scope.componentName, 'action': 'set'});
+					}
+				});
+
+				var threshold = {
+					windowWidth: -1,
+					position   : 0
+				};
+
+				function buildSmartNav() {
+
+					var itemIndex = 0,
+						firstItemTopPosition = 0,
+						indexPositionWhereItemWrapped = 0,
+						newSmartNavCategories = [];
+
+					// Reset threshold
+					if (threshold.windowWidth !== -1 && scope.windowWidth > threshold.windowWidth) {
+						indexPositionWhereItemWrapped = 0;
+						threshold.windowWidth = -1;
+						threshold.position = 0;
+					}
+
+					if (threshold.windowWidth === -1) {
+						angular.forEach(angular.element('.nav-top-level-menu-items'), function (value) {
+							// Get top position of first item
+							if (itemIndex === 0) {
+								firstItemTopPosition = angular.element(value).position().top;
+							}
+
+							if (angular.element(value).position().top !== firstItemTopPosition) {
+								indexPositionWhereItemWrapped = itemIndex;
+								return false;
+							}
+
+							itemIndex++;
+						});
+					}
+
+					if (indexPositionWhereItemWrapped !== 0 || threshold.windowWidth !== -1) {
+						// Initialize threshold
+						if (threshold.windowWidth === -1) {
+							threshold.windowWidth = scope.windowWidth;
+							threshold.position = indexPositionWhereItemWrapped;
+						} else {
+							indexPositionWhereItemWrapped = threshold.position;
+						}
+
+						scope.smartNavMoreCategories = [];
+
+						angular.forEach(scope.smartCategories, function (value, index) {
+							if (index >= (indexPositionWhereItemWrapped - 1)) {
+								scope.smartNavMoreCategories.push(value);
+							} else {
+								newSmartNavCategories.push(value);
+							}
+						});
+
+						scope.smartNavCategories = newSmartNavCategories;
+					} else {
+						scope.smartNavCategories = scope.smartCategories;
+					}
+
+					scope.displaySmartNavMoreMenuItem = (indexPositionWhereItemWrapped !== 0);
+				}
+
+				function setAndBuildSmartNav (list) {
+					scope.smartNavCategories = scope.smartCategories = list;
+
+					if (scope.useSmartNavigation === 'true') {
+						// Handle Navigation
+						$timeout(function () {
+							buildSmartNav();
+						}, 0);
+					}
+				}
+
+				scope.initializeWindowSize = function () {
+					scope.windowWidth = $window.outerWidth;
+				};
+
+				scope.initializeWindowSize();
+
+				if (scope.useSmartNavigation === 'true') {
+					angular.element($window).bind('resize', function () {
+						scope.initializeWindowSize();
+						scope.$apply();
+
+						buildSmartNav();
+					});
+				}
+
+				if (scope.categoryList !== undefined) {
+					setAndBuildSmartNav (scope.categoryList);
+
+				}  else {
+					vnApi.Nav().get({ navId: 1 }).$promise
+						.then(function (response) {
+							setAndBuildSmartNav (response.data);
+						});
+				}
+			}
+		};
+	}]);
+
 'use strict';
 /**
  * @ngdoc directive
@@ -1995,6 +2178,328 @@ angular.module('Volusion.toolboxCommon')
 			}
 		};
 	}]);
+
+angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', function($templateCache) {
+  $templateCache.put("vn-faceted-search/vn-category-search.html",
+    "<div class=vn-category-search__category-items data-ng-repeat=\"cat in categories\" data-ng-class=\"{ '-last': $last }\">\n" +
+    "\n" +
+    "	<a href data-ng-if=\"cat.displayStrategy == 'categoryDisplayTwo' || cat.displayStrategy == 'categoryDisplayThree' \" data-ng-click=buildAppUrl(cat) class=vn-category-search__category-items__category-title data-ng-class=\"{ '-noborder': $last && cat.displayStrategy == 'categoryDisplayOne' }\">\n" +
+    "\n" +
+    "		<span data-ng-if=\"cat.displayStrategy == 'categoryDisplayTwo' \" class=\"glyphicon glyphicon-chevron-left\"></span>\n" +
+    "		{{ cat.name }}\n" +
+    "	</a>\n" +
+    "	<span class=vn-category-search__category-items__category-title data-ng-if=\"cat.displayStrategy == 'categoryDisplayOne' \">{{ cat.name }}</span>\n" +
+    "	<div class=vn-category-search__category-items__category-item data-ng-repeat=\"subCat in cat.subCategories\" data-ng-class=\"{ '-noborder': $last }\">\n" +
+    "\n" +
+    "		<span data-ng-if=subCat.hideSubCatLink>{{ subCat.name }}</span>\n" +
+    "		<a href data-ng-if=!subCat.hideSubCatLink data-ng-click=buildAppUrl(subCat)>{{ subCat.name }}</a>\n" +
+    "	</div>\n" +
+    "</div>");
+  $templateCache.put("vn-faceted-search/vn-facet-search.html",
+    "<div data-accordion-group class=facet-item data-ng-repeat=\"facet in facets track by $index\" data-is-open=defaultAccordianOpen>\n" +
+    "	<div data-accordion-heading>\n" +
+    "		<div>\n" +
+    "			<span>{{ facet.title }}</span>\n" +
+    "			<i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': defaultAccordianOpen, 'glyphicon-chevron-right': !defaultAccordianOpen}\"></i>\n" +
+    "		</div>\n" +
+    "	</div>\n" +
+    "    <div data-ng-if=\"facet.displayType != 'swatches'\" class=facet-properties>\n" +
+    "        <label class=facet-property data-ng-repeat=\"property in facet.properties track by $index\" data-ng-class=\"{ '-last': $last }\">\n" +
+    "\n" +
+    "            <input type=checkbox name=property.name data-ng-checked=selectProperty(property) data-ng-click=\"refineFacetSearch(property)\">\n" +
+    "            <span class=name>{{ property.name }}</span>\n" +
+    "            <span class=count>{{ property.count }}</span>\n" +
+    "        </label>\n" +
+    "    </div>\n" +
+    "    <div data-ng-if=\"facet.displayType == 'swatches'\" class=\"facet-properties clearfix\">\n" +
+    "        <div data-ng-repeat=\"property in facet.properties\" class=facet-property__swatch data-ng-click=refineFacetSearch(property) data-ng-class=\"{'facet-property__swatch--selected': selectProperty(property)}\">\n" +
+    "			<div class=facet-property__swatch--color data-ng-style=\"{'backgroundColor': property.color }\">\n" +
+    "			</div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>");
+  $templateCache.put("vn-faceted-search/vn-faceted-search.html",
+    "<div class=vn-faceted-search-header data-ng-show=showApplyButton>\n" +
+    "	<button class=\"btn btn-success __cancel-action\" href data-ng-click=dismissMobileFilters()>Apply\n" +
+    "	</button>\n" +
+    "	\n" +
+    "	<button class=\"btn __clear-action\" href data-ng-click=clearAllFilters()>Clear\n" +
+    "	</button>\n" +
+    "	\n" +
+    "</div>\n" +
+    "<div class=-faceted-search data-ng-show=showFacetSearch>\n" +
+    "	<div class=facets>\n" +
+    "		<div data-accordion data-close-others=false>\n" +
+    "\n" +
+    "			\n" +
+    "			<div data-accordion-group class=facet-item__by-category data-is-open=categoryAccordiansOpen data-ng-show=\"categoryList.length > 0\">\n" +
+    "				<div data-accordion-heading>\n" +
+    "					<div>\n" +
+    "						<span>Category</span>\n" +
+    "						<i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': categoryAccordiansOpen, 'glyphicon-chevron-right': !categoryAccordiansOpen}\"></i>\n" +
+    "					</div>\n" +
+    "				</div>\n" +
+    "				<div vn-category-search categories=categoryList query-products=queryProducts() data-ng-show=showCategorySearch class=category-search>\n" +
+    "				</div>\n" +
+    "			</div>\n" +
+    "\n" +
+    "			\n" +
+    "			<div vn-facet-search facets=facets query-products=queryProducts() data-ng-show=\"facets.length > 0\"></div>\n" +
+    "\n" +
+    "			\n" +
+    "			<div data-accordion-group class=facet-item__by-price data-is-open=priceAccordiansOpen data-ng-show=\"facets.length > 0\">\n" +
+    "				<div data-accordion-heading>\n" +
+    "					<div>\n" +
+    "						<span>Price</span>\n" +
+    "						<i class=\"pull-right glyphicon\" data-ng-class=\"{'glyphicon-chevron-down': priceAccordiansOpen, 'glyphicon-chevron-right': !priceAccordiansOpen}\"></i>\n" +
+    "					</div>\n" +
+    "				</div>\n" +
+    "				<div class=facet-item__by-price__inputs vn-price-search query-products=queryProducts()></div>\n" +
+    "			</div>\n" +
+    "		</div>\n" +
+    "\n" +
+    "		\n" +
+    "		<div class=vn-faceted-search-footer data-ng-show=!showApplyButton>\n" +
+    "			<button class=\"btn __clear-action\" href data-ng-click=clearAllFilters()>Reset Filters\n" +
+    "			</button>\n" +
+    "			\n" +
+    "		</div>\n" +
+    "\n" +
+    "	</div>\n" +
+    "</div>");
+  $templateCache.put("vn-faceted-search/vn-price-search.html",
+    "<input data-ng-model=minPrice data-ng-keypress=searchByPrice($event) placeholder=\"$\">\n" +
+    "&thinsp;to&thinsp;\n" +
+    "<input data-ng-model=maxPrice data-ng-keypress=searchByPrice($event) placeholder=\"$$\">\n" +
+    "<button class=\"btn btn-default facet-item__by-price__button\" type=button ng-click=searchByPrice($event)>Go\n" +
+    "</button>");
+  $templateCache.put("vn-faceted-search/vn-sort-search.html",
+    "<div class=dropdown>\n" +
+    "	<button class=\"btn btn-default dropdown-toggle\" type=button id=dropdownMenu1 data-toggle=dropdown>\n" +
+    "		Sort by\n" +
+    "		<span class=caret></span>\n" +
+    "	</button>\n" +
+    "	<ul class=dropdown-menu role=menu aria-labelledby=dropdownMenu1>\n" +
+    "		<li role=presentation>\n" +
+    "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('relevence')\">Relevance</a>\n" +
+    "		</li>\n" +
+    "		<li role=presentation>\n" +
+    "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('highest price')\">Highest price</a>\n" +
+    "		</li>\n" +
+    "		<li role=presentation>\n" +
+    "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('lowest price')\">Lowest price</a>\n" +
+    "		</li>\n" +
+    "		<li role=presentation>\n" +
+    "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('relevence')\">Popularity</a>\n" +
+    "		</li>\n" +
+    "		<li role=presentation>\n" +
+    "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('newest')\">Newest</a>\n" +
+    "		</li>\n" +
+    "		<li role=presentation>\n" +
+    "			<a role=menuitem tabindex=-1 href=\"\" data-ng-click=\"sortBy('oldest')\">Oldest</a>\n" +
+    "		</li>\n" +
+    "	</ul>\n" +
+    "</div>");
+  $templateCache.put("vn-product-option/checkboxes.html",
+    "<label data-vn-block=vn-labeled-checkbox data-vn-modifiers={{option.class}} data-ng-repeat=\"item in option.items\" data-ng-init=item>\n" +
+    "\n" +
+    "	<div data-vn-element=checkbox>\n" +
+    "		<input type=checkbox data-ng-click=\"onCheckboxClicked(option, item)\">\n" +
+    "	</div>\n" +
+    "\n" +
+    "	<div data-vn-element=content data-ng-include=\" 'vn-product-option/content.html' \"></div>\n" +
+    "</label>");
+  $templateCache.put("vn-product-option/content.html",
+    "<div data-vn-element=color-image>\n" +
+    "	<div data-vn-element=color data-ng-show=item.color style=\"background-color: {{item.color}}\"></div>\n" +
+    "	<img data-vn-element=image data-ng-show=item.swatchImage data-ng-src={{item.swatchImage}} alt={{item.text}}>\n" +
+    "</div>\n" +
+    "<div data-vn-element=text data-ng-bind=item.text data-ng-controller=OptionsCtrl data-ng-class=\"{ '-disabled': !isItemAvailable }\"></div>\n" +
+    "<div data-vn-element=border data-ng-class=\"{ checked: option.selected === item.key }\"></div>");
+  $templateCache.put("vn-product-option/index.html",
+    "<div data-vn-block=vn-product-option>\n" +
+    "\n" +
+    "	<label data-vn-element=label data-ng-if=option.label data-ng-bind=option.label></label>\n" +
+    "\n" +
+    "	<div data-ng-repeat=\"inputType in option.inputTypes\">\n" +
+    "		<div data-vn-element=group data-vn-modifiers=\"{{inputType.type}} {{option.class}}\" data-ng-include=\" 'vn-product-option/' + inputType.type + '.html' \">\n" +
+    "		</div>\n" +
+    "	</div>\n" +
+    "\n" +
+    "	<div data-ng-if=option.selected>\n" +
+    "		<div data-ng-repeat=\"option in option.options\" data-ng-include=\" 'vn-product-option/index.html' \">\n" +
+    "		</div>\n" +
+    "	</div>\n" +
+    "\n" +
+    "</div>");
+  $templateCache.put("vn-product-option/radios.html",
+    "<label data-vn-block=vn-labeled-radio data-vn-modifiers={{option.class}} data-ng-repeat=\"item in option.items\" data-ng-init=item data-ng-controller=OptionsCtrl data-ng-class=\"{ '-disabled': !isItemAvailable }\">\n" +
+    "\n" +
+    "	<div data-vn-element=radio>\n" +
+    "\n" +
+    "		<input type=radio name={{option.id}} data-ng-value=item.key data-ng-model=option.selected data-ng-click=\"onOptionChanged(option, item)\">\n" +
+    "	</div>\n" +
+    "\n" +
+    "	<div data-vn-element=content data-ng-include=\" 'vn-product-option/content.html' \"></div>\n" +
+    "\n" +
+    "</label>");
+  $templateCache.put("vn-product-option/select.html",
+    "<div class=dropdown data-vn-element=select data-vn-modifiers=\"{{ option.class }}\" data-ng-attr-size=\"{{ inputType.size }}\">\n" +
+    "\n" +
+    "	<button class=\"btn btn-default dropdown-toggle\" type=button id=\"dropdownMenuOption{{ option.id }}\" data-toggle=dropdown>\n" +
+    "		{{ currentSelectionText }}\n" +
+    "		<span class=caret></span>\n" +
+    "	</button>\n" +
+    "	<ul class=dropdown-menu role=menu aria-labelledby=\"dropdownMenuOption{{ option.id }}\">\n" +
+    "		<li role=presentation data-ng-repeat=\"item in option.items\">\n" +
+    "			<a role=menuitem tabindex=-1 href data-ng-click=\"onOptionChanged(option, item)\" data-ng-controller=OptionsCtrl data-ng-class=\"{ '-disabled': !isItemAvailable }\">\n" +
+    "				{{ item.text }}\n" +
+    "			</a>\n" +
+    "		</li>\n" +
+    "	</ul>\n" +
+    "</div>");
+  $templateCache.put("vn-product-option/text.html",
+    "<div data-ng-if=\"inputType.rows > 1\">\n" +
+    "	<textarea data-vn-element=text data-vn-modifiers={{option.class}} data-ng-focus=\"saveTo=saveTo||{}\" data-ng-model=saveTo[option.id] data-ng-maxlength={{inputType.maxlength}} placeholder={{inputType.placeholder}} rows={{inputType.rows}} cols={{inputType.cols}}></textarea>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div data-ng-if=\"!inputType.rows || inputType.rows < 2\">\n" +
+    "	<input data-vn-element=text data-vn-modifiers={{option.class}} data-ng-focus=\"saveTo=saveTo||{}\" data-ng-model=saveTo[option.id] data-ng-maxlength={{inputType.maxlength}} placeholder={{inputType.placeholder}}>\n" +
+    "</div>");
+  $templateCache.put("appmessages/vnAppMessage.tpl.html",
+    "<alert ng-repeat=\"alert in appMessagesCtrl.alerts track by alert.id\" type=\"{{ alert.type }}\" close=appMessagesCtrl.closeAlert(alert.id)>{{alert.text}}</alert>");
+  $templateCache.put("busyanimation/vnBusyAnimation.tpl.html",
+    "<ng-transclude></ng-transclude>\n" +
+    "<div class=\"{{ class }}\" title=1 data-ng-if=show>\n" +
+    "	<svg version=1.1 id=loader-1 xmlns=http://www.w3.org/2000/svg xmlns:xlink=http://www.w3.org/1999/xlink x=0px y=0px width=40px height=40px viewbox=\"0 0 50 50\" style=\"enable-background:new 0 0 50 50\" xml:space=preserve>\n" +
+    "\n" +
+    "		<path fill=#000 d=M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z>\n" +
+    "			<animatetransform attributetype=xml attributename=transform type=rotate from=\"0 25 25\" to=\"360 25 25\" dur=.6s repeatcount=\"indefinite\">\n" +
+    "		</path>\n" +
+    "	</svg>\n" +
+    "</div>");
+  $templateCache.put("carousel/vnCarousel.tpl.html",
+    "<div id=vnCarousel class=\"carousel slide\" data-ride=carousel>\n" +
+    "	\n" +
+    "	<ol class=carousel-indicators>\n" +
+    "		<li data-ng-repeat=\"image in imageList\" data-target=#vnCarousel data-slide-to=\"{{ $index }}\"></li>\n" +
+    "	</ol>\n" +
+    "	<div data-ng-repeat=\"image in imageList\" class=carousel-inner>\n" +
+    "		<div class=\"item active\">\n" +
+    "			<img data-src=\"\" alt=\"First slide\" src=\"{{ image.src }}\">\n" +
+    "\n" +
+    "			<div class=carousel-caption>\n" +
+    "				<h1>Example headline.</h1>\n" +
+    "\n" +
+    "				<p>Note: If you\\'re viewing this page via a <code>file://</code> URL, the \"next\" and \"previous\" might\n" +
+    "					not load/display properly.</p>\n" +
+    "\n" +
+    "				<p><a class=\"btn btn-lg btn-primary\" href=# role=button>Sign up today</a></p>\n" +
+    "			</div>\n" +
+    "		</div>\n" +
+    "	</div>\n" +
+    "\n" +
+    "	\n" +
+    "	<a class=\"left carousel-control\" href=#myCarousel data-slide=prev><span class=\"glyphicon glyphicon-chevron-left\"></span></a>\n" +
+    "	<a class=\"right carousel-control\" href=#myCarousel data-slide=next><span class=\"glyphicon glyphicon-chevron-right\"></span></a>\n" +
+    "</div>");
+  $templateCache.put("easyzoom/vnEasyZoom.tpl.html",
+    "<div class=easyzoom data-ng-class=\"{ 'easyzoom--adjacent': ezAdjacent, 'easyzoom--overlay': ezOverlay }\">\n" +
+    "    <a data-ng-href={{ezZoomSrc}}>\n" +
+    "        <img class=img-responsive data-ng-src={{ngSrc}} alt={{alt}}>\n" +
+    "        <div class=th-product-view__zoom></div>\n" +
+    "    </a>\n" +
+    "</div>");
+  $templateCache.put("modal/vnErrorModal.tpl.html",
+    "<div class=\"th-error-wrap clearfix\">\n" +
+    "    <div class=th-error-details>\n" +
+    "        <div class=\"th-error-details__header modal-header\">\n" +
+    "            <h1>Sorry, something went wrong with the page...</h1>\n" +
+    "            <div class=modal-body>\n" +
+    "                <p class=th-error-details__section1>... but it might just be a small glitch. Try refreshing the page\n" +
+    "                    to see if that fixes it.</p>\n" +
+    "\n" +
+    "                <p class=th-error-details__section2>\n" +
+    "                    If the problem persists, please try again later.\n" +
+    "                </p>\n" +
+    "            </div>\n" +
+    "            <div class=modal-footer>\n" +
+    "                <button class=\"btn btn-warning\" ng-click=$close()>Close</button>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>");
+  $templateCache.put("modal/vnMessageModal.tpl.html",
+    "<div class=\"th-error-wrap clearfix\">\n" +
+    "	<div class=th-error-details>\n" +
+    "		<div class=\"th-error-details__header modal-header\">\n" +
+    "			<h1>This is a generic app message template</h1>\n" +
+    "			<div class=modal-body>\n" +
+    "				<p class=th-message-details__section1>It should be over ridden in the calling application</p>\n" +
+    "\n" +
+    "			</div>\n" +
+    "			<div class=modal-footer>\n" +
+    "				<button class=\"btn btn-warning\" ng-click=$dismiss()>Ok</button>\n" +
+    "				<button class=\"btn btn-warning\" ng-click=$close()>Cancel</button>\n" +
+    "			</div>\n" +
+    "		</div>\n" +
+    "	</div>\n" +
+    "</div>");
+  $templateCache.put("nav-menu/vn-nav.tpl.html",
+    "<div class=\"collapse navbar-collapse\" id=th-main-menu data-ng-class=\"!navCollapsed && 'in'\" data-ng-click=\"navCollapsed=true\">\n" +
+    "	<ul class=\"nav navbar-nav\">\n" +
+    "		<li class=\"dropdown nav-top-level-menu-items\" data-ng-repeat=\"category in smartNavCategories\">\n" +
+    "			<a class=navbar-link data-ng-href=\"{{ category.url }}\">\n" +
+    "				{{category.name}}\n" +
+    "				<span data-ng-if=category.subCategories.length class=\"caret th-dropdown-toggle\"></span>\n" +
+    "				</a>\n" +
+    "			<ul vn-show-on-dropdown-hover class=dropdown-menu data-ng-if=category.subCategories.length>\n" +
+    "				<li data-ng-repeat=\"subCategory in category.subCategories\">\n" +
+    "					<a data-ng-href=\"{{ subCategory.url }}\">{{subCategory.name}}</a>\n" +
+    "					</li>\n" +
+    "				</ul>\n" +
+    "			</li>\n" +
+    "		<li class=dropdown data-ng-show=displaySmartNavMoreMenuItem>\n" +
+    "			<a href=# class=navbar-link data-translate=header.smartNavMoreLinkText>\n" +
+    "				More\n" +
+    "				<span class=\"caret th-dropdown-toggle\"></span>\n" +
+    "				</a>\n" +
+    "			<ul vn-show-on-dropdown-hover class=dropdown-menu>\n" +
+    "				<li data-ng-repeat=\"category in smartNavMoreCategories\">\n" +
+    "					<a class=navbar-link data-ng-href=\"{{ category.url }}\">{{category.name}}</a>\n" +
+    "					</li>\n" +
+    "				</ul>\n" +
+    "			</li>\n" +
+    "		</ul>\n" +
+    "	</div>");
+  $templateCache.put("pagination/vnPaginator.tpl.html",
+    "<ul class=pager data-ng-if=\"cursor.totalPages > 1\">\n" +
+    "	<li data-ng-class=\"{disabled: cursor.currentPage == 1}\">\n" +
+    "		<a href data-ng-click=prevPage()><span class=\"glyphicon glyphicon-chevron-left\"></span></a></li>\n" +
+    "	<li data-ng-class=\"{disabled: cursor.currentPage == cursor.totalPages}\">\n" +
+    "		<a href data-ng-click=nextPage()><span class=\"glyphicon glyphicon-chevron-right\"></span></a></li>\n" +
+    "</ul>\n" +
+    "\n" +
+    "	<div class=pager>\n" +
+    "		Page {{ cursor.currentPage }} of {{ cursor.totalPages }}\n" +
+    "	</div>");
+  $templateCache.put("productsearch/vnSearchForm.tpl.html",
+    "<div role=search>\n" +
+    "	<a id=search-toggle ng-show=allowCollapse type=button class=th-search-popout__trigger data-ng-class=\"{ '-position' : !showSearch }\" data-ng-click=\"showSearch = !showSearch\">\n" +
+    "		<span class=\"glyphicon glyphicon-search\"></span>\n" +
+    "	</a>\n" +
+    "\n" +
+    "	<div data-ng-show=showSearch class=pull-left>\n" +
+    "		<form class=form-inline role=search name=frmSearch data-ng-submit=doSearch() novalidate>\n" +
+    "			<div class=form-group>\n" +
+    "				<input data-ng-model=searchTerm class=th-search-popout__input placeholder=Search...>\n" +
+    "				<button type=button data-ng-click=doSearch() class=\"btn btn-xs btn-primary th-search-popout__submit\">Go!\n" +
+    "				</button>\n" +
+    "			</div>\n" +
+    "		</form>\n" +
+    "	</div>\n" +
+    "</div>");
+}]);
 
 'use strict';
 /**
@@ -3538,7 +4043,7 @@ angular.module('Volusion.toolboxCommon')
 			/**
 			 * @ngdoc function
 			 * @name VnPreloader
-			 * @methodOf Volusion.toolboxCommon.vnPreloader
+			 * @methodOf Volusion.toolboxCommon.vnImagePreloader
 			 *
 			 * @description
 			 * Manage the preloading of image objects. Accepts an array of image URLs.
@@ -3578,7 +4083,7 @@ angular.module('Volusion.toolboxCommon')
 			/**
 			 * @ngdoc function
 			 * @name preloadImages
-			 * @methodOf Volusion.toolboxCommon.vnPreloader
+			 * @methodOf Volusion.toolboxCommon.vnImagePreloader
 			 *
 			 * @description
 			 * reload the given images [Array] and return a promise. The promise
@@ -3602,7 +4107,7 @@ angular.module('Volusion.toolboxCommon')
 				/**
 				 * @ngdoc function
 				 * @name preloadImages
-				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 * @methodOf Volusion.toolboxCommon.vnImagePreloader
 				 *
 				 * @description
 				 * Determine if the preloader has started loading images yet.
@@ -3614,7 +4119,7 @@ angular.module('Volusion.toolboxCommon')
 				/**
 				 * @ngdoc function
 				 * @name preloadImages
-				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 * @methodOf Volusion.toolboxCommon.vnImagePreloader
 				 *
 				 * @description
 				 * Determine if the preloader has started loading images yet.
@@ -3627,7 +4132,7 @@ angular.module('Volusion.toolboxCommon')
 				/**
 				 * @ngdoc function
 				 * @name preloadImages
-				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 * @methodOf Volusion.toolboxCommon.vnImagePreloader
 				 *
 				 * @description
 				 * Determine if the preloader has started loading images yet.
@@ -3640,7 +4145,7 @@ angular.module('Volusion.toolboxCommon')
 				/**
 				 * @ngdoc function
 				 * @name preloadImages
-				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 * @methodOf Volusion.toolboxCommon.vnImagePreloader
 				 *
 				 * @description
 				 * Determine if the preloader has started loading images yet.
@@ -3667,7 +4172,7 @@ angular.module('Volusion.toolboxCommon')
 				/**
 				 * @ngdoc function
 				 * @name preloadImages
-				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 * @methodOf Volusion.toolboxCommon.vnImagePreloader
 				 *
 				 * @description
 				 * Determine if the preloader has started loading images yet.
@@ -3689,7 +4194,7 @@ angular.module('Volusion.toolboxCommon')
 				/**
 				 * @ngdoc function
 				 * @name preloadImages
-				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 * @methodOf Volusion.toolboxCommon.vnImagePreloader
 				 *
 				 * @description
 				 * Determine if the preloader has started loading images yet.
@@ -3722,7 +4227,7 @@ angular.module('Volusion.toolboxCommon')
 				/**
 				 * @ngdoc function
 				 * @name preloadImages
-				 * @methodOf Volusion.toolboxCommon.vnPreloader
+				 * @methodOf Volusion.toolboxCommon.vnImagePreloader
 				 *
 				 * @description
 				 * Determine if the preloader has started loading images yet.
@@ -4591,6 +5096,30 @@ angular.module('Volusion.toolboxCommon')
 	.provider('translate', ['$translateProvider', TranslateProvider]);
 
 angular.module('Volusion.toolboxCommon')
+	.filter('vnFormattedCurrency', ['$filter', '$locale', function ($filter, $locale) {
+
+		'use strict';
+
+		return function (input, currencySymbol) {
+
+			if (input === undefined || input === null) {
+				return '';
+			}
+
+			var value = $filter('currency')(input, currencySymbol),
+				price = value.split($locale.NUMBER_FORMATS.DECIMAL_SEP);
+
+			if (price[1].indexOf('00') > -1) {
+				return price[0] + price[1].substring(2);	// append any extra symbols which appear after fraction
+															// i.e. closing ")" for negative price in US formatting
+			}
+
+			return price[0] + '<span class="th-price--cents">' + price[1] + '</span>';
+		};
+	}]);
+
+
+angular.module('Volusion.toolboxCommon')
 	.filter('html', [
 		'$sce',
 		function ($sce) {
@@ -4823,6 +5352,31 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "		</path>\n" +
     "	</svg>\n" +
     "</div>");
+  $templateCache.put("carousel/vnCarousel.tpl.html",
+    "<div id=vnCarousel class=\"carousel slide\" data-ride=carousel>\n" +
+    "	\n" +
+    "	<ol class=carousel-indicators>\n" +
+    "		<li data-ng-repeat=\"image in imageList\" data-target=#vnCarousel data-slide-to=\"{{ $index }}\"></li>\n" +
+    "	</ol>\n" +
+    "	<div data-ng-repeat=\"image in imageList\" class=carousel-inner>\n" +
+    "		<div class=\"item active\">\n" +
+    "			<img data-src=\"\" alt=\"First slide\" src=\"{{ image.src }}\">\n" +
+    "\n" +
+    "			<div class=carousel-caption>\n" +
+    "				<h1>Example headline.</h1>\n" +
+    "\n" +
+    "				<p>Note: If you\\'re viewing this page via a <code>file://</code> URL, the \"next\" and \"previous\" might\n" +
+    "					not load/display properly.</p>\n" +
+    "\n" +
+    "				<p><a class=\"btn btn-lg btn-primary\" href=# role=button>Sign up today</a></p>\n" +
+    "			</div>\n" +
+    "		</div>\n" +
+    "	</div>\n" +
+    "\n" +
+    "	\n" +
+    "	<a class=\"left carousel-control\" href=#myCarousel data-slide=prev><span class=\"glyphicon glyphicon-chevron-left\"></span></a>\n" +
+    "	<a class=\"right carousel-control\" href=#myCarousel data-slide=next><span class=\"glyphicon glyphicon-chevron-right\"></span></a>\n" +
+    "</div>");
   $templateCache.put("easyzoom/vnEasyZoom.tpl.html",
     "<div class=easyzoom data-ng-class=\"{ 'easyzoom--adjacent': ezAdjacent, 'easyzoom--overlay': ezOverlay }\">\n" +
     "    <a data-ng-href={{ezZoomSrc}}>\n" +
@@ -4865,6 +5419,33 @@ angular.module('Volusion.toolboxCommon.templates', []).run(['$templateCache', fu
     "		</div>\n" +
     "	</div>\n" +
     "</div>");
+  $templateCache.put("nav-menu/vn-nav.tpl.html",
+    "<div class=\"collapse navbar-collapse\" id=th-main-menu data-ng-class=\"!navCollapsed && 'in'\" data-ng-click=\"navCollapsed=true\">\n" +
+    "	<ul class=\"nav navbar-nav\">\n" +
+    "		<li class=\"dropdown nav-top-level-menu-items\" data-ng-repeat=\"category in smartNavCategories\">\n" +
+    "			<a class=navbar-link data-ng-href=\"{{ category.url }}\">\n" +
+    "				{{category.name}}\n" +
+    "				<span data-ng-if=category.subCategories.length class=\"caret th-dropdown-toggle\"></span>\n" +
+    "				</a>\n" +
+    "			<ul vn-show-on-dropdown-hover class=dropdown-menu data-ng-if=category.subCategories.length>\n" +
+    "				<li data-ng-repeat=\"subCategory in category.subCategories\">\n" +
+    "					<a data-ng-href=\"{{ subCategory.url }}\">{{subCategory.name}}</a>\n" +
+    "					</li>\n" +
+    "				</ul>\n" +
+    "			</li>\n" +
+    "		<li class=dropdown data-ng-show=displaySmartNavMoreMenuItem>\n" +
+    "			<a href=# class=navbar-link data-translate=header.smartNavMoreLinkText>\n" +
+    "				More\n" +
+    "				<span class=\"caret th-dropdown-toggle\"></span>\n" +
+    "				</a>\n" +
+    "			<ul vn-show-on-dropdown-hover class=dropdown-menu>\n" +
+    "				<li data-ng-repeat=\"category in smartNavMoreCategories\">\n" +
+    "					<a class=navbar-link data-ng-href=\"{{ category.url }}\">{{category.name}}</a>\n" +
+    "					</li>\n" +
+    "				</ul>\n" +
+    "			</li>\n" +
+    "		</ul>\n" +
+    "	</div>");
   $templateCache.put("pagination/vnPaginator.tpl.html",
     "<ul class=pager data-ng-if=\"cursor.totalPages > 1\">\n" +
     "	<li data-ng-class=\"{disabled: cursor.currentPage == 1}\">\n" +
